@@ -1,0 +1,31 @@
+{
+  "title": "Anion Gap Metabolic Acidosis",
+  "subtitle": "MUDPILES mnemonic workflow",
+  "steps": [
+    {
+      "title": "Confirm metabolic acidosis",
+      "body": "Low pH with low bicarbonate. Calculate anion gap: Na − (Cl + HCO3). Normal gap ~8–12 mEq/L.",
+      "tip": "Always correct for albumin: AG + 2.5 × (4 − albumin)."
+    },
+    {
+      "title": "High anion gap?",
+      "body": "If AG is elevated, think MUDPILES: Methanol, Uremia, DKA, Propylene glycol, Isoniazid/Iron, Lactic acidosis, Ethylene glycol, Salicylates.",
+      "tip": "Osmolar gap helps detect toxic alcohols."
+    },
+    {
+      "title": "Check for concurrent disorders",
+      "body": "Use Winter's formula: expected PCO2 = (1.5 × HCO3) + 8 ± 2. Higher measured PCO2 suggests superimposed respiratory acidosis.",
+      "tip": "Delta-delta analysis detects mixed acid-base disorders."
+    },
+    {
+      "title": "Normal anion gap acidosis",
+      "body": "If gap is normal, think GI bicarbonate loss, RTA type 1/2/4, or saline infusion. Urine anion gap helps distinguish RTA vs diarrhea.",
+      "tip": "Urine AG negative in diarrhea; positive in RTA."
+    },
+    {
+      "title": "Treat the underlying cause",
+      "body": "DKA → insulin and fluids. Lactic acidosis → perfusion. Toxins → antidote and dialysis. Severe acidemia pH <7.1 may need bicarbonate cautiously.",
+      "tip": "Bicarbonate is controversial in DKA once insulin started."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Chloride-Responsive Alkalosis",
+  "subtitle": "Volume and chloride repletion algorithm",
+  "steps": [
+    {
+      "title": "Confirm metabolic alkalosis",
+      "body": "Elevated pH and bicarbonate. Assess volume status, blood pressure, and medications (diuretics, vomiting).",
+      "tip": "Vomiting and loop/thiazide diuretics are the most common causes."
+    },
+    {
+      "title": "Check urine chloride",
+      "body": "Urine Cl− <20 mEq/L suggests chloride-responsive (saline-responsive) alkalosis from volume depletion or GI losses.",
+      "tip": "Urine Cl− >20 = chloride-resistant — think mineralocorticoid excess."
+    },
+    {
+      "title": "Volume repletion",
+      "body": "Give isotonic saline to restore extracellular volume. Kidney excretes bicarbonate once chloride and volume are restored.",
+      "tip": "Avoid overcorrection in heart failure — use cautious diuresis strategy."
+    },
+    {
+      "title": "Chloride-resistant causes",
+      "body": "If urine Cl− >20: primary hyperaldosteronism, Cushing, licorice, severe hypokalemia, or current diuretic use.",
+      "tip": "Severe hypokalemia perpetuates alkalosis — correct K+."
+    },
+    {
+      "title": "Adjunct therapy",
+      "body": "Acetazolamide increases bicarbonate excretion. HCl infusion reserved for severe refractory alkalosis in ICU settings.",
+      "tip": "Treat the underlying mineralocorticoid excess when chloride-resistant."
+    }
+  ]
+}

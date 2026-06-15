@@ -1,0 +1,31 @@
+{
+  "title": "CKD-MBD Management Pathway",
+  "subtitle": "Phosphate, calcium, and PTH targets",
+  "steps": [
+    {
+      "title": "Assess CKD stage and labs",
+      "body": "Monitor calcium, phosphate, PTH, and vitamin D. Abnormalities worsen as GFR declines — begin surveillance at CKD stage 3.",
+      "tip": "Trend labs every 3–6 months in stage 3–4, more often in stage 5."
+    },
+    {
+      "title": "Dietary phosphate restriction",
+      "body": "Limit high-phosphate foods and processed additives. Diet is first-line before escalating binders.",
+      "tip": "Protein needs must be balanced — involve renal dietitian."
+    },
+    {
+      "title": "Phosphate binders",
+      "body": "Calcium-based binders (with meals) or non-calcium binders (sevelamer, lanthanum) when hyperphosphatemia persists.",
+      "tip": "Take binders with meals to bind dietary phosphate."
+    },
+    {
+      "title": "PTH management",
+      "body": "Secondary hyperparathyroidism: active vitamin D analogs or calcimimetics when PTH exceeds stage-based targets.",
+      "tip": "Avoid hypercalcemia and adynamic bone disease from over-suppression."
+    },
+    {
+      "title": "Refer for parathyroidectomy",
+      "body": "Severe persistent hyperparathyroidism, hypercalcemia, or calciphylaxis may need surgical or cinacalcet-based escalation.",
+      "tip": "CKD stage 4 PTH target often 2–9× upper limit of normal."
+    }
+  ]
+}
