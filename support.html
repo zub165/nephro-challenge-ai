@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nephro Challenge AI — board-style nephrology MCQs, animated lessons, AI tutor, and daily challenges. Download on web, Android, and iOS." />
+  <title>Support &amp; Features — Nephro Challenge AI</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #1e3a5f;
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(145deg, #1e3a5f 0%, #163050 40%, #0f4c5c 70%, #115e59 100%);
+      color: #fff;
+      padding: 3rem 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -40%; right: -20%;
+      width: 60%; height: 120%;
+      background: radial-gradient(circle, rgba(20,184,166,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 900px; margin: 0 auto; position: relative; }
+    .logo-row {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--teal-light); }
+    .hero p.lead {
+      font-size: 1.1rem; max-width: 640px; margin: 0 auto 2rem;
+      opacity: 0.92; line-height: 1.65;
+    }
+
+    /* Download buttons */
+    .downloads {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 0.85rem 1.5rem; border-radius: 12px;
+      font-weight: 700; font-size: 0.95rem; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .btn-primary { background: var(--teal); color: #fff; }
+    .btn-primary:hover { background: #0f766e; color: #fff; }
+    .btn-outline {
+      background: rgba(255,255,255,0.12); color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.35);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.22); color: #fff; }
+    .btn-dark { background: #0f172a; color: #fff; }
+    .btn-dark:hover { background: #1e293b; color: #fff; }
+    .btn small { display: block; font-size: 0.65rem; font-weight: 500; opacity: 0.85; text-align: left; }
+    .btn span.main { font-size: 0.95rem; }
+
+    /* Stats bar */
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem; max-width: 900px; margin: -2rem auto 0; padding: 0 1.5rem; position: relative; z-index: 2;
+    }
+    .stat {
+      background: var(--card); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 1.25rem; text-align: center;
+      box-shadow: 0 4px 20px rgba(15,23,42,0.07);
+    }
+    .stat strong { display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+    .stat span { font-size: 0.8rem; color: var(--muted); }
+
+    /* Sections */
+    section { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+    section h2 {
+      font-size: 1.6rem; font-weight: 800; color: var(--primary);
+      text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+    }
+    section .sub { text-align: center; color: var(--muted); margin-bottom: 2rem; max-width: 560px; margin-left: auto; margin-right: auto; }
+
+    /* Feature grid */
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;
+    }
+    .feature {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature:hover { border-color: #99f6e4; box-shadow: 0 8px 28px rgba(13,148,136,0.1); }
+    .feature .icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(135deg, #ccfbf1, #e0f2fe);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1rem;
+    }
+    .feature h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feature p { font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
+
+    /* Chapters list */
+    .chapters {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem;
+    }
+    .chip {
+      background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4;
+      padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+    }
+
+    /* Pricing */
+    .pricing {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;
+    }
+    .plan {
+      background: var(--card); border: 2px solid var(--border); border-radius: var(--radius);
+      padding: 2rem; position: relative;
+    }
+    .plan.featured {
+      border-color: var(--teal); box-shadow: 0 12px 40px rgba(13,148,136,0.15);
+    }
+    .plan .badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--teal); color: #fff; font-size: 0.7rem; font-weight: 700;
+      padding: 0.25rem 0.85rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .plan h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .plan .price { font-size: 2rem; font-weight: 900; color: var(--primary); margin: 0.75rem 0; }
+    .plan .price span { font-size: 0.9rem; font-weight: 500; color: var(--muted); }
+    .plan ul { list-style: none; margin: 1rem 0 1.5rem; }
+    .plan li { font-size: 0.88rem; color: #334155; padding: 0.35rem 0; padding-left: 1.4rem; position: relative; }
+    .plan li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+    .plan .btn { width: 100%; justify-content: center; }
+
+    /* FAQ */
+    .faq details {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .faq summary { font-weight: 600; cursor: pointer; color: var(--primary); }
+    .faq p { margin-top: 0.75rem; font-size: 0.9rem; color: var(--muted); }
+
+    /* Contact */
+    .contact-box {
+      background: linear-gradient(135deg, var(--primary), #115e59);
+      color: #fff; border-radius: var(--radius); padding: 2.5rem; text-align: center;
+    }
+    .contact-box h2 { color: #fff; margin-bottom: 0.75rem; }
+    .contact-box p { opacity: 0.9; margin-bottom: 1.5rem; }
+    .contact-box a { color: #fff; font-weight: 700; }
+
+    footer {
+      text-align: center; padding: 2rem 1.5rem; color: var(--muted); font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+    footer a { margin: 0 0.4rem; }
+
+    .disclaimer {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+      padding: 1rem; font-size: 0.85rem; color: #92400e; text-align: center;
+      max-width: 900px; margin: 0 auto 2rem; padding-left: 1.5rem; padding-right: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="logo-row">🧠 Nephro Challenge AI</div>
+      <h1>Master Nephrology.<br /><em>Pass Your Boards.</em></h1>
+      <p class="lead">
+        Board-style MCQs, animated clinical algorithms, AI-powered explanations, and daily challenges —
+        built for residents, fellows, and nephrologists. Study smarter on <strong>web</strong>, <strong>Android</strong>, and <strong>iPhone</strong>.
+      </p>
+      <div class="downloads">
+        <a class="btn btn-primary" href="https://nephrochallenge.ai/">
+          <span>🌐</span>
+          <span><small>Launch</small><span class="main">Web App</span></span>
+        </a>
+        <a class="btn btn-dark" href="https://play.google.com/store/apps/details?id=ai.nephrochallenge.app">
+          <span>🤖</span>
+          <span><small>Get it on</small><span class="main">Google Play</span></span>
+        </a>
+        <a class="btn btn-outline" href="https://apps.apple.com/app/nephro-challenge-ai/id0000000000">
+          <span>🍎</span>
+          <span><small>Download on the</small><span class="main">App Store</span></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><strong>1,000+</strong><span>Board-style MCQs</span></div>
+    <div class="stat"><strong>10+</strong><span>Nephrology categories</span></div>
+    <div class="stat"><strong>6</strong><span>Animated chapters</span></div>
+    <div class="stat"><strong>AI</strong><span>Clinical tutor</span></div>
+  </div>
+
+  <div class="disclaimer" style="margin-top: 3rem;">
+    ⚕️ <strong>For medical education only.</strong> Not medical advice. Do not submit identifiable patient information.
+  </div>
+
+  <section id="features">
+    <h2>Everything You Need to Excel</h2>
+    <p class="sub">One account syncs across web, Android, and iOS. Pick up where you left off — anywhere.</p>
+
+    <div class="features">
+      <article class="feature">
+        <div class="icon">📚</div>
+        <h3>Chapter-wise Board Review</h3>
+        <p>Structured path: Chapter → Topic → Animated lesson → MCQ quiz. Cover acid-base, electrolytes, AKI, CKD, glomerular disease, dialysis, and more.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🎬</div>
+        <h3>Fast-Learn Animations</h3>
+        <p>Visual algorithms for hyperkalemia, anion gap acidosis, FENa vs FEUrea, AEIOU dialysis indications, and other high-yield board topics.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🧪</div>
+        <h3>Clinical Case MCQs</h3>
+        <p>Realistic vignettes with lab values, explanations, clinical pearls, and why each wrong answer is wrong — just like the boards.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🔥</div>
+        <h3>Daily Challenge &amp; Streaks</h3>
+        <p>One new case every day. Build your streak, earn XP, and stay consistent — the #1 habit of top scorers.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🤖</div>
+        <h3>AI Tutor (Premium)</h3>
+        <p>Ask GPT-powered AI to explain simpler, break down wrong answers, generate similar questions, and deliver board-style summaries.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🏆</div>
+        <h3>Leaderboards &amp; Analytics</h3>
+        <p>Daily, weekly, monthly, and all-time rankings. Track accuracy, weak topics, and progress charts on your dashboard.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">📂</div>
+        <h3>Category Practice Mode</h3>
+        <p>Drill by topic: hypertension, transplant, pharmacology, tubulointerstitial disease, and full nephrology spectrum.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">💎</div>
+        <h3>Saved Clinical Pearls</h3>
+        <p>Bookmark high-yield pearls from any question. Build your personal nephrology notebook for last-minute review.</p>
+      </article>
+      <article class="feature">
+        <div class="icon">🌙</div>
+        <h3>Dark Mode &amp; Cross-Platform</h3>
+        <p>Beautiful UI on web and mobile. Sign in with email, Google, Apple, or Microsoft. Sync progress across all devices.</p>
+      </article>
+    </div>
+
+    <div class="chapters">
+      <span class="chip">Acid-Base</span>
+      <span class="chip">Electrolytes</span>
+      <span class="chip">AKI</span>
+      <span class="chip">CKD</span>
+      <span class="chip">Glomerular Disease</span>
+      <span class="chip">Dialysis</span>
+      <span class="chip">Hypertension</span>
+      <span class="chip">Transplant</span>
+      <span class="chip">Pharmacology</span>
+    </div>
+  </section>
+
+  <section id="pricing" style="background: #f1f5f9; max-width: 100%; padding-left: 0; padding-right: 0;">
+    <div style="max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem;">
+      <h2>Upgrade to Premium</h2>
+      <p class="sub">Unlock unlimited practice, full AI tutor, premium animations, and advanced analytics. Cancel anytime.</p>
+
+      <div class="pricing">
+        <div class="plan">
+          <h3>Free</h3>
+          <div class="price">$0 <span>/ forever</span></div>
+          <ul>
+            <li>Daily challenge (limited)</li>
+            <li>Free chapter MCQs</li>
+            <li>Basic leaderboard</li>
+            <li>Progress tracking</li>
+          </ul>
+          <a class="btn btn-outline" href="https://nephrochallenge.ai/register" style="background:#fff;color:var(--primary);border:1.5px solid var(--border);">Get Started Free</a>
+        </div>
+
+        <div class="plan featured">
+          <div class="badge">Most Popular</div>
+          <h3>Premium Monthly</h3>
+          <div class="price">$9.99 <span>/ month</span></div>
+          <ul>
+            <li>Unlimited board MCQs</li>
+            <li>Full AI tutor &amp; explanations</li>
+            <li>All animated lessons</li>
+            <li>Weak-topic analytics</li>
+            <li>Saved pearls &amp; custom quizzes</li>
+            <li>Ad-free experience</li>
+          </ul>
+          <a class="btn btn-primary" href="https://nephrochallenge.ai/register">Start Premium</a>
+        </div>
+
+        <div class="plan">
+          <h3>Premium Annual</h3>
+          <div class="price">$79.99 <span>/ year</span></div>
+          <ul>
+            <li>Everything in Monthly</li>
+            <li><strong>Save 33%</strong> vs monthly</li>
+            <li>Best for board prep season</li>
+            <li>Priority support</li>
+            <li>Early access to new chapters</li>
+          </ul>
+          <a class="btn btn-primary" href="https://nephrochallenge.ai/register">Save with Annual</a>
+        </div>
+      </div>
+
+      <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--muted);">
+        Subscriptions on mobile are billed through Apple App Store or Google Play. Web subscriptions billed securely online.
+      </p>
+    </div>
+  </section>
+
+  <section id="platforms">
+    <h2>Available Everywhere You Study</h2>
+    <p class="sub">Same account, same progress — laptop, phone, or tablet.</p>
+    <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+      <article class="feature" style="text-align:center;">
+        <div class="icon" style="margin:0 auto 1rem;">🌐</div>
+        <h3>Web App</h3>
+        <p>Full dashboard, chapters, admin tools. Works in Chrome, Safari, Firefox.</p>
+        <a class="btn btn-primary" href="https://nephrochallenge.ai/" style="margin-top:1rem;width:100%;justify-content:center;">Open Web App</a>
+      </article>
+      <article class="feature" style="text-align:center;">
+        <div class="icon" style="margin:0 auto 1rem;">🤖</div>
+        <h3>Android App</h3>
+        <p>Native Flutter app with offline-ready auth, push-ready architecture, and Google Sign-In.</p>
+        <a class="btn btn-dark" href="https://play.google.com/store/apps/details?id=ai.nephrochallenge.app" style="margin-top:1rem;width:100%;justify-content:center;">Google Play</a>
+      </article>
+      <article class="feature" style="text-align:center;">
+        <div class="icon" style="margin:0 auto 1rem;">🍎</div>
+        <h3>iOS App</h3>
+        <p>iPhone &amp; iPad optimized. Sign in with Apple. Perfect for rounds and commute review.</p>
+        <a class="btn btn-outline" href="https://apps.apple.com/app/nephro-challenge-ai/id0000000000" style="margin-top:1rem;width:100%;justify-content:center;background:var(--primary);color:#fff;border:none;">App Store</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <p class="sub">Quick answers before you download.</p>
+
+    <details>
+      <summary>Who is Nephro Challenge AI for?</summary>
+      <p>Nephrology fellows, residents, internists, medical students, and practicing nephrologists preparing for boards or staying sharp clinically.</p>
+    </details>
+    <details>
+      <summary>Is this real medical advice?</summary>
+      <p>No. All content is for medical education and board review only. Always use clinical judgment and consult qualified professionals for patient care.</p>
+    </details>
+    <details>
+      <summary>Can I use one account on web and mobile?</summary>
+      <p>Yes. Sign in with the same email on web, Android, and iOS. Your streaks, scores, and progress sync via our secure backend.</p>
+    </details>
+    <details>
+      <summary>How do I cancel Premium?</summary>
+      <p><strong>iOS:</strong> Settings → Apple ID → Subscriptions. <strong>Android:</strong> Play Store → Subscriptions. <strong>Web:</strong> Profile → Subscription → Cancel.</p>
+    </details>
+    <details>
+      <summary>How do I delete my account?</summary>
+      <p>Go to Profile → Settings → Delete Account, or email <a href="mailto:privacy@nephrochallenge.ai">privacy@nephrochallenge.ai</a>. See our <a href="privacy.html">Privacy Policy</a>.</p>
+    </details>
+    <details>
+      <summary>Do you offer institutional / residency plans?</summary>
+      <p>Yes. Contact <a href="mailto:support@nephrochallenge.ai">support@nephrochallenge.ai</a> for group pricing for residency programs and medical schools.</p>
+    </details>
+  </section>
+
+  <section>
+    <div class="contact-box">
+      <h2>Need Help?</h2>
+      <p>Our team typically responds within 24–48 hours.</p>
+      <p>
+        <a href="mailto:support@nephrochallenge.ai">support@nephrochallenge.ai</a>
+      </p>
+      <div class="downloads" style="margin-top:1.5rem;">
+        <a class="btn btn-outline" href="https://nephrochallenge.ai/">Web App</a>
+        <a class="btn btn-outline" href="privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Nephro Challenge AI. Built for the nephrology community.</p>
+    <p>
+      <a href="https://nephrochallenge.ai/">Web</a> ·
+      <a href="https://play.google.com/store/apps/details?id=ai.nephrochallenge.app">Android</a> ·
+      <a href="https://apps.apple.com/app/nephro-challenge-ai/id0000000000">iOS</a> ·
+      <a href="privacy.html">Privacy</a> ·
+      <a href="support.html">Support</a>
+    </p>
+  </footer>
+</body>
+</html>
