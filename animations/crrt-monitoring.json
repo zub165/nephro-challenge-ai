@@ -1,0 +1,32 @@
+{
+  "title": "CRRT Monitoring Plan",
+  "subtitle": "Labs · alarms · clinical assessment",
+  "theme": "crrt",
+  "steps": [
+    {
+      "title": "Electrolytes & acid-base",
+      "body": "Check K⁺, Na⁺, HCO₃⁻, BUN, and creatinine q6h until stable, then daily. CRRT shifts electrolytes rapidly — especially with citrate and customized replacement fluids.",
+      "tip": "Hypophosphatemia and hypokalemia are common with aggressive CRRT.",
+      "visual": "monitoring"
+    },
+    {
+      "title": "Citrate anticoagulation monitoring",
+      "body": "With regional citrate: ionized Ca²⁺ q4h, total vs ionized calcium ratio, and circuit ionized Ca target per protocol.",
+      "tip": "Systemic hypocalcemia and metabolic alkalosis are key citrate complications.",
+      "visual": "monitoring"
+    },
+    {
+      "title": "Circuit checks q2–8h",
+      "body": "Inspect pressures, air trap, access patency, and effluent line q2h. Full circuit inspection and clot assessment q8h.",
+      "tip": "Document TMP trend — rising TMP is the earliest clot warning.",
+      "visual": "pressures",
+      "metrics": { "access": "-50", "prefilter": "190", "return": "85", "tmp": "145", "flow": "150" }
+    },
+    {
+      "title": "Clinical assessment q6h",
+      "body": "Hemodynamics, volume status, daily weight, medication review (especially antibiotics and sedatives cleared by CRRT).",
+      "tip": "Use NephroGuide CRRT for live dose trends and exportable monitoring plans.",
+      "visual": "monitoring"
+    }
+  ]
+}

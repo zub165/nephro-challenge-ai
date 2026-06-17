@@ -1,0 +1,35 @@
+{
+  "title": "CRRT Circuit Pressures",
+  "subtitle": "Access · TMP · Return · alarm thresholds",
+  "theme": "crrt",
+  "steps": [
+    {
+      "title": "Normal pressure profile",
+      "body": "Typical readings: access −50 mmHg, pre-filter ~180 mmHg, return ~80 mmHg, TMP ~120 mmHg at blood flow 150 mL/min. Know your patient's baseline.",
+      "tip": "Sudden TMP rise often precedes clotting — act before complete circuit loss.",
+      "visual": "pressures",
+      "metrics": { "access": "-50", "prefilter": "180", "return": "80", "tmp": "120", "flow": "150" }
+    },
+    {
+      "title": "Access pressure alarm",
+      "body": "Access pressure more negative than −150 mmHg suggests catheter malfunction, kinking, or inadequate blood flow from the vein.",
+      "tip": "Check line position, reverse lines if recirculation suspected, consider catheter exchange.",
+      "visual": "pressures",
+      "metrics": { "access": "-165", "prefilter": "200", "return": "90", "tmp": "180", "flow": "150" }
+    },
+    {
+      "title": "Return pressure alarm",
+      "body": "Return pressure >250 mmHg may indicate clot in filter/line, elevated hematocrit, or return line obstruction.",
+      "tip": "Reduce blood flow temporarily while evaluating; prepare circuit change.",
+      "visual": "pressures",
+      "metrics": { "access": "-45", "prefilter": "220", "return": "265", "tmp": "210", "flow": "140" }
+    },
+    {
+      "title": "TMP and filter life",
+      "body": "TMP >200 mmHg is a warning; >300 mmHg often mandates circuit change. Regional citrate anticoagulation can extend filter life beyond 24–72 h.",
+      "tip": "See full NephroGuide CRRT tool for citrate dosing and monitoring.",
+      "visual": "pressures",
+      "metrics": { "access": "-50", "prefilter": "250", "return": "100", "tmp": "285", "flow": "150" }
+    }
+  ]
+}

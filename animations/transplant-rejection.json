@@ -1,0 +1,26 @@
+{
+  "title": "Kidney Transplant Rejection",
+  "subtitle": "T-cell · antibody-mediated · treatment",
+  "steps": [
+    {
+      "title": "Acute T-cell mediated rejection",
+      "body": "Rising creatinine, graft tenderness, oliguria. Biopsy shows tubulitis and interstitial inflammation (Banff). First-line: high-dose corticosteroids ± antithymocyte globulin for severe cases.",
+      "tip": "Always rule out infection, dehydration, and calcineurin inhibitor toxicity first."
+    },
+    {
+      "title": "Antibody-mediated rejection (AMR)",
+      "body": "Often abrupt rise in Cr with donor-specific antibodies. Biopsy: microvascular inflammation, C4d (protocol-dependent), transplant glomerulopathy.",
+      "tip": "AMR needs plasma exchange, IVIG, rituximab — nephrology/transplant team early."
+    },
+    {
+      "title": "Calcineurin inhibitor toxicity",
+      "body": "Tacrolimus/cyclosporine cause vasoconstriction and AKI without rejection. Check trough levels, drug interactions, and biopsy if unclear.",
+      "tip": "Tacrolimus + azole antifungals = dangerous level spikes."
+    },
+    {
+      "title": "Chronic rejection",
+      "body": "Slowly progressive proteinuria and declining GFR months to years post-transplant. Limited treatment options — optimize immunosuppression and cardiovascular risk.",
+      "tip": "Non-adherence is a leading cause of late graft loss — ask directly."
+    }
+  ]
+}

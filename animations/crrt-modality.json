@@ -1,0 +1,31 @@
+{
+  "title": "CRRT Modality Selection",
+  "subtitle": "CVVH · CVVHD · CVVHDF · SCUF",
+  "theme": "crrt",
+  "steps": [
+    {
+      "title": "When to choose CVVH",
+      "body": "Continuous veno-venous hemofiltration uses convection (replacement fluid) for solute clearance. Best when you need good middle-molecule removal with hemodynamic stability.",
+      "tip": "Pre-dilution lowers filtration fraction but improves filter life; post-dilution improves clearance efficiency.",
+      "visual": "circuit-cvvh"
+    },
+    {
+      "title": "CVVHD — diffusion dominant",
+      "body": "Dialysate flows counter-current to blood for small-solute clearance (urea, creatinine, K⁺). Less convection than CVVH; useful when primary goal is small-molecule control.",
+      "tip": "CVVHD alone may under-clear middle molecules compared with hemofiltration.",
+      "visual": "circuit-cvvhd"
+    },
+    {
+      "title": "CVVHDF — combined clearance",
+      "body": "Adds both replacement fluid (convection) and dialysate (diffusion). Often preferred when maximal solute clearance is needed in ICU AKI.",
+      "tip": "Total effluent dose still drives overall clearance — target adequate mL/kg/hr.",
+      "visual": "circuit-cvvhd"
+    },
+    {
+      "title": "SCUF — ultrafiltration only",
+      "body": "Slow continuous ultrafiltration without replacement or dialysate. Used primarily for volume removal when solute clearance is not the priority.",
+      "tip": "Not adequate for severe hyperkalemia or uremia as sole therapy.",
+      "visual": "circuit-scuf"
+    }
+  ]
+}

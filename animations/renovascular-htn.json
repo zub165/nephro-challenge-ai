@@ -1,0 +1,26 @@
+{
+  "title": "Renovascular Hypertension Workup",
+  "subtitle": "When to suspect RAS and intervene",
+  "steps": [
+    {
+      "title": "Clinical clues",
+      "body": "Resistant hypertension, flash pulmonary edema, asymmetric kidney size, new AKI after ACEi/ARB, or abdominal bruit in at-risk patients (atherosclerosis, fibromuscular dysplasia).",
+      "tip": "Bilateral RAS is a contraindication to ACEi/ARB — think before starting."
+    },
+    {
+      "title": "Screening imaging",
+      "body": "Duplex ultrasound is first-line in many centers. CTA or MRA for anatomic detail. Digital subtraction angiography remains gold standard before intervention.",
+      "tip": "CTA may overestimate stenosis; correlate with clinical context."
+    },
+    {
+      "title": "When to revascularize",
+      "body": "Significant stenosis with recurrent flash edema, resistant HTN despite ≥3 drugs, or progressive CKD attributable to ischemic nephropathy.",
+      "tip": "Medical therapy alone is reasonable in stable atherosclerotic RAS without compelling indications."
+    },
+    {
+      "title": "Post-procedure monitoring",
+      "body": "Watch for contrast nephropathy, restenosis, and AKI after stenting. Recheck creatinine and BP within 1–2 weeks.",
+      "tip": "FMD in young women often responds well to angioplasty without stent."
+    }
+  ]
+}
