@@ -1,5 +1,8 @@
+import '../models/category.dart';
+import '../models/chapter.dart';
 import '../models/question.dart';
 import '../models/quiz_attempt.dart';
+import '../utils/json_helpers.dart';
 import 'api_service.dart';
 
 class QuizService {
@@ -13,67 +16,121 @@ class QuizService {
     return _instance!;
   }
 
-  Future<List<Question>> fetchQuestions({
+  Future<List<Question>> fetchQuizQuestions({
     String? categoryId,
+    String? chapterId,
+    bool daily = false,
     int limit = 10,
-    String? difficulty,
   }) async {
     try {
-      final response = await _api.get('/questions', queryParameters: {
-        if (categoryId != null) 'category_id': categoryId,
+      final response = await _api.get('/questions/quiz/', queryParameters: {
+        if (categoryId != null) 'categoryId': categoryId,
+        if (chapterId != null) 'chapterId': chapterId,
+        if (daily) 'daily': 'true',
         'limit': limit,
-        if (difficulty != null) 'difficulty': difficulty,
       });
       final data = response.data as Map<String, dynamic>;
-      final questions = (data['questions'] as List<dynamic>)
-          .map((q) => Question.fromJson(q as Map<String, dynamic>))
+      return JsonHelpers.listOfMaps(data['questions'])
+          .map(Question.fromJson)
           .toList();
-      return questions;
     } catch (_) {
       return [];
     }
   }
 
-  Future<List<Question>> fetchDailyChallengeQuestions() async {
+  Future<List<Question>> fetchChapterQuestions(String chapterId,
+      {int limit = 10}) async {
     try {
-      final response = await _api.get('/questions/daily-challenge');
+      final response =
+          await _api.get('/quiz/chapter/$chapterId/', queryParameters: {
+        'limit': limit,
+      });
       final data = response.data as Map<String, dynamic>;
-      final questions = (data['questions'] as List<dynamic>)
-          .map((q) => Question.fromJson(q as Map<String, dynamic>))
+      return JsonHelpers.listOfMaps(data['questions'])
+          .map(Question.fromJson)
           .toList();
-      return questions;
     } catch (_) {
       return [];
     }
   }
 
-  Future<QuizAttempt?> submitQuiz({
-    required List<Map<String, dynamic>> answers,
-    String? categoryId,
-    bool isDailyChallenge = false,
-  }) async {
+  Future<List<Category>> fetchCategories() async {
     try {
-      final response = await _api.post('/quizzes/submit', data: {
-        'answers': answers,
-        if (categoryId != null) 'category_id': categoryId,
-        'is_daily_challenge': isDailyChallenge,
-      });
-      return QuizAttempt.fromJson(
-          response.data['attempt'] as Map<String, dynamic>);
+      final response = await _api.get('/categories/');
+      final list = response.data is List
+          ? response.data as List
+          : (response.data as Map)['results'] as List? ?? [];
+      return list
+          .map((c) => Category.fromJson(c as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<Chapter>> fetchChapters() async {
+    try {
+      final response = await _api.get('/chapters/');
+      final list = response.data is List
+          ? response.data as List
+          : (response.data as Map)['results'] as List? ?? [];
+      return list
+          .map((c) => Chapter.fromJson(c as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<Chapter?> fetchChapterDetail(String slug) async {
+    try {
+      final response = await _api.get('/chapters/$slug/');
+      return Chapter.fromJson(response.data as Map<String, dynamic>);
     } catch (_) {
       return null;
     }
   }
 
-  Future<List<QuizAttempt>> fetchAttempts({int limit = 20}) async {
+  Future<Lesson?> fetchLesson(String lessonId) async {
     try {
-      final response =
-          await _api.get('/quizzes/attempts', queryParameters: {'limit': limit});
-      final data = response.data as Map<String, dynamic>;
-      final attempts = (data['attempts'] as List<dynamic>)
+      final response = await _api.get('/lessons/$lessonId/');
+      return Lesson.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<QuizAttempt?> submitQuiz({
+    required List<Map<String, dynamic>> answersData,
+    String mode = 'practice',
+    String? categoryId,
+    String? chapterId,
+    int timeTaken = 0,
+  }) async {
+    try {
+      final response = await _api.post('/attempts/', data: {
+        'mode': mode,
+        if (categoryId != null) 'category': categoryId,
+        if (chapterId != null) 'chapter': chapterId,
+        'total_questions': answersData.length,
+        'time_taken': timeTaken,
+        'answers_data': answersData,
+      });
+      return QuizAttempt.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<QuizAttempt>> fetchAttempts() async {
+    try {
+      final response = await _api.get('/attempts/');
+      final list = response.data is List
+          ? response.data as List
+          : (response.data as Map)['results'] as List? ?? [];
+      return list
           .map((a) => QuizAttempt.fromJson(a as Map<String, dynamic>))
           .toList();
-      return attempts;
     } catch (_) {
       return [];
     }
@@ -81,7 +138,7 @@ class QuizService {
 
   Future<Map<String, dynamic>> fetchDashboard() async {
     try {
-      final response = await _api.get('/quizzes/dashboard');
+      final response = await _api.get('/stats/');
       return response.data as Map<String, dynamic>;
     } catch (_) {
       return {};
@@ -90,11 +147,9 @@ class QuizService {
 
   Future<List<Map<String, dynamic>>> fetchWeakTopics() async {
     try {
-      final response = await _api.get('/quizzes/weak-topics');
-      final data = response.data as Map<String, dynamic>;
-      return (data['topics'] as List<dynamic>)
-          .map((t) => t as Map<String, dynamic>)
-          .toList();
+      final response = await _api.get('/weaknesses/');
+      final list = response.data as List<dynamic>;
+      return list.map((t) => Map<String, dynamic>.from(t as Map)).toList();
     } catch (_) {
       return [];
     }

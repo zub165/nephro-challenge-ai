@@ -1,0 +1,31 @@
+{
+  "title": "Emergency Hyperkalemia Algorithm",
+  "subtitle": "Stabilize membrane → shift K+ → remove K+",
+  "steps": [
+    {
+      "title": "Recognize severity",
+      "body": "Check ECG for peaked T waves, widened QRS, sine wave pattern, or muscle weakness. K+ ≥6.5 mEq/L or any ECG changes = emergency.",
+      "tip": "ECG changes mean treat before waiting for repeat labs."
+    },
+    {
+      "title": "Stabilize the myocardium",
+      "body": "Give IV calcium gluconate 1–2 g (or calcium chloride in cardiac arrest). Onset in 1–3 minutes; does not lower potassium.",
+      "tip": "Calcium is temporizing — always follow with K+ lowering therapy."
+    },
+    {
+      "title": "Shift potassium intracellularly",
+      "body": "Insulin 10 units + D50, and/or albuterol nebulizer, and/or sodium bicarbonate if acidotic. Expect transient drop of ~0.5–1.0 mEq/L.",
+      "tip": "Monitor glucose every 30–60 min after insulin."
+    },
+    {
+      "title": "Remove potassium",
+      "body": "Loop diuretics if volume responsive, patiromer/sodium zirconium cyclosilicate if stable, kayexalate if needed, or hemodialysis for refractory or ESRD.",
+      "tip": "Dialysis is definitive in anuric AKI or ESRD."
+    },
+    {
+      "title": "Treat the cause",
+      "body": "Stop ACEi/ARB, spironolactone, NSAIDs, trimethoprim; treat acidosis, tissue breakdown, or obstruction. Recheck K+ and ECG after each intervention.",
+      "tip": "Repeat ECG after calcium and after K+ shifts."
+    }
+  ]
+}

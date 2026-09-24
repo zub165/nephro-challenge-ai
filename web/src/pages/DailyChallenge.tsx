@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '@/lib/axios';
+import { mapDailyChallenge } from '@/lib/apiMappers';
 import type { DailyChallenge as DailyChallengeType } from '@/types';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import {
@@ -19,7 +20,7 @@ export default function DailyChallenge() {
 
   const { data, isLoading, error } = useQuery<DailyChallengeType>({
     queryKey: ['daily-challenge'],
-    queryFn: () => api.get('/daily-challenge').then((r) => r.data),
+    queryFn: () => api.get('/daily-challenge/').then((r) => mapDailyChallenge(r.data)),
   });
 
   const completedCount = data?.questions?.length

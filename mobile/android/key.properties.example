@@ -1,0 +1,4 @@
+storePassword=nephro_release_change_me
+keyPassword=nephro_release_change_me
+keyAlias=upload
+storeFile=upload-keystore.jks

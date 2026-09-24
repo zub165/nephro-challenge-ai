@@ -9,21 +9,35 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 export default function Login() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
-  const [email, setEmail] = useState('');
+  const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!loginId || !password) {
       toast.error('Please fill in all fields');
       return;
     }
     setLoading(true);
     try {
-      const { data } = await api.post('/auth/login', { email, password });
-      setAuth(data.token, data.user);
+      const payload = loginId.includes('@')
+        ? { email: loginId, password }
+        : { username: loginId, password };
+      const { data } = await api.post('/auth/login/', payload);
+      const token = data.token || data.access;
+      const refreshToken = data.refresh || null;
+      const rawRole = data.user?.role;
+      const user = {
+        ...data.user,
+        name: data.user.name || data.user.username || loginId,
+        email: data.user.email || loginId,
+        role: ['admin', 'premium', 'free', 'guest'].includes(rawRole) ? rawRole : 'user',
+        id: String(data.user.id),
+        createdAt: data.user.created_at,
+      };
+      setAuth(token, user, refreshToken);
       toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (err: any) {
@@ -61,15 +75,15 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email
+                Email or username
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={loginId}
+                onChange={(e) => setLoginId(e.target.value)}
                 className="input-field"
-                placeholder="doctor@hospital.com"
-                autoComplete="email"
+                placeholder="admin or admin@nephrochallenge.com"
+                autoComplete="username"
               />
             </div>
 

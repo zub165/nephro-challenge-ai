@@ -1,0 +1,31 @@
+{
+  "title": "FENa vs FEUrea in AKI",
+  "subtitle": "Distinguish prerenal from intrinsic renal injury",
+  "steps": [
+    {
+      "title": "When to use FENa",
+      "body": "Fractional excretion of sodium helps differentiate prerenal azotemia from ATN in oliguric patients NOT on diuretics.",
+      "tip": "FENa = (Urine Na × Plasma Cr) / (Plasma Na × Urine Cr) × 100."
+    },
+    {
+      "title": "Interpret FENa",
+      "body": "FENa <1% suggests prerenal physiology. FENa >2% strongly favors ATN. Values 1–2% are indeterminate.",
+      "tip": "Also expect BUN:Cr >20:1 and urine osm >500 in prerenal."
+    },
+    {
+      "title": "Limitation — diuretics",
+      "body": "Loop or thiazide diuretics increase urine sodium and make FENa unreliable even when patient is prerenal.",
+      "tip": "If on diuretics, use FEUrea instead."
+    },
+    {
+      "title": "Use FEUrea",
+      "body": "FEUrea <35% favors prerenal; ≥50% favors intrinsic renal injury. Less affected by diuretics than FENa.",
+      "tip": "FEUrea = (Urine urea × Plasma Cr) / (Plasma urea × Urine Cr) × 100."
+    },
+    {
+      "title": "Clinical integration",
+      "body": "Combine indices with history, exam, urine microscopy (muddy brown casts in ATN), and response to volume challenge.",
+      "tip": "Prerenal AKI should improve within 24–48 h of perfusion restoration."
+    }
+  ]
+}

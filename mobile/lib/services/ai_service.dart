@@ -14,9 +14,16 @@ class AIService {
 
   Future<AIExplanation?> getExplanation(String questionId) async {
     try {
-      final response = await _api.get('/ai/explanation/$questionId');
-      return AIExplanation.fromJson(
-          response.data['explanation'] as Map<String, dynamic>);
+      final response = await _api.post('/ai/explain/', data: {
+        'question_id': questionId,
+      }, timeout: const Duration(seconds: 60));
+      final text = response.data['explanation'] as String? ?? '';
+      return AIExplanation(
+        id: questionId,
+        questionId: questionId,
+        explanation: text,
+        references: const [],
+      );
     } catch (_) {
       return null;
     }
@@ -34,7 +41,7 @@ class AIService {
         'question_text': questionText,
         'selected_answer': selectedAnswer,
         'correct_answer': correctAnswer,
-      });
+      }, timeout: const Duration(seconds: 60));
       return AIExplanation.fromJson(
           response.data['explanation'] as Map<String, dynamic>);
     } catch (_) {
@@ -46,7 +53,7 @@ class AIService {
     try {
       final response = await _api.post('/ai/tutor/chat', data: {
         'message': message,
-      });
+      }, timeout: const Duration(seconds: 60));
       return response.data['response'] as String?;
     } catch (_) {
       return null;
@@ -63,7 +70,7 @@ class AIService {
         'topic': topic,
         'count': count,
         'difficulty': difficulty,
-      });
+      }, timeout: const Duration(seconds: 90));
       final data = response.data as Map<String, dynamic>;
       return (data['questions'] as List<dynamic>)
           .map((q) => q as Map<String, dynamic>)

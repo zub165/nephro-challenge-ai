@@ -175,13 +175,6 @@ class RadarChartWidget extends StatelessWidget {
               RadarChartData(
                 radarShape: RadarShape.polygon,
                 tickCount: 5,
-                ticks: [20, 40, 60, 80, 100],
-                tickBorderData: FlBorderData(
-                  show: true,
-                  border: Border.all(
-                    color: Theme.of(context).dividerTheme.color!,
-                  ),
-                ),
                 dataSets: [
                   RadarDataSet(
                     fillColor:

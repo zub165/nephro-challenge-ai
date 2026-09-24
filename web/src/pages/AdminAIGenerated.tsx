@@ -21,13 +21,13 @@ export default function AdminAIGenerated() {
     queryKey: ['admin-ai-generated', tab],
     queryFn: () =>
       api
-        .get('/admin/questions/ai-generated', { params: { status: tab } })
+        .get('/admin/questions/ai-generated/', { params: { status: tab } })
         .then((r) => r.data),
   });
 
   const approveMutation = useMutation({
     mutationFn: (id: string) =>
-      api.put(`/admin/questions/${id}/review`, { aiReviewStatus: 'approved' }),
+      api.put(`/admin/questions/${id}/review/`, { aiReviewStatus: 'approved' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-ai-generated'] });
       toast.success('Question approved');
@@ -38,7 +38,7 @@ export default function AdminAIGenerated() {
 
   const rejectMutation = useMutation({
     mutationFn: (id: string) =>
-      api.put(`/admin/questions/${id}/review`, { aiReviewStatus: 'rejected' }),
+      api.put(`/admin/questions/${id}/review/`, { aiReviewStatus: 'rejected' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-ai-generated'] });
       toast.success('Question rejected');

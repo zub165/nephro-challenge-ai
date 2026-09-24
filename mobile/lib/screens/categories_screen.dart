@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../config/routes.dart';
 import '../models/category.dart';
 import '../providers/dashboard_provider.dart';
-import '../widgets/category_card.dart';
 import '../widgets/loading_shimmer.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -101,7 +100,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.85,
+        childAspectRatio: 0.92,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
@@ -139,7 +138,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               children: [
@@ -183,15 +181,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ),
               ],
             ),
-            const Spacer(),
-            Text(
-              cat.name,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+            const SizedBox(height: 12),
+            Expanded(
+              child: Text(
+                cat.name,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             Text(

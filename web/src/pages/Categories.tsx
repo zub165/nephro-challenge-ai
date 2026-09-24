@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '@/lib/axios';
+import { mapCategories } from '@/lib/apiMappers';
 import type { Category } from '@/types';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import {
@@ -32,7 +33,7 @@ export default function Categories() {
 
   const { data: categories, isLoading, error } = useQuery<Category[]>({
     queryKey: ['categories'],
-    queryFn: () => api.get('/categories').then((r) => r.data),
+    queryFn: () => api.get('/categories/').then((r) => mapCategories(r.data)),
   });
 
   const filtered = (categories || []).filter(
@@ -55,6 +56,18 @@ export default function Categories() {
 
   return (
     <div className="space-y-6">
+      <Link
+        to="/chapters"
+        className="flex items-center justify-between rounded-xl border border-teal-200 bg-gradient-to-r from-teal-50 to-emerald-50 p-4 transition-all hover:shadow-md dark:border-teal-800 dark:from-teal-900/30 dark:to-emerald-900/20"
+      >
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400">New</p>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">Board Chapters with Animations</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Learn fast with chapter-wise animated algorithms + MCQs</p>
+        </div>
+        <ArrowRightIcon className="h-5 w-5 text-teal-700 dark:text-teal-400" />
+      </Link>
+
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           Question Categories

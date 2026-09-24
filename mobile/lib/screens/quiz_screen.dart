@@ -4,6 +4,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/routes.dart';
+import '../providers/navigation_provider.dart';
 import '../providers/quiz_provider.dart';
 import '../widgets/question_card.dart';
 import '../widgets/choice_button.dart';
@@ -25,8 +26,9 @@ class _QuizScreenState extends State<QuizScreen> {
         final args = ModalRoute.of(context)?.settings.arguments;
         if (args is Map<String, dynamic>) {
           quiz.loadQuestions(
-            categoryId: args['category_id'] as String?,
-            isDailyChallenge: args['is_daily_challenge'] as bool? ?? false,
+            categoryId: args['category_id'] as String? ?? args['categoryId'] as String?,
+            chapterId: args['chapterId'] as String?,
+            isDailyChallenge: args['is_daily_challenge'] as bool? ?? args['daily'] as bool? ?? false,
           );
         }
       }
@@ -80,6 +82,15 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildBody(BuildContext context, QuizProvider quiz) {
+    final needsReset = quiz.questions.isEmpty &&
+        quiz.status != QuizStatus.idle &&
+        quiz.status != QuizStatus.loading;
+    if (needsReset ||
+        (quiz.status == QuizStatus.playing && quiz.currentQuestion == null)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => quiz.restart());
+      return const Center(child: CircularProgressIndicator());
+    }
+
     switch (quiz.status) {
       case QuizStatus.loading:
         return const Center(
@@ -93,7 +104,7 @@ class _QuizScreenState extends State<QuizScreen> {
           ),
         );
       case QuizStatus.idle:
-        return const Center(child: Text('No quiz data'));
+        return _buildIdleScreen(context, quiz);
       case QuizStatus.playing:
         return _buildQuizInterface(context, quiz);
       case QuizStatus.paused:
@@ -132,9 +143,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         isSelected: isSelected,
                         isAnswered: isAnswered,
                         correctAnswerId: isAnswered
-                            ? question.choices
-                                .firstWhere((c) => c.isCorrect)
-                                .id
+                            ? question.resolvedCorrectChoiceId
                             : null,
                         onTap: () => quiz.selectAnswer(choice.id),
                       ),
@@ -206,6 +215,62 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildIdleScreen(BuildContext context, QuizProvider quiz) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.quiz_outlined,
+                size: 72, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 20),
+            Text(
+              'Practice Quiz',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Start a random set of board-style MCQs, or open a chapter for topic-focused review.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[600]),
+            ),
+            if (quiz.error != null) ...[
+              const SizedBox(height: 16),
+              Text(
+                quiz.error!,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(color: Colors.red[700], fontSize: 14),
+              ),
+            ],
+            const SizedBox(height: 28),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => quiz.loadQuestions(),
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Start Practice Quiz'),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    context.read<NavigationProvider>().goToShellTab(1),
+                icon: const Icon(Icons.menu_book_outlined),
+                label: const Text('Browse Chapters'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -477,16 +542,13 @@ class _QuizScreenState extends State<QuizScreen> {
                 const SizedBox(height: 20),
                 ...question.choices.map((choice) {
                   final isSelected = quiz.selectedChoiceId == choice.id;
-                  final isCorrect = choice.isCorrect;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: ChoiceButton(
                       choice: choice,
                       isSelected: isSelected,
                       isAnswered: true,
-                      correctAnswerId: question.choices
-                          .firstWhere((c) => c.isCorrect)
-                          .id,
+                      correctAnswerId: question.resolvedCorrectChoiceId,
                       onTap: () {},
                       readOnly: true,
                     ),

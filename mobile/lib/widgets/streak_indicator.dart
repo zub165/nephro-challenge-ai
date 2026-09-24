@@ -41,7 +41,6 @@ class StreakIndicator extends StatelessWidget {
           Row(
             children: List.generate(7, (index) {
               final isActive = index < days;
-              final isToday = index == 6;
               return Expanded(
                 child: Container(
                   height: 8,

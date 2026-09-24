@@ -38,7 +38,7 @@ class LeaderboardTile extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: _getRankColor(entry.rank),
+                color: _getRankColor(context, entry.rank),
               ),
             ),
           ),
@@ -113,7 +113,7 @@ class LeaderboardTile extends StatelessWidget {
     );
   }
 
-  Color _getRankColor(int rank) {
+  Color _getRankColor(BuildContext context, int rank) {
     if (rank == 1) return const Color(0xFFF59E0B);
     if (rank == 2) return Colors.grey;
     if (rank == 3) return const Color(0xFFCD7F32);

@@ -7,6 +7,7 @@ class CategoryCard extends StatelessWidget {
   final double accuracy;
   final bool isLocked;
   final VoidCallback onTap;
+  final bool compact;
 
   const CategoryCard({
     super.key,
@@ -15,6 +16,7 @@ class CategoryCard extends StatelessWidget {
     this.accuracy = 0.0,
     this.isLocked = false,
     required this.onTap,
+    this.compact = false,
   });
 
   @override
@@ -22,8 +24,9 @@ class CategoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: isLocked ? null : onTap,
       child: Container(
-        width: 140,
-        padding: const EdgeInsets.all(16),
+        width: compact ? 140 : null,
+        height: compact ? 120 : null,
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(16),
@@ -35,12 +38,13 @@ class CategoryCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
                     color: isLocked
                         ? Colors.grey.withOpacity(0.2)
@@ -55,13 +59,14 @@ class CategoryCard extends StatelessWidget {
                     color: isLocked
                         ? Colors.grey
                         : Theme.of(context).colorScheme.primary,
-                    size: 18,
+                    size: 16,
                   ),
                 ),
                 const Spacer(),
                 if (accuracy > 0 && !isLocked)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: accuracy >= 60
                           ? const Color(0xFF22C55E).withOpacity(0.1)
@@ -81,17 +86,19 @@ class CategoryCard extends StatelessWidget {
                   ),
               ],
             ),
-            const Spacer(),
-            Text(
-              name,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+            const SizedBox(height: 10),
+            Expanded(
+              child: Text(
+                name,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
             Text(
               isLocked ? 'Locked' : '$questionCount Qs',
               style: GoogleFonts.inter(

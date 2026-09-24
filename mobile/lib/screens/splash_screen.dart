@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -68,8 +69,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.kidney,
+              child: Icon(
+                Icons.health_and_safety,
                 size: 64,
                 color: Color(0xFF1E3A5F),
               ),

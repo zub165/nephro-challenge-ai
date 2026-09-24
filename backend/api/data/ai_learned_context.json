@@ -1,0 +1,39 @@
+{
+  "exported_at": "2026-06-18T00:38:02.191077+00:00",
+  "model": "qwen2.5:0.5b-instruct",
+  "count": 4,
+  "lessons": [
+    {
+      "topic": "Hyperkalemia",
+      "lesson_rule": "With ECG changes, IV calcium should be mentioned first for membrane stabilization.",
+      "corrected_text": "",
+      "reference": "",
+      "source": "rule_check",
+      "use_count": 1
+    },
+    {
+      "topic": "Hyponatremia",
+      "lesson_rule": "Hyponatremia correction >10-12 mEq/L per 24h risks osmotic demyelination (per Verbalis/KDIGO).",
+      "corrected_text": "",
+      "reference": "",
+      "source": "rule_check",
+      "use_count": 1
+    },
+    {
+      "topic": "Prerenal AKI",
+      "lesson_rule": "On diuretics, FEUrea is preferred over FENa for prerenal vs intrinsic differentiation.",
+      "corrected_text": "",
+      "reference": "",
+      "source": "rule_check",
+      "use_count": 1
+    },
+    {
+      "topic": "Winter's Formula",
+      "lesson_rule": "Winter's formula uses (1.5 \u00d7 HCO3) + 8 \u00b1 2.",
+      "corrected_text": "",
+      "reference": "",
+      "source": "rule_check",
+      "use_count": 1
+    }
+  ]
+}

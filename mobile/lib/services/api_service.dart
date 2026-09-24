@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../config/constants.dart';
 import 'storage_service.dart';
 
 class ApiService {
@@ -8,9 +9,9 @@ class ApiService {
   ApiService._() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.nephrochallenge.ai/v1',
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        baseUrl: AppConstants.baseUrl,
+        connectTimeout: const Duration(seconds: 20),
+        receiveTimeout: const Duration(seconds: 20),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -34,13 +35,13 @@ class ApiService {
             if (refreshToken != null) {
               try {
                 final response = await Dio().post(
-                  '${_dio.options.baseUrl}/auth/refresh',
-                  data: {'refresh_token': refreshToken},
+                  '${AppConstants.baseUrl}/token/refresh/',
+                  data: {'refresh': refreshToken},
                 );
-                final newToken = response.data['token'] as String;
-                await StorageService.instance.setToken(newToken);
+                final newAccess = response.data['access'] as String;
+                await StorageService.instance.setToken(newAccess);
                 error.requestOptions.headers['Authorization'] =
-                    'Bearer $newToken';
+                    'Bearer $newAccess';
                 final retryResponse = await _dio.fetch(error.requestOptions);
                 handler.resolve(retryResponse);
                 return;
@@ -71,8 +72,19 @@ class ApiService {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Duration? timeout,
   }) async {
-    return _dio.post(path, data: data, queryParameters: queryParameters);
+    return _dio.post(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: timeout != null
+          ? Options(
+              connectTimeout: timeout,
+              receiveTimeout: timeout,
+            )
+          : null,
+    );
   }
 
   Future<Response> put(

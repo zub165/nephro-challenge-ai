@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
-import '../models/category.dart';
+import '../models/category.dart' as app_models;
+import '../models/quiz_attempt.dart';
+import '../services/leaderboard_service.dart';
 import '../services/quiz_service.dart';
 
 class DashboardProvider extends ChangeNotifier {
@@ -12,13 +14,13 @@ class DashboardProvider extends ChangeNotifier {
   int _totalQuestions = 0;
   int _correctAnswers = 0;
   double _accuracy = 0.0;
-  int _points = 0;
-  int _rank = 0;
   bool _dailyChallengeCompleted = false;
-  String _dailyChallengeStatus = 'pending';
-  List<Category> _categories = [];
+  List<app_models.Category> _categories = [];
   List<Map<String, dynamic>> _weakTopics = [];
-  List<Map<String, dynamic>> _recentPerformance = [];
+
+  List<CategoryPerformance> _categoryBreakdown = [];
+  List<Map<String, dynamic>> _recentActivity = [];
+  int _userRank = 0;
 
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -27,13 +29,13 @@ class DashboardProvider extends ChangeNotifier {
   int get totalQuestions => _totalQuestions;
   int get correctAnswers => _correctAnswers;
   double get accuracy => _accuracy;
-  int get points => _points;
-  int get rank => _rank;
   bool get dailyChallengeCompleted => _dailyChallengeCompleted;
-  String get dailyChallengeStatus => _dailyChallengeStatus;
-  List<Category> get categories => _categories;
+  List<app_models.Category> get categories => _categories;
   List<Map<String, dynamic>> get weakTopics => _weakTopics;
-  List<Map<String, dynamic>> get recentPerformance => _recentPerformance;
+  List<CategoryPerformance> get categoryBreakdown => _categoryBreakdown;
+  List<Map<String, dynamic>> get recentActivity => _recentActivity;
+  int get userRank => _userRank;
+  int get points => _correctAnswers * 10;
 
   Future<void> loadDashboard() async {
     _isLoading = true;
@@ -42,32 +44,25 @@ class DashboardProvider extends ChangeNotifier {
 
     try {
       final data = await _quizService.fetchDashboard();
-
-      _streakDays = data['streak_days'] as int? ?? 0;
-      _totalQuizzes = data['total_quizzes'] as int? ?? 0;
-      _totalQuestions = data['total_questions'] as int? ?? 0;
-      _correctAnswers = data['correct_answers'] as int? ?? 0;
+      _streakDays = (data['currentStreak'] as num?)?.toInt() ?? 0;
+      _totalQuizzes = (data['totalQuizzes'] as num?)?.toInt() ?? 0;
+      _totalQuestions = (data['totalQuestions'] as num?)?.toInt() ?? 0;
+      _correctAnswers = (data['correctAnswers'] as num?)?.toInt() ?? 0;
       _accuracy = (data['accuracy'] as num?)?.toDouble() ?? 0.0;
-      _points = data['points'] as int? ?? 0;
-      _rank = data['rank'] as int? ?? 0;
-      _dailyChallengeCompleted = data['daily_challenge_completed'] as bool? ?? false;
-      _dailyChallengeStatus = data['daily_challenge_status'] as String? ?? 'pending';
-
-      if (data['categories'] != null) {
-        _categories = (data['categories'] as List<dynamic>)
-            .map((c) => Category.fromJson(c as Map<String, dynamic>))
-            .toList();
-      }
-
-      if (data['recent_performance'] != null) {
-        _recentPerformance = (data['recent_performance'] as List<dynamic>)
-            .map((p) => p as Map<String, dynamic>)
-            .toList();
-      }
-
+      _dailyChallengeCompleted = data['dailyQuizCompleted'] as bool? ?? false;
+      _categoryBreakdown = (data['categoryBreakdown'] as List<dynamic>? ?? [])
+          .map((c) => CategoryPerformance.fromJson(c as Map<String, dynamic>))
+          .toList();
+      _recentActivity = (data['recentActivity'] as List<dynamic>? ?? [])
+          .map((a) => Map<String, dynamic>.from(a as Map))
+          .toList();
+      _categories = await _quizService.fetchCategories();
       _weakTopics = await _quizService.fetchWeakTopics();
+      final rankEntry =
+          await LeaderboardService.instance.fetchCurrentUserRank();
+      _userRank = rankEntry?.rank ?? 0;
     } catch (e) {
-      _error = 'Failed to load dashboard data.';
+      _error = 'Failed to load dashboard. Check your connection.';
     }
 
     _isLoading = false;
@@ -76,7 +71,6 @@ class DashboardProvider extends ChangeNotifier {
 
   void markDailyChallengeCompleted() {
     _dailyChallengeCompleted = true;
-    _dailyChallengeStatus = 'completed';
     notifyListeners();
   }
 }

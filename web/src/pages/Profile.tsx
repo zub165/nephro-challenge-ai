@@ -23,17 +23,24 @@ import { format } from 'date-fns';
 export default function Profile() {
   const { user, updateUser } = useAuthStore();
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(user?.name || '');
+  const [name, setName] = useState(user?.name || user?.username || '');
 
   const { data: stats, isLoading } = useQuery<UserStats>({
     queryKey: ['user-stats'],
-    queryFn: () => api.get('/stats').then((r) => r.data),
+    queryFn: () => api.get('/stats/').then((r) => r.data),
   });
 
   const updateMutation = useMutation({
-    mutationFn: (newName: string) => api.put('/auth/profile', { name: newName }),
+    mutationFn: (newName: string) => api.patch('/auth/profile/', { name: newName }),
     onSuccess: (res) => {
-      updateUser(res.data.user || res.data);
+      const updated = res.data?.user ?? res.data;
+      updateUser({
+        ...useAuthStore.getState().user,
+        ...updated,
+        name: updated.name || updated.username || undefined,
+        id: String(updated.id),
+        createdAt: updated.created_at ?? updated.createdAt,
+      });
       toast.success('Profile updated');
       setEditing(false);
     },
@@ -82,7 +89,7 @@ export default function Profile() {
             ) : (
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  {user?.name}
+                  {user?.name || user?.username}
                 </h1>
                 <button
                   onClick={() => setEditing(true)}

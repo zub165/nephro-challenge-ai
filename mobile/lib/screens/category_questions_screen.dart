@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/routes.dart';
 import '../models/category.dart';
-import '../providers/quiz_provider.dart';
 
 class CategoryQuestionsScreen extends StatelessWidget {
   const CategoryQuestionsScreen({super.key});

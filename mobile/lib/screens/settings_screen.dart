@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../config/constants.dart';
+import '../config/routes.dart';
+import '../providers/auth_provider.dart';
 import '../providers/theme_provider.dart';
+import '../services/auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,217 +16,97 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notificationsEnabled = true;
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Account?'),
+        content: const Text(
+          'This permanently deletes your quiz history, streaks, and saved data. This cannot be undone.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final ok = await AuthService.instance.deleteAccount();
+    if (!mounted) return;
+    if (ok) {
+      await context.read<AuthProvider>().logout();
+      if (mounted) Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not delete account. Email privacy@nephrochallenge.ai')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildSectionHeader('Appearance'),
-          const SizedBox(height: 8),
+          _section('Appearance'),
           Consumer<ThemeProvider>(
-            builder: (context, themeProvider, _) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardTheme.color,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Theme.of(context).dividerTheme.color!),
-                ),
-                child: SwitchListTile(
-                  title: Text(
-                    'Dark Mode',
-                    style: GoogleFonts.inter(fontSize: 16),
-                  ),
-                  subtitle: Text(
-                    'Toggle dark theme',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.color
-                          ?.withOpacity(0.7),
-                    ),
-                  ),
-                  secondary: Icon(
-                    themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  value: themeProvider.isDarkMode,
-                  onChanged: (_) => themeProvider.toggleTheme(),
-                  activeColor: Theme.of(context).colorScheme.secondary,
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          _buildSectionHeader('Notifications'),
-          const SizedBox(height: 8),
-          Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardTheme.color,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Theme.of(context).dividerTheme.color!),
-            ),
-            child: SwitchListTile(
-              title: Text(
-                'Push Notifications',
-                style: GoogleFonts.inter(fontSize: 16),
-              ),
-              subtitle: Text(
-                'Daily reminders and streak alerts',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.color
-                      ?.withOpacity(0.7),
-                ),
-              ),
-              secondary: const Icon(Icons.notifications_outlined),
-              value: _notificationsEnabled,
-              onChanged: (v) => setState(() => _notificationsEnabled = v),
-              activeColor: Theme.of(context).colorScheme.secondary,
+            builder: (context, themeProvider, _) => SwitchListTile(
+              title: Text('Dark Mode', style: GoogleFonts.inter()),
+              value: themeProvider.isDarkMode,
+              onChanged: (_) => themeProvider.toggleTheme(),
             ),
           ),
-          const SizedBox(height: 24),
-          _buildSectionHeader('Quiz Settings'),
-          const SizedBox(height: 8),
-          _buildSettingTile(
-            context,
-            'Question Timer',
-            '30 seconds per question',
-            Icons.timer_outlined,
+          _section('Legal & Support'),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text('Privacy Policy'),
+            onTap: () => _openUrl(AppConstants.privacyUrl),
           ),
-          _buildSettingTile(
-            context,
-            'Questions per Quiz',
-            '10 questions',
-            Icons.format_list_numbered,
+          ListTile(
+            leading: const Icon(Icons.help_outline),
+            title: const Text('Support & Features'),
+            onTap: () => _openUrl(AppConstants.supportUrl),
           ),
-          const SizedBox(height: 24),
-          _buildSectionHeader('Account'),
-          const SizedBox(height: 8),
-          _buildSettingTile(
-            context,
-            'Change Password',
-            'Update your password',
-            Icons.lock_outlined,
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: const Text('Web App'),
+            onTap: () => _openUrl(AppConstants.webAppUrl),
           ),
-          _buildSettingTile(
-            context,
-            'Delete Account',
-            'Permanently delete your data',
-            Icons.delete_forever_outlined,
-            isDestructive: true,
+          _section('Account'),
+          ListTile(
+            leading: const Icon(Icons.delete_forever, color: Colors.red),
+            title: const Text('Delete Account', style: TextStyle(color: Colors.red)),
+            onTap: _deleteAccount,
           ),
-          const SizedBox(height: 24),
-          _buildSectionHeader('About'),
-          const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardTheme.color,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Theme.of(context).dividerTheme.color!),
-            ),
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text('Version',
-                      style: GoogleFonts.inter(fontSize: 16)),
-                  subtitle: Text(AppConstants.appVersion,
-                      style: GoogleFonts.inter(fontSize: 13)),
-                  leading: const Icon(Icons.info_outline),
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  title: Text('Disclaimer',
-                      style: GoogleFonts.inter(fontSize: 16)),
-                  subtitle: Text(
-                    AppConstants.disclaimerText,
-                    style: GoogleFonts.inter(fontSize: 13),
-                  ),
-                  leading: const Icon(Icons.warning_amber_outlined),
-                ),
-              ],
-            ),
+          _section('About'),
+          ListTile(
+            title: Text('Version ${AppConstants.appVersion} (${AppConstants.buildNumber})'),
+            subtitle: Text(AppConstants.disclaimerText, style: GoogleFonts.inter(fontSize: 12)),
           ),
-          const SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _section(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 4),
-      child: Text(
-        title,
-        style: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.color
-              ?.withOpacity(0.7),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingTile(
-    BuildContext context,
-    String title,
-    String subtitle,
-    IconData icon, {
-    bool isDestructive = false,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).dividerTheme.color!),
-      ),
-      child: ListTile(
-        title: Text(
-          title,
+      padding: const EdgeInsets.only(top: 16, bottom: 8, left: 4),
+      child: Text(title,
           style: GoogleFonts.inter(
-            fontSize: 16,
-            color: isDestructive
-                ? const Color(0xFFEF4444)
-                : null,
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            color: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.color
-                ?.withOpacity(0.7),
-          ),
-        ),
-        leading: Icon(
-          icon,
-          color: isDestructive
-              ? const Color(0xFFEF4444)
-              : Theme.of(context).colorScheme.primary,
-        ),
-        trailing: const Icon(Icons.chevron_right, size: 20),
-        onTap: () {},
-      ),
+              fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
     );
   }
 }

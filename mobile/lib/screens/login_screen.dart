@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 40),
                 Icon(
-                  Icons.kidney,
+                  Icons.health_and_safety,
                   size: 64,
                   color: Theme.of(context).colorScheme.primary,
                 ).animate().fadeIn(duration: 400.ms).slideY(

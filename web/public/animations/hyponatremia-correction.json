@@ -1,0 +1,31 @@
+{
+  "title": "Hyponatremia Correction Limits",
+  "subtitle": "Prevent osmotic demyelination syndrome",
+  "steps": [
+    {
+      "title": "Classify acuity and severity",
+      "body": "Chronic hyponatremia (>48 hours or unknown) carries ODS risk. Severe symptoms: seizures, coma, respiratory arrest.",
+      "tip": "Acute symptomatic hyponatremia can be corrected faster initially."
+    },
+    {
+      "title": "Symptomatic severe — bolus",
+      "body": "Give 3% saline 100–150 mL over 10–20 minutes. Repeat up to twice if symptoms persist. Raise Na+ by ~2–4 mEq/L quickly.",
+      "tip": "Goal is symptom relief, not normalization."
+    },
+    {
+      "title": "24-hour correction limit",
+      "body": "In chronic hyponatremia, do not exceed 8–10 mEq/L rise in 24 hours (some guidelines use 8 mEq/L in high-risk patients).",
+      "tip": "ODS risk rises with faster correction — especially in alcoholism, malnutrition, hypokalemia."
+    },
+    {
+      "title": "48-hour limit",
+      "body": "Total correction should not exceed 18 mEq/L in 48 hours. Recheck sodium every 2–4 hours during active correction.",
+      "tip": "If overcorrected, consider D5W ± desmopressin."
+    },
+    {
+      "title": "Definitive management",
+      "body": "Fluid restriction for SIADH, treat hypovolemia with saline, stop offending drugs, and address adrenal/thyroid disease.",
+      "tip": "Uric acid low and urine osm >100 support SIADH."
+    }
+  ]
+}

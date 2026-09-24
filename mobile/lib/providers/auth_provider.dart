@@ -21,7 +21,10 @@ class AuthProvider extends ChangeNotifier {
       _user = await _authService.getCurrentUser();
       if (_user != null) {
         _status = AuthStatus.authenticated;
-        _user = await _authService.fetchProfile();
+        final refreshed = await _authService.fetchProfile();
+        if (refreshed != null) {
+          _user = refreshed;
+        }
       } else {
         _status = AuthStatus.unauthenticated;
       }

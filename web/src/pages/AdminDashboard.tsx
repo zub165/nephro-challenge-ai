@@ -26,7 +26,7 @@ interface AdminStats {
 export default function AdminDashboard() {
   const { data: stats, isLoading, error } = useQuery<AdminStats>({
     queryKey: ['admin-stats'],
-    queryFn: () => api.get('/admin/stats').then((r) => r.data),
+    queryFn: () => api.get('/admin/stats/').then((r) => r.data),
   });
 
   if (isLoading) return <LoadingSpinner text="Loading admin panel..." />;

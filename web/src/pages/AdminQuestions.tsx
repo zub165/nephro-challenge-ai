@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/axios';
+import { mapCategories } from '@/lib/apiMappers';
 import type { Question, Category } from '@/types';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -23,7 +24,7 @@ interface QuestionFormData {
   correctAnswer: string;
   explanation: string;
   categoryId: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: 'easy' | 'medium' | 'hard' | 'board';
 }
 
 const emptyForm: QuestionFormData = {
@@ -52,17 +53,17 @@ export default function AdminQuestions() {
     queryKey: ['admin-questions', page, search],
     queryFn: () =>
       api
-        .get('/admin/questions', { params: { page, limit: 20, search } })
+        .get('/admin/questions/', { params: { page, limit: 20, search } })
         .then((r) => r.data),
   });
 
   const { data: categories } = useQuery<Category[]>({
     queryKey: ['categories'],
-    queryFn: () => api.get('/categories').then((r) => r.data),
+    queryFn: () => api.get('/categories/').then((r) => mapCategories(r.data)),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: QuestionFormData) => api.post('/admin/questions', data),
+    mutationFn: (data: QuestionFormData) => api.post('/admin/questions/', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-questions'] });
       toast.success('Question created');
@@ -73,7 +74,7 @@ export default function AdminQuestions() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: QuestionFormData }) =>
-      api.put(`/admin/questions/${id}`, data),
+      api.put(`/admin/questions/${id}/`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-questions'] });
       toast.success('Question updated');
@@ -83,7 +84,7 @@ export default function AdminQuestions() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => api.delete(`/admin/questions/${id}`),
+    mutationFn: (id: string) => api.delete(`/admin/questions/${id}/`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-questions'] });
       toast.success('Question deleted');
@@ -98,10 +99,19 @@ export default function AdminQuestions() {
   };
 
   const openEdit = (q: Question) => {
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f'];
+    const choices = q.choices.map((c, i) => ({
+      id: letters[i] ?? String(i),
+      text: c.text,
+    }));
+    const correctIndex = q.choices.findIndex((c) => c.id === q.correctAnswer);
     setForm({
       text: q.text,
-      choices: q.choices.map((c) => ({ id: c.id, text: c.text })),
-      correctAnswer: q.correctAnswer,
+      choices,
+      correctAnswer:
+        correctIndex >= 0
+          ? letters[correctIndex] ?? String(correctIndex)
+          : q.correctChoiceKey || 'a',
       explanation: q.explanation,
       categoryId: q.categoryId,
       difficulty: q.difficulty,
@@ -133,7 +143,7 @@ export default function AdminQuestions() {
   };
 
   const questions: Question[] = data?.questions || data?.data || [];
-  const totalPages = data?.totalPages || data?.totalPages || 1;
+  const totalPages = data?.totalPages ?? 1;
 
   if (error) {
     return (
@@ -226,7 +236,7 @@ export default function AdminQuestions() {
                   </label>
                   <select
                     value={form.difficulty}
-                    onChange={(e) => setForm({ ...form, difficulty: e.target.value as 'easy' | 'medium' | 'hard' })}
+                    onChange={(e) => setForm({ ...form, difficulty: e.target.value as 'easy' | 'medium' | 'hard' | 'board' })}
                     className="select-field"
                   >
                     <option value="easy">Easy</option>
@@ -264,7 +274,7 @@ export default function AdminQuestions() {
                           onClick={() => {
                             setForm({
                               ...form,
-                              correctAnswer: choice.id,
+                              correctAnswer: choice.id ?? '',
                             });
                           }}
                           className={`rounded-lg px-2.5 py-2 text-xs font-medium transition-colors ${

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../config/constants.dart';
 import '../models/question.dart';
 import '../models/quiz_attempt.dart';
 import '../models/ai_explanation.dart';
@@ -16,8 +17,8 @@ class QuizProvider extends ChangeNotifier {
   List<Question> _questions = [];
   int _currentIndex = 0;
   String? _selectedChoiceId;
-  Map<int, String?> _answers = {};
-  int _score = 0;
+  final Map<int, String?> _answers = {};
+  final Map<int, int> _answerTimes = {};
   int _correctCount = 0;
   int _incorrectCount = 0;
   int _timeLeft = 30;
@@ -27,14 +28,16 @@ class QuizProvider extends ChangeNotifier {
   bool _isLoadingExplanation = false;
   String? _error;
   String? _categoryId;
+  String? _chapterId;
   bool _isDailyChallenge = false;
 
   QuizStatus get status => _status;
   List<Question> get questions => _questions;
   int get currentIndex => _currentIndex;
   String? get selectedChoiceId => _selectedChoiceId;
-  int get score => _score;
+  Map<int, String?> get answers => Map.unmodifiable(_answers);
   int get correctCount => _correctCount;
+  int get score => _correctCount * 10;
   int get incorrectCount => _incorrectCount;
   int get timeLeft => _timeLeft;
   QuizAttempt? get lastAttempt => _lastAttempt;
@@ -42,6 +45,8 @@ class QuizProvider extends ChangeNotifier {
   bool get isLoadingExplanation => _isLoadingExplanation;
   String? get error => _error;
   bool get isDailyChallenge => _isDailyChallenge;
+  int get answeredCount => _answers.length;
+
   double get progress => _questions.isEmpty
       ? 0.0
       : (_currentIndex + 1) / _questions.length;
@@ -50,24 +55,30 @@ class QuizProvider extends ChangeNotifier {
       _currentIndex < _questions.length ? _questions[_currentIndex] : null;
 
   int get totalQuestions => _questions.length;
-  int get answeredCount => _answers.length;
-  bool get allAnswered => _answers.length == _questions.length;
 
   Future<void> loadQuestions({
     String? categoryId,
+    String? chapterId,
     bool isDailyChallenge = false,
   }) async {
     _status = QuizStatus.loading;
     _error = null;
     _categoryId = categoryId;
+    _chapterId = chapterId;
     _isDailyChallenge = isDailyChallenge;
     notifyListeners();
 
     List<Question> questions;
-    if (isDailyChallenge) {
-      questions = await _quizService.fetchDailyChallengeQuestions();
+    if (chapterId != null) {
+      questions = await _quizService.fetchChapterQuestions(chapterId);
     } else {
-      questions = await _quizService.fetchQuestions(categoryId: categoryId);
+      questions = await _quizService.fetchQuizQuestions(
+        categoryId: categoryId,
+        daily: isDailyChallenge,
+        limit: isDailyChallenge
+            ? AppConstants.dailyChallengeQuestions
+            : 10,
+      );
     }
 
     if (questions.isEmpty) {
@@ -79,12 +90,13 @@ class QuizProvider extends ChangeNotifier {
 
     _questions = questions;
     _currentIndex = 0;
-    _answers = {};
-    _score = 0;
+    _answers.clear();
+    _answerTimes.clear();
     _correctCount = 0;
     _incorrectCount = 0;
     _selectedChoiceId = null;
     _currentExplanation = null;
+    _error = null;
     _status = QuizStatus.playing;
     _startTimer();
     notifyListeners();
@@ -94,18 +106,18 @@ class QuizProvider extends ChangeNotifier {
     _timer?.cancel();
     _timeLeft = currentQuestion?.timeLimitSeconds ?? 30;
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (_answers.containsKey(_currentIndex)) {
+        _timer?.cancel();
+        return;
+      }
       _timeLeft--;
       if (_timeLeft <= 0) {
-        _timeOut();
+        _timer?.cancel();
+        _timeLeft = 0;
+        selectAnswer(null);
       }
       notifyListeners();
     });
-  }
-
-  void _timeOut() {
-    if (_selectedChoiceId == null) {
-      selectAnswer(null);
-    }
   }
 
   void selectAnswer(String? choiceId) {
@@ -113,17 +125,19 @@ class QuizProvider extends ChangeNotifier {
     if (_answers.containsKey(_currentIndex)) return;
 
     _selectedChoiceId = choiceId;
+    _timer?.cancel();
     final question = currentQuestion;
     if (question != null) {
       final isCorrect = choiceId != null &&
-          question.choices.any((c) => c.id == choiceId && c.isCorrect);
+          (choiceId == question.correctChoiceId ||
+              question.choices.any((c) => c.id == choiceId && c.isCorrect));
       if (isCorrect) {
         _correctCount++;
-        _score += question.points;
       } else {
         _incorrectCount++;
       }
       _answers[_currentIndex] = choiceId;
+      _answerTimes[_currentIndex] = (question.timeLimitSeconds - _timeLeft).clamp(0, question.timeLimitSeconds);
     }
     notifyListeners();
   }
@@ -147,7 +161,11 @@ class QuizProvider extends ChangeNotifier {
 
   void resumeQuiz() {
     _status = QuizStatus.playing;
-    _startTimer();
+    if (_answers.containsKey(_currentIndex)) {
+      _selectedChoiceId = _answers[_currentIndex];
+    } else {
+      _startTimer();
+    }
     notifyListeners();
   }
 
@@ -156,27 +174,41 @@ class QuizProvider extends ChangeNotifier {
     _status = QuizStatus.loading;
     notifyListeners();
 
-    final answers = _answers.entries.map((e) {
+    final answersData = _answers.entries
+        .where((e) => e.value != null)
+        .map((e) {
       final question = _questions[e.key];
-      final correctChoice = question.choices.firstWhere(
-        (c) => c.isCorrect,
-        orElse: () => question.choices.first,
-      );
       return {
         'question_id': question.id,
-        'selected_choice_id': e.value,
-        'correct_choice_id': correctChoice.id,
-        'is_correct': e.value != null &&
-            question.choices
-                .any((c) => c.id == e.value && c.isCorrect),
+        'chosen_choice_id': e.value,
+        'time_taken': _answerTimes[e.key] ?? 30,
       };
     }).toList();
 
-    _lastAttempt = await _quizService.submitQuiz(
-      answers: answers,
-      categoryId: _categoryId,
-      isDailyChallenge: _isDailyChallenge,
-    );
+    try {
+      if (answersData.isNotEmpty) {
+        final totalTimeTaken = _answerTimes.values.fold<int>(0, (a, b) => a + b);
+        _lastAttempt = await _quizService.submitQuiz(
+          answersData: answersData,
+          mode: _isDailyChallenge
+              ? 'daily'
+              : _chapterId != null
+                  ? 'chapter'
+                  : _categoryId != null
+                      ? 'category'
+                      : 'practice',
+          categoryId: _categoryId,
+          chapterId: _chapterId,
+          timeTaken: totalTimeTaken,
+        );
+        if (_lastAttempt == null) {
+          _error =
+              'Your score was computed locally but could not be saved to the server. Connect & try again later.';
+        }
+      }
+    } catch (e) {
+      _error = 'Could not save your quiz to the server.';
+    }
 
     _status = QuizStatus.completed;
     notifyListeners();
@@ -186,10 +218,8 @@ class QuizProvider extends ChangeNotifier {
     if (currentQuestion == null) return;
     _isLoadingExplanation = true;
     notifyListeners();
-
     _currentExplanation =
         await _aiService.getExplanation(currentQuestion!.id);
-
     _isLoadingExplanation = false;
     notifyListeners();
   }
@@ -200,8 +230,8 @@ class QuizProvider extends ChangeNotifier {
     _questions = [];
     _currentIndex = 0;
     _selectedChoiceId = null;
-    _answers = {};
-    _score = 0;
+    _answers.clear();
+    _answerTimes.clear();
     _correctCount = 0;
     _incorrectCount = 0;
     _timeLeft = 30;

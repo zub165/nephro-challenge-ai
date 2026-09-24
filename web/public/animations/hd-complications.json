@@ -1,0 +1,31 @@
+{
+  "title": "Intradialytic Complications",
+  "subtitle": "Disequilibrium, hypotension, and hemolysis",
+  "steps": [
+    {
+      "title": "Intradialytic hypotension",
+      "body": "Sudden drop in BP during HD from ultrafiltration, autonomic dysfunction, or cardiac disease. Presents with cramps, nausea, dizziness.",
+      "tip": "Treat with fluid bolus, reduce UF rate, and trend standing BP."
+    },
+    {
+      "title": "Dialysis disequilibrium syndrome",
+      "body": "Headache, nausea, confusion, seizures near end of treatment — especially first sessions with very high BUN.",
+      "tip": "Brain osmolytes lag as urea is cleared → cerebral edema."
+    },
+    {
+      "title": "Prevent DDS",
+      "body": "Slow initial sessions, limit urea clearance, consider daily short dialysis when starting. Mannitol or reducing blood flow in severe risk.",
+      "tip": "BUN >150–200 mg/dL at first dialysis increases risk."
+    },
+    {
+      "title": "Hemolysis",
+      "body": "Cherry-red plasma, back pain, shortness of breath — check for kinked lines, overheated dialysate, chloramine exposure, or hypotonic dialysate.",
+      "tip": "Stop dialysis immediately and support hemodynamics."
+    },
+    {
+      "title": "First-use and allergic reactions",
+      "body": "Chest tightness and bronchospasm with new dialyzer (bioincompatible membrane). Anaphylaxis to ethylene oxide sterilization also reported.",
+      "tip": "Use biocompatible membranes and premedication if recurrent."
+    }
+  ]
+}

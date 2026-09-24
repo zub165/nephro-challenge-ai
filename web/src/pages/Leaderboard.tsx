@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import api from '@/lib/axios';
+import { mapLeaderboardEntries } from '@/lib/apiMappers';
 import type { LeaderboardEntry } from '@/types';
 import LeaderboardTable from '@/components/LeaderboardTable';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -9,13 +10,21 @@ import { TrophyIcon } from '@heroicons/react/24/outline';
 
 type Period = 'all' | 'weekly' | 'monthly';
 
+const periodParam: Record<Period, string> = {
+  all: 'all_time',
+  weekly: 'weekly',
+  monthly: 'monthly',
+};
+
 export default function Leaderboard() {
   const [period, setPeriod] = useState<Period>('all');
 
   const { data, isLoading, error } = useQuery<LeaderboardEntry[]>({
     queryKey: ['leaderboard', period],
     queryFn: () =>
-      api.get('/leaderboard', { params: { period } }).then((r) => r.data),
+      api
+        .get('/leaderboard/', { params: { period: periodParam[period] } })
+        .then((r) => mapLeaderboardEntries(r.data)),
   });
 
   const periods: { key: Period; label: string }[] = [

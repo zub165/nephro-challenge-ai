@@ -91,12 +91,12 @@ class QuestionCard extends StatelessWidget {
               ),
             ),
           ],
-          if (question.tags != null && question.tags!.isNotEmpty) ...[
+          if (question.tags.isNotEmpty) ...[
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
               runSpacing: 4,
-              children: question.tags!.map((tag) {
+              children: question.tags.map((tag) {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(

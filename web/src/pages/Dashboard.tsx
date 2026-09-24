@@ -13,6 +13,7 @@ import {
   ArrowRightIcon,
   SparklesIcon,
   ExclamationTriangleIcon,
+  LightBulbIcon,
 } from '@heroicons/react/24/outline';
 import { useAuthStore } from '@/store/authStore';
 
@@ -21,7 +22,7 @@ export default function Dashboard() {
 
   const { data: stats, isLoading, error } = useQuery<UserStats>({
     queryKey: ['user-stats'],
-    queryFn: () => api.get('/stats').then((r) => r.data),
+    queryFn: () => api.get('/stats/').then((r) => r.data),
   });
 
   if (isLoading) return <LoadingSpinner text="Loading your dashboard..." />;
@@ -174,15 +175,28 @@ export default function Dashboard() {
             </Link>
 
             <Link
-              to="/categories"
+              to="/pearls"
+              className="flex flex-col items-center gap-2 rounded-xl border-2 border-amber-200 bg-amber-50 p-5 text-center transition-all hover:border-amber-400 hover:shadow-md dark:border-amber-900/50 dark:bg-amber-900/20 dark:hover:border-amber-700"
+            >
+              <LightBulbIcon className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+              <span className="text-sm font-semibold text-amber-900 dark:text-amber-200">
+                Board Pearls
+              </span>
+              <span className="text-xs text-amber-700 dark:text-amber-400">
+                High-yield one-liners
+              </span>
+            </Link>
+
+            <Link
+              to="/chapters"
               className="flex flex-col items-center gap-2 rounded-xl border-2 border-primary-100 bg-primary-50 p-5 text-center transition-all hover:border-primary-300 hover:shadow-md dark:border-primary-900/50 dark:bg-primary-900/20 dark:hover:border-primary-700"
             >
               <ChartBarIcon className="h-8 w-8 text-primary-700 dark:text-primary-300" />
               <span className="text-sm font-semibold text-primary-800 dark:text-primary-300">
-                Practice by Topic
+                Board Chapters
               </span>
               <span className="text-xs text-primary-600 dark:text-primary-400">
-                Focus on specific areas
+                MCQs + animations
               </span>
             </Link>
 

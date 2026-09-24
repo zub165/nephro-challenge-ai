@@ -10,12 +10,17 @@ import {
   MoonIcon,
   ArrowRightOnRectangleIcon,
   ShieldCheckIcon,
+  LightBulbIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { path: '/chapters', label: 'Chapters', icon: BookOpenIcon },
+  { path: '/pearls', label: 'Board Pearls', icon: LightBulbIcon },
+  { path: '/notes', label: 'My Book', icon: DocumentTextIcon },
   { path: '/daily-challenge', label: 'Daily Challenge', icon: AcademicCapIcon },
   { path: '/categories', label: 'Categories', icon: BookOpenIcon },
   { path: '/leaderboard', label: 'Leaderboard', icon: TrophyIcon },

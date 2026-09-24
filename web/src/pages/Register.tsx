@@ -32,8 +32,25 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const { data } = await api.post('/auth/register', { name, email, password });
-      setAuth(data.token, data.user);
+      const username = email.split('@')[0];
+      const { data } = await api.post('/auth/register/', {
+        username,
+        email,
+        password,
+        name,
+      });
+      const token = data.token || data.access;
+      const refreshToken = data.refresh || null;
+      const rawRole = data.user?.role;
+      const user = {
+        ...data.user,
+        name: data.user.name || name || data.user.username || username,
+        email: data.user.email || email,
+        role: ['admin', 'premium', 'free', 'guest'].includes(rawRole) ? rawRole : 'user',
+        id: String(data.user.id),
+        createdAt: data.user.created_at,
+      };
+      setAuth(token, user, refreshToken);
       toast.success('Account created successfully!');
       navigate('/dashboard');
     } catch (err: any) {

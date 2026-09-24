@@ -1,14 +1,16 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
-  role: 'user' | 'admin';
-  createdAt: string;
-  updatedAt: string;
+  name?: string;
+  username?: string;
+  role: 'user' | 'admin' | 'free' | 'premium' | 'guest';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AuthResponse {
   token: string;
+  access?: string;
   user: User;
 }
 
@@ -26,12 +28,18 @@ export interface RegisterData {
 export interface Question {
   id: string;
   text: string;
+  caseText?: string;
+  labs?: Record<string, string>;
   choices: Choice[];
   correctAnswer: string;
+  correctChoiceKey?: string;
   explanation: string;
+  clinicalPearl?: string;
+  reference?: string;
   categoryId: string;
+  chapterId?: string;
   category?: Category;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: 'easy' | 'medium' | 'hard' | 'board';
   isAIGenerated: boolean;
   aiReviewStatus?: 'pending' | 'approved' | 'rejected';
   createdBy: string;
@@ -42,6 +50,7 @@ export interface Question {
 export interface Choice {
   id: string;
   text: string;
+  key?: string;
 }
 
 export interface Category {
@@ -50,6 +59,45 @@ export interface Category {
   description: string;
   icon: string;
   questionCount?: number;
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  slug: string;
+  order_index: number;
+  description: string;
+  icon: string;
+  category?: string;
+  topic_count?: number;
+  question_count?: number;
+  lesson_count?: number;
+  topics?: Topic[];
+}
+
+export interface Topic {
+  id: string;
+  chapter: string;
+  title: string;
+  slug: string;
+  order_index: number;
+  description: string;
+  lesson_count?: number;
+  question_count?: number;
+  lessons?: Lesson[];
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  lesson_type: 'animation' | 'article' | 'video';
+  summary: string;
+  content_md?: string;
+  animation_url: string;
+  thumbnail_url: string;
+  duration_seconds: number;
+  order_index: number;
+  is_premium: boolean;
 }
 
 export interface QuizSession {
@@ -62,8 +110,9 @@ export interface QuizSession {
   startTime: string;
   endTime?: string;
   isCompleted: boolean;
-  type: 'daily' | 'practice' | 'category';
+  type: 'daily' | 'practice' | 'category' | 'chapter';
   categoryId?: string;
+  chapterId?: string;
 }
 
 export interface Answer {
@@ -130,4 +179,42 @@ export interface ApiError {
   message: string;
   statusCode: number;
   errors?: Record<string, string[]>;
+}
+
+export interface StudyNote {
+  id: string;
+  chapter: string | null;
+  chapter_slug?: string | null;
+  chapter_title?: string | null;
+  topic_title: string;
+  content: string;
+  source_batch_id?: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NotesChapterGroup {
+  chapter: {
+    id: string;
+    title: string;
+    slug: string;
+    order_index: number;
+  };
+  notes: StudyNote[];
+  count: number;
+}
+
+export interface NotesReview {
+  chapters: NotesChapterGroup[];
+  uncategorized: StudyNote[];
+  total: number;
+}
+
+export interface OrganizeNotesResponse {
+  method: 'ai' | 'keywords';
+  batch_id: string;
+  notes: StudyNote[];
+  total: number;
+  skipped_duplicates?: number;
 }

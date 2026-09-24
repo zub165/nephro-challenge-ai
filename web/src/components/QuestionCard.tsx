@@ -11,10 +11,11 @@ interface QuestionCardProps {
   totalQuestions: number;
 }
 
-const difficultyColors = {
+const difficultyColors: Record<string, string> = {
   easy: 'badge-green',
   medium: 'badge-amber',
   hard: 'badge-red',
+  board: 'badge-teal',
 };
 
 export default function QuestionCard({
@@ -54,10 +55,38 @@ export default function QuestionCard({
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
           Question {questionNumber} of {totalQuestions}
         </span>
-        <span className={`text-xs font-medium ${difficultyColors[question.difficulty]}`}>
+        <span className={`text-xs font-medium ${difficultyColors[question.difficulty] || 'badge-blue'}`}>
           {question.difficulty}
         </span>
       </div>
+
+      {question.caseText && (
+        <div className="mb-4 rounded-xl border border-amber-100 bg-amber-50/80 p-4 dark:border-amber-900/40 dark:bg-amber-900/20">
+          <p className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Clinical Case</p>
+          <p className="mt-1 text-sm leading-relaxed text-gray-700 dark:text-gray-300">{question.caseText}</p>
+        </div>
+      )}
+
+      {question.labs && Object.keys(question.labs).length > 0 && (
+        <div className="mb-4 overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                {Object.entries(question.labs).map(([key]) => (
+                  <th key={key} className="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-500">{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {Object.entries(question.labs).map(([key, val]) => (
+                  <td key={key} className="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{val}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <h3 className="mb-6 text-lg font-semibold leading-relaxed text-gray-900 dark:text-gray-100">
         {question.text}
@@ -97,6 +126,16 @@ export default function QuestionCard({
           <p className="mt-1 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
             {question.explanation}
           </p>
+          {question.clinicalPearl && (
+            <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-900/30 dark:text-amber-200">
+              <span className="font-semibold">Pearl: </span>{question.clinicalPearl}
+            </p>
+          )}
+          {question.reference && (
+            <p className="mt-2 text-xs leading-snug text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">Reference: </span>{question.reference}
+            </p>
+          )}
         </motion.div>
       )}
     </motion.div>

@@ -1,0 +1,31 @@
+{
+  "title": "AEIOU Dialysis Indications",
+  "subtitle": "Emergent RRT triggers in AKI",
+  "steps": [
+    {
+      "title": "A — Acidosis",
+      "body": "Severe metabolic acidosis (pH <7.1–7.2) refractory to medical therapy warrants urgent dialysis.",
+      "tip": "Bicarbonate alone is insufficient when anion gap is rising despite treatment."
+    },
+    {
+      "title": "E — Electrolytes",
+      "body": "Refractory hyperkalemia with ECG changes despite medical management is a classic emergent indication.",
+      "tip": "Repeat calcium and insulin/D50 while preparing dialysis."
+    },
+    {
+      "title": "I — Intoxication",
+      "body": "Dialyzable toxins: methanol, ethylene glycol, lithium, salicylates, and some alcohols.",
+      "tip": "Consult poison control and nephrology early."
+    },
+    {
+      "title": "O — Overload",
+      "body": "Pulmonary edema refractory to diuretics and oxygen/ventilation requires fluid removal via dialysis.",
+      "tip": "UF rate should be cautious in hypotensive patients."
+    },
+    {
+      "title": "U — Uremia",
+      "body": "Uremic encephalopathy, pericarditis, or intractable nausea/vomiting from uremia are indications — not BUN number alone.",
+      "tip": "Bleeding diathesis from uremia also supports urgent RRT."
+    }
+  ]
+}

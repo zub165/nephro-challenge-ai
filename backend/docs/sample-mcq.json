@@ -1,0 +1,29 @@
+{
+  "chapter": "Electrolytes",
+  "topic": "Hyperkalemia",
+  "lesson": {
+    "title": "Emergency Hyperkalemia Algorithm",
+    "lesson_type": "animation",
+    "summary": "Fast visual algorithm for stabilizing, shifting, and removing potassium.",
+    "animation_url": "https://your-server.com/animations/hyperkalemia-algorithm.json"
+  },
+  "mcq": {
+    "difficulty": "board",
+    "question_stem": "What is the best immediate treatment?",
+    "clinical_case": "ESRD patient missed dialysis. K 6.9. ECG peaked T waves.",
+    "labs": {
+      "K": "6.9",
+      "HCO3": "18",
+      "Cr": "9.4"
+    },
+    "choices": {
+      "A": "Sodium polystyrene sulfonate",
+      "B": "IV calcium gluconate",
+      "C": "Oral patiromer",
+      "D": "Dietary potassium restriction"
+    },
+    "correct_choice_key": "B",
+    "explanation": "ECG changes require immediate membrane stabilization with IV calcium.",
+    "clinical_pearl": "In severe hyperkalemia with ECG changes, calcium comes first."
+  }
+}

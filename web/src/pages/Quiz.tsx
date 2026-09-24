@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/axios';
-import type { Question, QuizSession } from '@/types';
+import { mapBackendQuestion } from '@/lib/apiMappers';
+import type { Question } from '@/types';
 import QuestionCard from '@/components/QuestionCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -20,7 +21,13 @@ const QUIZ_TIME_LIMIT = 30 * 60;
 export default function Quiz() {
   const { type, categoryId } = useParams();
   const navigate = useNavigate();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const queryClient = useQueryClient();
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const submitRef = useRef<() => void>(() => {});
+  const advancingRef = useRef(false);
+  const submittingRef = useRef(false);
+  const answersRef = useRef<Record<string, string>>({});
+  const timeLeftRef = useRef(QUIZ_TIME_LIMIT);
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,12 +40,16 @@ export default function Quiz() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['quiz-questions', type, categoryId],
-    queryFn: () => {
-      const params: Record<string, string> = {};
+    queryFn: async () => {
+      const params: Record<string, string> = { limit: type === 'daily' ? '5' : '10' };
       if (type === 'category' && categoryId) params.categoryId = categoryId;
+      if (type === 'chapter' && categoryId) params.chapterId = categoryId;
       if (type === 'daily') params.daily = 'true';
-      params.limit = type === 'daily' ? '5' : '10';
-      return api.get('/questions/quiz', { params }).then((r) => r.data);
+      const { data: res } = await api.get('/questions/quiz/', { params });
+      return {
+        questions: (res.questions || []).map(mapBackendQuestion),
+        sessionId: res.sessionId,
+      };
     },
     enabled: !finished,
   });
@@ -47,21 +58,21 @@ export default function Quiz() {
     if (data?.questions) {
       setQuestions(data.questions);
       if (data.sessionId) setSessionId(data.sessionId);
-    } else if (data?.length) {
-      setQuestions(data);
     }
   }, [data]);
 
   useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
+
+  useEffect(() => {
+    timeLeftRef.current = timeLeft;
+  }, [timeLeft]);
+
+  useEffect(() => {
     if (questions.length > 0 && !showResults && !finished) {
       timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            handleSubmitQuiz();
-            return 0;
-          }
-          return prev - 1;
-        });
+        setTimeLeft((prev) => Math.max(0, prev - 1));
       }, 1000);
     }
     return () => {
@@ -69,50 +80,76 @@ export default function Quiz() {
     };
   }, [questions.length, showResults, finished]);
 
-  const handleAnswer = useCallback((choiceId: string) => {
-    if (showResults) return;
-    setAnswers((prev) => ({ ...prev, [questions[currentIndex].id]: choiceId }));
+  useEffect(() => {
+    if (timeLeft <= 0 && questions.length > 0 && !showResults && !finished) {
+      submitRef.current();
+    }
+  }, [timeLeft, questions.length, showResults, finished]);
 
-    setTimeout(() => {
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex((i) => i + 1);
-      } else {
-        handleSubmitQuiz();
-      }
-    }, 300);
-  }, [currentIndex, questions, showResults]);
+  const handleSubmitQuiz = useCallback(
+    async (finalAnswers?: Record<string, string>) => {
+      if (submittingRef.current || showResults) return;
+      submittingRef.current = true;
 
-  const handleSubmitQuiz = async () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setShowResults(true);
+      const submitted = finalAnswers ?? answersRef.current;
+      if (timerRef.current) clearInterval(timerRef.current);
+      setShowResults(true);
 
-    const correctCount = questions.filter(
-      (q) => answers[q.id] === q.correctAnswer
-    ).length;
+      const correctCount = questions.filter(
+        (q) => submitted[q.id] === q.correctAnswer
+      ).length;
 
-    if (sessionId) {
       setSubmitting(true);
       try {
-        await api.put(`/quizzes/${sessionId}`, {
-          answers: questions.map((q) => ({
-            questionId: q.id,
-            selectedChoice: answers[q.id] || '',
-            isCorrect: answers[q.id] === q.correctAnswer,
-            timeSpent: QUIZ_TIME_LIMIT - timeLeft,
-          })),
-          score: correctCount,
-          totalQuestions: questions.length,
-          isCompleted: true,
-          endTime: new Date().toISOString(),
+        await api.post('/attempts/', {
+          mode: type === 'daily' ? 'daily' : type === 'chapter' ? 'chapter' : type === 'category' ? 'category' : 'practice',
+          chapter: type === 'chapter' && categoryId ? categoryId : undefined,
+          category: type === 'category' && categoryId ? categoryId : undefined,
+          total_questions: questions.length,
+          time_taken: QUIZ_TIME_LIMIT - timeLeftRef.current,
+          answers_data: questions
+            .filter((q) => submitted[q.id])
+            .map((q) => ({
+              question_id: q.id,
+              chosen_choice_id: submitted[q.id],
+              time_taken: Math.floor((QUIZ_TIME_LIMIT - timeLeftRef.current) / questions.length),
+            })),
         });
       } catch (err) {
         console.error('Failed to save quiz', err);
       } finally {
         setSubmitting(false);
       }
-    }
-    setFinished(true);
-  };
+      setFinished(true);
+      submittingRef.current = false;
+    },
+    [questions, type, categoryId, showResults]
+  );
+
+  submitRef.current = handleSubmitQuiz;
+
+  const handleAnswer = useCallback(
+    (choiceId: string) => {
+      if (showResults || advancingRef.current) return;
+      advancingRef.current = true;
+
+      const current = questions[currentIndex];
+      if (!current) return;
+      const next = { ...answersRef.current, [current.id]: choiceId };
+      answersRef.current = next;
+      setAnswers(next);
+
+      setTimeout(() => {
+        advancingRef.current = false;
+        if (currentIndex < questions.length - 1) {
+          setCurrentIndex((i) => i + 1);
+        } else {
+          handleSubmitQuiz(next);
+        }
+      }, 300);
+    },
+    [currentIndex, questions, showResults, handleSubmitQuiz]
+  );
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -194,17 +231,22 @@ export default function Quiz() {
                 setQuestions([]);
                 setCurrentIndex(0);
                 setAnswers({});
+                answersRef.current = {};
                 setShowResults(false);
                 setTimeLeft(QUIZ_TIME_LIMIT);
+                timeLeftRef.current = QUIZ_TIME_LIMIT;
                 setSessionId(null);
                 setFinished(false);
+                submittingRef.current = false;
+                advancingRef.current = false;
+                queryClient.invalidateQueries({ queryKey: ['quiz-questions', type, categoryId] });
               }}
               className="btn-outline gap-2"
             >
               <ArrowPathIcon className="h-4 w-4" /> New Quiz
             </button>
             <Link
-              to={type === 'daily' ? '/daily-challenge' : `/quiz/${type}`}
+              to={type === 'daily' ? '/daily-challenge' : type === 'category' || type === 'chapter' && categoryId ? `/quiz/${type}/${categoryId}` : `/quiz/${type}`}
               className="btn-teal gap-2"
             >
               <ArrowPathIcon className="h-4 w-4" /> Retry
@@ -280,7 +322,7 @@ export default function Quiz() {
 
       <div className="mt-6 flex justify-center">
         <button
-          onClick={handleSubmitQuiz}
+          onClick={() => handleSubmitQuiz()}
           className="btn-outline gap-2 text-sm"
         >
           Submit Quiz Early

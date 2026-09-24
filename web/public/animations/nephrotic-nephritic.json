@@ -1,0 +1,31 @@
+{
+  "title": "Nephrotic vs Nephritic Syndrome",
+  "subtitle": "Compare presentation, labs, and biopsy clues",
+  "steps": [
+    {
+      "title": "Nephrotic syndrome",
+      "body": "Heavy proteinuria (>3.5 g/day), hypoalbuminemia, edema, hyperlipidemia. Urine shows fatty casts and oval fat bodies.",
+      "tip": "Minimal change disease is most common in children."
+    },
+    {
+      "title": "Nephritic syndrome",
+      "body": "Hematuria with dysmorphic RBCs and RBC casts, hypertension, oliguria, and subnephrotic proteinuria.",
+      "tip": "RBC casts = glomerular inflammation until proven otherwise."
+    },
+    {
+      "title": "Complement studies",
+      "body": "Low C3 suggests MPGN, post-streptococcal GN, or C3 glomerulopathy. Normal complement in IgA nephropathy and ANCA vasculitis.",
+      "tip": "Low C3 and C4 suggests lupus nephritis."
+    },
+    {
+      "title": "Common nephrotic causes",
+      "body": "Adults: FSGS, membranous nephropathy, diabetic nephropathy. Children: minimal change disease.",
+      "tip": "Membranous associated with PLA2R antibodies in many adults."
+    },
+    {
+      "title": "Common nephritic causes",
+      "body": "IgA nephropathy, post-infectious GN, lupus, ANCA vasculitis, anti-GBM disease.",
+      "tip": "Rapidly progressive GN needs urgent biopsy and immunosuppression."
+    }
+  ]
+}

@@ -3,7 +3,10 @@ import random
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
-from api.models import Category, Choice, Question, User
+from api.data.chapter_seed import CHAPTERS
+from api.data.medical_references import reference_ids_to_storage
+from api.data.reference_sync import sync_question_references_from_seed
+from api.models import Category, Chapter, Choice, Lesson, Question, Topic, User
 
 CATEGORIES = [
     {
@@ -76,6 +79,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A 6-year-old boy presents with periorbital edema and frothy urine. Urinalysis shows 3+ protein and no hematuria. Serum albumin is 2.0 g/dL. Which of the following is the most likely diagnosis?",
         "explanation": "Minimal change disease is the most common cause of nephrotic syndrome in children. It typically presents with heavy proteinuria, hypoalbuminemia, and edema without hematuria or hypertension. It usually responds well to corticosteroids.",
         "clinical_pearl": "Minimal change disease accounts for 80-90% of nephrotic syndrome in children under 10 years.",
+        "reference_ids": ["kdigo-glomerular-2021", "nelson-peds-nephrotic"],
         "choices": [
             ("Focal segmental glomerulosclerosis", False),
             ("Minimal change disease", True),
@@ -91,6 +95,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A 70-year-old man with CHF develops AKI after aggressive diuresis. Which of the following lab findings is most consistent with prerenal AKI?",
         "explanation": "Prerenal AKI shows a high BUN:Cr ratio (>20:1), low urine sodium (<20 mEq/L), high urine osmolality (>500 mOsm/kg), and low fractional excretion of sodium (FENa <1%). These findings indicate preserved tubular function with decreased renal perfusion.",
         "clinical_pearl": "FENa = (Urine Na × Plasma Cr / Plasma Na × Urine Cr) × 100. FENa <1% suggests prerenal cause.",
+        "reference_ids": ["kdigo-aki-2012"],
         "choices": [
             ("FENa > 3% and urine osmolality 300 mOsm/kg", False),
             ("FENa < 1% and urine osmolality > 500 mOsm/kg", True),
@@ -106,6 +111,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A 55-year-old diabetic patient on an ACE inhibitor presents with muscle weakness and ECG showing peaked T waves. Labs: K+ 6.8 mEq/L, Cr 2.5 mg/dL. Which of the following is the most appropriate initial treatment?",
         "explanation": "With life-threatening hyperkalemia (K+ >6.5 or ECG changes), the first step is to stabilize the cardiac membrane with IV calcium gluconate or calcium chloride. This does not lower potassium but protects the heart. Then shift potassium intracellularly with insulin + glucose, and ultimately remove potassium with dialysis or loop diuretics.",
         "clinical_pearl": "Calcium gluconate should be given first in hyperkalemia with ECG changes — it acts within 1-3 minutes and lasts 30-60 minutes.",
+        "reference_ids": ["aha-hyperk-2015", "uptodate-hyperk"],
         "choices": [
             ("Intravenous calcium gluconate", True),
             ("Sodium polystyrene sulfonate", False),
@@ -121,6 +127,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A 30-year-old woman with type 1 diabetes presents with nausea, vomiting, and deep rapid breathing. ABG shows pH 7.15, PCO2 25 mmHg, HCO3 8 mEq/L. What is the appropriate interpretation?",
         "explanation": "The pH indicates acidemia (7.15). The primary disorder is metabolic acidosis (low HCO3 8). The expected respiratory compensation is PCO2 = (1.5 × HCO3) + 8 ± 2 = 20 ± 2. The actual PCO2 of 25 is slightly higher than expected, indicating a concurrent respiratory acidosis or incomplete compensation.",
         "clinical_pearl": "For metabolic acidosis, use Winter's formula: Expected PCO2 = (1.5 × HCO3) + 8 ± 2. If measured PCO2 is higher, there is concurrent respiratory acidosis.",
+        "reference_ids": ["winters-formula-1979"],
         "choices": [
             ("Metabolic alkalosis with respiratory compensation", False),
             ("Respiratory acidosis with renal compensation", False),
@@ -136,6 +143,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A 60-year-old man with CKD stage 4 has a serum phosphate of 6.5 mg/dL, calcium 8.2 mg/dL, and PTH 350 pg/mL. Which of the following is the most appropriate management?",
         "explanation": "In CKD-MBD, management begins with phosphate restriction and phosphate binders. Elevated PTH in the setting of high phosphate and low calcium suggests secondary hyperparathyroidism. First-line treatment includes dietary phosphate restriction and phosphate binders (calcium-based or non-calcium-based). Cinacalcet or calcitriol may be used if PTH remains elevated.",
         "clinical_pearl": "Targets in CKD-MBD: Phosphate 2.5-4.5 mg/dL, Calcium 8.4-9.5 mg/dL, PTH 2-9× upper normal for CKD stage 4.",
+        "reference_ids": ["kdigo-ckd-2024"],
         "choices": [
             ("Immediate parathyroidectomy", False),
             ("Calcium carbonate and dietary phosphate restriction", True),
@@ -151,6 +159,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A patient on hemodialysis develops headache, nausea, and confusion during the last hour of treatment. Blood pressure is 180/100 mmHg. What is the most likely diagnosis?",
         "explanation": "Dialysis disequilibrium syndrome occurs due to rapid removal of urea leading to cerebral edema. It typically presents near the end of dialysis with headache, nausea, vomiting, hypertension, and in severe cases, seizures and coma. It is more common in new dialysis patients or those with high BUN. Treatment is supportive; prevention includes shorter, more frequent sessions.",
         "clinical_pearl": "Dialysis disequilibrium syndrome is more common in new dialysis patients with BUN > 150-200 mg/dL. Use low-efficiency dialysis initially.",
+        "reference_ids": ["uptodate-dds", "kdigo-aki-2012"],
         "choices": [
             ("Intradialytic hypotension", False),
             ("Dialysis disequilibrium syndrome", True),
@@ -166,6 +175,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A renal transplant recipient develops acute rejection. Which of the following immunosuppressive agents works by inhibiting calcineurin?",
         "explanation": "Calcineurin inhibitors (CNIs) are cyclosporine and tacrolimus. They inhibit calcineurin, preventing NFAT activation and IL-2 production, thereby suppressing T-cell activation. Sirolimus is an mTOR inhibitor, mycophenolate mofetil inhibits inosine monophosphate dehydrogenase, and belatacept is a co-stimulation blocker.",
         "clinical_pearl": "Calcineurin inhibitors cause nephrotoxicity, hypertension, and hyperkalemia. Trough levels must be monitored carefully.",
+        "reference_ids": ["kdigo-transplant-2009"],
         "choices": [
             ("Mycophenolate mofetil", False),
             ("Sirolimus", False),
@@ -181,6 +191,7 @@ SAMPLE_QUESTIONS = [
         "question_text": "A 35-year-old woman with hypertension and hypokalemia is found to have a renal artery bruit on exam. Which of the following is the most appropriate screening test?",
         "explanation": "Renovascular hypertension should be suspected in young patients with hypertension, hypokalemia, and an abdominal bruit. The best screening test is Doppler ultrasound of renal arteries or CT/MR angiography. Captopril renography can also be used but is less common now.",
         "clinical_pearl": "Think renovascular hypertension in: age <30 with hypertension, abrupt onset, refractory HTN, or unexplained hypokalemia.",
+        "reference_ids": ["uptodate-renovascular"],
         "choices": [
             ("Plasma renin activity and aldosterone levels", False),
             ("Renal artery duplex ultrasound", True),
@@ -193,12 +204,18 @@ SAMPLE_QUESTIONS = [
 
 
 class Command(BaseCommand):
-    help = "Seed the database with initial categories and sample questions."
+    help = "Seed the database with categories, chapters, topics, lessons, and sample MCQs."
 
     def handle(self, *args, **options):
         self._create_admin_user()
         self._create_categories()
+        self._create_chapters()
         self._create_sample_questions()
+        sync_stats = sync_question_references_from_seed()
+        if sync_stats["updated"]:
+            self.stdout.write(
+                f"Updated references on {sync_stats['updated']} existing question(s)"
+            )
         self.stdout.write(self.style.SUCCESS("Data seeded successfully!"))
 
     def _create_admin_user(self):
@@ -219,6 +236,81 @@ class Command(BaseCommand):
             )
         self.stdout.write(f"Created {len(CATEGORIES)} categories")
 
+    def _create_chapters(self):
+        keys = "ABCDEFGHIJ"
+        total_mcqs = 0
+        for ch_data in CHAPTERS:
+            category = Category.objects.filter(slug=ch_data.get("category_slug")).first()
+            chapter, _ = Chapter.objects.update_or_create(
+                slug=ch_data["slug"],
+                defaults={
+                    "title": ch_data["title"],
+                    "order_index": ch_data["order_index"],
+                    "description": ch_data["description"],
+                    "icon": ch_data.get("icon", "BookOpenIcon"),
+                    "category": category,
+                },
+            )
+            for ti, topic_data in enumerate(ch_data.get("topics", [])):
+                topic, _ = Topic.objects.update_or_create(
+                    chapter=chapter,
+                    slug=topic_data["slug"],
+                    defaults={
+                        "title": topic_data["title"],
+                        "order_index": ti + 1,
+                        "description": topic_data.get("description", ""),
+                    },
+                )
+                for li, lesson_data in enumerate(topic_data.get("lessons", [])):
+                    Lesson.objects.update_or_create(
+                        topic=topic,
+                        title=lesson_data["title"],
+                        defaults={
+                            "lesson_type": lesson_data.get("lesson_type", "animation"),
+                            "summary": lesson_data.get("summary", ""),
+                            "animation_url": lesson_data.get("animation_url", ""),
+                            "thumbnail_url": lesson_data.get("thumbnail_url", ""),
+                            "duration_seconds": lesson_data.get("duration_seconds", 0),
+                            "order_index": li + 1,
+                        },
+                    )
+                for mcq_data in topic_data.get("mcqs", []):
+                    if not category:
+                        continue
+                    question, created = Question.objects.get_or_create(
+                        question_text=mcq_data["question_text"],
+                        chapter=chapter,
+                        defaults={
+                            "category": category,
+                            "topic": topic,
+                            "difficulty": mcq_data.get("difficulty", "medium"),
+                            "case_text": mcq_data.get("case_text", ""),
+                            "labs": mcq_data.get("labs", {}),
+                            "explanation": mcq_data["explanation"],
+                            "clinical_pearl": mcq_data.get("clinical_pearl", ""),
+                            "reference": reference_ids_to_storage(mcq_data.get("reference_ids", [])),
+                            "is_published": True,
+                        },
+                    )
+                    ref_storage = reference_ids_to_storage(mcq_data.get("reference_ids", []))
+                    if not created and question.reference != ref_storage:
+                        question.reference = ref_storage
+                        question.save(update_fields=["reference"])
+                    if created:
+                        total_mcqs += 1
+                        for i, (key, text, is_correct, why_wrong) in enumerate(
+                            mcq_data["choices"]
+                        ):
+                            Choice.objects.create(
+                                question=question,
+                                choice_key=key,
+                                choice_text=text,
+                                is_correct=is_correct,
+                                why_wrong=why_wrong or "",
+                                order=i + 1,
+                            )
+        self.stdout.write(f"Seeded chapters with {total_mcqs} board MCQs")
+
     def _create_sample_questions(self):
         for q_data in SAMPLE_QUESTIONS:
             category = Category.objects.filter(
@@ -235,14 +327,20 @@ class Command(BaseCommand):
                     "difficulty": q_data["difficulty"],
                     "explanation": q_data["explanation"],
                     "clinical_pearl": q_data["clinical_pearl"],
+                    "reference": reference_ids_to_storage(q_data.get("reference_ids", [])),
                     "is_published": True,
                 },
             )
+            ref_storage = reference_ids_to_storage(q_data.get("reference_ids", []))
+            if not created and question.reference != ref_storage:
+                question.reference = ref_storage
+                question.save(update_fields=["reference"])
             if created:
                 for i, (choice_text, is_correct) in enumerate(q_data["choices"]):
                     Choice.objects.create(
                         question=question,
                         choice_text=choice_text,
+                        choice_key=chr(65 + i),
                         is_correct=is_correct,
                         order=i + 1,
                     )

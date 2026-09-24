@@ -3,9 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
+import '../config/constants.dart';
 import '../config/routes.dart';
 import '../providers/auth_provider.dart';
 import '../providers/dashboard_provider.dart';
+import '../providers/navigation_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,6 +18,16 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<DashboardProvider>().loadDashboard();
+      context.read<AuthProvider>().refreshProfile();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                _buildProfileHeader(context, user, auth),
+                _buildProfileHeader(context, user, auth, dashboard),
                 const SizedBox(height: 24),
                 _buildStatsSection(context, dashboard),
                 const SizedBox(height: 24),
@@ -44,7 +57,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, dynamic user, AuthProvider auth) {
+  Widget _buildProfileHeader(
+    BuildContext context,
+    dynamic user,
+    AuthProvider auth,
+    DashboardProvider dashboard,
+  ) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -99,7 +117,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'Rank #${user.rank}',
+              dashboard.userRank > 0
+                  ? 'Rank #${dashboard.userRank}'
+                  : 'Rank —',
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -251,6 +271,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildMenuItems(BuildContext context) {
     final items = [
       {
+        'icon': Icons.auto_stories_outlined,
+        'title': 'My Book',
+        'action': () => context.read<NavigationProvider>().goToLibrary(1),
+      },
+      {
+        'icon': Icons.lightbulb_outline,
+        'title': 'Board Pearls',
+        'action': () => context.read<NavigationProvider>().goToLibrary(2),
+      },
+      {
         'icon': Icons.settings_outlined,
         'title': 'Settings',
         'route': AppRoutes.settings,
@@ -258,22 +288,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       {
         'icon': Icons.bar_chart_outlined,
         'title': 'Performance Analytics',
-        'route': null,
+        'route': AppRoutes.performanceAnalytics,
       },
       {
         'icon': Icons.book_outlined,
         'title': 'Study History',
-        'route': null,
+        'route': AppRoutes.studyHistory,
       },
       {
         'icon': Icons.share_outlined,
         'title': 'Share Profile',
-        'route': null,
+        'action': () => _shareProfile(context),
       },
       {
         'icon': Icons.info_outline,
         'title': 'About',
-        'route': null,
+        'route': AppRoutes.about,
       },
       {
         'icon': Icons.logout,
@@ -313,6 +343,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               if (isLogout) {
                 _showLogoutDialog(context);
+              } else if (item['action'] != null) {
+                (item['action'] as VoidCallback)();
               } else if (item['route'] != null) {
                 Navigator.of(context).pushNamed(item['route'] as String);
               }
@@ -322,8 +354,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
               duration: 300.ms,
               delay: (100 * index).ms,
             );
-      }),
+      }).toList(),
     );
+  }
+
+  Future<void> _shareProfile(BuildContext context) async {
+    final auth = context.read<AuthProvider>();
+    final dash = context.read<DashboardProvider>();
+    final user = auth.user;
+    if (user == null) return;
+
+    if (dash.totalQuestions == 0 && !dash.isLoading) {
+      await dash.loadDashboard();
+    }
+
+    final rankText =
+        dash.userRank > 0 ? 'Rank #${dash.userRank}' : 'Not ranked yet';
+    final text = '''
+${user.displayName ?? 'Nephro Challenge AI User'} — Nephro Challenge AI
+
+$rankText · ${dash.accuracy.toStringAsFixed(0)}% accuracy
+${dash.totalQuizzes} quizzes · ${dash.streakDays}-day streak
+${dash.points} points
+
+Study nephrology board review: ${AppConstants.webAppUrl}
+''';
+
+    await Share.share(text.trim());
   }
 
   void _showLogoutDialog(BuildContext context) {

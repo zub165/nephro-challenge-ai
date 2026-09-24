@@ -13,7 +13,12 @@ import Categories from '@/pages/Categories';
 import DailyChallenge from '@/pages/DailyChallenge';
 import AdminDashboard from '@/pages/AdminDashboard';
 import AdminQuestions from '@/pages/AdminQuestions';
+import Chapters from '@/pages/Chapters';
+import ChapterDetail from '@/pages/ChapterDetail';
+import LessonView from '@/pages/LessonView';
 import AdminAIGenerated from '@/pages/AdminAIGenerated';
+import Notes from '@/pages/Notes';
+import BoardPearls from '@/pages/BoardPearls';
 
 export default function App() {
   const { isAuthenticated, user } = useAuthStore();
@@ -44,6 +49,11 @@ export default function App() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/chapters" element={<Chapters />} />
+        <Route path="/chapters/:slug" element={<ChapterDetail />} />
+        <Route path="/pearls" element={<BoardPearls />} />
+        <Route path="/lessons/:lessonId" element={<LessonView />} />
+        <Route path="/notes" element={<Notes />} />
 
         {user?.role === 'admin' && (
           <>

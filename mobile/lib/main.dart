@@ -5,6 +5,8 @@ import 'config/theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/leaderboard_provider.dart';
+import 'providers/navigation_provider.dart';
+import 'providers/notes_provider.dart';
 import 'providers/quiz_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/ai_tutor_screen.dart';
@@ -18,7 +20,14 @@ import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/quiz_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/chapters_screen.dart';
+import 'screens/chapter_detail_screen.dart';
+import 'screens/lesson_screen.dart';
+import 'screens/library_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/performance_analytics_screen.dart';
+import 'screens/study_history_screen.dart';
+import 'screens/about_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/storage_service.dart';
 
@@ -40,6 +49,8 @@ class NephroChallengeApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => QuizProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
         ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
+        ChangeNotifierProvider(create: (_) => NotesProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
@@ -123,9 +134,36 @@ class NephroChallengeApp extends StatelessWidget {
           builder: (_) => const AITutorScreen(),
           settings: settings,
         );
+      case AppRoutes.chapters:
+        return MaterialPageRoute(builder: (_) => const ChaptersScreen(), settings: settings);
+      case AppRoutes.chapterDetail:
+        return MaterialPageRoute(builder: (_) => const ChapterDetailScreen(), settings: settings);
+      case AppRoutes.lesson:
+        return MaterialPageRoute(builder: (_) => const LessonScreen(), settings: settings);
+      case AppRoutes.library:
+        final tab = args is int ? args : 0;
+        return MaterialPageRoute(
+          builder: (_) => LibraryScreen(initialTab: tab),
+          settings: settings,
+        );
       case AppRoutes.settings:
         return MaterialPageRoute(
           builder: (_) => const SettingsScreen(),
+          settings: settings,
+        );
+      case AppRoutes.performanceAnalytics:
+        return MaterialPageRoute(
+          builder: (_) => const PerformanceAnalyticsScreen(),
+          settings: settings,
+        );
+      case AppRoutes.studyHistory:
+        return MaterialPageRoute(
+          builder: (_) => const StudyHistoryScreen(),
+          settings: settings,
+        );
+      case AppRoutes.about:
+        return MaterialPageRoute(
+          builder: (_) => const AboutScreen(),
           settings: settings,
         );
       default:
@@ -145,21 +183,23 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int _currentIndex = 0;
-
-  final _screens = const [
-    DashboardScreen(),
-    QuizScreen(),
-    LeaderboardScreen(),
-    ProfileScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final nav = context.watch<NavigationProvider>();
+    final libraryTab = nav.libraryTabIndex;
+
+    final screens = [
+      const DashboardScreen(),
+      LibraryScreen(key: ValueKey('library-$libraryTab'), initialTab: libraryTab),
+      const QuizScreen(),
+      const LeaderboardScreen(),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+        index: nav.shellIndex,
+        children: screens,
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -172,13 +212,19 @@ class _MainShellState extends State<MainShell> {
           ],
         ),
         child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
+          currentIndex: nav.shellIndex,
+          onTap: (index) => nav.goToShellTab(index),
+          type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_outlined),
               activeIcon: Icon(Icons.dashboard),
               label: 'Dashboard',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book_outlined),
+              activeIcon: Icon(Icons.menu_book),
+              label: 'Library',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.quiz_outlined),

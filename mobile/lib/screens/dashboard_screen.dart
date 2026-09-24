@@ -3,10 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../config/constants.dart';
 import '../config/routes.dart';
 import '../providers/auth_provider.dart';
 import '../providers/dashboard_provider.dart';
+import '../providers/navigation_provider.dart';
 import '../widgets/disclaimer_banner.dart';
 import '../widgets/stats_card.dart';
 import '../widgets/streak_indicator.dart';
@@ -65,6 +65,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const SizedBox(height: 16),
                     ],
                     _buildCategoriesSection(context, dashboard),
+                    const SizedBox(height: 16),
+                    _buildStudyLibraryRow(context),
                     const SizedBox(height: 16),
                     _buildSuggestedPractice(context),
                   ],
@@ -381,7 +383,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 12),
           ...dashboard.weakTopics.take(4).map((topic) {
-            final name = topic['name'] as String? ?? '';
+            final name = (topic['name'] as String? ?? topic['category'] as String? ?? topic['chapter'] as String? ?? topic['subcategory'] as String? ?? 'Topic').toString();
             final acc = (topic['accuracy'] as num?)?.toDouble() ?? 0.0;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -449,7 +451,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 110,
+          height: 120,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: dashboard.categories.length.clamp(0, 8),
@@ -457,6 +459,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             itemBuilder: (context, index) {
               final cat = dashboard.categories[index];
               return CategoryCard(
+                compact: true,
                 name: cat.name,
                 questionCount: cat.questionCount,
                 accuracy: cat.accuracy,
@@ -475,6 +478,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ],
     );
+  }
+
+  Widget _buildStudyLibraryRow(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Study Library',
+          style: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _LibraryShortcut(
+                icon: Icons.menu_book,
+                label: 'Board Chapters',
+                subtitle: 'Lessons & MCQs',
+                color: const Color(0xFF1E3A5F),
+                onTap: () => _openLibraryTab(context, 0),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _LibraryShortcut(
+                icon: Icons.auto_stories,
+                label: 'My Book',
+                subtitle: 'Paste notes',
+                color: const Color(0xFF0D9488),
+                onTap: () => _openLibraryTab(context, 1),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _LibraryShortcut(
+                icon: Icons.lightbulb_outline,
+                label: 'Pearls',
+                subtitle: 'Board facts',
+                color: const Color(0xFFF59E0B),
+                onTap: () => _openLibraryTab(context, 2),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _openLibraryTab(BuildContext context, int tabIndex) {
+    context.read<NavigationProvider>().goToLibrary(tabIndex);
   }
 
   Widget _buildSuggestedPractice(BuildContext context) {
@@ -528,7 +584,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: Theme.of(context)
                         .textTheme
                         .bodyMedium
-                        .color
+                        ?.color
                         ?.withOpacity(0.7),
                   ),
                 ),
@@ -544,5 +600,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
     ).animate().fadeIn(duration: 400.ms, delay: 500.ms);
+  }
+}
+
+class _LibraryShortcut extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _LibraryShortcut({
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 22),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
