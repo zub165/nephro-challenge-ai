@@ -26,4 +26,18 @@ class JsonHelpers {
         .map((e) => Map<String, dynamic>.from(e))
         .toList();
   }
+
+  static String? firstNonBlankString(Iterable<dynamic> values) {
+    for (final value in values) {
+      if (value is! String) continue;
+      final normalized = value.trim();
+      if (normalized.isNotEmpty) return normalized;
+    }
+    return null;
+  }
+
+  static String initial(dynamic value, {String fallback = '?'}) {
+    final text = firstNonBlankString([value, fallback]) ?? '?';
+    return text.substring(0, 1).toUpperCase();
+  }
 }

@@ -1,13 +1,19 @@
 import os
 import random
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.utils.text import slugify
 
+from api.data.board_exam_seed import SEED_REVIEW_STATUS
 from api.data.chapter_seed import CHAPTERS
 from api.data.medical_references import reference_ids_to_storage
 from api.data.reference_sync import sync_question_references_from_seed
-from api.models import Category, Chapter, Choice, Lesson, Question, Topic, User
+from api.models import Category, Choice, Question, User
+from api.services.board_content_service import (
+    build_source_metadata,
+    seed_categories,
+    seed_curriculum,
+)
 
 CATEGORIES = [
     {
@@ -220,100 +226,43 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Data seeded successfully!"))
 
     def _create_admin_user(self):
-        username = os.getenv("ADMIN_USERNAME", "admin")
-        email = os.getenv("ADMIN_EMAIL", "admin@nephrochallenge.com")
-        password = os.getenv("ADMIN_PASSWORD", "admin123")
-        if not User.objects.filter(username=username).exists():
-            User.objects.create_superuser(
-                username=username,
-                email=email,
-                password=password,
-                role="admin",
+        username = os.getenv("ADMIN_USERNAME", "").strip()
+        email = os.getenv("ADMIN_EMAIL", "").strip()
+        if not username or not email:
+            raise CommandError(
+                "ADMIN_USERNAME and ADMIN_EMAIL must be set in the environment to create the admin user"
             )
-            self.stdout.write(f"Admin user created ({username})")
+        if User.objects.filter(username=username).exists():
+            return
+        password = os.getenv("ADMIN_PASSWORD", "").strip()
+        if not password:
+            raise CommandError(
+                "ADMIN_PASSWORD must be set in the environment to create the admin user"
+            )
+        User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password,
+            role="admin",
+        )
+        self.stdout.write(f"Admin user created ({username})")
 
     def _create_categories(self):
-        for cat_data in CATEGORIES:
-            Category.objects.get_or_create(
-                slug=slugify(cat_data["name"]),
-                defaults=cat_data,
-            )
-        self.stdout.write(f"Created {len(CATEGORIES)} categories")
+        report = seed_categories(CATEGORIES)
+        self.stdout.write(
+            f"Ensured {len(CATEGORIES)} categories ({report.categories_created} created)"
+        )
 
     def _create_chapters(self):
-        keys = "ABCDEFGHIJ"
-        total_mcqs = 0
-        for ch_data in CHAPTERS:
-            category = Category.objects.filter(slug=ch_data.get("category_slug")).first()
-            chapter, _ = Chapter.objects.update_or_create(
-                slug=ch_data["slug"],
-                defaults={
-                    "title": ch_data["title"],
-                    "order_index": ch_data["order_index"],
-                    "description": ch_data["description"],
-                    "icon": ch_data.get("icon", "BookOpenIcon"),
-                    "category": category,
-                },
-            )
-            for ti, topic_data in enumerate(ch_data.get("topics", [])):
-                topic, _ = Topic.objects.update_or_create(
-                    chapter=chapter,
-                    slug=topic_data["slug"],
-                    defaults={
-                        "title": topic_data["title"],
-                        "order_index": ti + 1,
-                        "description": topic_data.get("description", ""),
-                    },
-                )
-                for li, lesson_data in enumerate(topic_data.get("lessons", [])):
-                    Lesson.objects.update_or_create(
-                        topic=topic,
-                        title=lesson_data["title"],
-                        defaults={
-                            "lesson_type": lesson_data.get("lesson_type", "animation"),
-                            "summary": lesson_data.get("summary", ""),
-                            "animation_url": lesson_data.get("animation_url", ""),
-                            "thumbnail_url": lesson_data.get("thumbnail_url", ""),
-                            "duration_seconds": lesson_data.get("duration_seconds", 0),
-                            "order_index": li + 1,
-                        },
-                    )
-                for mcq_data in topic_data.get("mcqs", []):
-                    if not category:
-                        continue
-                    question, created = Question.objects.get_or_create(
-                        question_text=mcq_data["question_text"],
-                        chapter=chapter,
-                        defaults={
-                            "category": category,
-                            "topic": topic,
-                            "difficulty": mcq_data.get("difficulty", "medium"),
-                            "case_text": mcq_data.get("case_text", ""),
-                            "labs": mcq_data.get("labs", {}),
-                            "explanation": mcq_data["explanation"],
-                            "clinical_pearl": mcq_data.get("clinical_pearl", ""),
-                            "reference": reference_ids_to_storage(mcq_data.get("reference_ids", [])),
-                            "is_published": True,
-                        },
-                    )
-                    ref_storage = reference_ids_to_storage(mcq_data.get("reference_ids", []))
-                    if not created and question.reference != ref_storage:
-                        question.reference = ref_storage
-                        question.save(update_fields=["reference"])
-                    if created:
-                        total_mcqs += 1
-                        for i, (key, text, is_correct, why_wrong) in enumerate(
-                            mcq_data["choices"]
-                        ):
-                            Choice.objects.create(
-                                question=question,
-                                choice_key=key,
-                                choice_text=text,
-                                is_correct=is_correct,
-                                why_wrong=why_wrong or "",
-                                order=i + 1,
-                            )
-        self.stdout.write(f"Seeded chapters with {total_mcqs} board MCQs")
+        report = seed_curriculum(CHAPTERS, categories=CATEGORIES)
+        for missing in report.missing_categories:
+            self.stdout.write(f"Skipping - category not found: {missing}")
+        self.stdout.write(
+            f"Seeded {report.chapters_created} chapter(s), "
+            f"{report.topics_created} topic(s), {report.lessons_created} lesson(s), "
+            f"{report.questions_created} new board MCQ(s), "
+            f"{report.questions_total} board MCQ(s) total"
+        )
 
     def _create_sample_questions(self):
         for q_data in SAMPLE_QUESTIONS:
@@ -333,6 +282,14 @@ class Command(BaseCommand):
                     "clinical_pearl": q_data["clinical_pearl"],
                     "reference": reference_ids_to_storage(q_data.get("reference_ids", [])),
                     "is_published": True,
+                    "review_status": SEED_REVIEW_STATUS,
+                    "source_metadata": build_source_metadata(
+                        "question",
+                        chapter_slug="",
+                        topic_slug=q_data["subcategory"],
+                        reference_ids=q_data.get("reference_ids", []),
+                        difficulty=q_data["difficulty"],
+                    ),
                 },
             )
             ref_storage = reference_ids_to_storage(q_data.get("reference_ids", []))

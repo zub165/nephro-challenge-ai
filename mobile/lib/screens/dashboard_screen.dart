@@ -12,6 +12,7 @@ import '../widgets/stats_card.dart';
 import '../widgets/streak_indicator.dart';
 import '../widgets/loading_shimmer.dart';
 import '../widgets/category_card.dart';
+import '../utils/json_helpers.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -83,6 +84,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildHeader(BuildContext context, AuthProvider auth) {
+    final displayName =
+        JsonHelpers.firstNonBlankString([auth.user?.displayName]) ?? 'Doctor';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -101,7 +104,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             Text(
-              auth.user?.displayName ?? 'Doctor',
+              displayName,
               style: GoogleFonts.inter(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -113,7 +116,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           radius: 28,
           backgroundColor: Theme.of(context).colorScheme.primary,
           child: Text(
-            (auth.user?.displayName ?? 'D')[0].toUpperCase(),
+            JsonHelpers.initial(auth.user?.displayName, fallback: 'D'),
             style: GoogleFonts.inter(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -355,8 +358,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ).animate().fadeIn(duration: 400.ms, delay: 300.ms);
   }
 
-  Widget _buildWeakTopics(
-      BuildContext context, DashboardProvider dashboard) {
+  Widget _buildWeakTopics(BuildContext context, DashboardProvider dashboard) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -385,15 +387,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 12),
           ...dashboard.weakTopics.take(4).map((topic) {
-            final name = (topic['name'] as String? ?? topic['category'] as String? ?? topic['chapter'] as String? ?? topic['subcategory'] as String? ?? 'Topic').toString();
+            final name = (topic['name'] as String? ??
+                    topic['category'] as String? ??
+                    topic['chapter'] as String? ??
+                    topic['subcategory'] as String? ??
+                    'Topic')
+                .toString();
             final acc = (topic['accuracy'] as num?)?.toDouble() ?? 0.0;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(name,
-                        style: GoogleFonts.inter(fontSize: 14)),
+                    child: Text(name, style: GoogleFonts.inter(fontSize: 14)),
                   ),
                   const SizedBox(width: 12),
                   SizedBox(

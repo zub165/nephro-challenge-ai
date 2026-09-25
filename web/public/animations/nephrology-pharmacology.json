@@ -1,0 +1,42 @@
+{
+  "title": "Nephrology Pharmacology",
+  "subtitle": "dosing in CKD · RAAS · diuretics · immunosuppression",
+  "theme": "pharmacology",
+  "steps": [
+    {
+      "title": "Dose by function, not by creatinine alone",
+      "body": "Adjust renally cleared drugs using estimated GFR, and use estimated creatinine clearance (Cockcroft-Gault) when labelling is based on CrCl. KDIGO 2024 endorses eGFR equations validated for the population, with cystatin C added where creatinine is unreliable (very low or high muscle mass).",
+      "tip": "eGFR and Cockcroft-Gault CrCl can differ by more than 30% in the elderly or in oedema — document which one you used.",
+      "visual": "lab-table",
+      "metrics": { "egfr": "32", "crcl": "24", "dose_reduction": "50%" }
+    },
+    {
+      "title": "RAAS blockade and hyperkalemia",
+      "body": "ACEi/ARB reduce intraglomerular pressure and proteinuria, but raise potassium. Manage rather than stop: correct volume, review diuretics, hold NSAIDs, and consider potassium binders, a lower dose, or a mineralocorticoid receptor antagonist-based regimen.",
+      "tip": "A modest creatinine rise (<30%) after starting an ACEi/ARB is expected and is not a reason to stop.",
+      "visual": "workup-flow",
+      "metrics": { "creatinine_rise": "+22%", "potassium": "5.6" }
+    },
+    {
+      "title": "Loop diuretics",
+      "body": "Furosemide acts at the loop of Henle; natriuretic response correlates better with urine chloride than with creatinine. Ceiling doses: furosemide 160-200 mg IV per dose, bumetanide 8-16 mg, torsemide 20-40 mg. In advanced CKD expect modest response, but the goal is decongestion, not natriuresis.",
+      "tip": "Give IV loop diuretics 1-2 hours before a thiazide to add a sequential nephron block.",
+      "visual": "dose-summary",
+      "metrics": { "furosemide_iv": "200 mg", "urine_output": "250 mL/hr" }
+    },
+    {
+      "title": "Transplant immunosuppression",
+      "body": "Calcineurin inhibitors (tacrolimus, cyclosporine) inhibit calcineurin/NFAT and cause nephrotoxicity, hypertension, hyperkalemia, and TMA. Antimetabolites (mycophenolate) cause marrow and GI toxicity. mTOR inhibitors cause proteinuria and impaired healing. Belatacept blocks CD80/86 co-stimulation.",
+      "tip": "CNI troughs are drawn just before the morning dose; a rising creatinine plus rising trough suggests CNI toxicity.",
+      "visual": "lab-table",
+      "metrics": { "tacrolimus": "9.2 ng/mL", "creatinine": "2.4" }
+    },
+    {
+      "title": "Avoid and monitor nephrotoxins",
+      "body": "Hold NSAIDs, give aminoglycosides only with extended intervals, avoid iodinated contrast when possible, and review PPI, lithium, aminoglycoside, amphotericin, calcineurin inhibitor, and bisphosphonate exposure at every visit.",
+      "tip": "Sick-day rules: temporarily stop diuretics, RAAS blockers, metformin, and NSAIDs during vomiting, diarrhea, or poor intake.",
+      "visual": "workup-flow",
+      "metrics": { "nephrotoxic_classes": "5", "review_interval": "every visit" }
+    }
+  ]
+}

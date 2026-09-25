@@ -20,7 +20,15 @@ interface AdminStats {
   totalQuestions: number;
   aiGeneratedPending: number;
   totalQuizzes: number;
-  recentUsers: { id: string; name: string; email: string; createdAt: string }[];
+  recentUsers: { id: string; name?: string | null; email: string; createdAt: string }[];
+}
+
+function displayNameFor(user: { name?: string | null; email: string }): string {
+  return user.name?.trim() || user.email;
+}
+
+function initialFor(name: string): string {
+  return name.charAt(0).toUpperCase() || '?';
 }
 
 export default function AdminDashboard() {
@@ -127,20 +135,23 @@ export default function AdminDashboard() {
           </div>
           {stats?.recentUsers && stats.recentUsers.length > 0 ? (
             <div className="space-y-3">
-              {stats.recentUsers.slice(0, 5).map((u) => (
+              {stats.recentUsers.slice(0, 5).map((u) => {
+                const displayName = displayNameFor(u);
+                return (
                 <div key={u.id} className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
-                    {u.name.charAt(0).toUpperCase()}
+                    {initialFor(displayName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{u.name}</p>
+                    <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{displayName}</p>
                     <p className="truncate text-xs text-gray-500 dark:text-gray-400">{u.email}</p>
                   </div>
                   <span className="text-xs text-gray-400">
                     {new Date(u.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <p className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/leaderboard_entry.dart';
+import '../utils/json_helpers.dart';
 
 class LeaderboardTile extends StatelessWidget {
   final LeaderboardEntry entry;
@@ -49,7 +50,7 @@ class LeaderboardTile extends StatelessWidget {
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
             child: Text(
-              (entry.displayName ?? '?')[0].toUpperCase(),
+              JsonHelpers.initial(entry.displayName),
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -63,7 +64,8 @@ class LeaderboardTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  entry.displayName ?? 'Anonymous',
+                  JsonHelpers.firstNonBlankString([entry.displayName]) ??
+                      'Anonymous',
                   style: GoogleFonts.inter(
                     fontSize: 15,
                     fontWeight:
@@ -117,7 +119,11 @@ class LeaderboardTile extends StatelessWidget {
     if (rank == 1) return const Color(0xFFF59E0B);
     if (rank == 2) return Colors.grey;
     if (rank == 3) return const Color(0xFFCD7F32);
-    return Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+    return Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.color
+            ?.withValues(alpha: 0.7) ??
         Colors.grey;
   }
 }

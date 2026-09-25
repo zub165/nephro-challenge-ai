@@ -13,13 +13,15 @@ class User {
   User({
     required this.id,
     required this.email,
-    this.displayName,
-    this.photoUrl,
+    String? displayName,
+    String? photoUrl,
     this.role = 'free',
     this.streakDays = 0,
     this.xpPoints = 0,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  })  : displayName = JsonHelpers.firstNonBlankString([displayName]),
+        photoUrl = JsonHelpers.firstNonBlankString([photoUrl]),
+        createdAt = createdAt ?? DateTime.now();
 
   int get rank => 0;
 
@@ -27,12 +29,18 @@ class User {
     return User(
       id: JsonHelpers.str(json['id']),
       email: JsonHelpers.str(json['email']),
-      displayName: json['display_name'] as String? ??
-          json['username'] as String? ??
-          json['name'] as String?,
-      photoUrl: json['photo_url'] as String? ?? json['avatar'] as String?,
+      displayName: JsonHelpers.firstNonBlankString([
+        json['display_name'],
+        json['name'],
+        json['username'],
+      ]),
+      photoUrl: JsonHelpers.firstNonBlankString([
+        json['photo_url'],
+        json['avatar'],
+      ]),
       role: JsonHelpers.str(json['role'], 'free'),
-      streakDays: JsonHelpers.integer(json['streak_days'] ?? json['streak_count']),
+      streakDays:
+          JsonHelpers.integer(json['streak_days'] ?? json['streak_count']),
       xpPoints: JsonHelpers.integer(json['xp_points'] ?? json['points']),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now()

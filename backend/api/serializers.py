@@ -5,6 +5,7 @@ from rest_framework import serializers
 from api.models import (
     AIGeneratedQuestion,
     Answer,
+    BoardExam,
     Category,
     Chapter,
     Choice,
@@ -77,6 +78,15 @@ class UserSerializer(serializers.ModelSerializer):
         if value and User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("Email already registered")
         return value
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        display_name = (
+            instance.display_name or instance.name or instance.username
+        ).strip()
+        data["name"] = (instance.name or display_name).strip()
+        data["display_name"] = display_name
+        return data
 
     def create(self, validated_data):
         password = validated_data.pop("password")
@@ -312,6 +322,8 @@ class QuizAttemptCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        from api.services.board_exam_service import question_in_published_board_exam
+
         answers_data = validated_data.pop("answers_data")
         user = self.context["request"].user
 
@@ -326,6 +338,10 @@ class QuizAttemptCreateSerializer(serializers.ModelSerializer):
                 except Question.DoesNotExist:
                     raise serializers.ValidationError(
                         {"answers_data": f"Question {item.get('question_id')} not found"}
+                    )
+                if question_in_published_board_exam(question):
+                    raise serializers.ValidationError(
+                        {"answers_data": f"Question {item.get('question_id')} is reserved for a board exam"}
                     )
 
                 chosen_id = item.get("chosen_choice_id")
@@ -570,5 +586,30 @@ class StudyNoteUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyNote
         fields = ["chapter", "topic_title", "content", "order_index"]
+
+
+class BoardExamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BoardExam
+        fields = [
+            "id",
+            "slug",
+            "title",
+            "description",
+            "question_count",
+            "duration_minutes",
+            "is_published",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class BoardExamDetailSerializer(BoardExamSerializer):
+    class Meta(BoardExamSerializer.Meta):
+        fields = BoardExamSerializer.Meta.fields + ["chapter_quota"]
+
+
+class BoardExamAnswerSerializer(serializers.Serializer):
+    selected_choice_key = serializers.CharField(max_length=2, trim_whitespace=True, allow_blank=False)
 
 

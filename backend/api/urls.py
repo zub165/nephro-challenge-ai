@@ -19,6 +19,12 @@ from api.views import (
     AITutorChatView,
     AppleAuthView,
     AuthViewSet,
+    BoardExamAttemptAnswerView,
+    BoardExamAttemptResultsView,
+    BoardExamAttemptSubmitView,
+    BoardExamAttemptView,
+    BoardExamStartView,
+    BoardExamViewSet,
     BoardPearlsView,
     BoardPrepView,
     MedicalReferencesView,
@@ -58,6 +64,7 @@ router.register(r"questions", QuestionViewSet, basename="question")
 router.register(r"attempts", QuizAttemptViewSet, basename="attempt")
 router.register(r"leaderboard", LeaderboardViewSet, basename="leaderboard")
 router.register(r"subscriptions", SubscriptionViewSet, basename="subscription")
+router.register(r"board-exams", BoardExamViewSet, basename="board-exam")
 
 urlpatterns = [
     path("auth/register/", AuthViewSet.as_view({"post": "register"}), name="auth-register"),
@@ -86,6 +93,12 @@ urlpatterns = [
     path("quiz/explanation/<int:mcq_id>/", QuizExplanationView.as_view(), name="quiz-explanation"),
     path("questions/quiz/", QuizQuestionsView.as_view(), name="questions-quiz"),
     path("quiz/attempts/", QuizAttemptViewSet.as_view({"post": "create"}), name="quiz-attempts"),
+    # Board exams
+    path("board-exams/<slug:slug>/start/", BoardExamStartView.as_view(), name="board-exam-start"),
+    path("board-exams/attempts/<int:attempt_id>/items/<int:position>/", BoardExamAttemptAnswerView.as_view(), name="board-exam-answer"),
+    path("board-exams/attempts/<int:attempt_id>/submit/", BoardExamAttemptSubmitView.as_view(), name="board-exam-submit"),
+    path("board-exams/attempts/<int:attempt_id>/results/", BoardExamAttemptResultsView.as_view(), name="board-exam-results"),
+    path("board-exams/attempts/<int:attempt_id>/", BoardExamAttemptView.as_view(), name="board-exam-attempt"),
     # User progress & stats
     path("users/me/progress/", UserProgressView.as_view(), name="user-progress"),
     path("stats/", StatsView.as_view(), name="stats"),

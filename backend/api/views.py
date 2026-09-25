@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.db.models import Count, F, FloatField, Q
 from django.db.models.functions import Extract
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -19,6 +20,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.models import (
     AIGeneratedQuestion,
     Answer,
+    BoardExam,
+    BoardExamAttempt,
     Category,
     Chapter,
     Choice,
@@ -34,6 +37,9 @@ from api.models import (
 from api.permissions import IsAdminOrEditor, IsOwnerOrReadOnly, IsPremiumOrReadOnly
 from api.serializers import (
     AIGeneratedQuestionSerializer,
+    BoardExamAnswerSerializer,
+    BoardExamDetailSerializer,
+    BoardExamSerializer,
     CategorySerializer,
     ChapterDetailSerializer,
     ChapterSerializer,
@@ -65,6 +71,18 @@ from api.services.ai_service import (
     generate_explanation,
     generate_question,
     generate_questions,
+)
+from api.services.board_exam_service import (
+    BoardExamError,
+    answered_count,
+    build_attempt_payload,
+    build_result_payload,
+    exclude_board_exam_questions,
+    expire_attempt_if_needed,
+    question_in_published_board_exam,
+    record_answer,
+    start_or_resume_attempt,
+    submit_attempt,
 )
 from api.services.leaderboard_service import build_leaderboard, user_leaderboard_rank
 from api.services.notes_enrichment_service import enrich_note_payload, enrich_study_note, references_for_study_note
@@ -99,7 +117,7 @@ def _published_questions_for_user(user):
     qs = Question.objects.filter(is_published=True)
     if not _user_is_premium(user):
         qs = qs.filter(is_premium=False)
-    return qs.prefetch_related("choices")
+    return exclude_board_exam_questions(qs).prefetch_related("choices")
 
 
 def _daily_attempt_completed(user, today: date):
@@ -381,6 +399,127 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+def _board_exam_error_response(exc: BoardExamError) -> Response:
+    return Response({"detail": exc.message}, status=exc.status_code)
+
+
+def _owned_board_exam_attempt(user, attempt_id) -> BoardExamAttempt:
+    return get_object_or_404(
+        BoardExamAttempt.objects.select_related("exam"),
+        pk=attempt_id,
+        user=user,
+    )
+
+
+class BoardExamViewSet(viewsets.ReadOnlyModelViewSet):
+    """Published board exams available to the signed-in user."""
+
+    queryset = BoardExam.objects.filter(is_published=True)
+    permission_classes = [IsAuthenticated]
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return BoardExamDetailSerializer
+        return BoardExamSerializer
+
+
+class BoardExamStartView(APIView):
+    """POST /api/board-exams/<slug>/start/ — start a new attempt or resume the active one."""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, slug):
+        exam = get_object_or_404(BoardExam, slug=slug, is_published=True)
+        try:
+            attempt, resumed = start_or_resume_attempt(request.user, exam)
+            payload = build_attempt_payload(attempt, resumed=resumed)
+        except BoardExamError as exc:
+            return _board_exam_error_response(exc)
+        return Response(payload)
+
+
+class BoardExamAttemptView(APIView):
+    """GET /api/board-exams/attempts/<attempt_id>/ — active exam state for the owner."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, attempt_id):
+        attempt = _owned_board_exam_attempt(request.user, attempt_id)
+        if expire_attempt_if_needed(attempt):
+            attempt.refresh_from_db()
+        if attempt.status == BoardExamAttempt.Status.EXPIRED:
+            return Response(
+                {"detail": "Board exam attempt has expired"},
+                status=status.HTTP_410_GONE,
+            )
+        if attempt.status != BoardExamAttempt.Status.IN_PROGRESS:
+            return Response(
+                {"detail": "Board exam attempt is already finalized"},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return Response(build_attempt_payload(attempt))
+
+
+class BoardExamAttemptAnswerView(APIView):
+    """PUT /api/board-exams/attempts/<attempt_id>/items/<position>/ — save or replace one answer."""
+
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, attempt_id, position):
+        attempt = _owned_board_exam_attempt(request.user, attempt_id)
+        serializer = BoardExamAnswerSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            item = record_answer(
+                attempt,
+                position,
+                serializer.validated_data["selected_choice_key"],
+            )
+        except BoardExamError as exc:
+            return _board_exam_error_response(exc)
+        return Response(
+            {
+                "attempt_id": str(attempt.pk),
+                "position": item.position,
+                "selected_choice_key": item.selected_choice_key,
+                "answered_at": item.answered_at.isoformat() if item.answered_at else None,
+                "answered_count": answered_count(attempt),
+                "total_questions": attempt.total_questions,
+                "server_time": timezone.now().isoformat(),
+            }
+        )
+
+
+class BoardExamAttemptSubmitView(APIView):
+    """POST /api/board-exams/attempts/<attempt_id>/submit/ — finalize and grade (idempotent)."""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, attempt_id):
+        attempt = _owned_board_exam_attempt(request.user, attempt_id)
+        try:
+            finalized = submit_attempt(attempt)
+            payload = build_result_payload(finalized)
+        except BoardExamError as exc:
+            return _board_exam_error_response(exc)
+        return Response(payload)
+
+
+class BoardExamAttemptResultsView(APIView):
+    """GET /api/board-exams/attempts/<attempt_id>/results/ — graded review for a finalized attempt."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, attempt_id):
+        attempt = _owned_board_exam_attempt(request.user, attempt_id)
+        try:
+            payload = build_result_payload(attempt)
+        except BoardExamError as exc:
+            return _board_exam_error_response(exc)
+        return Response(payload)
+
+
 class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     """Leaderboard rankings computed from quiz attempts."""
 
@@ -417,6 +556,8 @@ class AIExplainView(APIView):
         try:
             question = Question.objects.get(id=question_id, is_published=True)
         except Question.DoesNotExist:
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+        if question_in_published_board_exam(question):
             return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
         explanation = generate_explanation(question)
         return Response({"explanation": explanation})
@@ -491,6 +632,8 @@ class AIDetailedExplanationView(APIView):
                 id=question_id, is_published=True
             )
         except Question.DoesNotExist:
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+        if question_in_published_board_exam(question):
             return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
         result = detailed_explanation(
             question,
@@ -705,7 +848,9 @@ class QuizDailyView(APIView):
 
     def get(self, request):
         today = date.today()
-        qs = Question.objects.filter(is_published=True).prefetch_related("choices")
+        qs = exclude_board_exam_questions(
+            Question.objects.filter(is_published=True)
+        ).prefetch_related("choices")
         qs_list = list(qs)
         if not qs_list:
             return Response({"detail": "No questions available"}, status=status.HTTP_404_NOT_FOUND)
@@ -786,6 +931,15 @@ class QuizAnswerView(APIView):
         except Question.DoesNotExist:
             return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        if question_in_published_board_exam(question):
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if question.is_premium and not _user_is_premium(request.user):
+            return Response(
+                {"error": "Premium subscription required"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         if choice_id:
             chosen = question.choices.filter(id=choice_id).first()
         elif choice_key:
@@ -826,6 +980,13 @@ class QuizExplanationView(APIView):
             )
         except Question.DoesNotExist:
             return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+        if question_in_published_board_exam(question):
+            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+        if question.is_premium and not _user_is_premium(request.user):
+            return Response(
+                {"error": "Premium subscription required"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return Response(QuestionExplanationSerializer(question).data)
 
 
@@ -949,9 +1110,9 @@ class BoardPearlsView(APIView):
                 "references": enriched.get("references", []),
             })
 
-        db_qs = Question.objects.filter(is_published=True).exclude(
-            clinical_pearl=""
-        ).select_related("chapter", "topic")
+        db_qs = exclude_board_exam_questions(
+            Question.objects.filter(is_published=True)
+        ).exclude(clinical_pearl="").select_related("chapter", "topic")
         if chapter_slug:
             db_qs = db_qs.filter(chapter__slug=chapter_slug)
         for q in db_qs:

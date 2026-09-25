@@ -250,8 +250,8 @@ def _rule_based_checks(statement: str, topic: str) -> list[str]:
         if "feurea" not in lower and "urea" not in lower:
             issues.append("On diuretics, FEUrea is preferred over FENa for prerenal vs intrinsic differentiation.")
 
-    # Winter's formula typo check
-    if "winter" in lower or "pco2" in lower:
+    # Winter's formula typo check (metabolic acidosis compensation only)
+    if "winter" in lower or "metabolic acidosis" in lower:
         if "1.5" not in lower and "hco3" in lower:
             issues.append("Winter's formula uses (1.5 × HCO3) + 8 ± 2.")
 

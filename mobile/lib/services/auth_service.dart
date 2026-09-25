@@ -25,8 +25,7 @@ class AuthService {
   final StorageService _storage = StorageService.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
-    serverClientId:
-        const String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
+    serverClientId: const String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
   );
 
   AuthService._();
@@ -62,10 +61,15 @@ class AuthService {
       String email, String password, String? displayName) async {
     try {
       final username = email.split('@').first;
+      final normalizedDisplayName = displayName?.trim();
       final response = await _api.post('/auth/register/', data: {
         'username': username,
         'email': email,
         'password': password,
+        if (normalizedDisplayName != null && normalizedDisplayName.isNotEmpty)
+          'name': normalizedDisplayName,
+        if (normalizedDisplayName != null && normalizedDisplayName.isNotEmpty)
+          'display_name': normalizedDisplayName,
       });
       return await _saveAuthResponse(response.data as Map<String, dynamic>);
     } catch (e) {
@@ -88,7 +92,8 @@ class AuthService {
     } catch (e) {
       return AuthResult(
         success: false,
-        message: 'Google sign-in unavailable. Use email login or try again later.',
+        message:
+            'Google sign-in unavailable. Use email login or try again later.',
       );
     }
   }
@@ -112,7 +117,8 @@ class AuthService {
     } catch (e) {
       return AuthResult(
         success: false,
-        message: 'Apple sign-in unavailable. Use email login or try again later.',
+        message:
+            'Apple sign-in unavailable. Use email login or try again later.',
       );
     }
   }

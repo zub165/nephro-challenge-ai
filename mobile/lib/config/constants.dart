@@ -1,7 +1,7 @@
 class AppConstants {
   static const String appName = 'Nephro Challenge AI';
-  static const String appVersion = '1.3.2';
-  static const int buildNumber = 9;
+  static const String appVersion = '1.3.3';
+  static const int buildNumber = 10;
 
   /// Production API (GoDaddy VPS / custom domain)
   static const String baseUrl = 'https://nephro-api.schedulemygroup.com/api';

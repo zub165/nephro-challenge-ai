@@ -10,13 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
 
-_secret = os.getenv("SECRET_KEY", "")
-if not _secret:
-    if DEBUG:
-        _secret = "django-insecure-change-me-in-production"
-    else:
-        raise ValueError("SECRET_KEY environment variable is required when DEBUG=False")
-SECRET_KEY = _secret
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise ValueError(f"{name} environment variable is required")
+    return value
+
+
+SECRET_KEY = _required_env("SECRET_KEY")
 
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
@@ -92,11 +94,11 @@ CORS_ALLOW_CREDENTIALS = True
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "nephro_challenge"),
-        "USER": os.getenv("DB_USER", "postgres"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "postgres"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "NAME": _required_env("DB_NAME"),
+        "USER": _required_env("DB_USER"),
+        "PASSWORD": _required_env("DB_PASSWORD"),
+        "HOST": _required_env("DB_HOST"),
+        "PORT": _required_env("DB_PORT"),
     }
 }
 

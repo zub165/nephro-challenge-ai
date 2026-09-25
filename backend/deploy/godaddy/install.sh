@@ -8,7 +8,7 @@ set -euo pipefail
 
 APP_DIR="${APP_DIR:-/var/www/nephro-challenge-ai}"
 REPO_URL="${REPO_URL:-https://github.com/zub165/nephro-challenge-ai.git}"
-API_DOMAIN="${API_DOMAIN:-api.nephrochallenge.ai}"
+API_DOMAIN="${API_DOMAIN:-nephro-api.schedulemygroup.com}"
 GUNICORN_PORT="${GUNICORN_PORT:-8007}"
 DB_NAME="${DB_NAME:-nephro_challenge}"
 DB_USER="${DB_USER:-nephro_app}"
@@ -74,7 +74,13 @@ fi
 
 echo "==> Django migrate + seed"
 python manage.py migrate --noinput
-python manage.py seed_data || true
+if grep -q '^ADMIN_USERNAME=.' .env && grep -q '^ADMIN_PASSWORD=.' .env; then
+  python manage.py seed_data || true
+else
+  echo "Skipping seed_data: set ADMIN_USERNAME, ADMIN_EMAIL and ADMIN_PASSWORD in .env first"
+  echo "Seeding the board exam content instead: python manage.py seed_board_exam"
+  python manage.py seed_board_exam || true
+fi
 python manage.py collectstatic --noinput
 
 echo "==> Permissions"
@@ -142,6 +148,5 @@ echo " API URL: https://$API_DOMAIN/api/health/"
 echo " Admin:   https://$API_DOMAIN/admin/"
 echo " Docs:    https://$API_DOMAIN/api/docs/"
 echo ""
-echo " Login (seed): admin / admin123"
-echo " Change admin password: python manage.py changepassword admin"
+echo " Create one with: python manage.py createsuperuser"
 echo "=============================================="

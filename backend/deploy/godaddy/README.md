@@ -1,12 +1,16 @@
 # Deploy Backend to GoDaddy VPS
 
 Frontend stays on **GitHub Pages**: https://zub165.github.io/nephro-challenge-ai/  
-Backend runs on **GoDaddy VPS**: https://api.nephrochallenge.ai
+Backend runs on **GoDaddy VPS**: https://nephro-api.schedulemygroup.com
+
+There is no DNS A record for `api.nephrochallenge.ai`; every deploy file in this
+repo uses the live host `nephro-api.schedulemygroup.com`. `deploy/nginx/api.nephrochallenge.ai.conf`
+is a blueprint only — do not install it until that record actually exists.
 
 ## Prerequisites
 
 1. GoDaddy VPS (Ubuntu 22.04+ recommended) with SSH access
-2. DNS **A record**: `api.nephrochallenge.ai` → your VPS public IP
+2. DNS **A record**: `nephro-api.schedulemygroup.com` → your VPS public IP
 3. Ports **80** and **443** open in GoDaddy firewall
 
 ## Port
@@ -41,23 +45,40 @@ sudo DB_PASS='your-strong-password' bash deploy/godaddy/install.sh
 
 | URL | Purpose |
 |-----|---------|
-| https://api.nephrochallenge.ai/api/health/ | Health check |
-| https://api.nephrochallenge.ai/api/docs/ | Swagger API docs |
-| https://api.nephrochallenge.ai/admin/ | Django admin |
+| https://nephro-api.schedulemygroup.com/api/health/ | Health check |
+| https://nephro-api.schedulemygroup.com/api/docs/ | Swagger API docs |
+| https://nephro-api.schedulemygroup.com/admin/ | Django admin |
 
-**Test login:** `admin` / `admin123` (change immediately)
+No default admin credentials are created. Create a superuser on the VPS:
 
 ```bash
 cd /var/www/nephro-challenge-ai/backend
 source venv/bin/activate
-python manage.py changepassword admin
+python manage.py createsuperuser
 ```
 
 ## Update after code changes
 
+The VPS is **not** a git checkout and must never be updated with `git pull`.
+
+From a workstation, run the one-shot sync script. It verifies the local code,
+stages it, copies it, backs up the database and code on the server, runs
+`migrate` + `collectstatic`, restarts the service, health-checks port 8007, and
+rolls back automatically on any failure:
+
+```bash
+bash backend/deploy/godaddy/sync-godaddy.sh            # deploy
+bash backend/deploy/godaddy/sync-godaddy.sh --seed     # also seed (unpublished)
+```
+
+If you prefer to copy the files yourself, then finish on the server:
+
 ```bash
 sudo bash /var/www/nephro-challenge-ai/backend/deploy/godaddy/deploy.sh
 ```
+
+`deploy.sh` never runs `makemigrations`; generate migrations locally and copy
+them with the code.
 
 ## Optional: Ollama (LLaMA AI on same VPS)
 
@@ -81,10 +102,12 @@ sudo systemctl status nginx
 sudo systemctl restart nephro-api nginx
 ```
 
-## DNS not ready yet?
+## TLS certificate
 
-Run install anyway, then when DNS propagates:
+`install.sh` already requests a certificate for the live host:
 
 ```bash
-sudo certbot --nginx -d api.nephrochallenge.ai
+sudo certbot --nginx -d nephro-api.schedulemygroup.com
 ```
+
+Only run this for `api.nephrochallenge.ai` after its DNS A record exists.

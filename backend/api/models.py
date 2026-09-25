@@ -1,5 +1,32 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
+from django.utils import timezone
+
+
+class ReviewStatus(models.TextChoices):
+    """Medical review state for seeded learning content."""
+
+    NEEDS_REVIEW = "needs_review", "Needs review"
+    IN_REVIEW = "in_review", "In review"
+    APPROVED = "approved", "Approved"
+    REJECTED = "rejected", "Rejected"
+
+
+class MedicalSourceMetadataMixin(models.Model):
+    """Provenance and medical review state shared by questions and lessons."""
+
+    source_metadata = models.JSONField(blank=True, default=dict)
+    review_status = models.CharField(
+        max_length=20,
+        choices=ReviewStatus.choices,
+        default=ReviewStatus.NEEDS_REVIEW,
+    )
+    reviewed_by = models.CharField(max_length=150, blank=True, default="")
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
 
 
 class User(AbstractUser):
@@ -93,7 +120,7 @@ class Topic(models.Model):
         return f"{self.chapter.title} — {self.title}"
 
 
-class Lesson(models.Model):
+class Lesson(MedicalSourceMetadataMixin, models.Model):
     """Learning content: animation URL stored externally (R2/S3); only URL in DB."""
 
     class LessonType(models.TextChoices):
@@ -127,7 +154,7 @@ class Lesson(models.Model):
         return self.title
 
 
-class Question(models.Model):
+class Question(MedicalSourceMetadataMixin, models.Model):
     class Difficulty(models.TextChoices):
         EASY = "easy", "Easy"
         MEDIUM = "medium", "Medium"
@@ -481,8 +508,111 @@ class AIKnowledgeEntry(models.Model):
     class Meta:
         ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=["status", "topic"]),
+            models.Index(
+                fields=["status", "topic"],
+                name="api_aiknowl_status_8f2a1c_idx",
+            ),
         ]
 
     def __str__(self) -> str:
         return f"[{self.status}] {self.topic or 'General'}: {self.lesson_rule[:60]}"
+
+
+class BoardExam(models.Model):
+    slug = models.SlugField(max_length=150, unique=True)
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, default="")
+    question_count = models.PositiveIntegerField(default=50)
+    duration_minutes = models.PositiveIntegerField(default=60)
+    chapter_quota = models.JSONField(blank=True, default=dict)
+    is_published = models.BooleanField(default=False)
+    questions = models.ManyToManyField(Question, related_name="board_exams", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.title} ({self.question_count} questions)"
+
+
+class BoardExamAttempt(models.Model):
+    class Status(models.TextChoices):
+        IN_PROGRESS = "in_progress", "In progress"
+        SUBMITTED = "submitted", "Submitted"
+        EXPIRED = "expired", "Expired"
+
+    ACTIVE_STATUS = Status.IN_PROGRESS
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="board_exam_attempts",
+    )
+    exam = models.ForeignKey(
+        BoardExam,
+        on_delete=models.CASCADE,
+        related_name="attempts",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.IN_PROGRESS,
+    )
+    started_at = models.DateTimeField(default=timezone.now)
+    deadline = models.DateTimeField()
+    finalized_at = models.DateTimeField(null=True, blank=True)
+    correct_count = models.PositiveIntegerField(default=0)
+    score = models.FloatField(default=0.0)
+    total_questions = models.PositiveIntegerField(default=0)
+    time_taken_seconds = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "exam"],
+                condition=Q(status="in_progress"),
+                name="unique_active_board_exam_attempt",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user.username} - {self.exam.slug} - {self.status}"
+
+
+class BoardExamAttemptItem(models.Model):
+    attempt = models.ForeignKey(
+        BoardExamAttempt,
+        on_delete=models.CASCADE,
+        related_name="items",
+    )
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.PROTECT,
+        related_name="board_exam_items",
+    )
+    position = models.PositiveIntegerField()
+    public_snapshot = models.JSONField(default=dict)
+    solution_snapshot = models.JSONField(default=dict)
+    selected_choice_key = models.CharField(max_length=2, blank=True, default="")
+    answered_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["position"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["attempt", "position"],
+                name="unique_board_exam_item_position",
+            ),
+            models.UniqueConstraint(
+                fields=["attempt", "question"],
+                name="unique_board_exam_item_question",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.attempt_id} - #{self.position}"

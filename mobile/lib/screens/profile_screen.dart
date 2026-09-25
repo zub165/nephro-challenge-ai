@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../config/constants.dart';
 import '../config/routes.dart';
+import '../models/user.dart';
 import '../providers/auth_provider.dart';
 import '../providers/dashboard_provider.dart';
 import '../providers/navigation_provider.dart';
+import '../utils/json_helpers.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -59,10 +61,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildProfileHeader(
     BuildContext context,
-    dynamic user,
+    User user,
     AuthProvider auth,
     DashboardProvider dashboard,
   ) {
+    final displayName =
+        JsonHelpers.firstNonBlankString([user.displayName]) ?? 'User';
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -79,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             radius: 48,
             backgroundColor: Colors.white.withValues(alpha: 0.2),
             child: Text(
-              (user.displayName ?? 'U')[0].toUpperCase(),
+              JsonHelpers.initial(user.displayName, fallback: 'U'),
               style: GoogleFonts.inter(
                 fontSize: 40,
                 fontWeight: FontWeight.w600,
@@ -94,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
           const SizedBox(height: 16),
           Text(
-            user.displayName ?? 'User',
+            displayName,
             style: GoogleFonts.inter(
               fontSize: 22,
               fontWeight: FontWeight.w600,
@@ -117,9 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              dashboard.userRank > 0
-                  ? 'Rank #${dashboard.userRank}'
-                  : 'Rank —',
+              dashboard.userRank > 0 ? 'Rank #${dashboard.userRank}' : 'Rank —',
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -145,9 +147,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStatItem(Icons.quiz_outlined, '${dashboard.totalQuizzes}', 'Quizzes'),
-              _buildStatItem(Icons.check_circle_outline, '${dashboard.correctAnswers}', 'Correct'),
-              _buildStatItem(Icons.emoji_events_outlined, '${dashboard.points}', 'Points'),
+              _buildStatItem(
+                  Icons.quiz_outlined, '${dashboard.totalQuizzes}', 'Quizzes'),
+              _buildStatItem(Icons.check_circle_outline,
+                  '${dashboard.correctAnswers}', 'Correct'),
+              _buildStatItem(
+                  Icons.emoji_events_outlined, '${dashboard.points}', 'Points'),
             ],
           ),
           const SizedBox(height: 16),
@@ -330,9 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               item['title'] as String,
               style: GoogleFonts.inter(
                 fontSize: 16,
-                color: isLogout
-                    ? const Color(0xFFEF4444)
-                    : null,
+                color: isLogout ? const Color(0xFFEF4444) : null,
               ),
             ),
             trailing: const Icon(Icons.chevron_right, size: 20),
@@ -403,7 +406,8 @@ Study nephrology board review: ${AppConstants.webAppUrl}
                 (route) => false,
               );
             },
-            child: const Text('Logout', style: TextStyle(color: Color(0xFFEF4444))),
+            child: const Text('Logout',
+                style: TextStyle(color: Color(0xFFEF4444))),
           ),
         ],
       ),
