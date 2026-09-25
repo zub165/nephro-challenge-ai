@@ -19,4 +19,5 @@ class AppRoutes {
   static const String performanceAnalytics = '/performance-analytics';
   static const String studyHistory = '/study-history';
   static const String about = '/about';
+  static const String boardPrep = '/board-prep';
 }

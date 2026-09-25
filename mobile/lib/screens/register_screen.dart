@@ -90,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withOpacity(0.7),
+                        ?.withValues(alpha: 0.7),
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
                 const SizedBox(height: 32),
@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.7),
+                            ?.withValues(alpha: 0.7),
                       ),
                     ),
                     TextButton(

@@ -106,7 +106,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Center(
@@ -194,7 +194,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                   .textTheme
                   .bodyMedium
                   ?.color
-                  ?.withOpacity(0.7),
+                  ?.withValues(alpha: 0.7),
             ),
           ),
         ],

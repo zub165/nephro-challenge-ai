@@ -132,7 +132,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: cat.isLocked
-                ? Colors.grey.withOpacity(0.3)
+                ? Colors.grey.withValues(alpha: 0.3)
                 : Theme.of(context).dividerTheme.color!,
           ),
         ),
@@ -146,8 +146,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     color: cat.isLocked
-                        ? Colors.grey.withOpacity(0.2)
-                        : Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        ? Colors.grey.withValues(alpha: 0.2)
+                        : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -164,8 +164,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: cat.accuracy >= 60
-                          ? const Color(0xFF22C55E).withOpacity(0.1)
-                          : const Color(0xFFF59E0B).withOpacity(0.1),
+                          ? const Color(0xFF22C55E).withValues(alpha: 0.1)
+                          : const Color(0xFFF59E0B).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -203,7 +203,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     .textTheme
                     .bodyMedium
                     ?.color
-                    ?.withOpacity(0.7),
+                    ?.withValues(alpha: 0.7),
               ),
             ),
             if (cat.completedCount > 0) ...[

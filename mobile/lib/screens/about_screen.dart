@@ -22,7 +22,7 @@ class AboutScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Icon(Icons.medical_services_outlined,
+          const Icon(Icons.medical_services_outlined,
               size: 72, color: AppColors.teal),
           const SizedBox(height: 16),
           Text(

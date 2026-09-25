@@ -3,6 +3,7 @@ import random
 import uuid
 from datetime import date, datetime
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.db.models import Count, F, FloatField, Q
@@ -57,8 +58,10 @@ from api.serializers import (
     UserSerializer,
 )
 from api.services.ai_service import (
+    BOARD_PREP_TOPICS,
     chat_with_tutor,
     detailed_explanation,
+    generate_board_prep_questions,
     generate_explanation,
     generate_question,
     generate_questions,
@@ -180,6 +183,114 @@ class AuthViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(UserSerializer(request.user).data)
+
+
+def _token_response_for_user(user):
+    tokens = _get_tokens_for_user(user)
+    return {"user": UserSerializer(user).data, "token": tokens["access"], **tokens}
+
+
+def _resolve_oauth_user(email, given_name=None, family_name=None):
+    if not email:
+        return None
+    display_name = " ".join(n for n in [given_name, family_name] if n).strip()
+    user = User.objects.filter(email__iexact=email).first()
+    if user:
+        if display_name and not user.name and not user.display_name:
+            user.name = display_name
+            user.display_name = display_name
+            user.save(update_fields=["name", "display_name"])
+        return user
+    base = (email.split("@")[0] or "user")[:30]
+    username = _unique_username(base)
+    user = User(username=username, email=email, name=display_name or None, display_name=display_name or None)
+    user.set_unusable_password()
+    try:
+        user.save()
+    except IntegrityError:
+        user = User.objects.filter(email__iexact=email).first()
+    return user
+
+
+class GoogleAuthView(APIView):
+    """POST /api/auth/google/ — exchange GoogleSignIn id_token for JWT."""
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        id_token_value = request.data.get("id_token") or request.data.get("identity_token")
+        if not id_token_value:
+            return Response({"detail": "id_token is required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            from google.auth.transport import requests as google_requests
+            from google.oauth2 import id_token as google_id_token
+
+            claims = google_id_token.verify_oauth2_token(
+                id_token_value,
+                google_requests.Request(),
+                audience=settings.GOOGLE_CLIENT_ID,
+            )
+        except Exception as exc:
+            return Response(
+                {"detail": f"Invalid Google token: {exc}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = _resolve_oauth_user(
+            claims.get("email"),
+            claims.get("given_name"),
+            claims.get("family_name"),
+        )
+        if not user:
+            return Response({"detail": "Google account has no verified email"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(_token_response_for_user(user))
+
+
+class AppleAuthView(APIView):
+    """POST /api/auth/apple/ — exchange Sign in with Apple identity token for JWT."""
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    APPLE_ISSUER = "https://appleid.apple.com"
+    APPLE_JWKS_URL = "https://appleid.apple.com/auth/keys"
+
+    def post(self, request):
+        identity_token = request.data.get("identity_token")
+        if not identity_token:
+            return Response({"detail": "identity_token is required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            import jwt as apple_jwt
+            from jwt import PyJWKClient
+
+            jwks_client = PyJWKClient(self.APPLE_JWKS_URL)
+            signing_key = jwks_client.get_signing_key_from_jwt(identity_token)
+            claims = apple_jwt.decode(
+                identity_token,
+                signing_key.key,
+                algorithms=["RS256"],
+                issuer=self.APPLE_ISSUER,
+                audience=settings.APPLE_CLIENT_ID,
+                options={"verify_aud": bool(settings.APPLE_CLIENT_ID)},
+            )
+        except Exception as exc:
+            return Response(
+                {"detail": f"Invalid Apple token: {exc}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        email = claims.get("email")
+        if not email:
+            apple_user = request.data.get("email")
+            if apple_user:
+                email = apple_user
+        user = _resolve_oauth_user(
+            email,
+            request.data.get("given_name"),
+            request.data.get("family_name"),
+        )
+        if not user:
+            return Response({"detail": "Apple sign-in requires a verified email"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(_token_response_for_user(user))
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -408,6 +519,37 @@ class AIGenerateQuestionsView(APIView):
         difficulty = request.data.get("difficulty", "medium")
         questions = generate_questions(topic, count=count, difficulty=difficulty)
         return Response({"questions": questions})
+
+
+class BoardPrepView(APIView):
+    """POST /api/ai/board-prep/ — ML-generated nephrology board MCQs for practice.
+
+    Body: { topic?: str, count?: int (1-10), difficulty?: easy|medium|hard }
+    Returns: { topic, difficulty, questions: [...], generated: bool }
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        topic = (request.data.get("topic") or "").strip()
+        if not topic:
+            topic = random.choice(BOARD_PREP_TOPICS)
+        try:
+            count = max(1, min(6, int(request.data.get("count", 3))))
+        except (TypeError, ValueError):
+            count = 3
+        difficulty = request.data.get("difficulty", "medium")
+        if difficulty not in ("easy", "medium", "hard"):
+            difficulty = "medium"
+        questions = generate_board_prep_questions(topic, count=count, difficulty=difficulty)
+        return Response(
+            {
+                "topic": topic,
+                "difficulty": difficulty,
+                "questions": questions,
+                "generated": bool(questions),
+            }
+        )
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):

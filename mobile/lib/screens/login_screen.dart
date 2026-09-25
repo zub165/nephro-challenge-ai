@@ -60,6 +60,13 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
     if (success) {
       Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.error ?? 'Google sign-in failed'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -71,6 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
     if (success) {
       Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.error ?? 'Apple sign-in failed'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -116,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withOpacity(0.7),
+                        ?.withValues(alpha: 0.7),
                   ),
                 ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
                 const SizedBox(height: 40),
@@ -203,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               .textTheme
                               .bodyMedium
                               ?.color
-                              ?.withOpacity(0.5),
+                              ?.withValues(alpha: 0.5),
                         ),
                       ),
                     ),
@@ -240,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.7),
+                            ?.withValues(alpha: 0.7),
                       ),
                     ),
                     TextButton(

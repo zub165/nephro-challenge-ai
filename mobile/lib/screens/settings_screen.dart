@@ -93,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           _section('About'),
           ListTile(
-            title: Text('Version ${AppConstants.appVersion} (${AppConstants.buildNumber})'),
+            title: const Text('Version ${AppConstants.appVersion} (${AppConstants.buildNumber})'),
             subtitle: Text(AppConstants.disclaimerText, style: GoogleFonts.inter(fontSize: 12)),
           ),
         ],

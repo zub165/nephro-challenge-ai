@@ -23,7 +23,11 @@ class AuthService {
   static AuthService? _instance;
   final ApiService _api = ApiService.instance;
   final StorageService _storage = StorageService.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+    serverClientId:
+        const String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
+  );
 
   AuthService._();
 

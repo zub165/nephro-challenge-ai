@@ -157,12 +157,26 @@ SPECTACULAR_SETTINGS = {
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4")
 
+# --- Social auth (Google / Apple) ---
+# GOOGLE_CLIENT_ID: the OAuth 2.0 Web client ID (server-side) from your Google
+# Cloud / Firebase project; the mobile GoogleSignIn uses it as serverClientId so
+# ID tokens carry this audience for verification here.
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+
+# APPLE_CLIENT_ID: your iOS app's bundle identifier (com.apple "services" id).
+# The Apple identity token's audience is the bundle id when created by
+# Sign in with Apple on iOS.
+APPLE_CLIENT_ID = os.getenv("APPLE_CLIENT_ID", "")
+
 # GoDaddy VPS — local Ollama (OpenAI-compatible /v1 endpoint)
-# Default: qwen2.5:0.5b-instruct (~397 MB, fits 4 GB VPS). ollama pull qwen2.5:0.5b-instruct
+# Default: qwen2.5:0.5b-instruct (~397 MB, FAST + stable on the shared/swap-heavy
+# 3.8 GB VPS). Bigger models (1.5b/3b) OOM-kill gunicorn under real load here.
 AI_PROVIDER = os.getenv("AI_PROVIDER", "auto")  # auto | ollama | llama | openai
 LLAMA_BASE_URL = os.getenv("LLAMA_BASE_URL", "http://127.0.0.1:11434/v1")
 LLAMA_MODEL = os.getenv("LLAMA_MODEL", "qwen2.5:0.5b-instruct")
 LLAMA_API_KEY = os.getenv("LLAMA_API_KEY", "ollama")
+# Cap the Ollama context window so the 3.8 GB VPS stays in RAM (no OOM kills).
+LLM_NUM_CTX = int(os.getenv("LLM_NUM_CTX", "4096"))
 
 # RAG-style learning: inject approved corrections into Ollama prompts (no fine-tuning on VPS)
 AI_LEARNING_ENABLED = os.getenv("AI_LEARNING_ENABLED", "true").lower() in ("1", "true", "yes")

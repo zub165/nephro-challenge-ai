@@ -79,4 +79,21 @@ class AIService {
       return [];
     }
   }
+
+  Future<Map<String, dynamic>> generateBoardPrep({
+    required String topic,
+    int count = 3,
+    String difficulty = 'medium',
+  }) async {
+    try {
+      final response = await _api.post('/ai/board-prep', data: {
+        'topic': topic,
+        'count': count,
+        'difficulty': difficulty,
+      }, timeout: const Duration(minutes: 5));
+      return response.data as Map<String, dynamic>;
+    } catch (_) {
+      return {'questions': [], 'generated': false};
+    }
+  }
 }

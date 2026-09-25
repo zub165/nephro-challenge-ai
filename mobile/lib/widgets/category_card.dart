@@ -32,7 +32,7 @@ class CategoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isLocked
-                ? Colors.grey.withOpacity(0.3)
+                ? Colors.grey.withValues(alpha: 0.3)
                 : Theme.of(context).dividerTheme.color!,
           ),
         ),
@@ -47,11 +47,11 @@ class CategoryCard extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     color: isLocked
-                        ? Colors.grey.withOpacity(0.2)
+                        ? Colors.grey.withValues(alpha: 0.2)
                         : Theme.of(context)
                             .colorScheme
                             .primary
-                            .withOpacity(0.1),
+                            .withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -69,8 +69,8 @@ class CategoryCard extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: accuracy >= 60
-                          ? const Color(0xFF22C55E).withOpacity(0.1)
-                          : const Color(0xFFF59E0B).withOpacity(0.1),
+                          ? const Color(0xFF22C55E).withValues(alpha: 0.1)
+                          : const Color(0xFFF59E0B).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -107,7 +107,7 @@ class CategoryCard extends StatelessWidget {
                     .textTheme
                     .bodyMedium
                     ?.color
-                    ?.withOpacity(0.7),
+                    ?.withValues(alpha: 0.7),
               ),
             ),
           ],

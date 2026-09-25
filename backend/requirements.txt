@@ -8,3 +8,7 @@ gunicorn
 openai
 drf-spectacular
 Pillow
+google-auth
+requests
+PyJWT
+cryptography

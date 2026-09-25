@@ -41,7 +41,7 @@ class ExplanationScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -93,7 +93,7 @@ class ExplanationScreen extends StatelessWidget {
                       color: Theme.of(context).cardTheme.color,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: const Color(0xFF0D9488).withOpacity(0.3),
+                        color: const Color(0xFF0D9488).withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
@@ -121,10 +121,10 @@ class ExplanationScreen extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF22C55E).withOpacity(0.1),
+                          color: const Color(0xFF22C55E).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: const Color(0xFF22C55E).withOpacity(0.3),
+                            color: const Color(0xFF22C55E).withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -197,10 +197,10 @@ class ExplanationScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF59E0B).withOpacity(0.1),
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: const Color(0xFFF59E0B).withOpacity(0.3),
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
                         ),
                       ),
                       child: Row(

@@ -43,7 +43,7 @@ class CategoryQuestionsScreen extends StatelessWidget {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Icon(
@@ -177,7 +177,7 @@ class CategoryQuestionsScreen extends StatelessWidget {
       },
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.all(20),
-        side: BorderSide(color: color.withOpacity(0.5)),
+        side: BorderSide(color: color.withValues(alpha: 0.5)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -187,7 +187,7 @@ class CategoryQuestionsScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 24),
@@ -212,7 +212,7 @@ class CategoryQuestionsScreen extends StatelessWidget {
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withOpacity(0.7),
+                        ?.withValues(alpha: 0.7),
                   ),
                 ),
               ],

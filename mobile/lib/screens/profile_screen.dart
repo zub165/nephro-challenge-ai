@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           CircleAvatar(
             radius: 48,
-            backgroundColor: Colors.white.withOpacity(0.2),
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
             child: Text(
               (user.displayName ?? 'U')[0].toUpperCase(),
               style: GoogleFonts.inter(
@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.7),
+                            ?.withValues(alpha: 0.7),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.7),
+                            ?.withValues(alpha: 0.7),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 .textTheme
                 .bodyMedium
                 ?.color
-                ?.withOpacity(0.7),
+                ?.withValues(alpha: 0.7),
           ),
         ),
       ],

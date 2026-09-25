@@ -10,6 +10,7 @@ import 'providers/notes_provider.dart';
 import 'providers/quiz_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/ai_tutor_screen.dart';
+import 'screens/board_prep_screen.dart';
 import 'screens/categories_screen.dart';
 import 'screens/category_questions_screen.dart';
 import 'screens/daily_challenge_screen.dart';
@@ -134,6 +135,11 @@ class NephroChallengeApp extends StatelessWidget {
           builder: (_) => const AITutorScreen(),
           settings: settings,
         );
+      case AppRoutes.boardPrep:
+        return MaterialPageRoute(
+          builder: (_) => const BoardPrepScreen(),
+          settings: settings,
+        );
       case AppRoutes.chapters:
         return MaterialPageRoute(builder: (_) => const ChaptersScreen(), settings: settings);
       case AppRoutes.chapterDetail:
@@ -205,7 +211,7 @@ class _MainShellState extends State<MainShell> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),

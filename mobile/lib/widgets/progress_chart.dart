@@ -47,7 +47,7 @@ class ProgressChart extends StatelessWidget {
                       color: Theme.of(context)
                           .dividerTheme
                           .color!
-                          .withOpacity(0.5),
+                          .withValues(alpha: 0.5),
                       strokeWidth: 1,
                     );
                   },
@@ -128,7 +128,7 @@ class ProgressChart extends StatelessWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .secondary
-                          .withOpacity(0.1),
+                          .withValues(alpha: 0.1),
                     ),
                   ),
                 ],
@@ -178,7 +178,7 @@ class RadarChartWidget extends StatelessWidget {
                 dataSets: [
                   RadarDataSet(
                     fillColor:
-                        Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                        Theme.of(context).colorScheme.secondary.withValues(alpha: 0.2),
                     borderColor: Theme.of(context).colorScheme.secondary,
                     borderWidth: 2,
                     entryRadius: 4,

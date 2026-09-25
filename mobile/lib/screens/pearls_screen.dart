@@ -94,13 +94,13 @@ class _PearlsScreenState extends State<PearlsScreen> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.amber.withOpacity(0.12),
-                                  Colors.orange.withOpacity(0.06),
+                                  Colors.amber.withValues(alpha: 0.12),
+                                  Colors.orange.withValues(alpha: 0.06),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: Colors.amber.withOpacity(0.25)),
+                                  color: Colors.amber.withValues(alpha: 0.25)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

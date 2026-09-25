@@ -11,10 +11,10 @@ class DisclaimerBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF59E0B).withOpacity(0.1),
+        color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: const Color(0xFFF59E0B).withOpacity(0.3),
+          color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
         ),
       ),
       child: Row(

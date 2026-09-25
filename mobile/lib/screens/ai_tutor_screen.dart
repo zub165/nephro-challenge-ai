@@ -84,7 +84,7 @@ class _AITutorScreenState extends State<AITutorScreen> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFF0D9488).withOpacity(0.2),
+                color: const Color(0xFF0D9488).withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.auto_awesome, size: 18, color: Color(0xFF0D9488)),

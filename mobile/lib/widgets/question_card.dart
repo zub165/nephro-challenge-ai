@@ -28,7 +28,7 @@ class QuestionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getDifficultyColor().withOpacity(0.1),
+                  color: _getDifficultyColor().withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -45,7 +45,7 @@ class QuestionCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -103,7 +103,7 @@ class QuestionCard extends StatelessWidget {
                     color: Theme.of(context)
                         .dividerTheme
                         .color!
-                        .withOpacity(0.5),
+                        .withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

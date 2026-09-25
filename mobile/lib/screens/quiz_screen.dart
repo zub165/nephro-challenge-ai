@@ -295,7 +295,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   .textTheme
                   .bodyMedium
                   ?.color
-                  ?.withOpacity(0.7),
+                  ?.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 32),
@@ -329,8 +329,8 @@ class _QuizScreenState extends State<QuizScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isPassed
-                  ? const Color(0xFF22C55E).withOpacity(0.1)
-                  : const Color(0xFFEF4444).withOpacity(0.1),
+                  ? const Color(0xFF22C55E).withValues(alpha: 0.1)
+                  : const Color(0xFFEF4444).withValues(alpha: 0.1),
             ),
             child: CircularPercentIndicator(
               radius: 60,
@@ -374,7 +374,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   .textTheme
                   .bodyMedium
                   ?.color
-                  ?.withOpacity(0.7),
+                  ?.withValues(alpha: 0.7),
             ),
           ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
           const SizedBox(height: 32),
@@ -470,7 +470,7 @@ class _QuizScreenState extends State<QuizScreen> {
           height: 72,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
           ),
           child: Center(
             child: Text(
@@ -492,7 +492,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 .textTheme
                 .bodyMedium
                 ?.color
-                ?.withOpacity(0.7),
+                ?.withValues(alpha: 0.7),
           ),
         ),
       ],
@@ -527,7 +527,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.7),
+                      ?.withValues(alpha: 0.7),
                 ),
               ),
             ],

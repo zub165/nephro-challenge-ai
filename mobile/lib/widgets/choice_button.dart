@@ -30,12 +30,12 @@ class ChoiceButton extends StatelessWidget {
 
     if (isAnswered) {
       if (choice.id == correctAnswerId) {
-        backgroundColor = const Color(0xFF22C55E).withOpacity(0.1);
+        backgroundColor = const Color(0xFF22C55E).withValues(alpha: 0.1);
         borderColor = const Color(0xFF22C55E);
         textColor = const Color(0xFF22C55E);
         icon = Icons.check_circle;
       } else if (isSelected && choice.id != correctAnswerId) {
-        backgroundColor = const Color(0xFFEF4444).withOpacity(0.1);
+        backgroundColor = const Color(0xFFEF4444).withValues(alpha: 0.1);
         borderColor = const Color(0xFFEF4444);
         textColor = const Color(0xFFEF4444);
         icon = Icons.cancel;
@@ -45,7 +45,7 @@ class ChoiceButton extends StatelessWidget {
         textColor = Theme.of(context).textTheme.bodyLarge?.color;
       }
     } else if (isSelected) {
-      backgroundColor = Theme.of(context).colorScheme.primary.withOpacity(0.1);
+      backgroundColor = Theme.of(context).colorScheme.primary.withValues(alpha: 0.1);
       borderColor = Theme.of(context).colorScheme.primary;
       textColor = Theme.of(context).colorScheme.primary;
     } else {

@@ -7,6 +7,12 @@ plugins {
 import java.util.Properties
 import java.io.FileInputStream
 
+// Google Sign-In: auto-activates ONLY when the Firebase file is present
+// (download google-services.json from Firebase Console -> app -> Add config).
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 val keystorePropertiesFile = rootProject.file("key.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {

@@ -28,7 +28,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    colorScheme: ColorScheme.light(
+colorScheme: const ColorScheme.light(
       primary: AppColors.primaryBlue,
       secondary: AppColors.teal,
       surface: AppColors.surfaceLight,
@@ -186,7 +186,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
-    dividerTheme: DividerThemeData(
+dividerTheme: const DividerThemeData(
       color: AppColors.borderLight,
       thickness: 1,
     ),
@@ -199,7 +199,7 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.dark(
+    colorScheme: const ColorScheme.dark(
       primary: AppColors.teal,
       secondary: AppColors.primaryBlue,
       surface: AppColors.surfaceDark,
@@ -360,7 +360,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
-    dividerTheme: DividerThemeData(
+dividerTheme: const DividerThemeData(
       color: AppColors.borderDark,
       thickness: 1,
     ),

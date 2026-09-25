@@ -1,3 +1,4 @@
+import os
 import random
 
 from django.core.management.base import BaseCommand
@@ -219,14 +220,17 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Data seeded successfully!"))
 
     def _create_admin_user(self):
-        if not User.objects.filter(username="admin").exists():
+        username = os.getenv("ADMIN_USERNAME", "admin")
+        email = os.getenv("ADMIN_EMAIL", "admin@nephrochallenge.com")
+        password = os.getenv("ADMIN_PASSWORD", "admin123")
+        if not User.objects.filter(username=username).exists():
             User.objects.create_superuser(
-                username="admin",
-                email="admin@nephrochallenge.com",
-                password="admin123",
+                username=username,
+                email=email,
+                password=password,
                 role="admin",
             )
-            self.stdout.write("Admin user created (admin / admin123)")
+            self.stdout.write(f"Admin user created ({username})")
 
     def _create_categories(self):
         for cat_data in CATEGORIES:

@@ -69,6 +69,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _buildStudyLibraryRow(context),
                     const SizedBox(height: 16),
                     _buildSuggestedPractice(context),
+                    const SizedBox(height: 16),
+                    _buildBoardPrepCard(context),
                   ],
                   const SizedBox(height: 80),
                 ],
@@ -95,7 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     .textTheme
                     .bodyMedium
                     ?.color
-                    ?.withOpacity(0.7),
+                    ?.withValues(alpha: 0.7),
               ),
             ),
             Text(
@@ -166,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0D9488).withOpacity(0.3),
+            color: const Color(0xFF0D9488).withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -190,7 +192,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -332,7 +334,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withOpacity(0.7),
+                        ?.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -539,15 +541,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF0D9488).withOpacity(0.1),
-            const Color(0xFF1E3A5F).withOpacity(0.1),
+            const Color(0xFF0D9488).withValues(alpha: 0.1),
+            const Color(0xFF1E3A5F).withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF0D9488).withOpacity(0.3),
+          color: const Color(0xFF0D9488).withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -555,7 +557,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D9488).withOpacity(0.1),
+              color: const Color(0xFF0D9488).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
@@ -585,7 +587,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withOpacity(0.7),
+                        ?.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -600,6 +602,70 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
     ).animate().fadeIn(duration: 400.ms, delay: 500.ms);
+  }
+
+  Widget _buildBoardPrepCard(BuildContext context) {
+    const accent = Color(0xFF6366F1);
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            accent.withValues(alpha: 0.12),
+            const Color(0xFF1E3A5F).withValues(alpha: 0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accent.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.workspace_premium, color: accent, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Board Prep',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Fresh AI-written board questions, generated on demand',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.color
+                        ?.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(AppRoutes.boardPrep);
+            },
+            icon: const Icon(Icons.arrow_forward_ios, size: 18),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 400.ms, delay: 550.ms);
   }
 }
 
@@ -621,7 +687,7 @@ class _LibraryShortcut extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: color.withOpacity(0.08),
+      color: color.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,

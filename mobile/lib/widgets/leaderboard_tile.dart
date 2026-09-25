@@ -19,7 +19,7 @@ class LeaderboardTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isCurrentUser
-            ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
             : Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
@@ -47,7 +47,7 @@ class LeaderboardTile extends StatelessWidget {
             radius: 22,
             backgroundColor: isCurrentUser
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                : Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
             child: Text(
               (entry.displayName ?? '?')[0].toUpperCase(),
               style: GoogleFonts.inter(
@@ -78,7 +78,7 @@ class LeaderboardTile extends StatelessWidget {
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withOpacity(0.7),
+                        ?.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -103,7 +103,7 @@ class LeaderboardTile extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.7),
+                      ?.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -117,7 +117,7 @@ class LeaderboardTile extends StatelessWidget {
     if (rank == 1) return const Color(0xFFF59E0B);
     if (rank == 2) return Colors.grey;
     if (rank == 3) return const Color(0xFFCD7F32);
-    return Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ??
+    return Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
         Colors.grey;
   }
 }

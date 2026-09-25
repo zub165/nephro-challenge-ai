@@ -319,12 +319,12 @@ class _NoteTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isPearl
-            ? Colors.amber.withOpacity(0.08)
+            ? Colors.amber.withValues(alpha: 0.08)
             : Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isPearl
-              ? Colors.amber.withOpacity(0.3)
+              ? Colors.amber.withValues(alpha: 0.3)
               : Theme.of(context).dividerColor,
         ),
       ),

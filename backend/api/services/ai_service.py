@@ -102,6 +102,13 @@ def _call_openai_compatible(
     if json_mode:
         create_kwargs["response_format"] = {"type": "json_object"}
 
+    # Ollama-specific: cap the context window so the 3.8GB VPS stays in RAM.
+    if base_url:
+        create_kwargs["extra_body"] = {
+            "num_ctx": getattr(settings, "LLM_NUM_CTX", 4096),
+            "num_predict": max_tokens,
+        }
+
     try:
         response = client.chat.completions.create(**create_kwargs)
         return response.choices[0].message.content.strip()
@@ -349,3 +356,77 @@ def generate_questions(topic: str, count: int = 5, difficulty: str = "medium") -
     if isinstance(data, dict) and isinstance(data.get("questions"), list):
         return data["questions"][:count]
     return []
+
+
+BOARD_PREP_TOPICS = [
+    "Acute Kidney Injury",
+    "Chronic Kidney Disease",
+    "Glomerular diseases (nephrotic and nephritic syndromes)",
+    "Acid-base disorders (metabolic and respiratory)",
+    "Electrolyte disorders (sodium, potassium, calcium, phosphate)",
+    "Hypertension and renovascular disease",
+    "Hemodialysis and peritoneal dialysis",
+    "Kidney transplantation and rejection",
+    "Urinary obstruction and kidney stones",
+    "Renal pharmacology and drug dosing in CKD",
+]
+
+
+def _valid_board_question(raw: Any) -> Optional[Dict[str, Any]]:
+    if not isinstance(raw, dict):
+        return None
+    text = str(raw.get("question_text") or "").strip()
+    choices = [str(c).strip() for c in (raw.get("choices") or []) if str(c).strip()]
+    correct = str(raw.get("correct_answer") or "").strip()
+    explanation = str(raw.get("explanation") or "").strip()
+    if not text or len(choices) < 2 or not correct or len(explanation) < 10:
+        return None
+    if correct not in choices:
+        return None
+    return {
+        "question_text": text,
+        "choices": choices,
+        "correct_answer": correct,
+        "explanation": explanation,
+    }
+
+
+def generate_board_prep_questions(
+    topic: str, count: int = 3, difficulty: str = "medium"
+) -> List[Dict[str, Any]]:
+    """Generate validated board MCQs one at a time.
+
+    Each question uses a short, focused LLM call (~180-220 tokens). Small
+    responses are more likely to be valid JSON, faster, and keep the 3.8 GB
+    VPS out of OOM territory. Failed questions are skipped with up to 3 tries.
+    """
+    system = (
+        "You are a senior nephrology board exam writer. "
+        "Output valid JSON only. No markdown, no code fences."
+    )
+    valid: List[Dict[str, Any]] = []
+    for i in range(count):
+        for attempt in range(3):
+            prompt = (
+                f"Write one high-quality {difficulty} nephrology board-exam "
+                f"multiple-choice question (question #{i + 1}) about '{topic}'. "
+                "Return ONLY a JSON object with keys:\n"
+                "- question_text: a concise clinical vignette (2-3 sentences)\n"
+                "- choices: exactly 4 distinct short answer options\n"
+                "- correct_answer: the exact string of the correct choice\n"
+                "- explanation: a 2-3 sentence teaching point\n\n"
+                "Exactly one clearly correct answer; clinically accurate and "
+                "reasoning-based."
+            )
+            content = _chat_completion(
+                [{"role": "system", "content": system}, {"role": "user", "content": prompt}],
+                max_tokens=220,
+                temperature=0.9,
+                json_mode=True,
+            )
+            if content:
+                parsed = _valid_board_question(_extract_json(content))
+                if parsed:
+                    valid.append(parsed)
+                    break
+    return valid
