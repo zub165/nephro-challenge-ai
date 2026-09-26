@@ -52,24 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _loginWithGoogle() async {
-    setState(() => _isLoading = true);
-    final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.signInWithGoogle();
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-    if (success) {
-      Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.error ?? 'Google sign-in failed'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
   Future<void> _loginWithApple() async {
     setState(() => _isLoading = true);
     final authProvider = context.read<AuthProvider>();
@@ -226,22 +208,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ).animate().fadeIn(duration: 400.ms, delay: 600.ms),
                 const SizedBox(height: 24),
                 OutlinedButton.icon(
-                  onPressed: _isLoading ? null : _loginWithGoogle,
-                  icon: const Icon(Icons.g_mobiledata),
-                  label: const Text('Continue with Google'),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 54),
-                  ),
-                ).animate().fadeIn(duration: 400.ms, delay: 700.ms),
-                const SizedBox(height: 12),
-                OutlinedButton.icon(
                   onPressed: _isLoading ? null : _loginWithApple,
                   icon: const Icon(Icons.apple),
                   label: const Text('Continue with Apple'),
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 54),
                   ),
-                ).animate().fadeIn(duration: 400.ms, delay: 800.ms),
+                ).animate().fadeIn(duration: 400.ms, delay: 700.ms),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

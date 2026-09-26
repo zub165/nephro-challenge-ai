@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../models/user.dart';
 import 'api_service.dart';
@@ -23,10 +22,6 @@ class AuthService {
   static AuthService? _instance;
   final ApiService _api = ApiService.instance;
   final StorageService _storage = StorageService.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-    serverClientId: const String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
-  );
 
   AuthService._();
 
@@ -77,27 +72,6 @@ class AuthService {
     }
   }
 
-  Future<AuthResult> signInWithGoogle() async {
-    try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        return AuthResult(success: false, message: 'Google sign-in cancelled');
-      }
-      final googleAuth = await googleUser.authentication;
-      final response = await _api.post('/auth/google/', data: {
-        'id_token': googleAuth.idToken,
-        'access_token': googleAuth.accessToken,
-      });
-      return await _saveAuthResponse(response.data as Map<String, dynamic>);
-    } catch (e) {
-      return AuthResult(
-        success: false,
-        message:
-            'Google sign-in unavailable. Use email login or try again later.',
-      );
-    }
-  }
-
   Future<AuthResult> signInWithApple() async {
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
@@ -124,9 +98,6 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    try {
-      await _googleSignIn.signOut();
-    } catch (_) {}
     await _storage.clearAuth();
   }
 

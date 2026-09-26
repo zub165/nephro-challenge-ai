@@ -73,25 +73,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> signInWithGoogle() async {
-    _status = AuthStatus.loading;
-    _error = null;
-    notifyListeners();
-
-    final result = await _authService.signInWithGoogle();
-    if (result.success) {
-      _user = result.user;
-      _status = AuthStatus.authenticated;
-      notifyListeners();
-      return true;
-    } else {
-      _error = result.message;
-      _status = AuthStatus.unauthenticated;
-      notifyListeners();
-      return false;
-    }
-  }
-
   Future<bool> signInWithApple() async {
     _status = AuthStatus.loading;
     _error = null;

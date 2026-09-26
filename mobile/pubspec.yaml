@@ -15,7 +15,6 @@ dependencies:
   dio: ^5.4.0
   shared_preferences: ^2.2.2
   flutter_secure_storage: ^9.0.0
-  google_sign_in: ^6.1.6
   sign_in_with_apple: ^6.1.0
   fl_chart: ^0.66.2
   cached_network_image: ^3.3.0
