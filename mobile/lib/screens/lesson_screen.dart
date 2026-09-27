@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../config/constants.dart';
 import '../models/chapter.dart';
+import '../screens/animation_screen.dart';
 import '../services/quiz_service.dart';
 
 class LessonScreen extends StatefulWidget {
@@ -30,10 +30,18 @@ class _LessonScreenState extends State<LessonScreen> {
   }
 
   Future<void> _openAnimation(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    if (url.isEmpty) return;
+    final lesson = _lesson;
+    if (lesson == null) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AnimationScreen(
+          animationUrl: url,
+          fallbackTitle: lesson.title,
+          fallbackSummary: lesson.summary,
+        ),
+      ),
+    );
   }
 
   @override
@@ -76,7 +84,7 @@ class _LessonScreenState extends State<LessonScreen> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () => _openAnimation(lesson.animationUrl),
-                icon: const Icon(Icons.open_in_new),
+                icon: const Icon(Icons.play_circle_outline),
                 label: const Text('Open Animation'),
               ),
             ),

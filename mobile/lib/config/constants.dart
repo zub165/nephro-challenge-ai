@@ -13,6 +13,11 @@ class AppConstants {
       'https://zub165.github.io/nephro-challenge-ai/support.html';
   static const String webAppUrl = 'https://zub165.github.io/nephro-challenge-ai/';
 
+  /// Lesson animation JSON is hosted on GitHub Pages, not bundled in the app
+  /// binary, so animations can be corrected without a new store release.
+  static const String animationBaseUrl =
+      'https://zub165.github.io/nephro-challenge-ai/animations';
+
   static const Duration quizTimerDuration = Duration(minutes: 30);
   static const int dailyChallengeQuestions = 5;
   static const int maxStreakDays = 365;
