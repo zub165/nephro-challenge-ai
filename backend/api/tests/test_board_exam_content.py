@@ -595,27 +595,42 @@ class SeedContentServiceTests(TestCase):
         self.assertEqual(result["questions_attached"], 74)
 
     def test_questions_from_legacy_content_are_excluded_from_the_exam_pool(self):
-        """Older `seed_data` questions can sit in a seeded chapter but must not be pooled."""
+        """Older `seed_data` questions can sit in a seeded chapter but must not be pooled.
+
+        Production showed both shapes of legacy row: source_metadata with an empty
+        chapter_slug, and source_metadata with no chapter_slug key at all.
+        """
         seed_board_exam()
         chapter = Chapter.objects.get(slug=CHAPTERS[0]["slug"])
-        legacy = Question.objects.create(
-            question_text="Legacy question that shares a seeded chapter slug",
-            category=chapter.category,
-            chapter=chapter,
-            explanation="Legacy explanation",
-            review_status=ReviewStatus.NEEDS_REVIEW,
-            source_metadata={
-                "origin": "seed",
-                "kind": "question",
-                "chapter_slug": "",
-                "topic_slug": "",
-            },
-        )
+        legacy_rows = [
+            Question.objects.create(
+                question_text="Legacy question stamped with an empty chapter slug",
+                category=chapter.category,
+                chapter=chapter,
+                explanation="Legacy explanation",
+                review_status=ReviewStatus.NEEDS_REVIEW,
+                source_metadata={
+                    "origin": "seed",
+                    "kind": "question",
+                    "chapter_slug": "",
+                    "topic_slug": "",
+                },
+            ),
+            Question.objects.create(
+                question_text="Legacy question with no chapter slug recorded",
+                category=chapter.category,
+                chapter=chapter,
+                explanation="Legacy explanation",
+                review_status=ReviewStatus.NEEDS_REVIEW,
+                source_metadata={},
+            ),
+        ]
 
         result = seed_board_exam()
 
         attached = list(result["exam"].questions.values_list("pk", flat=True))
-        self.assertNotIn(legacy.pk, attached)
+        for legacy in legacy_rows:
+            self.assertNotIn(legacy.pk, attached)
         self.assertEqual(len(attached), 75)
         self.assertTrue(
             all(

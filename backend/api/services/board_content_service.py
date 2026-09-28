@@ -451,8 +451,8 @@ def seed_board_exam(
         pool = Question.objects.filter(
             chapter__slug=slug,
             review_status__in=ELIGIBLE_REVIEW_STATUSES,
-            # Only questions this seed owns. Older `seed_data` content can share a
-            # chapter slug, and it is stamped with an empty chapter_slug, so without
+            # Only questions this seed owns. Older `seed_data` content can sit in a
+            # seeded chapter without a chapter_slug in source_metadata, so without
             # this filter the exam silently pools two generations of content.
             source_metadata__chapter_slug=slug,
         )
