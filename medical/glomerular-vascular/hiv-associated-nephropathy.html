@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renal Pathology Microscopy Tool — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --hivick:#2563eb; --hivan:#dc2626; --crescent:#d97706; --mcd:#16a34a;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  /* HEADER */
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  /* STAGE (SVG) */
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+  
+  .toggle-bar{display:flex; justify-content:center; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:10px 18px; border-radius:999px;
+    font-size:.85rem; font-weight:700; cursor:pointer; transition:all .25s ease; color:var(--muted);}
+  .pill:hover{transform:translateY(-2px);}
+  .pill.normal.active{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .pill.hivick.active{background:#dbeafe; border-color:var(--hivick); color:#1e40af;}
+  .pill.hivan.active{background:#fee2e2; border-color:var(--hivan); color:#991b1b;}
+  .pill.crescent.active{background:#fef3c7; border-color:var(--crescent); color:#92400e;}
+  .pill.mcd.active{background:#dcfce7; border-color:var(--mcd); color:#166534;}
+
+  .visualizer-box{border:1px solid var(--line); border-radius:14px; padding:20px; background:#f8fafc; display:inline-block; width:100%; max-width:900px;}
+  svg.diagram{width:100%; height:auto; max-height:520px;}
+
+  /* MICROSCOPY THUMBNAILS */
+  .micro-strip{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .micro-thumb{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;
+    box-shadow:0 2px 8px rgba(15,23,42,.05); transition:transform .2s ease, box-shadow .2s ease;}
+  .micro-thumb:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,23,42,.1);}
+  .micro-thumb img{width:100%; height:150px; object-fit:cover; display:block; background:#e2e8f0;}
+  .micro-thumb .micro-caption{padding:10px 12px;}
+  .micro-thumb .micro-caption h4{margin:0 0 3px; font-size:.8rem; font-weight:800;}
+  .micro-thumb .micro-caption p{margin:0; font-size:.7rem; color:var(--muted); line-height:1.4;}
+  .micro-thumb .micro-caption .src{font-size:.65rem; color:#94a3b8; margin-top:4px; display:block;}
+  .no-image{padding:20px; text-align:center; color:#94a3b8; font-size:.78rem; height:150px; display:flex; align-items:center; justify-content:center; background:#f8fafc;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.85rem; min-width:950px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-hivick { background-color: #eff6ff; box-shadow: inset 4px 0 0 var(--hivick); }
+  tr.highlight-hivick td { font-weight: 600; color: #1e3a8a; }
+  tr:hover { background-color: #f8fafc; }
+  .badge-hivick { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-hivan { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-crescent { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-mcd { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.95rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px; font-size:.85rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px; border-radius:0 10px 10px 0; font-size:.85rem; color:#334155;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  /* FOOTER */
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px; padding:14px 18px; font-size:.82rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Renal Pathology Microscopy Tool</h1>
+      <p>Interactive Diagram + Open-Access Microscopy (LM, IF, EM)</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- ============================================ -->
+  <!-- SECTION 1: INTERACTIVE PATHOLOGY DIAGRAM     -->
+  <!-- ============================================ -->
+  <section class="stage">
+    <h2>Interactive Pathology Diagram</h2>
+    <p class="sub">Toggle between diseases to see layer-by-layer changes in the capillary wall and whole glomerulus.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill hivick" id="btnHivick" onclick="setMode('hivick')">HIVICK</button>
+      <button class="pill hivan" id="btnHivan" onclick="setMode('hivan')">HIVAN</button>
+      <button class="pill crescent" id="btnCrescent" onclick="setMode('crescent')">Crescentic GN</button>
+      <button class="pill mcd" id="btnMcd" onclick="setMode('mcd')">Minimal Change</button>
+    </div>
+
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
+        <!-- TOP HALF: CAPILLARY WALL LAYERS -->
+        <text x="500" y="25" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#0f172a">Capillary Wall Cross-Section</text>
+        <rect x="20" y="40" width="960" height="90" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="40" y="65" font-family="Arial" font-size="12" font-weight="bold" fill="#1e40af">Urinary Space (Bowman's)</text>
+        <rect x="20" y="130" width="960" height="70" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+        <text x="40" y="155" font-family="Arial" font-size="12" font-weight="bold" fill="#6b21a8">Epithelium — Podocytes with Foot Processes</text>
+        <rect x="20" y="200" width="960" height="55" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="40" y="235" font-family="Arial" font-size="12" font-weight="bold" fill="#92400e">Glomerular Basement Membrane (GBM)</text>
+        <rect x="20" y="255" width="960" height="55" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="5 3"/>
+        <text x="40" y="290" font-family="Arial" font-size="12" font-weight="bold" fill="#4338ca">Subendothelial Space</text>
+        <rect x="20" y="310" width="960" height="55" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="40" y="345" font-family="Arial" font-size="12" font-weight="bold" fill="#991b1b">Endothelium — Fenestrated</text>
+        <rect x="20" y="365" width="960" height="90" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="40" y="395" font-family="Arial" font-size="12" font-weight="bold" fill="#7f1d1d">Capillary Lumen (RBCs)</text>
+        <g fill="#dc2626" opacity="0.7">
+          <circle cx="180" cy="420" r="18"/><circle cx="380" cy="410" r="16"/>
+          <circle cx="600" cy="425" r="17"/><circle cx="800" cy="415" r="16"/>
+        </g>
+        <g fill="#c084fc" stroke="#9333ea" stroke-width="2">
+          <ellipse cx="150" cy="170" rx="45" ry="22"/>
+          <ellipse cx="400" cy="168" rx="50" ry="25"/>
+          <ellipse cx="650" cy="170" rx="45" ry="22"/>
+          <ellipse cx="880" cy="170" rx="45" ry="22"/>
+        </g>
+        <g fill="none" stroke="#9333ea" stroke-width="4">
+          <path d="M 110 190 L 110 200 M 130 190 L 130 200 M 150 190 L 150 200 M 170 190 L 170 200 M 190 190 L 190 200"/>
+          <path d="M 355 190 L 355 200 M 375 190 L 375 200 M 395 190 L 395 200 M 415 190 L 415 200 M 435 190 L 435 200"/>
+          <path d="M 610 190 L 610 200 M 630 190 L 630 200 M 650 190 L 650 200 M 670 190 L 670 200 M 690 190 L 690 200"/>
+          <path d="M 840 190 L 840 200 M 860 190 L 860 200 M 880 190 L 880 200 M 900 190 L 900 200 M 920 190 L 920 200"/>
+        </g>
+
+        <!-- OVERLAYS -->
+        <g id="overlay-hivick" style="display:none;">
+          <g fill="#2563eb" opacity="0.95">
+            <circle cx="100" cy="282" r="8"/><circle cx="200" cy="282" r="8"/>
+            <circle cx="300" cy="282" r="8"/><circle cx="400" cy="282" r="8"/>
+            <circle cx="500" cy="282" r="8"/><circle cx="600" cy="282" r="8"/>
+            <circle cx="700" cy="282" r="8"/><circle cx="800" cy="282" r="8"/>
+            <circle cx="900" cy="282" r="8"/><circle cx="960" cy="282" r="8"/>
+          </g>
+          <g fill="#60a5fa" opacity="0.85">
+            <circle cx="150" cy="205" r="6"/><circle cx="350" cy="205" r="6"/>
+            <circle cx="550" cy="205" r="6"/><circle cx="750" cy="205" r="6"/>
+            <circle cx="900" cy="205" r="6"/>
+          </g>
+          <text x="500" y="500" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#1e40af">
+            HIVICK: Immune Complex Deposits (Subendothelial + Subepithelial)
+          </text>
+        </g>
+
+        <g id="overlay-hivan" style="display:none;">
+          <path d="M 60 195 Q 500 195 940 195" fill="none" stroke="#9333ea" stroke-width="14" opacity="0.8"/>
+          <text x="500" y="500" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#991b1b">
+            HIVAN: Foot Process Effacement (Flattened Podocytes)
+          </text>
+        </g>
+
+        <g id="overlay-crescent" style="display:none;">
+          <rect x="20" y="40" width="960" height="90" fill="#fcd34d" opacity="0.7"/>
+          <g fill="#92400e" opacity="0.7">
+            <circle cx="150" cy="80" r="6"/><circle cx="300" cy="70" r="6"/>
+            <circle cx="450" cy="85" r="6"/><circle cx="600" cy="70" r="6"/>
+            <circle cx="750" cy="85" r="6"/><circle cx="880" cy="75" r="6"/>
+          </g>
+          <text x="500" y="500" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#92400e">
+            Crescentic GN: Crescent Fills Bowman's Space
+          </text>
+        </g>
+
+        <g id="overlay-mcd" style="display:none;">
+          <path d="M 60 195 Q 500 195 940 195" fill="none" stroke="#9333ea" stroke-width="12" opacity="0.7" stroke-dasharray="6 4"/>
+          <text x="500" y="500" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#166534">
+            Minimal Change: Normal Layers, Diffuse Foot Process Effacement on EM
+          </text>
+        </g>
+
+        <!-- BOTTOM HALF: WHOLE GLOMERULUS -->
+        <text x="500" y="545" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#0f172a">Whole Glomerulus View</text>
+        <circle cx="500" cy="630" r="60" fill="#fce7f3" stroke="#db2777" stroke-width="3"/>
+        <g id="tuft" fill="none" stroke="#e11d48" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 470 610 Q 500 590 530 610 Q 545 630 530 650 Q 500 670 470 650 Q 455 630 470 610 Z"/>
+          <path d="M 480 615 Q 500 605 520 615 Q 530 630 520 645 Q 500 655 480 645 Q 470 630 480 615 Z"/>
+        </g>
+        <g id="nuclei" fill="#4c1d95" opacity="0.85">
+          <circle cx="485" cy="615" r="3"/><circle cx="500" cy="605" r="3"/>
+          <circle cx="515" cy="615" r="3"/><circle cx="525" cy="635" r="3"/>
+          <circle cx="510" cy="650" r="3"/><circle cx="490" cy="650" r="3"/>
+          <circle cx="475" cy="635" r="3"/>
+        </g>
+        <g id="glom-hivick" style="display:none;">
+          <g fill="#2563eb" opacity="0.9">
+            <circle cx="470" cy="610" r="4"/><circle cx="500" cy="595" r="4"/>
+            <circle cx="530" cy="610" r="4"/><circle cx="540" cy="635" r="4"/>
+            <circle cx="520" cy="655" r="4"/><circle cx="490" cy="660" r="4"/>
+            <circle cx="465" cy="645" r="4"/><circle cx="455" cy="625" r="4"/>
+          </g>
+        </g>
+        <g id="glom-hivan" style="display:none;">
+          <g fill="none" stroke="#e11d48" stroke-width="4">
+            <path d="M 485 620 Q 500 610 515 620 Q 520 635 515 645 Q 500 655 485 645 Q 480 635 485 620 Z"/>
+          </g>
+          <g fill="#d97706" opacity="0.9">
+            <circle cx="465" cy="605" r="7"/><circle cx="535" cy="605" r="7"/>
+            <circle cx="545" cy="650" r="7"/><circle cx="455" cy="650" r="7"/>
+          </g>
+        </g>
+        <g id="glom-crescent" style="display:none;">
+          <path d="M 445 630 Q 460 570 500 570 Q 540 570 555 630 Q 540 590 500 590 Q 460 590 445 630 Z" fill="#fcd34d" stroke="#d97706" stroke-width="2"/>
+          <g fill="#92400e" opacity="0.9">
+            <circle cx="480" cy="590" r="3"/><circle cx="510" cy="590" r="3"/>
+            <circle cx="465" cy="610" r="3"/><circle cx="535" cy="610" r="3"/>
+          </g>
+        </g>
+        <g id="glom-mcd" style="display:none;">
+        </g>
+      </svg>
+    </div>
+
+    <!-- MICROSCOPY THUMBNAILS (small images below diagram) -->
+    <div class="micro-strip" id="microStrip">
+      <!-- These will be dynamically populated by JavaScript -->
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SECTION 2: KEY FEATURES TABLE               -->
+  <!-- ============================================ -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>Light Microscopy (LM)</th>
+          <th>Immunofluorescence (IF)</th>
+          <th>Electron Microscopy (EM)</th>
+          <th>Clinical / Lab Clues</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-hivick">
+          <td><strong>HIVICK</strong> <span class="badge-hivick">Correct</span></td>
+          <td>Proliferative GN (often MPGN pattern), endocapillary proliferation</td>
+          <td>Granular IgG, IgA, IgM, C3, C1q ("full house")</td>
+          <td>Subendothelial and subepithelial electron-dense deposits; tubuloreticular aggregates</td>
+          <td><strong>Low C3/C4</strong>, active sediment (dysmorphic RBCs), proteinuria, HIV+</td>
+        </tr>
+        <tr>
+          <td><strong>HIVAN</strong> <span class="badge-hivan">Distractor</span></td>
+          <td>Collapsing glomerulopathy, podocyte hypertrophy, tubular microcysts</td>
+          <td>Negative or trace (no immune complexes)</td>
+          <td>Foot process effacement, tubuloreticular inclusions (TRIs), collapsed GBM</td>
+          <td><strong>Normal complement</strong>, heavy proteinuria, bland sediment, advanced HIV</td>
+        </tr>
+        <tr>
+          <td><strong>Crescentic GN</strong> <span class="badge-crescent">Distractor</span></td>
+          <td>Crescents in Bowman's space, necrotizing lesions</td>
+          <td>Pauci-immune (trace to 1+ IgG/IgM/C3)</td>
+          <td>No electron-dense deposits, fibrin in crescents</td>
+          <td><strong>Normal complement</strong>, ANCA+, active sediment, systemic vasculitis</td>
+        </tr>
+        <tr>
+          <td><strong>Minimal Change Disease</strong> <span class="badge-mcd">Distractor</span></td>
+          <td>Normal glomeruli</td>
+          <td>Negative</td>
+          <td>100% foot process effacement, no deposits</td>
+          <td><strong>Normal complement</strong>, nephrotic syndrome, <strong>no hematuria</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SECTION 3: CHECK YOUR UNDERSTANDING         -->
+  <!-- ============================================ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+    <div class="q">
+      <p>1. Which serological finding best distinguishes HIVICK from HIVAN?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Positive HIV antibody</button>
+        <button class="opt" onclick="answer(this,true)">B. Low C3 and C4 complement levels</button>
+        <button class="opt" onclick="answer(this,false)">C. Elevated serum creatinine</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> HIVICK is an immune complex disease, so it consumes complement and causes low C3/C4. HIVAN is a direct viral cytopathic effect and typically has <strong>normal complement levels</strong>.</div>
+    </div>
+    <div class="q">
+      <p>2. Which finding on electron microscopy is characteristic of HIVAN?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Subendothelial electron-dense deposits</button>
+        <button class="opt" onclick="answer(this,true)">B. Tubuloreticular inclusions in endothelial cells</button>
+        <button class="opt" onclick="answer(this,false)">C. Linear IgG staining along the GBM</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Tubuloreticular inclusions (TRIs) are the hallmark EM finding in HIVAN. They are also known as "interferon footprints" and help distinguish HIVAN from idiopathic collapsing glomerulopathy.</div>
+    </div>
+    <div class="q">
+      <p>3. Which disease is characterized by crescents in Bowman's space?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. HIVICK</button>
+        <button class="opt" onclick="answer(this,true)">B. Crescentic GN</button>
+        <button class="opt" onclick="answer(this,false)">C. Minimal Change Disease</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Crescentic GN is defined by the formation of crescents (proliferating parietal epithelial cells and macrophages) in Bowman's space, which compress the glomerular tuft.</div>
+    </div>
+    <div class="q">
+      <p>4. Which disease shows normal light microscopy and negative immunofluorescence, but abnormal electron microscopy?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. HIVAN</button>
+        <button class="opt" onclick="answer(this,false)">B. HIVICK</button>
+        <button class="opt" onclick="answer(this,true)">C. Minimal Change Disease</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> MCD shows normal light microscopy and negative IF. The only abnormality is <strong>diffuse foot process effacement</strong> on EM, causing nephrotic-range proteinuria without hematuria.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and images presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care. Image sources are credited where applicable; please respect original copyright and licensing terms.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Open-access image data for each disease and modality
+  const imageData = {
+    hivick: {
+      lm: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.003/asset/6e2b9b9d-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr1_lrg.jpg',
+        caption: 'HIVICK LM',
+        desc: 'Mesangial proliferation (PAS stain)',
+        source: 'AJKD Atlas'
+      },
+      if: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.003/asset/6e2b9b9d-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
+        caption: 'HIVICK IF',
+        desc: '"Full-house" granular staining',
+        source: 'AJKD Atlas'
+      },
+      em: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.003/asset/6e2b9b9d-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr3_lrg.jpg',
+        caption: 'HIVICK EM',
+        desc: 'Subendothelial deposits',
+        source: 'AJKD Atlas'
+      }
+    },
+    hivan: {
+      lm: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.002/asset/5d1a1a1a-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr1_lrg.jpg',
+        caption: 'HIVAN LM',
+        desc: 'Collapsing glomerulopathy (Jones silver)',
+        source: 'AJKD Atlas'
+      },
+      if: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.002/asset/5d1a1a1a-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
+        caption: 'HIVAN IF',
+        desc: 'Negative or trace staining',
+        source: 'AJKD Atlas'
+      },
+      em: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.002/asset/5d1a1a1a-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr3_lrg.jpg',
+        caption: 'HIVAN EM',
+        desc: 'Tubuloreticular inclusions',
+        source: 'AJKD Atlas'
+      }
+    },
+    crescent: {
+      lm: {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/0/09/Crescentic_glomerulonephritis_-_high_mag.jpg',
+        caption: 'Crescentic GN LM',
+        desc: 'Cellular crescent (PAS stain)',
+        source: 'Wikimedia Commons'
+      },
+      if: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.004/asset/4b4b4b4b-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
+        caption: 'Crescentic GN IF',
+        desc: 'Pauci-immune (trace staining)',
+        source: 'AJKD Atlas'
+      },
+      em: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.004/asset/4b4b4b4b-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr3_lrg.jpg',
+        caption: 'Crescentic GN EM',
+        desc: 'No electron-dense deposits',
+        source: 'AJKD Atlas'
+      }
+    },
+    mcd: {
+      lm: {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Minimal_change_disease_-_high_mag.jpg',
+        caption: 'MCD LM',
+        desc: 'Normal glomerulus (Jones silver)',
+        source: 'Wikimedia Commons'
+      },
+      if: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.005/asset/3c3c3c3c-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr1_lrg.jpg',
+        caption: 'MCD IF',
+        desc: 'Negative staining',
+        source: 'AJKD Atlas'
+      },
+      em: {
+        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.005/asset/3c3c3c3c-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
+        caption: 'MCD EM',
+        desc: 'Diffuse foot process effacement',
+        source: 'AJKD Atlas'
+      }
+    }
+  };
+
+  function setMode(mode) {
+    // Hide all overlays
+    ['overlay-hivick','overlay-hivan','overlay-crescent','overlay-mcd',
+     'glom-hivick','glom-hivan','glom-crescent','glom-mcd'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    // Reset base elements
+    document.getElementById('tuft').style.display = 'block';
+    document.getElementById('nuclei').style.display = 'block';
+
+    // Reset all pills
+    ['btnNormal','btnHivick','btnHivan','btnCrescent','btnMcd'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+
+    // Update microscopy thumbnails
+    updateMicroStrip(mode);
+
+    if (mode === 'normal') {
+      document.getElementById('btnNormal').classList.add('active');
+    } else if (mode === 'hivick') {
+      document.getElementById('overlay-hivick').style.display = 'block';
+      document.getElementById('glom-hivick').style.display = 'block';
+      document.getElementById('btnHivick').classList.add('active');
+    } else if (mode === 'hivan') {
+      document.getElementById('overlay-hivan').style.display = 'block';
+      document.getElementById('glom-hivan').style.display = 'block';
+      document.getElementById('tuft').style.display = 'none';
+      document.getElementById('nuclei').style.display = 'none';
+      document.getElementById('btnHivan').classList.add('active');
+    } else if (mode === 'crescent') {
+      document.getElementById('overlay-crescent').style.display = 'block';
+      document.getElementById('glom-crescent').style.display = 'block';
+      document.getElementById('tuft').style.display = 'none';
+      document.getElementById('nuclei').style.display = 'none';
+      document.getElementById('btnCrescent').classList.add('active');
+    } else if (mode === 'mcd') {
+      document.getElementById('overlay-mcd').style.display = 'block';
+      document.getElementById('btnMcd').classList.add('active');
+    }
+  }
+
+  function updateMicroStrip(mode) {
+    const strip = document.getElementById('microStrip');
+    if (mode === 'normal') {
+      strip.innerHTML = '<p style="text-align:center; color:#94a3b8; grid-column:1/-1;">Select a disease above to view microscopy images.</p>';
+      return;
+    }
+    const data = imageData[mode];
+    if (!data) return;
+    
+    let html = '';
+    const modalities = [
+      { key: 'lm', label: 'Light Microscopy' },
+      { key: 'if', label: 'Immunofluorescence' },
+      { key: 'em', label: 'Electron Microscopy' }
+    ];
+    
+    modalities.forEach(m => {
+      const img = data[m.key];
+      html += `
+        <div class="micro-thumb">
+          <img src="${img.src}" alt="${img.caption}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>Image not available</div>'">
+          <div class="micro-caption">
+            <h4>${m.label}</h4>
+            <p>${img.desc}</p>
+            <span class="src">Source: ${img.source}</span>
+          </div>
+        </div>
+      `;
+    });
+    strip.innerHTML = html;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  // Initialize
+  setMode('normal');
+</script>
+</body>
+</html>

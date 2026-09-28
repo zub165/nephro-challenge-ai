@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renovascular Hypertension — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --fmd:#1d4ed8; --pan:#b45309; --gca:#7c3aed; --sclera:#0d9488; --page:#dc2626; --normal:#065f46;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.8rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.fmd.active{background:#dbeafe; border-color:var(--fmd); color:#1e3a8a;}
+  .pill.pan.active{background:#ffedd5; border-color:var(--pan); color:#7c2d12;}
+  .pill.gca.active{background:#ede9fe; border-color:var(--gca); color:#4c1d95;}
+  .pill.sclera.active{background:#ccfbf1; border-color:var(--sclera); color:#134e4a;}
+  .pill.page.active{background:#fee2e2; border-color:var(--page); color:#7f1d1d;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#000; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:560px; display:block;}
+
+  /* READOUT CARDS */
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.2rem; font-weight:800; letter-spacing:-.02em; line-height:1.15;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-fmd { background-color:#eff6ff; box-shadow: inset 4px 0 0 var(--fmd); }
+  tr.highlight-fmd td { font-weight:600; color:#1e3a8a; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-fmd{background:#dbeafe; color:#1e3a8a;}
+  .tag-pan{background:#ffedd5; color:#7c2d12;}
+  .tag-gca{background:#ede9fe; color:#4c1d95;}
+  .tag-scl{background:#ccfbf1; color:#134e4a;}
+  .tag-page{background:#fee2e2; color:#7f1d1d;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Renovascular Hypertension — Imaging Atlas</h1>
+      <p>Interactive CTA/MRA visualizer · Fibromuscular dysplasia vs. other renal artery pathologies</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <section class="stage">
+    <h2>Interactive Renal Angiography Diagram</h2>
+    <p class="sub">Select a diagnosis to compare the angiographic pattern of each renovascular disease.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill fmd" id="btnFmd" onclick="setMode('fmd')">Fibromuscular Dysplasia ★</button>
+      <button class="pill pan" id="btnPan" onclick="setMode('pan')">Polyarteritis Nodosa</button>
+      <button class="pill gca" id="btnGca" onclick="setMode('gca')">Giant Cell Arteritis</button>
+      <button class="pill sclera" id="btnSclera" onclick="setMode('sclera')">Scleroderma Kidney</button>
+      <button class="pill page" id="btnPage" onclick="setMode('page')">Page Kidney</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="kidneyGrad" cx="40%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#d1d5db"/>
+            <stop offset="60%" stop-color="#6b7280"/>
+            <stop offset="100%" stop-color="#1f2937"/>
+          </radialGradient>
+          <radialGradient id="aortaGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#f3f4f6"/>
+            <stop offset="70%" stop-color="#9ca3af"/>
+            <stop offset="100%" stop-color="#374151"/>
+          </radialGradient>
+          <filter id="vesselGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="8"/>
+            <feColorMatrix type="saturate" values="0"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+          </filter>
+        </defs>
+
+        <!-- Background -->
+        <rect width="1000" height="600" fill="#050505"/>
+        <rect width="1000" height="600" fill="#000" filter="url(#noise)" opacity="0.4"/>
+
+        <!-- AORTA -->
+        <rect x="470" y="20" width="60" height="560" rx="10" fill="url(#aortaGrad)" filter="url(#vesselGlow)"/>
+        <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="11" fill="#94a3b8" font-weight="700">AORTA</text>
+
+        <!-- RIGHT KIDNEY (viewer left) -->
+        <ellipse cx="200" cy="350" rx="140" ry="100" fill="url(#kidneyGrad)" opacity="0.85"/>
+        <ellipse cx="200" cy="350" rx="140" ry="100" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+        <text x="200" y="470" text-anchor="middle" font-family="Arial" font-size="12" fill="#94a3b8" font-weight="700">RIGHT KIDNEY</text>
+
+        <!-- LEFT KIDNEY (viewer right) -->
+        <ellipse cx="800" cy="300" rx="140" ry="100" fill="url(#kidneyGrad)" opacity="0.85"/>
+        <ellipse cx="800" cy="300" rx="140" ry="100" fill="none" stroke="#4b5563" stroke-width="1.5"/>
+        <text x="800" y="420" text-anchor="middle" font-family="Arial" font-size="12" fill="#94a3b8" font-weight="700">LEFT KIDNEY</text>
+
+        <!-- RIGHT RENAL ARTERY (base - shows FMD beads) -->
+        <g id="rightArtery">
+          <path d="M 470 320 L 340 340 L 260 345" fill="none" stroke="#e5e7eb" stroke-width="14" stroke-linecap="round" filter="url(#vesselGlow)"/>
+          <!-- String of beads on right artery -->
+          <g id="beads">
+            <circle cx="420" cy="330" r="10" fill="#f9fafb"/>
+            <circle cx="400" cy="334" r="7" fill="#e5e7eb" opacity="0.5"/>
+            <circle cx="380" cy="337" r="10" fill="#f9fafb"/>
+            <circle cx="360" cy="340" r="7" fill="#e5e7eb" opacity="0.5"/>
+            <circle cx="340" cy="342" r="10" fill="#f9fafb"/>
+            <circle cx="320" cy="344" r="7" fill="#e5e7eb" opacity="0.5"/>
+            <circle cx="300" cy="345" r="10" fill="#f9fafb"/>
+          </g>
+        </g>
+
+        <!-- LEFT RENAL ARTERY (base) -->
+        <g id="leftArtery">
+          <path d="M 530 300 L 650 295 L 720 290" fill="none" stroke="#e5e7eb" stroke-width="14" stroke-linecap="round" filter="url(#vesselGlow)"/>
+          <!-- Intra-renal branches -->
+          <path d="M 720 290 L 750 250 M 720 290 L 750 320 M 720 290 L 730 350" stroke="#e5e7eb" stroke-width="6" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- NORMAL STATE — smooth arteries                   -->
+        <!-- =============================================== -->
+        <g id="state-normal"></g>
+
+        <!-- =============================================== -->
+        <!-- FMD OVERLAY — accentuate string of beads         -->
+        <!-- =============================================== -->
+        <g id="state-fmd" style="display:none;">
+          <!-- Highlight ring on right artery -->
+          <ellipse cx="370" cy="338" rx="90" ry="30" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 4" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+          </ellipse>
+          <!-- Label -->
+          <rect x="270" y="180" width="200" height="48" rx="8" fill="#1e3a8a" opacity="0.95"/>
+          <text x="370" y="200" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#dbeafe">STRING OF BEADS</text>
+          <text x="370" y="217" text-anchor="middle" font-family="Arial" font-size="10" fill="#bfdbfe">Medial fibroplasia (FMD)</text>
+          <line x1="370" y1="228" x2="370" y2="308" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- PAN OVERLAY — multiple microaneurysms            -->
+        <!-- =============================================== -->
+        <g id="state-pan" style="display:none;">
+          <!-- Microaneurysms on both renal arteries and intrarenal branches -->
+          <g fill="#f59e0b" filter="url(#vesselGlow)">
+            <circle cx="430" cy="330" r="8" opacity="0.9"/>
+            <circle cx="390" cy="335" r="7" opacity="0.9"/>
+            <circle cx="350" cy="340" r="9" opacity="0.9"/>
+            <circle cx="310" cy="344" r="7" opacity="0.9"/>
+            <circle cx="280" cy="346" r="6" opacity="0.9"/>
+            <circle cx="670" cy="293" r="8" opacity="0.9"/>
+            <circle cx="730" cy="288" r="7" opacity="0.9"/>
+            <circle cx="755" cy="255" r="5" opacity="0.9"/>
+            <circle cx="745" cy="320" r="6" opacity="0.9"/>
+          </g>
+          <!-- Arrow annotation -->
+          <rect x="230" y="180" width="240" height="48" rx="8" fill="#7c2d12" opacity="0.95"/>
+          <text x="350" y="200" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#fed7aa">MULTIPLE MICROANEURYSMS</text>
+          <text x="350" y="217" text-anchor="middle" font-family="Arial" font-size="10" fill="#fdba74">Medium-vessel vasculitis (PAN)</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- GCA OVERLAY — smooth tapered stenosis            -->
+        <!-- =============================================== -->
+        <g id="state-gca" style="display:none;">
+          <!-- Tapered narrowing of aorta/renal arteries -->
+          <path d="M 470 300 Q 500 250 500 200 Q 500 150 500 100" fill="none" stroke="#7c3aed" stroke-width="20" opacity="0.35" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.2;0.5;0.2" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <!-- Narrowing on renal arteries -->
+          <ellipse cx="440" cy="318" rx="20" ry="10" fill="none" stroke="#7c3aed" stroke-width="3" opacity="0.8"/>
+          <ellipse cx="650" cy="296" rx="20" ry="10" fill="none" stroke="#7c3aed" stroke-width="3" opacity="0.8"/>
+          <rect x="230" y="180" width="240" height="48" rx="8" fill="#4c1d95" opacity="0.95"/>
+          <text x="350" y="200" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#ede9fe">SMOOTH TAPERED STENOSIS</text>
+          <text x="350" y="217" text-anchor="middle" font-family="Arial" font-size="10" fill="#c4b5fd">Large-vessel vasculitis (GCA)</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- SCLERODERMA OVERLAY — distal pruning             -->
+        <!-- =============================================== -->
+        <g id="state-sclera" style="display:none;">
+          <!-- Pruning of distal intra-renal branches -->
+          <g stroke="#0d9488" stroke-width="3" opacity="0.85" fill="none" filter="url(#vesselGlow)">
+            <path d="M 750 250 L 770 220 M 750 250 L 780 240"/>
+            <path d="M 750 320 L 780 340 M 750 320 L 800 350"/>
+            <path d="M 730 350 L 760 380 M 730 350 L 780 370"/>
+          </g>
+          <!-- "Pruned tree" highlighted branches -->
+          <g stroke="#ef4444" stroke-width="1.5" fill="none" opacity="0.9">
+            <circle cx="770" cy="220" r="3" fill="#ef4444"/>
+            <circle cx="780" cy="240" r="3" fill="#ef4444"/>
+            <circle cx="780" cy="340" r="3" fill="#ef4444"/>
+            <circle cx="800" cy="350" r="3" fill="#ef4444"/>
+            <circle cx="760" cy="380" r="3" fill="#ef4444"/>
+            <circle cx="780" cy="370" r="3" fill="#ef4444"/>
+          </g>
+          <rect x="660" y="150" width="240" height="48" rx="8" fill="#134e4a" opacity="0.95"/>
+          <text x="780" y="170" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#ccfbf1">"PRUNED TREE" PATTERN</text>
+          <text x="780" y="187" text-anchor="middle" font-family="Arial" font-size="10" fill="#5eead4">Distal intrarenal pruning (Scleroderma)</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- PAGE KIDNEY OVERLAY — mass effect                -->
+        <!-- =============================================== -->
+        <g id="state-page" style="display:none;">
+          <!-- Perirenal hematoma (crescent-shaped collection) -->
+          <path d="M 60 250 Q 130 180 230 200 Q 260 210 270 240 Q 240 300 200 400 Q 130 440 80 400 Q 60 320 60 250 Z" 
+                fill="#7f1d1d" opacity="0.9" stroke="#ef4444" stroke-width="2" filter="url(#vesselGlow)">
+            <animate attributeName="opacity" values="0.7;0.95;0.7" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <!-- Compressed kidney -->
+          <text x="200" y="470" text-anchor="middle" font-family="Arial" font-size="12" fill="#fca5a5" font-weight="700">COMPRESSED KIDNEY</text>
+          <rect x="130" y="120" width="240" height="48" rx="8" fill="#7f1d1d" opacity="0.95"/>
+          <text x="250" y="140" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#fee2e2">PERIRENAL HEMATOMA</text>
+          <text x="250" y="157" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">Mass effect → Page kidney</text>
+        </g>
+
+        <!-- Metadata-style overlay (mimicking CTA) -->
+        <g font-family="monospace" font-size="9" fill="#4b5563" opacity="0.7">
+          <text x="20" y="20">SOMATOM Definition Flash</text>
+          <text x="20" y="32">120 kV, 200 mAs</text>
+          <text x="20" y="44">Volume Rendering</text>
+        </g>
+
+        <!-- Time stamp -->
+        <g font-family="monospace" font-size="9" fill="#4b5563" opacity="0.7">
+          <text x="880" y="20">CASE 309</text>
+          <text x="880" y="32">CTA RENAL</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Patient Profile</div>
+        <div class="rc-value" id="rcDemoValue">—</div>
+        <div class="rc-sub" id="rcDemoSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Angiographic Pattern</div>
+        <div class="rc-value" id="rcAngioValue">—</div>
+        <div class="rc-sub" id="rcAngioSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Systemic Features</div>
+        <div class="rc-note" id="rcSysValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Diagnosis</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis of Renovascular Hypertension</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>Typical Patient</th>
+          <th>Angiographic Pattern</th>
+          <th>Systemic Features</th>
+          <th>Key Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-fmd">
+          <td><strong>Fibromuscular Dysplasia</strong> <span class="tag tag-fmd">Correct</span></td>
+          <td>Young–middle-aged <strong>women</strong> (20–50 y)</td>
+          <td><strong>"String of beads"</strong> — multiple alternating stenoses and post-stenotic dilatations in the mid-to-distal renal artery</td>
+          <td>Usually isolated renovascular hypertension; may have headache, malignant HTN</td>
+          <td>Young woman + severe HTN + classic beaded renal artery = FMD</td>
+        </tr>
+        <tr>
+          <td><strong>Polyarteritis Nodosa (PAN)</strong> <span class="tag tag-pan">Distractor</span></td>
+          <td>Middle-aged men, often with <strong>hepatitis B</strong></td>
+          <td><strong>Multiple microaneurysms</strong> (1–5 mm), often bilateral, in medium-sized arteries — not a "string of beads"</td>
+          <td>Fever, weight loss, neuropathy, livedo reticularis, multi-organ involvement</td>
+          <td>Multi-organ involvement + microaneurysms on angiography</td>
+        </tr>
+        <tr>
+          <td><strong>Giant Cell Arteritis (GCA)</strong> <span class="tag tag-gca">Distractor</span></td>
+          <td>Older adults <strong>&gt;50 y</strong></td>
+          <td><strong>Smooth tapered stenosis</strong> of large arteries, often aortic involvement; renal artery involvement is rare</td>
+          <td>Headache, jaw claudication, vision loss, polymyalgia rheumatica</td>
+          <td>Age &gt;50 + cranial symptoms + elevated ESR/CRP</td>
+        </tr>
+        <tr>
+          <td><strong>Scleroderma Kidney</strong> <span class="tag tag-scl">Distractor</span></td>
+          <td>Patients with systemic sclerosis (skin thickening)</td>
+          <td><strong>"Pruned tree"</strong> — diffuse distal intra-renal arterial narrowing with cortical thinning</td>
+          <td>Raynaud's, sclerodactyly, skin thickening, interstitial lung disease</td>
+          <td>Scleroderma skin changes + scleroderma renal crisis (severe HTN, AKI, MAHA)</td>
+        </tr>
+        <tr>
+          <td><strong>Page Kidney</strong> <span class="tag tag-page">Distractor</span></td>
+          <td>Any age, often after trauma or biopsy</td>
+          <td><strong>Perirenal hematoma</strong> compressing the kidney; renal artery is normal</td>
+          <td>History of flank trauma, biopsy, or anticoagulation</td>
+          <td>Mass effect on imaging + history of trauma</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 23-year-old woman presents with severe hypertension, blurry vision, and weight loss. CTA shows a "string of beads" appearance in the right renal artery. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Polyarteritis nodosa</button>
+        <button class="opt" onclick="answer(this,true)">B. Fibromuscular dysplasia</button>
+        <button class="opt" onclick="answer(this,false)">C. Giant cell arteritis</button>
+        <button class="opt" onclick="answer(this,false)">D. Scleroderma renal crisis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The "string of beads" appearance on angiography is the classic finding of <strong>fibromuscular dysplasia</strong>, especially in young women with renovascular hypertension. The beading reflects alternating areas of stenosis (from fibroplasia) and post-stenotic dilatation.</div>
+    </div>
+
+    <div class="q">
+      <p>2. Which finding on angiography is most characteristic of polyarteritis nodosa?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. "String of beads"</button>
+        <button class="opt" onclick="answer(this,true)">B. Multiple microaneurysms in medium-sized arteries</button>
+        <button class="opt" onclick="answer(this,false)">C. Smooth tapered stenosis of the aorta</button>
+        <button class="opt" onclick="answer(this,false)">D. "Pruned tree" appearance of distal intra-renal arteries</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> PAN is a necrotizing vasculitis of <strong>medium-sized arteries</strong> that produces multiple small <strong>microaneurysms</strong> (1–5 mm) on angiography. The pattern is not the classic "string of beads" of FMD, which are alternating stenoses and dilatations.</div>
+    </div>
+
+    <div class="q">
+      <p>3. Which of the following is the most appropriate next step in management for FMD?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. High-dose corticosteroids</button>
+        <button class="opt" onclick="answer(this,false)">B. Cyclophosphamide</button>
+        <button class="opt" onclick="answer(this,true)">C. Percutaneous transluminal renal angioplasty (PTRA)</button>
+        <button class="opt" onclick="answer(this,false)">D. Nephrectomy</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> FMD is a <strong>non-inflammatory</strong> vascular disease, so immunosuppression (steroids, cyclophosphamide) is <strong>not</strong> effective. The treatment of choice for renovascular hypertension due to FMD is <strong>percutaneous transluminal renal angioplasty (PTRA)</strong> without stenting, which cures or improves hypertension in most patients.</div>
+    </div>
+
+    <div class="q">
+      <p>4. A 68-year-old man with new headache, jaw claudication, and vision changes is found to have a smooth stenosis of the renal artery on CTA. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Fibromuscular dysplasia</button>
+        <button class="opt" onclick="answer(this,false)">B. Polyarteritis nodosa</button>
+        <button class="opt" onclick="answer(this,true)">C. Giant cell arteritis</button>
+        <button class="opt" onclick="answer(this,false)">D. Page kidney</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> GCA is a <strong>large-vessel vasculitis</strong> that occurs in patients <strong>&gt;50 years</strong> and classically presents with headache, jaw claudication, and vision loss. It causes <strong>smooth tapered stenoses</strong> in large arteries (including the aorta and its branches), in contrast to the beaded pattern of FMD or the microaneurysms of PAN.</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which pattern on renal angiography is characteristic of scleroderma renal crisis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. "String of beads"</button>
+        <button class="opt" onclick="answer(this,false)">B. Multiple microaneurysms</button>
+        <button class="opt" onclick="answer(this,true)">C. "Pruned tree" appearance of distal intra-renal arteries</button>
+        <button class="opt" onclick="answer(this,false)">D. Perirenal hematoma with mass effect</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Scleroderma renal crisis is characterized by a <strong>"pruned tree"</strong> appearance on angiography — diffuse narrowing of the distal intra-renal arteries with cortical thinning due to intimal proliferation and vasospasm.</div>
+    </div>
+
+    <div class="q">
+      <p>6. A young athlete develops severe hypertension after a football injury to his flank. Imaging shows a large perirenal fluid collection compressing the kidney. What is the diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Fibromuscular dysplasia</button>
+        <button class="opt" onclick="answer(this,false)">B. Polyarteritis nodosa</button>
+        <button class="opt" onclick="answer(this,false)">C. Scleroderma kidney</button>
+        <button class="opt" onclick="answer(this,true)">D. Page kidney</button>
+      </div>
+      <div class="explain"><strong>Correct: D.</strong> A <strong>Page kidney</strong> occurs when a perirenal hematoma (usually post-traumatic) compresses the renal parenchyma, causing renal ischemia and activation of the renin-angiotensin system → severe hypertension. The renal artery itself is normal on angiography.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      demo: 'Healthy adult',
+      demoSub: 'No renovascular disease',
+      angio: 'Smooth renal arteries',
+      angioSub: 'No stenosis or beading',
+      sys: 'Normotensive, no systemic symptoms.',
+      verdict: 'Normal renal angiography — no renovascular disease.',
+      color: '#16a34a',
+      state: null
+    },
+    fmd: {
+      demo: 'Young woman (20–50 y)',
+      demoSub: 'Female predominance',
+      angio: '"String of beads"',
+      angioSub: 'Mid-to-distal renal artery',
+      sys: 'Isolated renovascular HTN; may present with malignant hypertension, headache, blurry vision, weight loss. No systemic vasculitis.',
+      verdict: 'Fibromuscular dysplasia — non-inflammatory, non-atherosclerotic. Treat with PTRA (no stent).',
+      color: '#1d4ed8',
+      state: 'state-fmd'
+    },
+    pan: {
+      demo: 'Middle-aged men',
+      demoSub: 'Often with hepatitis B',
+      angio: 'Multiple microaneurysms',
+      angioSub: '1–5 mm, medium-sized arteries',
+      sys: 'Fever, weight loss, neuropathy, livedo reticularis, multi-organ involvement (skin, nerves, GI, kidneys).',
+      verdict: 'Polyarteritis nodosa — necrotizing vasculitis of medium arteries. Treat with steroids + cyclophosphamide.',
+      color: '#b45309',
+      state: 'state-pan'
+    },
+    gca: {
+      demo: 'Older adults (>50 y)',
+      demoSub: 'Cranial symptoms',
+      angio: 'Smooth tapered stenosis',
+      angioSub: 'Large arteries (aorta, branches)',
+      sys: 'Headache, jaw claudication, vision loss, polymyalgia rheumatica. Elevated ESR/CRP.',
+      verdict: 'Giant cell arteritis — large-vessel vasculitis. Treat with high-dose steroids urgently.',
+      color: '#7c3aed',
+      state: 'state-gca'
+    },
+    sclera: {
+      demo: 'Patients with systemic sclerosis',
+      demoSub: 'Skin thickening, Raynaud\'s',
+      angio: '"Pruned tree" pattern',
+      angioSub: 'Diffuse distal intrarenal narrowing',
+      sys: 'Raynaud\'s, sclerodactyly, skin thickening, interstitial lung disease. Renal crisis with severe HTN, AKI, MAHA.',
+      verdict: 'Scleroderma renal crisis — treat with ACE inhibitors (captopril).',
+      color: '#0d9488',
+      state: 'state-sclera'
+    },
+    page: {
+      demo: 'Any age, post-trauma',
+      demoSub: 'Flank injury, biopsy, anticoagulation',
+      angio: 'Perirenal hematoma',
+      angioSub: 'Mass effect on kidney',
+      sys: 'History of trauma or procedure. Renal artery is normal; compression causes ischemia → renin release → HTN.',
+      verdict: 'Page kidney — perirenal hematoma compressing the kidney. Treat with drainage or surgery.',
+      color: '#dc2626',
+      state: 'state-page'
+    }
+  };
+
+  function setMode(mode) {
+    ['state-fmd','state-pan','state-gca','state-sclera','state-page'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnFmd','btnPan','btnGca','btnSclera','btnPage'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', fmd:'btnFmd', pan:'btnPan',
+      gca:'btnGca', sclera:'btnSclera', page:'btnPage'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (d.state) {
+      const el = document.getElementById(d.state);
+      if (el) el.style.display = 'block';
+    }
+
+    document.getElementById('rcDemoValue').textContent = d.demo;
+    document.getElementById('rcDemoSub').textContent = d.demoSub;
+
+    document.getElementById('rcAngioValue').textContent = d.angio;
+    document.getElementById('rcAngioValue').style.color = d.color;
+    document.getElementById('rcAngioSub').textContent = d.angioSub;
+
+    document.getElementById('rcSysValue').textContent = d.sys;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>
