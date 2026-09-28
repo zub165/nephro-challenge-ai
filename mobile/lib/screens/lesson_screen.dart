@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../config/constants.dart';
 import '../models/chapter.dart';
 import '../screens/animation_screen.dart';
@@ -44,6 +47,32 @@ class _LessonScreenState extends State<LessonScreen> {
     );
   }
 
+  Future<void> _openInteractive(String url) async {
+    if (url.isEmpty) return;
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the interactive lesson')),
+      );
+    }
+  }
+
+  Widget _buildImage(String url) {
+    if (url.toLowerCase().endsWith('.svg')) {
+      return SvgPicture.network(url, fit: BoxFit.contain);
+    }
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: BoxFit.contain,
+      placeholder: (_, __) => const Center(child: CircularProgressIndicator()),
+      errorWidget: (_, __, ___) => const Center(
+        child: Icon(Icons.broken_image_outlined, size: 48, color: Colors.grey),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -72,6 +101,24 @@ class _LessonScreenState extends State<LessonScreen> {
               child: Icon(Icons.animation, size: 64, color: Colors.white70),
             ),
           ),
+          if (lesson.imageUrl.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: AspectRatio(
+                  aspectRatio: 3 / 4,
+                  child: _buildImage(lesson.imageUrl),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 20),
           Text(lesson.title,
               style: GoogleFonts.inter(
@@ -88,6 +135,17 @@ class _LessonScreenState extends State<LessonScreen> {
                 label: const Text('Open Animation'),
               ),
             ),
+          if (lesson.interactiveUrl.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => _openInteractive(lesson.interactiveUrl),
+                icon: const Icon(Icons.touch_app_outlined),
+                label: const Text('Open Interactive Lesson'),
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           Text(
             AppConstants.disclaimerText,

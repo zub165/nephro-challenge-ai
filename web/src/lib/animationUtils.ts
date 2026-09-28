@@ -18,6 +18,24 @@ export function resolveAnimationUrl(animationUrl: string): string {
   return animationUrl;
 }
 
+/** Resolve a lesson infographic, thumbnail, or interactive lesson to a local public file. */
+export function resolveMedicalAssetUrl(url: string): string {
+  if (!url) return '';
+
+  const withoutQuery = url.split('?')[0];
+  const marker = withoutQuery.lastIndexOf('/medical/');
+  if (marker !== -1) {
+    return appPath(withoutQuery.slice(marker + 1));
+  }
+
+  if (!withoutQuery.includes('://')) {
+    const normalized = withoutQuery.startsWith('/') ? withoutQuery : `/${withoutQuery}`;
+    return appPath(normalized);
+  }
+
+  return withoutQuery;
+}
+
 export interface AnimationStep {
   title: string;
   body: string;

@@ -121,7 +121,11 @@ class Topic(models.Model):
 
 
 class Lesson(MedicalSourceMetadataMixin, models.Model):
-    """Learning content: animation URL stored externally (R2/S3); only URL in DB."""
+    """Learning content: media hosted on GitHub Pages; only URLs are stored in the DB.
+
+    `animation_url` points at a bundled step-animation JSON, `image_url` at an
+    infographic, and `interactive_url` at a self-contained HTML lesson.
+    """
 
     class LessonType(models.TextChoices):
         ANIMATION = "animation", "Animation"
@@ -142,6 +146,8 @@ class Lesson(MedicalSourceMetadataMixin, models.Model):
     summary = models.TextField(blank=True, default="")
     content_md = models.TextField(blank=True, default="")
     animation_url = models.URLField(blank=True, default="")
+    image_url = models.URLField(blank=True, default="")
+    interactive_url = models.URLField(blank=True, default="")
     thumbnail_url = models.URLField(blank=True, default="")
     duration_seconds = models.PositiveIntegerField(default=0)
     order_index = models.PositiveIntegerField(default=0)

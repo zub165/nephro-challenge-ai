@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HIV Kidney Disease vs cART Nephrotoxicity — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --hivick:#2563eb; --hivan:#dc2626; --tenofovir:#d97706; --crystal:#16a34a;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  /* STAGE */
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+  
+  .toggle-bar{display:flex; justify-content:center; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:10px 18px; border-radius:999px;
+    font-size:.85rem; font-weight:700; cursor:pointer; transition:all .25s ease; color:var(--muted);}
+  .pill:hover{transform:translateY(-2px);}
+  .pill.normal.active{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .pill.hivick.active{background:#dbeafe; border-color:var(--hivick); color:#1e40af;}
+  .pill.hivan.active{background:#fee2e2; border-color:var(--hivan); color:#991b1b;}
+  .pill.tenofovir.active{background:#fef3c7; border-color:var(--tenofovir); color:#92400e;}
+  .pill.crystal.active{background:#dcfce7; border-color:var(--crystal); color:#166534;}
+
+  .visualizer-box{border:1px solid var(--line); border-radius:14px; padding:20px; background:#f8fafc; display:inline-block; width:100%; max-width:900px;}
+  svg.diagram{width:100%; height:auto; max-height:520px;}
+
+  /* MICROSCOPY THUMBNAILS */
+  .micro-strip{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .micro-thumb{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;
+    box-shadow:0 2px 8px rgba(15,23,42,.05); transition:transform .2s ease, box-shadow .2s ease;}
+  .micro-thumb:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,23,42,.1);}
+  .micro-thumb img{width:100%; height:150px; object-fit:cover; display:block; background:#e2e8f0;}
+  .micro-thumb .micro-caption{padding:10px 12px;}
+  .micro-thumb .micro-caption h4{margin:0 0 3px; font-size:.8rem; font-weight:800;}
+  .micro-thumb .micro-caption p{margin:0; font-size:.7rem; color:var(--muted); line-height:1.4;}
+  .micro-thumb .micro-caption .src{font-size:.65rem; color:#94a3b8; margin-top:4px; display:block;}
+  .no-image{padding:20px; text-align:center; color:#94a3b8; font-size:.78rem; height:150px; display:flex; align-items:center; justify-content:center; background:#f8fafc;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.85rem; min-width:950px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-tenofovir { background-color: #fff7ed; box-shadow: inset 4px 0 0 var(--tenofovir); }
+  tr.highlight-tenofovir td { font-weight: 600; color: #9a3412; }
+  tr:hover { background-color: #f8fafc; }
+  .badge-hivick { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-hivan { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-tenofovir { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-crystal { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.95rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px; font-size:.85rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px; border-radius:0 10px 10px 0; font-size:.85rem; color:#334155;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  /* FOOTER */
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px; padding:14px 18px; font-size:.82rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>HIV Kidney Disease vs cART Nephrotoxicity</h1>
+      <p>Interactive Nephron Anatomy + Open-Access Microscopy</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- ============================================ -->
+  <!-- SECTION 1: INTERACTIVE PATHOLOGY DIAGRAM     -->
+  <!-- ============================================ -->
+  <section class="stage">
+    <h2>Interactive Pathology Diagram</h2>
+    <p class="sub">Toggle between diseases to see where pathology occurs along the nephron.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill hivick" id="btnHivick" onclick="setMode('hivick')">HIVICK (Glomerular)</button>
+      <button class="pill hivan" id="btnHivan" onclick="setMode('hivan')">HIVAN (Glomerular)</button>
+      <button class="pill tenofovir" id="btnTenofovir" onclick="setMode('tenofovir')">Tenofovir (Proximal Tubule)</button>
+      <button class="pill crystal" id="btnCrystal" onclick="setMode('crystal')">Indinavir/Atazanavir (Crystals)</button>
+    </div>
+
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+        <!-- TITLE -->
+        <text x="500" y="25" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#0f172a">Nephron Anatomy — Site of Injury</text>
+
+        <!-- GLOMERULUS (Bowman's Capsule) -->
+        <circle cx="200" cy="200" r="90" fill="#fce7f3" stroke="#db2777" stroke-width="3"/>
+        <text x="200" y="100" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#831843">Glomerulus</text>
+        
+        <!-- Capillary Tuft -->
+        <g fill="none" stroke="#e11d48" stroke-width="5" stroke-linecap="round">
+          <path d="M 150 180 Q 200 130 250 180 Q 280 220 250 260 Q 200 300 150 260 Q 120 220 150 180 Z"/>
+          <path d="M 170 195 Q 200 170 230 195 Q 245 220 230 245 Q 200 270 170 245 Q 155 220 170 195 Z"/>
+        </g>
+        <!-- Nuclei -->
+        <g fill="#4c1d95" opacity="0.85">
+          <circle cx="175" cy="175" r="4"/><circle cx="225" cy="175" r="4"/>
+          <circle cx="240" cy="220" r="4"/><circle cx="220" cy="260" r="4"/>
+          <circle cx="180" cy="260" r="4"/><circle cx="160" cy="220" r="4"/>
+          <circle cx="200" cy="200" r="4"/>
+        </g>
+
+        <!-- PROXIMAL TUBULE -->
+        <path d="M 290 200 Q 350 160 400 200 Q 450 240 500 200 Q 550 160 600 200" 
+              fill="none" stroke="#f59e0b" stroke-width="18" stroke-linecap="round"/>
+        <text x="445" y="150" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#92400e">Proximal Tubule</text>
+        <!-- Brush border -->
+        <g stroke="#d97706" stroke-width="2" opacity="0.6">
+          <line x1="310" y1="185" x2="310" y2="175"/><line x1="330" y1="178" x2="330" y2="168"/>
+          <line x1="350" y1="172" x2="350" y2="162"/><line x1="370" y1="180" x2="370" y2="170"/>
+          <line x1="390" y1="190" x2="390" y2="180"/><line x1="410" y1="205" x2="410" y2="195"/>
+          <line x1="430" y1="218" x2="430" y2="208"/><line x1="450" y1="225" x2="450" y2="215"/>
+          <line x1="470" y1="220" x2="470" y2="210"/><line x1="490" y1="210" x2="490" y2="200"/>
+          <line x1="510" y1="195" x2="510" y2="185"/><line x1="530" y1="182" x2="530" y2="172"/>
+          <line x1="550" y1="178" x2="550" y2="168"/><line x1="570" y1="185" x2="570" y2="175"/>
+        </g>
+
+        <!-- LOOP OF HENLE -->
+        <path d="M 600 200 Q 650 200 680 280 Q 700 350 700 400 Q 700 450 680 480 Q 650 520 600 520" 
+              fill="none" stroke="#3b82f6" stroke-width="14" stroke-linecap="round"/>
+        <text x="720" y="370" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#1e40af">Loop of Henle</text>
+
+        <!-- DISTAL TUBULE -->
+        <path d="M 600 520 Q 550 520 520 480 Q 490 440 500 400" 
+              fill="none" stroke="#8b5cf6" stroke-width="14" stroke-linecap="round"/>
+        <text x="470" y="470" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#5b21b6">Distal Tubule</text>
+
+        <!-- COLLECTING DUCT -->
+        <path d="M 500 400 Q 480 350 450 320 Q 420 300 400 280" 
+              fill="none" stroke="#64748b" stroke-width="14" stroke-linecap="round"/>
+        <text x="370" y="290" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#475569">Collecting Duct</text>
+
+        <!-- ================== -->
+        <!-- OVERLAYS           -->
+        <!-- ================== -->
+
+        <!-- HIVICK: Immune complexes in glomerulus -->
+        <g id="overlay-hivick" style="display:none;">
+          <g fill="#2563eb" opacity="0.95">
+            <circle cx="155" cy="185" r="8"/><circle cx="200" cy="145" r="8"/>
+            <circle cx="245" cy="185" r="8"/><circle cx="260" cy="225" r="8"/>
+            <circle cx="240" cy="265" r="8"/><circle cx="200" cy="280" r="8"/>
+            <circle cx="155" cy="265" r="8"/><circle cx="140" cy="225" r="8"/>
+          </g>
+          <text x="200" y="330" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#1e40af">
+            HIVICK: Immune Complex Deposition
+          </text>
+        </g>
+
+        <!-- HIVAN: Collapsing glomerulopathy -->
+        <g id="overlay-hivan" style="display:none;">
+          <path d="M 170 200 Q 200 185 230 200 Q 240 220 230 240 Q 200 255 170 240 Q 160 220 170 200 Z" 
+                fill="none" stroke="#e11d48" stroke-width="5"/>
+          <g fill="#d97706" opacity="0.9">
+            <circle cx="150" cy="175" r="10"/><circle cx="250" cy="175" r="10"/>
+            <circle cx="260" cy="240" r="10"/><circle cx="240" cy="275" r="10"/>
+            <circle cx="155" cy="275" r="10"/><circle cx="140" cy="240" r="10"/>
+          </g>
+          <text x="200" y="330" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#991b1b">
+            HIVAN: Collapsing Glomerulopathy
+          </text>
+        </g>
+
+        <!-- Tenofovir: Proximal tubule injury -->
+        <g id="overlay-tenofovir" style="display:none;">
+          <g fill="#d97706" opacity="0.95">
+            <circle cx="320" cy="190" r="10"/><circle cx="370" cy="175" r="10"/>
+            <circle cx="420" cy="200" r="10"/><circle cx="470" cy="215" r="10"/>
+            <circle cx="520" cy="190" r="10"/><circle cx="570" cy="185" r="10"/>
+          </g>
+          <!-- Damaged brush border -->
+          <g stroke="#dc2626" stroke-width="3" opacity="0.9">
+            <line x1="310" y1="185" x2="310" y2="200"/><line x1="350" y1="172" x2="350" y2="188"/>
+            <line x1="400" y1="190" x2="400" y2="205"/><line x1="450" y1="225" x2="450" y2="240"/>
+            <line x1="500" y1="200" x2="500" y2="215"/>
+          </g>
+          <text x="445" y="330" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#92400e">
+            Tenofovir: Proximal Tubular Injury (Fanconi)
+          </text>
+        </g>
+
+        <!-- Indinavir/Atazanavir: Crystal deposition -->
+        <g id="overlay-crystal" style="display:none;">
+          <g fill="#16a34a" opacity="0.9">
+            <polygon points="350,185 360,175 370,185 360,195"/>
+            <polygon points="420,200 430,190 440,200 430,210"/>
+            <polygon points="490,200 500,190 510,200 500,210"/>
+            <polygon points="540,180 550,170 560,180 550,190"/>
+            <polygon points="380,215 390,205 400,215 390,225"/>
+          </g>
+          <text x="445" y="330" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#166534">
+            Indinavir/Atazanavir: Crystal Deposition
+          </text>
+        </g>
+
+        <!-- LEGEND -->
+        <g font-family="Arial" font-size="11" fill="#475569">
+          <circle cx="50" cy="560" r="6" fill="#e11d48"/>
+          <text x="65" y="564">Glomerulus</text>
+          <circle cx="170" cy="560" r="6" fill="#f59e0b"/>
+          <text x="185" y="564">Proximal Tubule</text>
+          <circle cx="330" cy="560" r="6" fill="#3b82f6"/>
+          <text x="345" y="564">Loop of Henle</text>
+          <circle cx="460" cy="560" r="6" fill="#8b5cf6"/>
+          <text x="475" y="564">Distal Tubule</text>
+          <circle cx="590" cy="560" r="6" fill="#64748b"/>
+          <text x="605" y="564">Collecting Duct</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- MICROSCOPY THUMBNAILS -->
+    <div class="micro-strip" id="microStrip">
+      <p style="text-align:center; color:#94a3b8; grid-column:1/-1;">Select a disease above to view microscopy images.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SECTION 2: KEY FEATURES TABLE               -->
+  <!-- ============================================ -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>Site of Injury</th>
+          <th>Urine Findings</th>
+          <th>Lab Clues</th>
+          <th>Management</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-tenofovir">
+          <td><strong>Tenofovir Tubulopathy</strong> <span class="badge-tenofovir">Correct</span></td>
+          <td>Proximal tubule</td>
+          <td>Renal glycosuria, bland sediment, no hematuria</td>
+          <td><strong>Hypokalemia, metabolic acidosis, hypophosphatemia, hypouricemia</strong> (Fanconi syndrome)</td>
+          <td><strong>Stop tenofovir</strong>, switch to alternative cART</td>
+        </tr>
+        <tr>
+          <td><strong>HIVICK</strong> <span class="badge-hivick">Distractor</span></td>
+          <td>Glomerulus (immune complex)</td>
+          <td>Dysmorphic RBCs, RBC casts, proteinuria</td>
+          <td>Low C3/C4, active sediment</td>
+          <td>Kidney biopsy; consider RAAS blocker, immunosuppression</td>
+        </tr>
+        <tr>
+          <td><strong>HIVAN</strong> <span class="badge-hivan">Distractor</span></td>
+          <td>Glomerulus (collapsing)</td>
+          <td>Heavy proteinuria, bland sediment</td>
+          <td>Normal complement, advanced HIV</td>
+          <td>Optimize cART; consider steroids</td>
+        </tr>
+        <tr>
+          <td><strong>Indinavir/Atazanavir Crystals</strong> <span class="badge-crystal">Distractor</span></td>
+          <td>Tubulointerstitial (crystals)</td>
+          <td>Crystalluria, hematuria, pyuria</td>
+          <td>Nephrolithiasis, AKI</td>
+          <td>Stop offending drug, hydrate</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SECTION 3: CHECK YOUR UNDERSTANDING         -->
+  <!-- ============================================ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+    <div class="q">
+      <p>1. Which lab finding is most characteristic of tenofovir-induced proximal tubulopathy?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Low C3 and C4 complement levels</button>
+        <button class="opt" onclick="answer(this,true)">B. Renal glycosuria with normal serum glucose</button>
+        <button class="opt" onclick="answer(this,false)">C. Dysmorphic RBCs and RBC casts</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Tenofovir causes proximal tubular injury with Fanconi syndrome, which includes <strong>renal glycosuria</strong> (glucose in urine despite normal serum glucose), hypophosphatemia, hypouricemia, hypokalemia, and metabolic acidosis.</div>
+    </div>
+    <div class="q">
+      <p>2. What is the most appropriate next step in management for tenofovir-induced nephrotoxicity?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Perform a kidney biopsy</button>
+        <button class="opt" onclick="answer(this,false)">B. Continue close observation</button>
+        <button class="opt" onclick="answer(this,true)">C. Modify the current antiretroviral regimen</button>
+        <button class="opt" onclick="answer(this,false)">D. Initiate corticosteroid therapy</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> The diagnosis is clinically highly likely. The next step is to <strong>stop tenofovir</strong> and switch to an alternative antiretroviral agent. Kidney function often stabilizes or improves after discontinuation. Biopsy is reserved for unclear cases.</div>
+    </div>
+    <div class="q">
+      <p>3. Which cART agent is associated with crystal nephropathy and nephrolithiasis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Tenofovir</button>
+        <button class="opt" onclick="answer(this,true)">B. Indinavir</button>
+        <button class="opt" onclick="answer(this,false)">C. Raltegravir</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Indinavir (and to a lesser extent atazanavir) is poorly soluble in urine and can cause crystal deposition, nephrolithiasis, and tubulointerstitial disease.</div>
+    </div>
+    <div class="q">
+      <p>4. A patient with HIV on cART presents with proteinuria, dysmorphic RBCs, and low complement levels. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Tenofovir tubulopathy</button>
+        <button class="opt" onclick="answer(this,true)">B. HIVICK</button>
+        <button class="opt" onclick="answer(this,false)">C. HIVAN</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> HIVICK is an immune complex disease that presents with active urinary sediment (dysmorphic RBCs, RBC casts), proteinuria, and <strong>low complement levels</strong>. HIVAN typically has normal complement and a bland sediment.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and images presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const imageData = {
+    hivick: {
+      lm: { src: 'https://placehold.co/600x400/dbeafe/1e40af?text=HIVICK+LM', caption: 'HIVICK LM', desc: 'Proliferative GN pattern', source: 'AJKD Atlas' },
+      if: { src: 'https://placehold.co/600x400/dbeafe/1e40af?text=HIVICK+IF', caption: 'HIVICK IF', desc: '"Full-house" granular staining', source: 'AJKD Atlas' },
+      em: { src: 'https://placehold.co/600x400/dbeafe/1e40af?text=HIVICK+EM', caption: 'HIVICK EM', desc: 'Subendothelial deposits', source: 'AJKD Atlas' }
+    },
+    hivan: {
+      lm: { src: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Collapsing_glomerulopathy_-_high_mag.jpg', caption: 'HIVAN LM', desc: 'Collapsing glomerulopathy', source: 'Wikimedia Commons' },
+      if: { src: 'https://placehold.co/600x400/fee2e2/991b1b?text=HIVAN+IF', caption: 'HIVAN IF', desc: 'Negative or trace staining', source: 'AJKD Atlas' },
+      em: { src: 'https://placehold.co/600x400/fee2e2/991b1b?text=HIVAN+EM', caption: 'HIVAN EM', desc: 'Tubuloreticular inclusions', source: 'AJKD Atlas' }
+    },
+    tenofovir: {
+      lm: { src: 'https://placehold.co/600x400/fef3c7/92400e?text=Tenofovir+LM', caption: 'Tenofovir LM', desc: 'Proximal tubular injury', source: 'AJKD Atlas' },
+      if: { src: 'https://placehold.co/600x400/fef3c7/92400e?text=Tenofovir+IF', caption: 'Tenofovir IF', desc: 'Negative staining', source: 'AJKD Atlas' },
+      em: { src: 'https://placehold.co/600x400/fef3c7/92400e?text=Tenofovir+EM', caption: 'Tenofovir EM', desc: 'Abnormal mitochondria', source: 'AJKD Atlas' }
+    },
+    crystal: {
+      lm: { src: 'https://placehold.co/600x400/dcfce7/166534?text=Crystal+LM', caption: 'Crystal LM', desc: 'Intratubular crystals', source: 'AJKD Atlas' },
+      if: { src: 'https://placehold.co/600x400/dcfce7/166534?text=Crystal+IF', caption: 'Crystal IF', desc: 'Negative staining', source: 'AJKD Atlas' },
+      em: { src: 'https://placehold.co/600x400/dcfce7/166534?text=Crystal+EM', caption: 'Crystal EM', desc: 'Crystal deposition', source: 'AJKD Atlas' }
+    }
+  };
+
+  function setMode(mode) {
+    ['overlay-hivick','overlay-hivan','overlay-tenofovir','overlay-crystal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnHivick','btnHivan','btnTenofovir','btnCrystal'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+
+    updateMicroStrip(mode);
+
+    if (mode === 'normal') {
+      document.getElementById('btnNormal').classList.add('active');
+    } else if (mode === 'hivick') {
+      document.getElementById('overlay-hivick').style.display = 'block';
+      document.getElementById('btnHivick').classList.add('active');
+    } else if (mode === 'hivan') {
+      document.getElementById('overlay-hivan').style.display = 'block';
+      document.getElementById('btnHivan').classList.add('active');
+    } else if (mode === 'tenofovir') {
+      document.getElementById('overlay-tenofovir').style.display = 'block';
+      document.getElementById('btnTenofovir').classList.add('active');
+    } else if (mode === 'crystal') {
+      document.getElementById('overlay-crystal').style.display = 'block';
+      document.getElementById('btnCrystal').classList.add('active');
+    }
+  }
+
+  function updateMicroStrip(mode) {
+    const strip = document.getElementById('microStrip');
+    if (mode === 'normal') {
+      strip.innerHTML = '<p style="text-align:center; color:#94a3b8; grid-column:1/-1;">Select a disease above to view microscopy images.</p>';
+      return;
+    }
+    const data = imageData[mode];
+    if (!data) return;
+    
+    let html = '';
+    const modalities = [
+      { key: 'lm', label: 'Light Microscopy' },
+      { key: 'if', label: 'Immunofluorescence' },
+      { key: 'em', label: 'Electron Microscopy' }
+    ];
+    
+    modalities.forEach(m => {
+      const img = data[m.key];
+      html += `
+        <div class="micro-thumb">
+          <img src="${img.src}" alt="${img.caption}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>Image not available</div>'">
+          <div class="micro-caption">
+            <h4>${m.label}</h4>
+            <p>${img.desc}</p>
+            <span class="src">Source: ${img.source}</span>
+          </div>
+        </div>
+      `;
+    });
+    strip.innerHTML = html;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '@/lib/axios';
 import type { Lesson, Topic } from '@/types';
 import { formatDuration } from '@/lib/apiMappers';
+import { resolveMedicalAssetUrl } from '@/lib/animationUtils';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import LessonAnimation from '@/components/LessonAnimation';
 import {
@@ -11,6 +13,8 @@ import {
   AcademicCapIcon,
   FilmIcon,
   LightBulbIcon,
+  PhotoIcon,
+  PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 
 interface LessonDetail extends Lesson {
@@ -19,6 +23,7 @@ interface LessonDetail extends Lesson {
 
 export default function LessonView() {
   const { lessonId } = useParams<{ lessonId: string }>();
+  const [showInteractive, setShowInteractive] = useState(false);
 
   const { data: lesson, isLoading } = useQuery<LessonDetail>({
     queryKey: ['lesson', lessonId],
@@ -38,6 +43,8 @@ export default function LessonView() {
   }
 
   const chapter = lesson.topic?.chapter;
+  const imageUrl = resolveMedicalAssetUrl(lesson.image_url ?? '');
+  const interactiveUrl = resolveMedicalAssetUrl(lesson.interactive_url ?? '');
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -77,6 +84,13 @@ export default function LessonView() {
             fallbackTitle={lesson.title}
             fallbackSummary={lesson.summary}
           />
+        ) : imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={lesson.title}
+            loading="lazy"
+            className="w-full bg-white object-contain"
+          />
         ) : (
           <div className="flex aspect-video flex-col items-center justify-center bg-gradient-to-br from-primary-900 via-teal-900 to-gray-900 p-8 text-center">
             <FilmIcon className="mb-4 h-16 w-16 text-teal-400/80" />
@@ -85,6 +99,43 @@ export default function LessonView() {
           </div>
         )}
       </motion.div>
+
+      {interactiveUrl && (
+        <div className="card">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <PresentationChartBarIcon className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+              <h2 className="font-semibold text-gray-900 dark:text-gray-100">Interactive Lesson</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowInteractive((open) => !open)}
+              className="btn-outline text-sm"
+            >
+              {showInteractive ? 'Hide' : 'Open'} interactive lesson
+            </button>
+          </div>
+          {showInteractive ? (
+            <iframe
+              src={interactiveUrl}
+              title={`${lesson.title} interactive lesson`}
+              className="h-[70vh] w-full rounded-xl border border-gray-200 dark:border-gray-700"
+            />
+          ) : (
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              A self-contained interactive lesson covering {lesson.title.toLowerCase()}. It opens
+              inside this page and needs no additional downloads.
+            </p>
+          )}
+        </div>
+      )}
+
+      {imageUrl && (
+        <div className="card flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <PhotoIcon className="h-4 w-4" />
+          <span>Pinch or right-click the image to view it full size.</span>
+        </div>
+      )}
 
       <div className="card">
         <div className="mb-3 flex items-center gap-2">

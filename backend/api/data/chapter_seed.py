@@ -6,6 +6,7 @@ written for this repository and seeded with `needs_review` medical review status
 """
 
 ANIMATION_BASE = "https://zub165.github.io/nephro-challenge-ai/animations"
+MEDICAL_ASSET_BASE = "https://zub165.github.io/nephro-challenge-ai/medical"
 
 CHAPTERS = [
     {
@@ -78,6 +79,7 @@ CHAPTERS = [
                         "summary": "Delta gap and delta-delta calculations to uncover a second disorder.",
                         "content_md": "1. Confirm acidemia or alkalemia and identify the primary process.\n2. For a metabolic acidosis, calculate the anion gap and then the delta ratio: (measured HCO3 - 24) / (12 - anion gap). A ratio near 1.0 is a pure high anion gap acidosis; below 0.4 implies a coexisting normal anion gap acidosis; above 2.0 implies a coexisting metabolic alkalosis.\n3. Check respiratory compensation with Winter's formula for acidosis and with the expected PaCO2 = 0.7 x HCO3 + 20 +/- 5 (or 40 + 0.6 x change in HCO3) for metabolic alkalosis.\n4. Any deviation beyond the compensation window is a second respiratory disorder.",
                         "duration_seconds": 120,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/gi-causes-acid-base.html",
                         "reference_ids": ["winters-formula-1979", "kdigo-aki-2012"],
                     }
                 ],
@@ -128,6 +130,9 @@ CHAPTERS = [
                         "summary": "Urine chloride algorithm for metabolic alkalosis workup.",
                         "animation_url": f"{ANIMATION_BASE}/metabolic-alkalosis.json",
                         "duration_seconds": 75,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/hypokalemic-metabolic-alkalosis.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/hypokalemic-metabolic-alkalosis-thumb.webp",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/hypokalemic-metabolic-alkalosis-lesson.html",
                         "reference_ids": ["uptodate-metabolic-alk"],
                     }
                 ],
@@ -178,6 +183,7 @@ CHAPTERS = [
                         "summary": "Distal vs proximal vs type 4 RTA bedside patterns.",
                         "content_md": "All forms of RTA are hyperchloremic (normal anion gap) metabolic acidoses with preserved glomerular filtration.\n\nType 1 (distal): impaired H+ secretion in the alpha-intercalated cell. Urine pH stays above 5.3 despite systemic acidosis, urine anion gap is positive, and nephrolithiasis or nephrocalcinosis is common. Causes include Sjögren syndrome, autoimmune hepatitis, amphotericin B, analgesic nephropathy, and obstruction.\n\nType 2 (proximal): impaired bicarbonate reabsorption with intact distal acidification. Urine pH is high only while serum bicarbonate is above the reduced threshold, and it falls below 5.3 once serum bicarbonate is low. Urine anion gap is negative. Causes include multiple myeloma (Fanconi syndrome), carbonic anhydrase inhibitors, heavy metals, and tenofovir.\n\nType 4: hyporeninemic hypoaldosteronism with impaired ammonium excretion. Hyperkalemia is the dominant feature. Common in diabetic CKD, ACE inhibitor or ARB use, heparin, and adrenal insufficiency.",
                         "duration_seconds": 130,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/renal-tubular-acidosis-patterns.html",
                         "reference_ids": ["statpearls-rta", "ajkd-rta-core-2025"],
                     }
                 ],
@@ -320,6 +326,8 @@ CHAPTERS = [
                         "summary": "Safe sodium correction rates and osmotic demyelination prevention.",
                         "animation_url": f"{ANIMATION_BASE}/hyponatremia-correction.json",
                         "duration_seconds": 100,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/electrolytes/hyponatremia-osmolality-approach.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/electrolytes/hyponatremia-osmolality-approach-thumb.webp",
                         "reference_ids": ["rose-hyponatremia-2013"],
                     }
                 ],
@@ -480,7 +488,31 @@ CHAPTERS = [
                         "summary": "Using urine sediment, timing, and exposures to narrow intrinsic AKI.",
                         "content_md": "Intrinsic AKI is divided by the dominant lesion.\n\nAcute tubular necrosis: the most common cause, typically ischemic or nephrotoxic. Sediment shows muddy brown granular casts and renal tubular epithelial cells. A nadir of creatinine at 3-7 days with recovery over 1-3 weeks is typical.\n\nAcute interstitial nephritis: drug, infection, or systemic cause; classic triad of fever, rash, and eosinophilia is uncommon. Sterile pyuria, white cell casts, and mild proteinuria are typical. Kidney function often fails to improve after the drug is stopped, and corticosteroids are recommended when recovery is incomplete.\n\nAcute cortical necrosis: obstetric emergencies, severe shock, or profound hypotension, with anuria and a bland sediment.\n\nVascular: renal vein thrombosis, thrombotic microangiopathy, or cholesterol emboli after vascular manipulation.",
                         "duration_seconds": 100,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/urinary-casts-morphology.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/urinary-casts-morphology-thumb.webp",
                         "reference_ids": ["kdigo-aki-2012"],
+                    },
+                    {
+                        "title": "Urinary Casts Morphology and Localization",
+                        "lesson_slug": "urinary-casts-morphology-and-localization",
+                        "lesson_type": "article",
+                        "summary": "How casts form in the tubule and what each type localizes.",
+                        "content_md": "Casts are formed inside the tubule from uromodulin (Tamm-Horsfall protein) secreted by tubular cells, so a cast always localizes the disease to that nephron segment.\n\nHyaline casts: most numerous, low refractive index, seen in concentrated urine, exercise, and volume depletion. Not diagnostic.\n\nGranular casts (muddy brown): breakdown of cellular debris in acute tubular necrosis.\n\nRed cell casts: glomerular bleeding, essentially always glomerulonephritis or vasculitis. Their presence is a board favorite because they separate nephritic from nephrotic disease.\n\nWhite cell casts and white cell casts with eosinophils: pyelonephritis and acute interstitial nephritis.\n\nWaxy casts: broad, homogeneous, cracked casts indicating chronic advanced kidney disease with dilated tubules. Fatty casts and oval fat bodies (Maltese cross under polarized light) indicate heavy proteinuria.",
+                        "duration_seconds": 90,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/urinary-casts-morphology.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/urinary-casts-morphology-thumb.webp",
+                        "reference_ids": ["kdigo-aki-2012", "abim-nephrology-blueprint-2026"],
+                    },
+                    {
+                        "title": "Renal Papillary Necrosis",
+                        "lesson_slug": "renal-papillary-necrosis",
+                        "lesson_type": "article",
+                        "summary": "Causes, classic imaging signs, and the differential for sloughed papillae.",
+                        "content_md": "Papillary necrosis is ischemic coagulative necrosis of the renal medullary papillae, which have the lowest blood supply in the kidney.\n\nCauses: diabetes mellitus (the most common), analgesic nephropathy (phenacetin, NSAIDs), sickle cell disease, pyelonephritis, obstruction, severe hypotension, and transplant rejection.\n\nImaging: on IV urography the classic sign is the ring shadow, moth-eaten calyx, or ball-on-tee deformity. CT urography is more sensitive and shows a contrast-filled cleft at the papilla.\n\nClinical: sloughed papillae may pass per urethra, causing acute flank pain and hematuria, or obstruct and produce postrenal acute kidney injury. Papillary necrosis also raises the risk of renal papillary adenoma and transitional cell carcinoma in analgesic nephropathy.\n\nAlways ask about diabetes, analgesic dose and duration, and sickle trait in a patient with sterile pyuria and flank pain.",
+                        "duration_seconds": 90,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/renal-papillary-necrosis.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/renal-papillary-necrosis-thumb.webp",
+                        "reference_ids": ["kdigo-aki-2012", "abim-nephrology-blueprint-2026"],
                     }
                 ],
                 "mcqs": [
@@ -1093,6 +1125,8 @@ CHAPTERS = [
                             "gynecomastia). Check potassium and eGFR at 1 week, 1 month, then every 3-6 months."
                         ),
                         "duration_seconds": 240,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/hypertension/renal-denervation.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/hypertension/renal-denervation-thumb.webp",
                         "reference_ids": ["kdigo-bp-2021", "uptodate-renovascular"],
                     },
                 ],
@@ -1127,6 +1161,9 @@ CHAPTERS = [
                         "summary": "Step animation of RAAS activation and the hemodynamic consequences of renal artery stenosis.",
                         "animation_url": f"{ANIMATION_BASE}/renovascular-htn.json",
                         "duration_seconds": 110,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/hypertension/renovascular-hypertension-angiogram.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/hypertension/renovascular-hypertension-angiogram-thumb.webp",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/hypertension/renovascular-hypertension.html",
                         "reference_ids": ["uptodate-renovascular"],
                     },
                     {
@@ -1222,6 +1259,8 @@ CHAPTERS = [
                             "- Obstructive sleep apnea: polysomnography or home sleep apnea test"
                         ),
                         "duration_seconds": 240,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/hypertension/secondary-hypertension-renin-aldosterone.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/hypertension/secondary-hypertension-renin-aldosterone-thumb.webp",
                         "reference_ids": ["uptodate-dds", "kdigo-bp-2021"],
                     },
                 ],
@@ -1554,6 +1593,8 @@ CHAPTERS = [
                         "summary": "Step animation of drug-induced interstitial inflammation, urinalysis, and recovery.",
                         "animation_url": f"{ANIMATION_BASE}/tubulointerstitial-cystic.json",
                         "duration_seconds": 110,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/granulomatous-interstitial-nephritis.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/granulomatous-interstitial-nephritis-thumb.webp",
                         "reference_ids": ["kdigo-ckd-2024"],
                     },
                     {
@@ -1757,7 +1798,20 @@ CHAPTERS = [
                             "- Screen at-risk relatives for blood pressure control and offer genetic counselling"
                         ),
                         "duration_seconds": 270,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/adpkd-progression.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/adpkd-progression-thumb.webp",
                         "reference_ids": ["kdigo-adpkd-2025", "kdigo-ckd-2024"],
+                    },
+                    {
+                        "title": "Tuberous Sclerosis: Renal Angiomyolipoma",
+                        "lesson_slug": "tuberous-sclerosis-renal-angiomyolipoma",
+                        "lesson_type": "article",
+                        "summary": "Renal angiomyolipoma, skin findings, and surveillance in tuberous sclerosis complex.",
+                        "content_md": "Tuberous sclerosis complex is an autosomal dominant disorder of TSC1 (hamartin) or TSC2 (tuberin) that causes hamartomas in multiple organs.\n\nKidney: angiomyolipomas occur in up to 80 percent of adults with TSC, and renal cysts are also common. Angiomyolipoma is a triphasic tumor of vessels, smooth muscle, and fat, so it is fat containing on CT and prone to retroperitoneal hemorrhage. Bleeding risk rises with size above 4 cm, and growth is faster in children and adults than in children alone.\n\nExtrarenal clues: hypomelanotic ash-leaf macules, shagreen patch, facial angiofibromas, periungual fibromas, cortical tubers, and subependymal giant cell astrocytoma. Cardiac rhabdomyomas are common in infancy.\n\nManagement: monitor with periodic imaging, control blood pressure and lipids, treat epilepsy, and consider embolization or nephron-sparing resection for large or symptomatic angiomyolipomas. mTOR inhibitors such as everolimus reduce angiomyolipoma size in patients who are not candidates for surgery.\n\nAsk about family history, seizures, and skin findings in any young patient with unexplained renal masses or hematuria.",
+                        "duration_seconds": 90,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/tuberous-sclerosis-angiomyolipoma.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/tuberous-sclerosis-angiomyolipoma-thumb.webp",
+                        "reference_ids": ["kdigo-adpkd-2025", "abim-nephrology-blueprint-2026"],
                     },
                 ],
                 "mcqs": [
@@ -1817,6 +1871,9 @@ CHAPTERS = [
                         "summary": "Step animation contrasting nephrotic and nephritic presentations at the glomerulus.",
                         "animation_url": f"{ANIMATION_BASE}/nephrotic-nephritic.json",
                         "duration_seconds": 110,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/light-chains-immunoglobulin.svg",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/light-chains-immunoglobulin.svg",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/lightchain-nephropathy.html",
                         "reference_ids": ["kdigo-glomerular-2021"],
                     },
                     {
@@ -1849,6 +1906,9 @@ CHAPTERS = [
                             "intake, ACE inhibitor or ARB for proteinuria, and statin therapy for hyperlipidemia."
                         ),
                         "duration_seconds": 270,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/renal-biopsy-al-vs-lcdd.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/renal-biopsy-al-vs-lcdd-thumb.webp",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/fsgs-advanced.html",
                         "reference_ids": ["kdigo-glomerular-2021", "kdigo-nephrotic-peds-2025"],
                     },
                 ],
@@ -1924,7 +1984,20 @@ CHAPTERS = [
                             "cyclophosphamide for lupus nephritis"
                         ),
                         "duration_seconds": 270,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/lupus-nephritis.html",
                         "reference_ids": ["kdigo-anca-aav-2024", "kdigo-glomerular-2021"],
+                    },
+                    {
+                        "title": "HIV-Associated Nephropathy: Biopsy Patterns",
+                        "lesson_slug": "hiv-associated-nephropathy-biopsy-patterns",
+                        "lesson_type": "article",
+                        "summary": "Light microscopy, immunofluorescence, and electron microscopy patterns of HIV kidney disease.",
+                        "content_md": "HIV-associated kidney disease has three distinct patterns that must be separated on biopsy.\n\nHIV-associated nephropathy (HIVAN): collapsing focal segmental glomerulosclerosis with podocyte proliferation and microcystic tubular dilation. Immunofluorescence is negative or shows only nonspecific trapped immunoglobulin, and electron microscopy shows tubuloreticular inclusions. It occurs most often in patients of African ancestry with low CD4 counts, untreated HIV, and often normal or only mildly reduced renal function with a rapid decline.\n\nHIV immune complex kidney disease (HIVICK): immune complex deposition, most often IgM and C3 with a full-house pattern, resembling lupus nephritis or post-infectious glomerulonephritis.\n\ncART nephrotoxicity: tenofovir disoproxil causes proximal tubular injury with a Fanconi pattern, phosphate wasting, and low molecular weight proteinuria, while boosted protease inhibitors and cobicistat raise the risk of crystal nephropathy and hyperuricemia.\n\nPractical points: start antiretroviral therapy in HIVAN, which often stabilizes kidney function, and use tenofovir alafenamide or an alternative agent when cART nephrotoxicity is present.",
+                        "duration_seconds": 120,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/hiv-associated-nephropathy.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/hiv-associated-nephropathy-thumb.webp",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/hiv-associated-nephropathy.html",
+                        "reference_ids": ["kdigo-glomerular-2021", "abim-nephrology-blueprint-2026"],
                     },
                 ],
                 "mcqs": [
@@ -2255,6 +2328,8 @@ CHAPTERS = [
                         "summary": "Step animation of hyperacute, acute cellular, and antibody-mediated rejection timelines.",
                         "animation_url": f"{ANIMATION_BASE}/transplant-rejection.json",
                         "duration_seconds": 120,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/transplantation/transplant-biopsy-acr-amr.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/transplantation/transplant-biopsy-acr-amr-thumb.webp",
                         "reference_ids": ["kdigo-transplant-2009"],
                     },
                     {
@@ -2378,6 +2453,8 @@ CHAPTERS = [
                             "high rate of ovarian cyst formation and the risk of wound complications."
                         ),
                         "duration_seconds": 240,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/transplantation/post-transplant-dsa.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/transplantation/post-transplant-dsa-thumb.webp",
                         "reference_ids": ["kdigo-transplant-2009"],
                     },
                 ],
@@ -2642,7 +2719,19 @@ CHAPTERS = [
                             "thiamine in malnourished patients."
                         ),
                         "duration_seconds": 240,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/nephrology-pharmacology/toxic-alcohols-differential.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/nephrology-pharmacology/toxic-alcohols-differential-thumb.webp",
                         "reference_ids": ["kdigo-ckd-2024", "kdigo-aki-2012"],
+                    },
+                    {
+                        "title": "HIV and cART Nephrotoxicity",
+                        "lesson_slug": "hiv-and-cart-nephrotoxicity",
+                        "lesson_type": "article",
+                        "summary": "Tenofovir and boosted protease inhibitor nephrotoxicity: tubular, crystal, and mitochondrial injury.",
+                        "content_md": "Antiretroviral therapy can injure the kidney directly and through its metabolites, so drug toxicity belongs in the differential for any unexplained kidney disease in a patient with HIV.\n\nTenofovir disoproxil fumarate: the nucleotide analogue is preferentially concentrated in proximal tubular cells and causes mitochondrial DNA depletion. The presentation is a Fanconi-type tubulopathy with normoglycemic glycosuria, phosphate wasting, aminoaciduria, uricosuria, and a bland urine sediment, sometimes progressng to AKI.\n\nBoosted protease inhibitors and cobicistat: ritonavir and cobicistat inhibit tubular secretion, so they raise creatinine without reducing true GFR, and indinavir causes crystal nephropathy and painful colicky hematuria.\n\nPractical approach: confirm a true fall in GFR with cystatin C or a 24-hour creatinine clearance before labelling a stable rise as cART nephrotoxicity. Switch to tenofovir alafenamide or an alternative regimen when tubular injury is confirmed, and avoid the drug entirely in advanced CKD.",
+                        "duration_seconds": 120,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/nephrology-pharmacology/hiv-cart-nephrotoxicity.html",
+                        "reference_ids": ["awdishu-kdigo-ckd-pharm-2025", "kdigo-ckd-2024"],
                     },
                 ],
                 "mcqs": [

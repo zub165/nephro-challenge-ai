@@ -450,6 +450,8 @@ class LessonSerializer(serializers.ModelSerializer):
             "summary",
             "content_md",
             "animation_url",
+            "image_url",
+            "interactive_url",
             "thumbnail_url",
             "duration_seconds",
             "order_index",

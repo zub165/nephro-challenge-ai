@@ -332,7 +332,7 @@ class SeedBoardExamCommandTests(TestCase):
 
         self.assertEqual(Chapter.objects.count(), 10)
         self.assertEqual(Topic.objects.count(), 39)
-        self.assertEqual(Lesson.objects.count(), 53)
+        self.assertEqual(Lesson.objects.count(), 58)
         self.assertEqual(Question.objects.count(), 75)
         self.assertEqual(Choice.objects.count(), 300)
         self.assertEqual(BoardExam.objects.count(), 1)
@@ -510,6 +510,80 @@ class SeedContentServiceTests(TestCase):
         self.assertEqual(question.review_status, ReviewStatus.NEEDS_REVIEW)
         self.assertEqual(question.reviewed_by, "")
 
+    def test_unchanged_approved_lesson_keeps_its_review_state(self):
+        seed_board_exam()
+        lesson = Lesson.objects.filter(image_url="").first() or Lesson.objects.first()
+        Lesson.objects.filter(pk=lesson.pk).update(
+            review_status=ReviewStatus.APPROVED,
+            reviewed_by="Dr. Reviewer",
+            reviewed_at=timezone.now(),
+        )
+
+        seed_curriculum(copy.deepcopy(CHAPTERS))
+
+        lesson.refresh_from_db()
+        self.assertEqual(lesson.review_status, ReviewStatus.APPROVED)
+        self.assertEqual(lesson.reviewed_by, "Dr. Reviewer")
+
+    def test_attaching_a_figure_does_not_reset_an_approved_lesson(self):
+        """A figure changes what the page shows, not what the lesson teaches."""
+        chapters = copy.deepcopy(CHAPTERS)
+        topic = chapters[0]["topics"][0]
+        lesson_data = next(
+            item for item in topic["lessons"] if not item.get("image_url")
+        )
+        lesson_data["image_url"] = "https://example.test/figure.webp"
+        lesson_data["thumbnail_url"] = "https://example.test/figure-thumb.webp"
+        lesson_data.pop("interactive_url", None)
+
+        seed_curriculum(copy.deepcopy(CHAPTERS))
+        lesson = Lesson.objects.get(title=lesson_data["title"])
+        Lesson.objects.filter(pk=lesson.pk).update(
+            review_status=ReviewStatus.APPROVED,
+            reviewed_by="Dr. Reviewer",
+            reviewed_at=timezone.now(),
+        )
+
+        seed_curriculum(chapters)
+
+        lesson.refresh_from_db()
+        self.assertEqual(lesson.review_status, ReviewStatus.APPROVED)
+        self.assertEqual(lesson.reviewed_by, "Dr. Reviewer")
+        self.assertEqual(lesson.image_url, "https://example.test/figure.webp")
+
+    def test_edited_approved_lesson_text_is_still_reset_to_needs_review(self):
+        chapters = copy.deepcopy(CHAPTERS)
+        topic = chapters[0]["topics"][0]
+        lesson_data = next(item for item in topic["lessons"] if not item.get("image_url"))
+        lesson_data["content_md"] = (lesson_data.get("content_md") or "") + "\n\nRevised text."
+
+        seed_curriculum(copy.deepcopy(CHAPTERS))
+        lesson = Lesson.objects.get(title=lesson_data["title"])
+        Lesson.objects.filter(pk=lesson.pk).update(
+            review_status=ReviewStatus.APPROVED,
+            reviewed_by="Dr. Reviewer",
+            reviewed_at=timezone.now(),
+        )
+
+        seed_curriculum(chapters)
+
+        lesson.refresh_from_db()
+        self.assertEqual(lesson.review_status, ReviewStatus.NEEDS_REVIEW)
+        self.assertEqual(lesson.reviewed_by, "")
+
+    def test_lesson_media_changes_are_tracked_separately_from_content(self):
+        seed_curriculum(copy.deepcopy(CHAPTERS))
+        with_media = Lesson.objects.exclude(image_url="").first()
+        without_media = Lesson.objects.filter(image_url="").first()
+        self.assertIsNotNone(with_media)
+
+        self.assertNotEqual(
+            with_media.source_metadata["content_fingerprint"],
+            without_media.source_metadata["content_fingerprint"],
+        )
+        for lesson in (with_media, without_media):
+            self.assertIn("media_fingerprint", lesson.source_metadata)
+
     def test_rejected_questions_are_excluded_from_the_exam_pool(self):
         seed_board_exam()
         rejected = Question.objects.first()
@@ -519,6 +593,36 @@ class SeedContentServiceTests(TestCase):
 
         self.assertNotIn(rejected.pk, result["exam"].questions.values_list("pk", flat=True))
         self.assertEqual(result["questions_attached"], 74)
+
+    def test_questions_from_legacy_content_are_excluded_from_the_exam_pool(self):
+        """Older `seed_data` questions can sit in a seeded chapter but must not be pooled."""
+        seed_board_exam()
+        chapter = Chapter.objects.get(slug=CHAPTERS[0]["slug"])
+        legacy = Question.objects.create(
+            question_text="Legacy question that shares a seeded chapter slug",
+            category=chapter.category,
+            chapter=chapter,
+            explanation="Legacy explanation",
+            review_status=ReviewStatus.NEEDS_REVIEW,
+            source_metadata={
+                "origin": "seed",
+                "kind": "question",
+                "chapter_slug": "",
+                "topic_slug": "",
+            },
+        )
+
+        result = seed_board_exam()
+
+        attached = list(result["exam"].questions.values_list("pk", flat=True))
+        self.assertNotIn(legacy.pk, attached)
+        self.assertEqual(len(attached), 75)
+        self.assertTrue(
+            all(
+                (q.source_metadata or {}).get("chapter_slug") == q.chapter.slug
+                for q in Question.objects.filter(pk__in=attached)
+            )
+        )
 
 
 class AnimationAssetTests(TestCase):

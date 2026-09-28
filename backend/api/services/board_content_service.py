@@ -152,6 +152,28 @@ def _review_fields(existing, fingerprint: str) -> dict[str, Any]:
     }
 
 
+# Attaching or swapping a figure changes what a reader sees on the page, but not
+# what the lesson teaches, so it is tracked with its own fingerprint instead of
+# invalidating clinician sign-off on the teaching content.
+MEDIA_ONLY_LESSON_FIELDS = ("image_url", "thumbnail_url", "interactive_url")
+
+
+def _lesson_fingerprints(lesson_data: dict[str, Any], topic_slug: str) -> tuple[str, str]:
+    """Return (content_fingerprint, media_fingerprint) for a seeded lesson."""
+    teaching = {
+        key: value
+        for key, value in lesson_data.items()
+        if key not in MEDIA_ONLY_LESSON_FIELDS
+    }
+    media = {key: lesson_data.get(key, "") for key in MEDIA_ONLY_LESSON_FIELDS}
+    return (
+        content_fingerprint(
+            {"kind": "lesson", "content": teaching, "topic_slug": topic_slug}
+        ),
+        content_fingerprint({"kind": "lesson_media", "content": media}),
+    )
+
+
 @dataclass
 class SeedReport:
     categories_created: int = 0
@@ -234,14 +256,14 @@ def _upsert_lesson(
         defaults={"order_index": order_index},
     )
     reference_ids = list(lesson_data.get("reference_ids", []))
-    fingerprint = content_fingerprint(
-        {"kind": "lesson", "content": lesson_data, "topic_slug": topic_slug}
-    )
+    fingerprint, media_fingerprint = _lesson_fingerprints(lesson_data, topic_slug)
     defaults = {
         "lesson_type": lesson_data.get("lesson_type", "animation"),
         "summary": lesson_data.get("summary", ""),
         "content_md": lesson_data.get("content_md", ""),
         "animation_url": lesson_data.get("animation_url", ""),
+        "image_url": lesson_data.get("image_url", ""),
+        "interactive_url": lesson_data.get("interactive_url", ""),
         "thumbnail_url": lesson_data.get("thumbnail_url", ""),
         "duration_seconds": lesson_data.get("duration_seconds", 0),
         "order_index": order_index,
@@ -253,6 +275,7 @@ def _upsert_lesson(
             reference_ids=reference_ids,
             lesson_slug=lesson_data.get("lesson_slug", ""),
             content_fingerprint=fingerprint,
+            media_fingerprint=media_fingerprint,
         ),
     }
     changed = created
@@ -428,6 +451,10 @@ def seed_board_exam(
         pool = Question.objects.filter(
             chapter__slug=slug,
             review_status__in=ELIGIBLE_REVIEW_STATUSES,
+            # Only questions this seed owns. Older `seed_data` content can share a
+            # chapter slug, and it is stamped with an empty chapter_slug, so without
+            # this filter the exam silently pools two generations of content.
+            source_metadata__chapter_slug=slug,
         )
         pool_per_chapter[slug] = pool.count()
         question_ids.extend(pool.values_list("pk", flat=True))

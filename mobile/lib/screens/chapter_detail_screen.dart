@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/routes.dart';
@@ -76,9 +77,24 @@ class _ChapterDetailScreenState extends State<ChapterDetailScreen> {
                       style: GoogleFonts.inter(fontSize: 12)),
                   children: [
                     ...(topic.lessons ?? []).map((lesson) => ListTile(
-                          leading: const Icon(Icons.play_circle_outline),
+                          leading: lesson.thumbnailUrl.isEmpty
+                              ? const Icon(Icons.play_circle_outline)
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: CachedNetworkImage(
+                                    imageUrl: lesson.thumbnailUrl,
+                                    width: 44,
+                                    height: 44,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (_, __, ___) => const Icon(
+                                        Icons.play_circle_outline, size: 44),
+                                  ),
+                                ),
                           title: Text(lesson.title),
                           subtitle: Text(lesson.summary, maxLines: 2),
+                          trailing: lesson.interactiveUrl.isEmpty
+                              ? null
+                              : const Icon(Icons.touch_app_outlined, size: 20),
                           onTap: () => Navigator.pushNamed(
                             context,
                             AppRoutes.lesson,

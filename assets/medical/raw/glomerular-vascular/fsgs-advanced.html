@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FSGS Advanced Visualization — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --fsgs:#b45309; --mcd:#047857; --membranous:#1d4ed8; --normal:#065f46;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+  
+  .toggle-bar{display:flex; justify-content:center; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:10px 18px; border-radius:999px;
+    font-size:.85rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.mcd.active{background:#d1fae5; border-color:var(--mcd); color:#065f46;}
+  .pill.fsgs.active{background:#fef3c7; border-color:var(--fsgs); color:#78350f;}
+  .pill.fsgs-resistant.active{background:#fed7aa; border-color:#c2410c; color:#7c2d12;}
+  .pill.membranous.active{background:#dbeafe; border-color:var(--membranous); color:#1e3a8a;}
+
+  .visualizer-box{border:1px solid var(--line); border-radius:14px; padding:20px; background:#fafafa; display:inline-block; width:100%; max-width:900px;}
+  svg.diagram{width:100%; height:auto; max-height:580px;}
+
+  /* Slide-tray look */
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:10px; padding:8px; display:inline-block; box-shadow:0 10px 30px rgba(0,0,0,.25);}
+
+  /* MICROSCOPY THUMBNAILS */
+  .micro-strip{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .micro-thumb{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;
+    box-shadow:0 2px 8px rgba(15,23,42,.05); transition:transform .2s ease, box-shadow .2s ease;}
+  .micro-thumb:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,23,42,.1);}
+  .micro-thumb .img-container{width:100%; height:150px; background:#000; display:block; position:relative;}
+  .micro-thumb .micro-caption{padding:10px 12px;}
+  .micro-thumb .micro-caption h4{margin:0 0 3px; font-size:.8rem; font-weight:800;}
+  .micro-thumb .micro-caption p{margin:0; font-size:.7rem; color:var(--muted); line-height:1.4;}
+  .micro-thumb .micro-caption .src{font-size:.65rem; color:#94a3b8; margin-top:4px; display:block;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.85rem; min-width:950px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-fsgs { background-color: #ffedd5; box-shadow: inset 4px 0 0 #c2410c; }
+  tr.highlight-fsgs td { font-weight: 600; color: #7c2d12; }
+  tr:hover { background-color: #f8fafc; }
+  .badge-fsgs { background: #fed7aa; color: #7c2d12; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-mcd { background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-membranous { background: #dbeafe; color: #1e3a8a; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-secondary { background: #f3e8ff; color: #6b21a8; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.95rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px; font-size:.85rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px; border-radius:0 10px 10px 0; font-size:.85rem; color:#334155;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  /* FOOTER */
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px; padding:14px 18px; font-size:.82rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>FSGS — Advanced Histopathology Visualization</h1>
+      <p>Dynamic glomerular pathology with realistic H&E / PAS / IF / EM staining simulation</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <section class="stage">
+    <h2>Interactive Glomerular Pathology</h2>
+    <p class="sub">Professional-grade animation · Realistic histology staining · Progressive lesion dynamics</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill mcd" id="btnMcd" onclick="setMode('mcd')">Minimal Change</button>
+      <button class="pill fsgs" id="btnFsgs" onclick="setMode('fsgs')">FSGS</button>
+      <button class="pill fsgs-resistant" id="btnFsgsR" onclick="setMode('fsgs-resistant')">FSGS Steroid-Resistant ★</button>
+      <button class="pill membranous" id="btnMembranous" onclick="setMode('membranous')">Membranous</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="tissueTexture" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="42" result="noise"/>
+            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.9  0 0 0 0.15 0" result="tint"/>
+            <feBlend in="SourceGraphic" in2="tint" mode="multiply"/>
+          </filter>
+          <filter id="nucleusGlow">
+            <feGaussianBlur stdDeviation="1.2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="lumenGrad" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="70%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#b91c1c"/>
+          </radialGradient>
+          <radialGradient id="tissueBg" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef2f8"/><stop offset="60%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#fbcfe8"/>
+          </radialGradient>
+          <radialGradient id="sclerosisGrad" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#92400e"/><stop offset="60%" stop-color="#78350f"/><stop offset="100%" stop-color="#451a03"/>
+          </radialGradient>
+          <radialGradient id="hyalinosisGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fda4af"/><stop offset="100%" stop-color="#f43f5e"/>
+          </radialGradient>
+          <linearGradient id="gbmGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fcd34d"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/>
+          </linearGradient>
+          <radialGradient id="podocyteGrad" cx="35%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#e9d5ff"/><stop offset="60%" stop-color="#c084fc"/><stop offset="100%" stop-color="#7e22ce"/>
+          </radialGradient>
+          <radialGradient id="nucleusGrad" cx="35%" cy="30%" r="60%">
+            <stop offset="0%" stop-color="#7c3aed"/><stop offset="60%" stop-color="#4c1d95"/><stop offset="100%" stop-color="#2e1065"/>
+          </radialGradient>
+          <radialGradient id="rbcGrad" cx="35%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#f87171"/><stop offset="70%" stop-color="#dc2626"/><stop offset="100%" stop-color="#991b1b"/>
+          </radialGradient>
+          <radialGradient id="mesangialGrad" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#f9a8d4"/>
+          </radialGradient>
+        </defs>
+
+        <rect width="1000" height="700" fill="url(#tissueBg)" filter="url(#tissueTexture)"/>
+
+        <g opacity="0.35" filter="url(#tissueTexture)">
+          <ellipse cx="80" cy="120" rx="90" ry="60" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+          <ellipse cx="920" cy="620" rx="100" ry="60" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+          <ellipse cx="100" cy="620" rx="80" ry="55" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+          <ellipse cx="900" cy="100" rx="85" ry="55" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+        </g>
+
+        <circle cx="500" cy="350" r="240" fill="none" stroke="#be185d" stroke-width="3" opacity="0.6"/>
+        <circle cx="500" cy="350" r="238" fill="none" stroke="#ec4899" stroke-width="1" opacity="0.4"/>
+
+        <g opacity="0.5"><ellipse cx="500" cy="350" rx="60" ry="55" fill="url(#mesangialGrad)"/></g>
+
+        <g filter="url(#nucleusGlow)">
+          <ellipse cx="500" cy="340" rx="12" ry="10" fill="url(#nucleusGrad)" opacity="0.95"/>
+          <ellipse cx="480" cy="365" rx="11" ry="9" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="525" cy="355" rx="12" ry="10" fill="url(#nucleusGrad)" opacity="0.95"/>
+          <ellipse cx="505" cy="375" rx="10" ry="9" fill="url(#nucleusGrad)" opacity="0.85"/>
+        </g>
+
+        <g id="capillaryLoops" fill="url(#lumenGrad)" stroke="url(#gbmGrad)" stroke-width="8" stroke-linejoin="round">
+          <path d="M 380 250 Q 420 170 500 170 Q 580 170 620 250 Q 680 320 630 400 Q 570 470 500 480 Q 430 470 370 400 Q 320 320 380 250 Z"/>
+          <path d="M 410 280 Q 450 230 500 230 Q 550 230 590 280 Q 630 330 590 380 Q 550 430 500 430 Q 450 430 410 380 Q 370 330 410 280 Z"/>
+          <path d="M 440 310 Q 470 280 500 280 Q 530 280 560 310 Q 590 340 560 370 Q 530 400 500 400 Q 470 400 440 370 Q 410 340 440 310 Z"/>
+          <path d="M 460 340 Q 500 320 540 340" fill="none" stroke="url(#gbmGrad)" stroke-width="6"/>
+          <path d="M 460 360 Q 500 380 540 360" fill="none" stroke="url(#gbmGrad)" stroke-width="6"/>
+        </g>
+
+        <g fill="none" stroke="#92400e" stroke-width="1.5" opacity="0.4">
+          <path d="M 380 250 Q 420 170 500 170 Q 580 170 620 250"/>
+          <path d="M 620 250 Q 680 320 630 400 Q 570 470 500 480"/>
+          <path d="M 500 480 Q 430 470 370 400 Q 320 320 380 250"/>
+        </g>
+
+        <g id="rbcFlow">
+          <circle r="9" fill="url(#rbcGrad)" opacity="0.9">
+            <animateMotion dur="4s" repeatCount="indefinite" path="M 400 260 Q 500 190 600 260 Q 650 320 600 400 Q 500 460 400 400 Q 350 320 400 260"/>
+            <animate attributeName="opacity" values="0.4;0.95;0.95;0.4" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="8" fill="url(#rbcGrad)" opacity="0.9">
+            <animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M 400 260 Q 500 190 600 260 Q 650 320 600 400 Q 500 460 400 400 Q 350 320 400 260"/>
+            <animate attributeName="opacity" values="0.4;0.95;0.95;0.4" dur="4s" begin="1s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="7" fill="url(#rbcGrad)" opacity="0.9">
+            <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M 400 260 Q 500 190 600 260 Q 650 320 600 400 Q 500 460 400 400 Q 350 320 400 260"/>
+            <animate attributeName="opacity" values="0.4;0.95;0.95;0.4" dur="4s" begin="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="8" fill="url(#rbcGrad)" opacity="0.9">
+            <animateMotion dur="4s" begin="3s" repeatCount="indefinite" path="M 400 260 Q 500 190 600 260 Q 650 320 600 400 Q 500 460 400 400 Q 350 320 400 260"/>
+            <animate attributeName="opacity" values="0.4;0.95;0.95;0.4" dur="4s" begin="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="6" fill="url(#rbcGrad)" opacity="0.85">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M 450 320 Q 500 290 550 320 Q 575 345 550 370 Q 500 400 450 370 Q 425 345 450 320"/>
+          </circle>
+          <circle r="6" fill="url(#rbcGrad)" opacity="0.85">
+            <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 450 320 Q 500 290 550 320 Q 575 345 550 370 Q 500 400 450 370 Q 425 345 450 320"/>
+          </circle>
+        </g>
+
+        <g fill="#831843" opacity="0.75" filter="url(#nucleusGlow)">
+          <circle cx="410" cy="230" r="4"/><circle cx="460" cy="200" r="4"/><circle cx="540" cy="200" r="4"/><circle cx="590" cy="230" r="4"/>
+          <circle cx="620" cy="290" r="4"/><circle cx="630" cy="360" r="4"/><circle cx="590" cy="430" r="4"/><circle cx="540" cy="460" r="4"/>
+          <circle cx="460" cy="460" r="4"/><circle cx="410" cy="430" r="4"/><circle cx="370" cy="360" r="4"/><circle cx="380" cy="290" r="4"/>
+        </g>
+
+        <g id="podocytes" filter="url(#nucleusGlow)">
+          <ellipse cx="340" cy="200" rx="32" ry="20" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="500" cy="150" rx="34" ry="22" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="660" cy="200" rx="32" ry="20" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="700" cy="350" rx="32" ry="20" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="660" cy="500" rx="32" ry="20" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="500" cy="550" rx="34" ry="22" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="340" cy="500" rx="32" ry="20" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="300" cy="350" rx="32" ry="20" fill="url(#podocyteGrad)" stroke="#6b21a8" stroke-width="1.5"/>
+          <ellipse cx="340" cy="200" rx="10" ry="8" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="500" cy="150" rx="11" ry="9" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="660" cy="200" rx="10" ry="8" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="700" cy="350" rx="10" ry="8" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="660" cy="500" rx="10" ry="8" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="500" cy="550" rx="11" ry="9" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="340" cy="500" rx="10" ry="8" fill="url(#nucleusGrad)" opacity="0.9"/>
+          <ellipse cx="300" cy="350" rx="10" ry="8" fill="url(#nucleusGrad)" opacity="0.9"/>
+        </g>
+
+        <g id="footProcesses" fill="none" stroke="#7e22ce" stroke-width="2.5" opacity="0.85" stroke-linecap="round">
+          <path d="M 340 220 Q 355 240 375 240"/><path d="M 355 225 Q 375 245 395 245"/>
+          <path d="M 500 172 Q 495 195 490 215"/><path d="M 515 172 Q 520 195 520 215"/>
+          <path d="M 660 220 Q 645 240 625 240"/><path d="M 680 225 Q 665 245 640 245"/>
+          <path d="M 690 365 Q 665 375 640 380"/><path d="M 700 380 Q 675 390 650 390"/>
+          <path d="M 660 495 Q 640 480 620 470"/><path d="M 640 490 Q 620 475 600 465"/>
+          <path d="M 500 528 Q 505 505 510 485"/><path d="M 480 528 Q 475 505 465 485"/>
+          <path d="M 340 495 Q 360 480 380 470"/><path d="M 360 490 Q 380 475 400 465"/>
+          <path d="M 310 365 Q 335 375 360 380"/><path d="M 300 380 Q 325 390 350 390"/>
+        </g>
+
+        <g font-family="Arial" font-size="11" fill="#64748b">
+          <text x="500" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">Glomerular Cross-Section · H&amp;E / PAS</text>
+          <text x="500" y="50" text-anchor="middle" font-size="10">Bowman's capsule · Capillary loops · Podocytes · Mesangium</text>
+        </g>
+
+        <g transform="translate(20, 640)" font-family="Arial" font-size="11" fill="#475569">
+          <circle cx="10" cy="0" r="6" fill="url(#rbcGrad)"/><text x="22" y="4">RBC</text>
+          <circle cx="80" cy="0" r="6" fill="url(#nucleusGrad)"/><text x="92" y="4">Nucleus</text>
+          <ellipse cx="170" cy="0" rx="10" ry="6" fill="url(#podocyteGrad)" stroke="#6b21a8"/><text x="186" y="4">Podocyte</text>
+          <rect x="270" y="-6" width="20" height="12" fill="url(#gbmGrad)" rx="2"/><text x="296" y="4">GBM</text>
+        </g>
+
+        <!-- OVERLAYS -->
+        <g id="overlay-mcd" style="display:none;">
+          <g transform="translate(650, 60)">
+            <rect width="310" height="200" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2" opacity="0.97"/>
+            <text x="155" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#94a3b8">EM: ×30,000</text>
+            <rect x="10" y="35" width="290" height="40" fill="#1e293b" opacity="0.6"/>
+            <ellipse cx="80" cy="55" rx="25" ry="15" fill="#7e22ce" opacity="0.7"/>
+            <text x="80" y="58" text-anchor="middle" font-family="Arial" font-size="9" fill="#e9d5ff">Podocyte</text>
+            <path d="M 15 90 Q 155 90 295 90" fill="none" stroke="#c084fc" stroke-width="14" opacity="0.85"/>
+            <text x="155" y="82" text-anchor="middle" font-family="Arial" font-size="10" fill="#e9d5ff">Effaced foot processes</text>
+            <rect x="10" y="100" width="290" height="18" fill="#f59e0b" opacity="0.9"/>
+            <text x="155" y="113" text-anchor="middle" font-family="Arial" font-size="9" fill="#7c2d12" font-weight="700">GBM (normal thickness)</text>
+            <rect x="10" y="118" width="290" height="12" fill="#fca5a5" opacity="0.85"/>
+            <text x="155" y="127" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d">Endothelium</text>
+            <rect x="10" y="130" width="290" height="55" fill="#7f1d1d" opacity="0.4"/>
+            <circle cx="80" cy="155" r="10" fill="#dc2626"/><circle cx="180" cy="158" r="9" fill="#dc2626"/><circle cx="250" cy="152" r="8" fill="#dc2626"/>
+          </g>
+          <text x="500" y="620" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#065f46">Minimal Change Disease · Normal LM · Diffuse Foot Process Effacement on EM</text>
+        </g>
+
+        <g id="overlay-fsgs" style="display:none;">
+          <path d="M 540 430 Q 590 400 640 430 Q 680 470 670 520 Q 640 570 590 565 Q 540 545 530 500 Q 525 460 540 430 Z" fill="url(#sclerosisGrad)" stroke="#451a03" stroke-width="2" opacity="0.95">
+            <animate attributeName="opacity" values="0.7;0.95;0.7" dur="3s" repeatCount="indefinite"/>
+          </path>
+          <ellipse cx="605" cy="480" rx="40" ry="28" fill="url(#hyalinosisGrad)" opacity="0.75"/>
+          <ellipse cx="590" cy="470" rx="20" ry="14" fill="#fda4af" opacity="0.6"/>
+          <g filter="url(#nucleusGlow)">
+            <circle cx="570" cy="440" r="7" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="620" cy="460" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="580" cy="510" r="7" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="635" cy="500" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="600" cy="530" r="6" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+          </g>
+          <path d="M 665 510 Q 700 540 730 545" stroke="#7f1d1d" stroke-width="6" fill="none" opacity="0.85"/>
+          <text x="730" y="560" font-family="Arial" font-size="10" fill="#7f1d1d" font-weight="700">Adhesion</text>
+          <g stroke="#1c1917" stroke-width="2" fill="none" opacity="0.5">
+            <path d="M 550 460 Q 580 450 610 460"/><path d="M 560 490 Q 590 490 620 490"/><path d="M 570 520 Q 600 520 630 515"/>
+          </g>
+          <text x="500" y="620" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#78350f">FSGS · Segmental Sclerosis with Hyalinosis &amp; Foam Cells at Vascular Pole</text>
+        </g>
+
+        <g id="overlay-fsgs-resistant" style="display:none;">
+          <path d="M 500 400 Q 570 360 660 400 Q 720 450 710 530 Q 670 600 590 610 Q 500 605 470 550 Q 450 490 460 440 Q 470 415 500 400 Z" fill="url(#sclerosisGrad)" stroke="#451a03" stroke-width="2" opacity="0.95">
+            <animate attributeName="opacity" values="0.75;1;0.75" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <ellipse cx="590" cy="490" rx="65" ry="45" fill="url(#hyalinosisGrad)" opacity="0.8"/>
+          <ellipse cx="570" cy="470" rx="35" ry="25" fill="#fda4af" opacity="0.65"/>
+          <ellipse cx="615" cy="520" rx="30" ry="20" fill="#fda4af" opacity="0.6"/>
+          <g filter="url(#nucleusGlow)">
+            <circle cx="530" cy="440" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="600" cy="430" r="9" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="660" cy="450" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="520" cy="500" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="590" cy="490" r="10" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="670" cy="510" r="9" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="540" cy="555" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+            <circle cx="620" cy="565" r="8" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+          </g>
+          <path d="M 700 520 Q 730 550 760 560" stroke="#7f1d1d" stroke-width="8" fill="none" opacity="0.9"/>
+          <path d="M 680 570 Q 700 610 720 640" stroke="#7f1d1d" stroke-width="6" fill="none" opacity="0.8"/>
+          <g stroke="#1c1917" stroke-width="2.5" fill="none" opacity="0.6">
+            <path d="M 500 440 Q 550 420 610 430"/><path d="M 490 490 Q 560 480 640 490"/>
+            <path d="M 500 540 Q 570 540 650 530"/><path d="M 510 580 Q 580 590 640 575"/>
+          </g>
+          <g opacity="0.55">
+            <path d="M 800 300 Q 870 320 900 380 Q 920 440 910 520" fill="none" stroke="#a16207" stroke-width="14" stroke-linecap="round"/>
+            <path d="M 830 320 Q 890 340 920 400 Q 940 460 930 540" fill="none" stroke="#a16207" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+            <text x="890" y="280" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e" font-weight="700">Tubulointerstitial</text>
+            <text x="890" y="293" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e" font-weight="700">fibrosis</text>
+          </g>
+          <text x="500" y="660" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#7c2d12">Steroid-Resistant FSGS · Extensive Sclerosis + Tubulointerstitial Fibrosis</text>
+        </g>
+
+        <g id="overlay-membranous" style="display:none;">
+          <g fill="none" opacity="0.95">
+            <path d="M 380 250 Q 420 170 500 170 Q 580 170 620 250 Q 680 320 630 400 Q 570 470 500 480 Q 430 470 370 400 Q 320 320 380 250 Z" stroke="#fcd34d" stroke-width="14"/>
+            <path d="M 380 250 Q 420 170 500 170 Q 580 170 620 250 Q 680 320 630 400 Q 570 470 500 480 Q 430 470 370 400 Q 320 320 380 250 Z" stroke="#b45309" stroke-width="2"/>
+            <path d="M 410 280 Q 450 230 500 230 Q 550 230 590 280 Q 630 330 590 380 Q 550 430 500 430 Q 450 430 410 380 Q 370 330 410 280 Z" stroke="#fcd34d" stroke-width="12"/>
+            <path d="M 440 310 Q 470 280 500 280 Q 530 280 560 310 Q 590 340 560 370 Q 530 400 500 400 Q 470 400 440 370 Q 410 340 440 310 Z" stroke="#fcd34d" stroke-width="10"/>
+          </g>
+          <g>
+            <circle cx="400" cy="220" r="5" fill="#1d4ed8" opacity="0.9"><animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/></circle>
+            <circle cx="430" cy="195" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="465" cy="180" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="500" cy="172" r="6" fill="#1d4ed8" opacity="0.9"/><circle cx="540" cy="180" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="575" cy="195" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="605" cy="220" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="635" cy="255" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="650" cy="295" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="655" cy="340" r="6" fill="#1d4ed8" opacity="0.9"><animate attributeName="r" values="5;7;5" dur="2.5s" repeatCount="indefinite"/></circle>
+            <circle cx="650" cy="380" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="630" cy="420" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="600" cy="450" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="560" cy="470" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="500" cy="478" r="6" fill="#1d4ed8" opacity="0.9"/><circle cx="440" cy="470" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="400" cy="450" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="370" cy="420" r="5" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="350" cy="380" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="345" cy="340" r="6" fill="#1d4ed8" opacity="0.9"/>
+            <circle cx="350" cy="295" r="5" fill="#1d4ed8" opacity="0.9"/><circle cx="370" cy="255" r="5" fill="#1d4ed8" opacity="0.9"/>
+          </g>
+          <g stroke="#451a03" stroke-width="2" opacity="0.75">
+            <line x1="415" y1="205" x2="415" y2="225"/><line x1="450" y1="185" x2="450" y2="205"/>
+            <line x1="485" y1="175" x2="485" y2="195"/><line x1="520" y1="175" x2="520" y2="195"/>
+            <line x1="558" y1="185" x2="558" y2="205"/><line x1="592" y1="205" x2="592" y2="225"/>
+            <line x1="622" y1="240" x2="622" y2="258"/><line x1="642" y1="278" x2="642" y2="296"/>
+            <line x1="653" y1="318" x2="653" y2="336"/><line x1="648" y1="360" x2="648" y2="378"/>
+            <line x1="628" y1="400" x2="628" y2="418"/><line x1="600" y1="438" x2="600" y2="456"/>
+            <line x1="560" y1="462" x2="560" y2="478"/><line x1="500" y1="470" x2="500" y2="486"/>
+            <line x1="440" y1="462" x2="440" y2="478"/><line x1="400" y1="442" x2="400" y2="458"/>
+            <line x1="372" y1="412" x2="372" y2="430"/><line x1="352" y1="372" x2="352" y2="390"/>
+            <line x1="348" y1="332" x2="348" y2="348"/><line x1="352" y1="292" x2="352" y2="308"/>
+            <line x1="372" y1="252" x2="372" y2="270"/>
+          </g>
+          <text x="500" y="620" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#1e3a8a">Membranous Nephropathy · Thickened GBM · Subepithelial Deposits + Spikes</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- MICROSCOPY THUMBNAILS (Built-in SVGs, guaranteed to work) -->
+    <div class="micro-strip" id="microStrip"></div>
+  </section>
+
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis &amp; Treatment</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Condition</th>
+          <th>Light Microscopy (LM)</th>
+          <th>Electron Microscopy (EM)</th>
+          <th>Steroid Response</th>
+          <th>Treatment After Steroid Failure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-fsgs">
+          <td><strong>Steroid-Resistant Primary FSGS</strong> <span class="badge-fsgs">Correct</span></td>
+          <td>Segmental sclerosis in >1 glomerulus; hyalinosis; adhesion to Bowman's capsule</td>
+          <td>Foot process effacement; no deposits</td>
+          <td>No response after <strong>16 weeks</strong> of prednisone</td>
+          <td><strong>Calcineurin inhibitor</strong> (cyclosporine or tacrolimus) ± low-dose prednisone</td>
+        </tr>
+        <tr>
+          <td><strong>Steroid-Sensitive Primary FSGS</strong></td>
+          <td>Same as above</td>
+          <td>Foot process effacement; no deposits</td>
+          <td>Remission within 16 weeks</td>
+          <td>Taper steroids; consider CNI if relapsing</td>
+        </tr>
+        <tr>
+          <td><strong>Minimal Change Disease</strong> <span class="badge-mcd">Distractor</span></td>
+          <td>Normal glomeruli</td>
+          <td>Diffuse (100%) foot process effacement</td>
+          <td>Highly steroid-sensitive (>90%)</td>
+          <td>Steroid taper; consider CNI, MMF, or rituximab if frequent relapses</td>
+        </tr>
+        <tr>
+          <td><strong>Membranous Nephropathy</strong> <span class="badge-membranous">Distractor</span></td>
+          <td>Thickened GBM; spikes on silver stain</td>
+          <td>Subepithelial deposits; effacement</td>
+          <td>Variable (~30% spontaneous remission)</td>
+          <td>RAAS blocker; if high risk, rituximab or cyclophosphamide + steroids</td>
+        </tr>
+        <tr>
+          <td><strong>Secondary FSGS</strong> <span class="badge-secondary">Distractor</span></td>
+          <td>Segmental sclerosis; larger glomeruli; adaptive changes</td>
+          <td>Foot process effacement (less diffuse)</td>
+          <td>Steroid-resistant</td>
+          <td>Treat underlying cause; RAAS blocker; <strong>avoid immunosuppression</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+    <div class="q">
+      <p>1. A patient with primary FSGS completes 16 weeks of high-dose prednisone with no reduction in proteinuria. What is the BEST next step?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Continue prednisone for another 2 months</button>
+        <button class="opt" onclick="answer(this,false)">B. Start cyclophosphamide</button>
+        <button class="opt" onclick="answer(this,true)">C. Begin a calcineurin inhibitor (cyclosporine or tacrolimus)</button>
+        <button class="opt" onclick="answer(this,false)">D. Start rituximab</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> After 16 weeks without response, the patient has steroid-resistant FSGS. KDIGO guidelines recommend switching to a <strong>calcineurin inhibitor</strong>, with or without low-dose prednisone.</div>
+    </div>
+    <div class="q">
+      <p>2. What is the maximum recommended duration of high-dose glucocorticoid therapy for primary FSGS?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. 4 weeks</button>
+        <button class="opt" onclick="answer(this,false)">B. 8 weeks</button>
+        <button class="opt" onclick="answer(this,true)">C. 16 weeks</button>
+        <button class="opt" onclick="answer(this,false)">D. 24 weeks</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> KDIGO recommends a maximum of <strong>16 weeks</strong> of high-dose glucocorticoid therapy. If there is no response by then, alternative therapy should be initiated.</div>
+    </div>
+    <div class="q">
+      <p>3. Why is cyclophosphamide NOT the preferred next step after steroid failure in primary FSGS?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">A. Significant toxicity and limited evidence in FSGS</button>
+        <button class="opt" onclick="answer(this,false)">B. It is ineffective in all forms of nephrotic syndrome</button>
+        <button class="opt" onclick="answer(this,false)">C. It cannot be combined with steroids</button>
+      </div>
+      <div class="explain"><strong>Correct: A.</strong> Cyclophosphamide carries significant toxicity (infertility, hemorrhagic cystitis, malignancy) with limited evidence in steroid-resistant primary FSGS, making CNIs the preferred option.</div>
+    </div>
+    <div class="q">
+      <p>4. Which nephrotic syndrome pattern shows completely normal light microscopy with diffuse foot process effacement on EM?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. FSGS</button>
+        <button class="opt" onclick="answer(this,true)">B. Minimal Change Disease</button>
+        <button class="opt" onclick="answer(this,false)">C. Membranous Nephropathy</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> MCD is characterized by normal LM and <strong>diffuse (100%) foot process effacement</strong> on EM. It is highly steroid-sensitive.</div>
+    </div>
+    <div class="q">
+      <p>5. In secondary FSGS (e.g., from obesity, reflux, or reduced nephron mass), what is the role of immunosuppression?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. It is the first-line treatment</button>
+        <button class="opt" onclick="answer(this,true)">B. It should be avoided; treat the underlying cause</button>
+        <button class="opt" onclick="answer(this,false)">C. It is always combined with a CNI</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Secondary FSGS is adaptive. Immunosuppression is not effective and should be avoided; instead treat the underlying cause and use RAAS blockade.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and images presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Built-in SVG strings for LM, IF, and EM to guarantee they always render
+  const svgData = {
+    normal: {
+      lm: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#fce7f3"/><circle cx="150" cy="75" r="60" fill="none" stroke="#db2777" stroke-width="2"/><path d="M 110 60 Q 150 30 190 60 Q 210 90 190 120 Q 150 140 110 120 Q 90 90 110 60 Z" fill="none" stroke="#e11d48" stroke-width="4"/><g fill="#4c1d95"><circle cx="130" cy="60" r="3"/><circle cx="170" cy="60" r="3"/><circle cx="180" cy="100" r="3"/><circle cx="130" cy="100" r="3"/><circle cx="150" cy="80" r="3"/></g><text x="150" y="145" text-anchor="middle" font-family="Arial" font-size="10" fill="#64748b">Normal LM (H&amp;E)</text></svg>`,
+      if: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#0a0a0a"/><circle cx="150" cy="75" r="50" fill="none" stroke="#22c55e" stroke-width="3" opacity="0.8"/><circle cx="150" cy="75" r="40" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.6"/><text x="150" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">IF: Negative</text></svg>`,
+      em: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#1a1a1a"/><rect x="20" y="50" width="260" height="20" fill="#f59e0b" opacity="0.8"/><path d="M 20 40 Q 150 40 280 40" fill="none" stroke="#c084fc" stroke-width="8"/><text x="150" y="100" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">EM: Normal Foot Processes</text></svg>`
+    },
+    mcd: {
+      lm: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#fce7f3"/><circle cx="150" cy="75" r="60" fill="none" stroke="#db2777" stroke-width="2"/><path d="M 110 60 Q 150 30 190 60 Q 210 90 190 120 Q 150 140 110 120 Q 90 90 110 60 Z" fill="none" stroke="#e11d48" stroke-width="4"/><g fill="#4c1d95"><circle cx="130" cy="60" r="3"/><circle cx="170" cy="60" r="3"/><circle cx="180" cy="100" r="3"/><circle cx="130" cy="100" r="3"/><circle cx="150" cy="80" r="3"/></g><text x="150" y="145" text-anchor="middle" font-family="Arial" font-size="10" fill="#64748b">Normal LM (H&amp;E)</text></svg>`,
+      if: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#0a0a0a"/><circle cx="150" cy="75" r="50" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.2"/><text x="150" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">IF: Negative</text></svg>`,
+      em: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#1a1a1a"/><rect x="20" y="60" width="260" height="20" fill="#f59e0b" opacity="0.8"/><path d="M 20 50 Q 150 50 280 50" fill="none" stroke="#c084fc" stroke-width="14" opacity="0.9"/><text x="150" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#dc2626" font-weight="bold">EM: Foot Process Effacement</text></svg>`
+    },
+    fsgs: {
+      lm: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#fce7f3"/><circle cx="150" cy="75" r="60" fill="none" stroke="#db2777" stroke-width="2"/><path d="M 110 60 Q 150 30 190 60 Q 210 90 190 120 Q 150 140 110 120 Q 90 90 110 60 Z" fill="none" stroke="#e11d48" stroke-width="4"/><path d="M 160 90 Q 190 80 210 100 Q 220 120 200 130 Q 180 135 170 120 Q 160 110 160 90 Z" fill="#78350f" opacity="0.9"/><g fill="#4c1d95"><circle cx="130" cy="60" r="3"/><circle cx="170" cy="60" r="3"/><circle cx="130" cy="100" r="3"/><circle cx="150" cy="80" r="3"/></g><text x="150" y="145" text-anchor="middle" font-family="Arial" font-size="10" fill="#64748b">Segmental Sclerosis (PAS)</text></svg>`,
+      if: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#0a0a0a"/><circle cx="150" cy="75" r="50" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.3"/><text x="150" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">IF: Negative / Non-specific</text></svg>`,
+      em: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#1a1a1a"/><rect x="20" y="60" width="260" height="20" fill="#f59e0b" opacity="0.8"/><path d="M 20 50 Q 150 50 280 50" fill="none" stroke="#c084fc" stroke-width="12" opacity="0.9"/><text x="150" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#dc2626" font-weight="bold">EM: Foot Process Effacement</text></svg>`
+    },
+    'fsgs-resistant': {
+      lm: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#fce7f3"/><circle cx="150" cy="75" r="60" fill="none" stroke="#db2777" stroke-width="2"/><path d="M 110 60 Q 150 30 190 60 Q 210 90 190 120 Q 150 140 110 120 Q 90 90 110 60 Z" fill="none" stroke="#e11d48" stroke-width="4"/><path d="M 140 80 Q 180 70 210 100 Q 220 130 190 140 Q 160 145 140 120 Q 130 100 140 80 Z" fill="#451a03" opacity="0.95"/><path d="M 200 110 Q 230 120 240 140" stroke="#a16207" stroke-width="6" fill="none" opacity="0.7"/><g fill="#4c1d95"><circle cx="130" cy="60" r="3"/><circle cx="170" cy="60" r="3"/><circle cx="130" cy="100" r="3"/></g><text x="150" y="145" text-anchor="middle" font-family="Arial" font-size="10" fill="#64748b">Extensive Sclerosis + Fibrosis</text></svg>`,
+      if: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#0a0a0a"/><circle cx="150" cy="75" r="50" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.3"/><text x="150" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">IF: Negative / Non-specific</text></svg>`,
+      em: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#1a1a1a"/><rect x="20" y="60" width="260" height="20" fill="#f59e0b" opacity="0.8"/><path d="M 20 50 Q 150 50 280 50" fill="none" stroke="#c084fc" stroke-width="12" opacity="0.9"/><text x="150" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#dc2626" font-weight="bold">EM: Foot Process Effacement</text></svg>`
+    },
+    membranous: {
+      lm: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#fce7f3"/><circle cx="150" cy="75" r="60" fill="none" stroke="#db2777" stroke-width="2"/><path d="M 110 60 Q 150 30 190 60 Q 210 90 190 120 Q 150 140 110 120 Q 90 90 110 60 Z" fill="none" stroke="#fcd34d" stroke-width="8"/><g stroke="#451a03" stroke-width="2"><line x1="120" y1="55" x2="120" y2="70"/><line x1="140" y1="45" x2="140" y2="60"/><line x1="160" y1="45" x2="160" y2="60"/><line x1="180" y1="55" x2="180" y2="70"/></g><text x="150" y="145" text-anchor="middle" font-family="Arial" font-size="10" fill="#64748b">Thickened GBM with Spikes</text></svg>`,
+      if: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#0a0a0a"/><g fill="#22c55e"><circle cx="100" cy="50" r="4"/><circle cx="120" cy="40" r="4"/><circle cx="140" cy="35" r="4"/><circle cx="160" cy="35" r="4"/><circle cx="180" cy="40" r="4"/><circle cx="200" cy="50" r="4"/><circle cx="210" cy="70" r="4"/><circle cx="200" cy="90" r="4"/><circle cx="180" cy="100" r="4"/><circle cx="160" cy="105" r="4"/><circle cx="140" cy="105" r="4"/><circle cx="120" cy="100" r="4"/><circle cx="100" cy="90" r="4"/><circle cx="90" cy="70" r="4"/></g><text x="150" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">IF: Granular IgG (Green)</text></svg>`,
+      em: `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#1a1a1a"/><rect x="20" y="60" width="260" height="20" fill="#f59e0b" opacity="0.8"/><g fill="#1d4ed8"><circle cx="40" cy="50" r="5"/><circle cx="80" cy="45" r="5"/><circle cx="120" cy="40" r="5"/><circle cx="160" cy="40" r="5"/><circle cx="200" cy="45" r="5"/><circle cx="240" cy="50" r="5"/><circle cx="260" cy="60" r="5"/></g><text x="150" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#60a5fa">EM: Subepithelial Deposits</text></svg>`
+    }
+  };
+
+  function setMode(mode) {
+    ['overlay-mcd','overlay-fsgs','overlay-fsgs-resistant','overlay-membranous'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnMcd','btnFsgs','btnFsgsR','btnMembranous'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+
+    updateMicroStrip(mode);
+
+    if (mode === 'normal') {
+      document.getElementById('btnNormal').classList.add('active');
+    } else if (mode === 'mcd') {
+      document.getElementById('overlay-mcd').style.display = 'block';
+      document.getElementById('btnMcd').classList.add('active');
+    } else if (mode === 'fsgs') {
+      document.getElementById('overlay-fsgs').style.display = 'block';
+      document.getElementById('btnFsgs').classList.add('active');
+    } else if (mode === 'fsgs-resistant') {
+      document.getElementById('overlay-fsgs-resistant').style.display = 'block';
+      document.getElementById('btnFsgsR').classList.add('active');
+    } else if (mode === 'membranous') {
+      document.getElementById('overlay-membranous').style.display = 'block';
+      document.getElementById('btnMembranous').classList.add('active');
+    }
+  }
+
+  function updateMicroStrip(mode) {
+    const strip = document.getElementById('microStrip');
+    const data = svgData[mode];
+    if (!data) {
+      strip.innerHTML = '<p style="text-align:center; color:#94a3b8; grid-column:1/-1;">Select a pattern above to view microscopy images.</p>';
+      return;
+    }
+    
+    let html = '';
+    const modalities = [
+      { key: 'lm', label: 'Light Microscopy' },
+      { key: 'if', label: 'Immunofluorescence' },
+      { key: 'em', label: 'Electron Microscopy' }
+    ];
+    
+    modalities.forEach(m => {
+      const svgContent = data[m.key];
+      html += `
+        <div class="micro-thumb">
+          <div class="img-container">${svgContent}</div>
+          <div class="micro-caption">
+            <h4>${m.label}</h4>
+          </div>
+        </div>
+      `;
+    });
+    strip.innerHTML = html;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

@@ -12,7 +12,7 @@
 | **Web Frontend** | React 18 + Vite + TypeScript + Tailwind CSS |
 | **Mobile** | Flutter (Android & iOS) |
 | **Database** | PostgreSQL |
-| **Animation Storage** | Cloudflare R2 / AWS S3 / CDN (URLs only in DB) |
+| **Media Storage** | GitHub Pages from `web/public/` (URLs only in DB; no R2/S3 bucket) |
 | **Auth** | JWT (SimpleJWT) + Google/Apple OAuth (mobile) |
 | **AI** | LLaMA on GoDaddy VPS (Ollama) with optional OpenAI fallback |
 | **API Docs** | drf-spectacular (Swagger/OpenAPI at `/api/docs/`) |
@@ -130,16 +130,19 @@ After each question, ask AI to explain, show pearls, or generate similar questio
 ### PostgreSQL (source of truth)
 Stores MCQs, chapters, topics, lesson metadata, quiz attempts, and user progress.
 
-### Animation storage (external CDN)
-**Do not store animation files in PostgreSQL.**
+### Media storage (GitHub Pages)
+**Do not store media files in PostgreSQL.**
 
-| Stored in DB | Stored on CDN (R2/S3) |
-|--------------|------------------------|
-| `animation_url` | Lottie JSON / MP4 files |
-| `thumbnail_url` | Preview images |
+| Stored in DB | Served from `web/public/` |
+|--------------|---------------------------|
+| `animation_url` | Step-animation JSON in `animations/` |
+| `image_url` | Infographic WebP in `medical/<chapter>/` |
+| `thumbnail_url` | Card thumbnails (`-thumb.webp`) |
+| `interactive_url` | Self-contained HTML lessons in `medical/<chapter>/` |
 | `title`, `summary`, `content_md` | — |
 
-Example URL: `https://cdn.nephrochallenge.ai/animations/hyperkalemia-algorithm.json`
+Example URL: `https://zub165.github.io/nephro-challenge-ai/medical/acid-base-disorders/hypokalemic-metabolic-alkalosis.webp`
+Untouched source files live in `assets/medical/raw/` and are never served.
 
 ### Hybrid local storage (clients)
 
@@ -256,7 +259,8 @@ See `backend/docs/sample-mcq.json`:
     "title": "Emergency Hyperkalemia Algorithm",
     "lesson_type": "animation",
     "summary": "Fast visual algorithm for stabilizing, shifting, and removing potassium.",
-    "animation_url": "https://cdn.nephrochallenge.ai/animations/hyperkalemia-algorithm.json"
+    "animation_url": "https://zub165.github.io/nephro-challenge-ai/animations/hyperkalemia-algorithm.json",
+    "image_url": "https://zub165.github.io/nephro-challenge-ai/medical/electrolytes/hyponatremia-osmolality-approach.webp"
   },
   "mcq": {
     "difficulty": "board",

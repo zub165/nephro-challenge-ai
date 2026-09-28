@@ -1,6 +1,6 @@
 # Nephrology Board MCQ Backend
 
-PostgreSQL stores MCQs, chapters, topics, and lesson metadata. **Animation files are NOT stored in the database** — only `animation_url` and `thumbnail_url` point to Cloudflare R2 / AWS S3 / your CDN.
+PostgreSQL stores MCQs, chapters, topics, and lesson metadata. **Media files are NOT stored in the database** — only `animation_url`, `image_url`, `thumbnail_url`, and `interactive_url` are stored, pointing at assets served from GitHub Pages.
 
 ## Django Models (maps to schema.sql)
 
@@ -45,11 +45,25 @@ python manage.py runserver 8000
 | GET | `/api/stats/` | Dashboard stats |
 | POST | `/api/admin/import-mcqs/` | Import `sample-mcq.json` format |
 
-## Animation Storage
+## Media Storage
 
-1. Upload Lottie JSON / MP4 to R2 or S3 bucket `nephrochallenge-animations`
-2. Set public URL e.g. `https://cdn.nephrochallenge.ai/animations/hyperkalemia-algorithm.json`
-3. Save URL in `Lesson.animation_url` only — never store binary in PostgreSQL
+Media is versioned in this repo and served from GitHub Pages; there is no bucket to
+upload to and no CDN to configure.
+
+| Asset | Repo path | Served at |
+|-------|-----------|-----------|
+| Step animations | `web/public/animations/*.json` | `/nephro-challenge-ai/animations/<slug>.json` |
+| Infographics | `web/public/medical/<chapter>/<slug>.webp` | `/nephro-challenge-ai/medical/<chapter>/<slug>.webp` |
+| Card thumbnails | `web/public/medical/<chapter>/<slug>-thumb.webp` | same folder, `-thumb` suffix |
+| Interactive lessons | `web/public/medical/<chapter>/<slug>.html` | same folder |
+| Untouched originals | `assets/medical/raw/<chapter>/` | never served; kept for re-export |
+
+1. Add the file under `web/public/medical/<chapter>/` and record it in `assets/medical/manifest.json`
+2. Reference it from the lesson in `backend/api/data/chapter_seed.py` via `MEDICAL_ASSET_BASE`
+3. Reseed (`manage.py seed_board_exam`) — the seed validates that every referenced URL resolves to a file
+4. Publish the web build (`cd web && npm run deploy`)
+
+Only URLs are ever saved in PostgreSQL; binaries and HTML never enter the database.
 
 ## Import MCQs
 

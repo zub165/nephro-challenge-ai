@@ -14,7 +14,7 @@ import unicodedata
 from pathlib import Path
 from typing import Any
 
-from api.data.chapter_seed import ANIMATION_BASE, CHAPTERS
+from api.data.chapter_seed import ANIMATION_BASE, CHAPTERS, MEDICAL_ASSET_BASE
 from api.data.medical_references import MEDICAL_REFERENCES
 
 BOARD_EXAM_SLUG = "nephrology-board-exam"
@@ -56,6 +56,8 @@ SEED_REVIEW_NOTE = (
 SEED_AUTHOR = "Nephro Challenge AI content team"
 
 ANIMATION_ASSET_DIR = Path(__file__).resolve().parents[3] / "web" / "public" / "animations"
+MEDICAL_ASSET_DIR = Path(__file__).resolve().parents[3] / "web" / "public" / "medical"
+MEDICAL_URL_FIELDS = ("image_url", "thumbnail_url", "interactive_url")
 
 VALID_DIFFICULTIES = ("easy", "medium", "hard", "board")
 VALID_LESSON_TYPES = ("animation", "article", "video")
@@ -132,8 +134,14 @@ def _validate_chapter_taxonomy(errors: list[str]) -> None:
             topic_slugs.add(topic_slug)
 
 
-def _validate_lessons(errors: list[str], warnings: list[str], animation_files: set[str]) -> set[str]:
+def _validate_lessons(
+    errors: list[str],
+    warnings: list[str],
+    animation_files: set[str],
+    medical_files: set[str],
+) -> tuple[set[str], set[str]]:
     referenced_animations: set[str] = set()
+    referenced_medical: set[str] = set()
     seen_slugs: set[str] = set()
     for chapter, topic, lesson in iter_seed_lessons():
         where = f"{chapter.get('slug')}/{topic.get('slug')}"
@@ -167,6 +175,20 @@ def _validate_lessons(errors: list[str], warnings: list[str], animation_files: s
         elif not (lesson.get("content_md") or "").strip():
             errors.append(f"{where}/{lesson_slug}: article lesson has no content_md")
 
+        for field_name in MEDICAL_URL_FIELDS:
+            url = (lesson.get(field_name) or "").strip()
+            if not url:
+                continue
+            if not url.startswith(f"{MEDICAL_ASSET_BASE}/"):
+                errors.append(
+                    f"{where}/{lesson_slug}: {field_name} {url!r} is not under {MEDICAL_ASSET_BASE}"
+                )
+                continue
+            relative_path = url[len(MEDICAL_ASSET_BASE) + 1 :]
+            referenced_medical.add(relative_path)
+            if medical_files and not (MEDICAL_ASSET_DIR / relative_path).is_file():
+                errors.append(f"{where}/{lesson_slug}: {field_name} file {relative_path} is missing")
+
         if not (lesson.get("summary") or "").strip():
             errors.append(f"{where}/{lesson_slug}: lesson has no summary")
         if int(lesson.get("duration_seconds") or 0) <= 0:
@@ -185,7 +207,14 @@ def _validate_lessons(errors: list[str], warnings: list[str], animation_files: s
         warnings.append(
             "animation asset directory is unavailable; skipped animation file checks"
         )
-    return referenced_animations
+
+    if medical_files:
+        for relative_path in sorted(medical_files - referenced_medical):
+            warnings.append(f"medical asset {relative_path} is not referenced by any lesson")
+    else:
+        warnings.append("medical asset directory is unavailable; skipped medical asset checks")
+
+    return referenced_animations, referenced_medical
 
 
 def _validate_questions(errors: list[str]) -> dict[str, int]:
@@ -297,6 +326,17 @@ def _animation_files() -> set[str]:
     return {path.name for path in ANIMATION_ASSET_DIR.glob("*.json")}
 
 
+def _medical_files() -> set[str]:
+    """Repo-relative paths of every served medical asset, e.g. `chapter/slug.webp`."""
+    if not MEDICAL_ASSET_DIR.is_dir():
+        return set()
+    return {
+        str(path.relative_to(MEDICAL_ASSET_DIR))
+        for path in MEDICAL_ASSET_DIR.rglob("*")
+        if path.is_file()
+    }
+
+
 def validate_board_seed() -> dict[str, Any]:
     """Validate the seeded taxonomy, questions, and exam configuration.
 
@@ -308,7 +348,10 @@ def validate_board_seed() -> dict[str, Any]:
 
     _validate_chapter_taxonomy(errors)
     animation_files = _animation_files()
-    referenced_animations = _validate_lessons(errors, warnings, animation_files)
+    medical_files = _medical_files()
+    referenced_animations, referenced_medical = _validate_lessons(
+        errors, warnings, animation_files, medical_files
+    )
     per_chapter = _validate_questions(errors)
     _validate_quota(errors, per_chapter)
 
@@ -324,6 +367,8 @@ def validate_board_seed() -> dict[str, Any]:
         "chapter_quota": dict(CHAPTER_QUOTA),
         "animations_referenced": len(referenced_animations),
         "animations_present": len(animation_files),
+        "medical_assets_referenced": len(referenced_medical),
+        "medical_assets_present": len(medical_files),
         "review_status": SEED_REVIEW_STATUS,
     }
     return {"errors": errors, "warnings": warnings, "stats": stats}

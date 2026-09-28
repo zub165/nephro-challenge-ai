@@ -42,4 +42,6 @@ mobile/.idea/
 
 # Environment
 .env
+.env.*
+!.env.example
 *.local

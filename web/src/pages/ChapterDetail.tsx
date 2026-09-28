@@ -6,6 +6,7 @@ import type { Chapter } from '@/types';
 import type { PearlItem } from '@/components/PearlCard';
 import PearlCard from '@/components/PearlCard';
 import { formatDuration } from '@/lib/apiMappers';
+import { resolveMedicalAssetUrl } from '@/lib/animationUtils';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import {
   ArrowLeftIcon,
@@ -15,6 +16,7 @@ import {
   ClockIcon,
   FilmIcon,
   LightBulbIcon,
+  PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 
 interface PearlsResponse {
@@ -126,13 +128,22 @@ export default function ChapterDetail() {
                     to={`/lessons/${lesson.id}`}
                     className="group flex gap-4 rounded-xl border border-gray-100 p-4 transition-all hover:border-teal-300 hover:bg-teal-50/50 dark:border-gray-700 dark:hover:border-teal-700 dark:hover:bg-teal-900/10"
                   >
-                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-primary-800 text-white shadow-md">
-                      {lesson.lesson_type === 'animation' ? (
-                        <FilmIcon className="h-7 w-7" />
-                      ) : (
-                        <PlayCircleIcon className="h-7 w-7" />
-                      )}
-                    </div>
+                    {lesson.thumbnail_url ? (
+                      <img
+                        src={resolveMedicalAssetUrl(lesson.thumbnail_url)}
+                        alt=""
+                        loading="lazy"
+                        className="h-14 w-14 flex-shrink-0 rounded-xl border border-gray-100 object-cover dark:border-gray-700"
+                      />
+                    ) : (
+                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-primary-800 text-white shadow-md">
+                        {lesson.lesson_type === 'animation' ? (
+                          <FilmIcon className="h-7 w-7" />
+                        ) : (
+                          <PlayCircleIcon className="h-7 w-7" />
+                        )}
+                      </div>
+                    )}
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-400">
                         {lesson.lesson_type}
@@ -141,11 +152,18 @@ export default function ChapterDetail() {
                         {lesson.title}
                       </h4>
                       <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{lesson.summary}</p>
-                      {lesson.duration_seconds > 0 && (
-                        <p className="mt-2 flex items-center gap-1 text-xs text-gray-400">
-                          <ClockIcon className="h-3 w-3" /> {formatDuration(lesson.duration_seconds)}
-                        </p>
-                      )}
+                      <div className="mt-2 flex flex-wrap items-center gap-3">
+                        {lesson.duration_seconds > 0 && (
+                          <p className="flex items-center gap-1 text-xs text-gray-400">
+                            <ClockIcon className="h-3 w-3" /> {formatDuration(lesson.duration_seconds)}
+                          </p>
+                        )}
+                        {lesson.interactive_url && (
+                          <span className="flex items-center gap-1 text-xs font-medium text-teal-700 dark:text-teal-400">
+                            <PresentationChartBarIcon className="h-3 w-3" /> Interactive
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </Link>
                 ))}

@@ -94,6 +94,8 @@ export interface Lesson {
   summary: string;
   content_md?: string;
   animation_url: string;
+  image_url: string;
+  interactive_url: string;
   thumbnail_url: string;
   duration_seconds: number;
   order_index: number;

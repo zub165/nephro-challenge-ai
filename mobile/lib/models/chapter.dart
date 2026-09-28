@@ -78,6 +78,8 @@ class Lesson {
   final String lessonType;
   final String summary;
   final String animationUrl;
+  final String imageUrl;
+  final String interactiveUrl;
   final String thumbnailUrl;
   final int durationSeconds;
 
@@ -87,6 +89,8 @@ class Lesson {
     this.lessonType = 'animation',
     this.summary = '',
     this.animationUrl = '',
+    this.imageUrl = '',
+    this.interactiveUrl = '',
     this.thumbnailUrl = '',
     this.durationSeconds = 0,
   });
@@ -98,6 +102,8 @@ class Lesson {
       lessonType: JsonHelpers.str(json['lesson_type'], 'animation'),
       summary: JsonHelpers.str(json['summary']),
       animationUrl: JsonHelpers.str(json['animation_url']),
+      imageUrl: JsonHelpers.str(json['image_url']),
+      interactiveUrl: JsonHelpers.str(json['interactive_url']),
       thumbnailUrl: JsonHelpers.str(json['thumbnail_url']),
       durationSeconds: JsonHelpers.integer(json['duration_seconds']),
     );

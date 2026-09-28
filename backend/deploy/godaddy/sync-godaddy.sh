@@ -42,8 +42,9 @@ else
 fi
 
 echo "==> Copying code to $SSH_HOST (connection 1/2)"
-# The board exam validator resolves animation assets at <repo>/web/public/animations,
-# so the web assets ship alongside the backend in the same repo-relative layout.
+# The board exam validator resolves animation assets at <repo>/web/public/animations
+# and medical assets at <repo>/web/public/medical, so the web assets ship alongside
+# the backend in the same repo-relative layout.
 COPYFILE_DISABLE=1 tar -czf - \
   -C "$REPO_DIR" \
   --exclude='backend/venv' \
@@ -55,7 +56,7 @@ COPYFILE_DISABLE=1 tar -czf - \
   --exclude='*.pyc' \
   --exclude='backend/db.sqlite3' \
   --exclude='*.log' \
-  backend web/public/animations \
+  backend web/public/animations web/public/medical \
   | ssh "$SSH_HOST" 'rm -rf /tmp/nephro-stage && mkdir -p /tmp/nephro-stage && tar -xzf - -C /tmp/nephro-stage'
 
 echo "==> Backup, install, migrate, restart (connection 2/2)"
@@ -113,6 +114,12 @@ if [ -d "$STAGE/web/public/animations" ]; then
   sudo mkdir -p "$APP_DIR/web/public"
   sudo cp -a "$STAGE/web/public/animations" "$APP_DIR/web/public/"
   echo "animation assets installed ($(ls "$STAGE/web/public/animations" | wc -l) files)"
+fi
+if [ -d "$STAGE/web/public/medical" ]; then
+  sudo mkdir -p "$APP_DIR/web/public"
+  rm -rf "$APP_DIR/web/public/medical"
+  sudo cp -a "$STAGE/web/public/medical" "$APP_DIR/web/public/"
+  echo "medical assets installed ($(find "$APP_DIR/web/public/medical" -type f | wc -l) files)"
 fi
 sudo find "$BACKEND/api" "$BACKEND/nephro_challenge" -name '__pycache__' -type d -prune -exec rm -rf {} + 2>/dev/null || true
 sudo chown -R www-data:www-data "$BACKEND"
