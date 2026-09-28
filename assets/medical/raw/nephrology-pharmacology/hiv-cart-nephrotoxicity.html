@@ -358,26 +358,29 @@
 </div>
 
 <script>
+  // Teaching captions per entity and modality. `src` is present only when a
+  // verified, appropriately licensed micrograph has been added; captions are
+  // always shown so the comparison stays useful without a micrograph.
   const imageData = {
     hivick: {
-      lm: { src: 'https://placehold.co/600x400/dbeafe/1e40af?text=HIVICK+LM', caption: 'HIVICK LM', desc: 'Proliferative GN pattern', source: 'AJKD Atlas' },
-      if: { src: 'https://placehold.co/600x400/dbeafe/1e40af?text=HIVICK+IF', caption: 'HIVICK IF', desc: '"Full-house" granular staining', source: 'AJKD Atlas' },
-      em: { src: 'https://placehold.co/600x400/dbeafe/1e40af?text=HIVICK+EM', caption: 'HIVICK EM', desc: 'Subendothelial deposits', source: 'AJKD Atlas' }
+      lm: { caption: 'HIVICK LM', desc: 'Proliferative GN pattern' },
+      if: { caption: 'HIVICK IF', desc: '"Full-house" granular staining' },
+      em: { caption: 'HIVICK EM', desc: 'Subendothelial deposits' }
     },
     hivan: {
-      lm: { src: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Collapsing_glomerulopathy_-_high_mag.jpg', caption: 'HIVAN LM', desc: 'Collapsing glomerulopathy', source: 'Wikimedia Commons' },
-      if: { src: 'https://placehold.co/600x400/fee2e2/991b1b?text=HIVAN+IF', caption: 'HIVAN IF', desc: 'Negative or trace staining', source: 'AJKD Atlas' },
-      em: { src: 'https://placehold.co/600x400/fee2e2/991b1b?text=HIVAN+EM', caption: 'HIVAN EM', desc: 'Tubuloreticular inclusions', source: 'AJKD Atlas' }
+      lm: { caption: 'HIVAN LM', desc: 'Collapsing glomerulopathy' },
+      if: { caption: 'HIVAN IF', desc: 'Negative or trace staining' },
+      em: { caption: 'HIVAN EM', desc: 'Tubuloreticular inclusions' }
     },
     tenofovir: {
-      lm: { src: 'https://placehold.co/600x400/fef3c7/92400e?text=Tenofovir+LM', caption: 'Tenofovir LM', desc: 'Proximal tubular injury', source: 'AJKD Atlas' },
-      if: { src: 'https://placehold.co/600x400/fef3c7/92400e?text=Tenofovir+IF', caption: 'Tenofovir IF', desc: 'Negative staining', source: 'AJKD Atlas' },
-      em: { src: 'https://placehold.co/600x400/fef3c7/92400e?text=Tenofovir+EM', caption: 'Tenofovir EM', desc: 'Abnormal mitochondria', source: 'AJKD Atlas' }
+      lm: { caption: 'Tenofovir LM', desc: 'Proximal tubular injury' },
+      if: { caption: 'Tenofovir IF', desc: 'Negative staining' },
+      em: { caption: 'Tenofovir EM', desc: 'Abnormal mitochondria' }
     },
     crystal: {
-      lm: { src: 'https://placehold.co/600x400/dcfce7/166534?text=Crystal+LM', caption: 'Crystal LM', desc: 'Intratubular crystals', source: 'AJKD Atlas' },
-      if: { src: 'https://placehold.co/600x400/dcfce7/166534?text=Crystal+IF', caption: 'Crystal IF', desc: 'Negative staining', source: 'AJKD Atlas' },
-      em: { src: 'https://placehold.co/600x400/dcfce7/166534?text=Crystal+EM', caption: 'Crystal EM', desc: 'Crystal deposition', source: 'AJKD Atlas' }
+      lm: { caption: 'Crystal LM', desc: 'Intratubular crystals' },
+      if: { caption: 'Crystal IF', desc: 'Negative staining' },
+      em: { caption: 'Crystal EM', desc: 'Crystal deposition' }
     }
   };
 
@@ -428,13 +431,21 @@
     
     modalities.forEach(m => {
       const img = data[m.key];
+      if (!img) return;
+      // Micrographs are only listed once a verified, licensed file exists. Until
+      // then we show the teaching caption with an explicit "not added" tile
+      // rather than hotlinking an unverified or unattributable image.
+      const visual = img.src
+        ? `<img src="${img.src}" alt="${img.caption}" onerror="this.outerHTML='<div class=\\'no-image\\'>Image not available</div>'">`
+        : `<div class="no-image">Micrograph not yet added</div>`;
+      const credit = img.source ? `<span class="src">Source: ${img.source}</span>` : '';
       html += `
         <div class="micro-thumb">
-          <img src="${img.src}" alt="${img.caption}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>Image not available</div>'">
+          ${visual}
           <div class="micro-caption">
             <h4>${m.label}</h4>
             <p>${img.desc}</p>
-            <span class="src">Source: ${img.source}</span>
+            ${credit}
           </div>
         </div>
       `;

@@ -21,6 +21,27 @@ for producing future renders without going back to the source machine.
 - `slug-alt.webp`, `slug-v2.webp` — alternate renders of the same slide, kept as spares
 - `slug.html` — interactive lesson, no build step, no external JS dependencies
 
+## Micrograph policy
+
+Interactive lessons may reference an external micrograph **only** when the file is real,
+loads, and is appropriately licensed with an accurate attribution.
+
+- Do not hotlink a URL that has not been opened and verified. Dead links in a teaching
+  resource are worse than a missing image.
+- Do not attribute an image to a journal, atlas or society unless that source really
+  supplied it. Fabricated citations must never ship.
+- Do not use `placehold.co`-style stubs as teaching images; they look like content but
+  teach nothing.
+- When no verified image exists, keep the modality label and the descriptive caption and
+  render an explicit "Micrograph not yet added" tile. The comparison stays useful.
+
+The only external image currently in use is the freely-licensed
+`Crescentic_glomerulonephritis_-_high_mag.jpg` on Wikimedia Commons
+(`glomerular-vascular/hiv-associated-nephropathy.html`). The 10 fabricated
+`ajkd.org` URLs and 11 grey placeholder stubs that previously shipped in
+`hiv-associated-nephropathy.html` and `hiv-cart-nephrotoxicity.html` were removed on
+2026-09-28; those files are now caption-only apart from that one image.
+
 ## How lessons reference assets
 
 `Lesson` stores URLs only, never file contents:
