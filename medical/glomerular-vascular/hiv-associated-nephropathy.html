@@ -347,46 +347,36 @@
 </div>
 
 <script>
-  // Open-access image data for each disease and modality
+  // Teaching captions per disease and modality. `src` is present only when a
+  // verified, appropriately licensed micrograph has been added; captions are
+  // always shown so the comparison stays useful without a micrograph.
   const imageData = {
     hivick: {
       lm: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.003/asset/6e2b9b9d-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr1_lrg.jpg',
         caption: 'HIVICK LM',
-        desc: 'Mesangial proliferation (PAS stain)',
-        source: 'AJKD Atlas'
+        desc: 'Mesangial proliferation (PAS stain)'
       },
       if: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.003/asset/6e2b9b9d-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
         caption: 'HIVICK IF',
-        desc: '"Full-house" granular staining',
-        source: 'AJKD Atlas'
+        desc: '"Full-house" granular staining'
       },
       em: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.003/asset/6e2b9b9d-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr3_lrg.jpg',
         caption: 'HIVICK EM',
-        desc: 'Subendothelial deposits',
-        source: 'AJKD Atlas'
+        desc: 'Subendothelial deposits'
       }
     },
     hivan: {
       lm: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.002/asset/5d1a1a1a-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr1_lrg.jpg',
         caption: 'HIVAN LM',
-        desc: 'Collapsing glomerulopathy (Jones silver)',
-        source: 'AJKD Atlas'
+        desc: 'Collapsing glomerulopathy (Jones silver)'
       },
       if: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.002/asset/5d1a1a1a-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
         caption: 'HIVAN IF',
-        desc: 'Negative or trace staining',
-        source: 'AJKD Atlas'
+        desc: 'Negative or trace staining'
       },
       em: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.002/asset/5d1a1a1a-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr3_lrg.jpg',
         caption: 'HIVAN EM',
-        desc: 'Tubuloreticular inclusions',
-        source: 'AJKD Atlas'
+        desc: 'Tubuloreticular inclusions'
       }
     },
     crescent: {
@@ -397,36 +387,26 @@
         source: 'Wikimedia Commons'
       },
       if: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.004/asset/4b4b4b4b-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
         caption: 'Crescentic GN IF',
-        desc: 'Pauci-immune (trace staining)',
-        source: 'AJKD Atlas'
+        desc: 'Pauci-immune (trace staining)'
       },
       em: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.004/asset/4b4b4b4b-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr3_lrg.jpg',
         caption: 'Crescentic GN EM',
-        desc: 'No electron-dense deposits',
-        source: 'AJKD Atlas'
+        desc: 'No electron-dense deposits'
       }
     },
     mcd: {
       lm: {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Minimal_change_disease_-_high_mag.jpg',
         caption: 'MCD LM',
-        desc: 'Normal glomerulus (Jones silver)',
-        source: 'Wikimedia Commons'
+        desc: 'Normal glomerulus (Jones silver)'
       },
       if: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.005/asset/3c3c3c3c-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr1_lrg.jpg',
         caption: 'MCD IF',
-        desc: 'Negative staining',
-        source: 'AJKD Atlas'
+        desc: 'Negative staining'
       },
       em: {
-        src: 'https://www.ajkd.org/cms/10.1053/j.ajkd.2016.06.005/asset/3c3c3c3c-5e5b-4b5b-9b9b-5e5b4b5b9b9b/main.assets/gr2_lrg.jpg',
         caption: 'MCD EM',
-        desc: 'Diffuse foot process effacement',
-        source: 'AJKD Atlas'
+        desc: 'Diffuse foot process effacement'
       }
     }
   };
@@ -493,13 +473,21 @@
     
     modalities.forEach(m => {
       const img = data[m.key];
+      if (!img) return;
+      // Micrographs are only listed once a verified, licensed file exists. Until
+      // then we show the teaching caption with an explicit "not added" tile
+      // rather than hotlinking an unverified or unattributable image.
+      const visual = img.src
+        ? `<img src="${img.src}" alt="${img.caption}" onerror="this.outerHTML='<div class=\\'no-image\\'>Image not available</div>'">`
+        : `<div class="no-image">Micrograph not yet added</div>`;
+      const credit = img.source ? `<span class="src">Source: ${img.source}</span>` : '';
       html += `
         <div class="micro-thumb">
-          <img src="${img.src}" alt="${img.caption}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'>Image not available</div>'">
+          ${visual}
           <div class="micro-caption">
             <h4>${m.label}</h4>
             <p>${img.desc}</p>
-            <span class="src">Source: ${img.source}</span>
+            ${credit}
           </div>
         </div>
       `;
