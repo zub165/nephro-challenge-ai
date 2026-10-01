@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renal Artery Stenosis — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --normal:#065f46; --unilateral:#b45309; --bilateral:#dc2626; --acei:#7c3aed;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .case-box{background:#fff; border-radius:18px; padding:20px 24px; margin-top:22px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border-left:6px solid var(--bilateral);}
+  .case-box h2{margin:0 0 10px; font-size:1.05rem; color:#991b1b;}
+  .case-box p{margin:0 0 8px; font-size:.9rem; color:#334155;}
+  .case-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:12px;}
+  .case-stat{background:#f1f5f9; border-radius:10px; padding:10px 14px; border:1px solid #cbd5e1;}
+  .case-stat .cs-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#475569;}
+  .case-stat .cs-value{font-size:1rem; font-weight:800; color:#0f172a; margin-top:2px;}
+  .case-stat.warn{background:#fee2e2; border-color:#fca5a5;}
+  .case-stat.warn .cs-label{color:#991b1b;}
+  .case-stat.warn .cs-value{color:#7f1d1d;}
+  .case-stat.ok{background:#dcfce7; border-color:#86efac;}
+  .case-stat.ok .cs-label{color:#166534;}
+  .case-stat.ok .cs-value{color:#14532d;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.unilateral.active{background:#ffedd5; border-color:var(--unilateral); color:#7c2d12;}
+  .pill.bilateral.active{background:#fee2e2; border-color:var(--bilateral); color:#7f1d1d;}
+  .pill.acei.active{background:#ede9fe; border-color:var(--acei); color:#4c1d95;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:620px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  /* RAAS CASCADE */
+  .raas-box{margin-top:22px; border-radius:16px; padding:22px 24px;
+    background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); color:#e2e8f0; text-align:left;}
+  .raas-box h3{margin:0 0 8px; font-size:1.05rem; color:#f8fafc; display:flex; align-items:center; gap:8px;}
+  .raas-box h3::before{content:"🔄"; font-size:1.1rem;}
+  .raas-flow{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:16px 0; flex-wrap:wrap;}
+  .raas-step{flex:1; min-width:120px; padding:12px 14px; border-radius:10px;
+    background:rgba(255,255,255,.08); text-align:center; transition:all .4s ease; border:2px solid transparent;}
+  .raas-step .rs-name{font-size:.82rem; font-weight:800; color:#f8fafc;}
+  .raas-step .rs-effect{font-size:.7rem; margin-top:4px; color:#cbd5e1;}
+  .raas-arrow{font-size:1.2rem; color:#60a5fa; font-weight:800;}
+  .raas-interp{margin-top:12px; padding:12px 16px; border-radius:10px;
+    background:rgba(255,255,255,.08); font-size:.85rem; line-height:1.55; color:#e2e8f0;}
+  .raas-interp strong{color:#fbbf24;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-duplex { background-color:#dbeafe; box-shadow: inset 4px 0 0 #1d4ed8; }
+  tr.highlight-duplex td { font-weight:600; color:#1e3a8a; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-dup{background:#dbeafe; color:#1e3a8a;}
+  .tag-lab{background:#ffedd5; color:#7c2d12;}
+  .tag-img{background:#ede9fe; color:#4c1d95;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Renal Artery Stenosis — Renovascular Hypertension</h1>
+      <p>Interactive vascular diagram · RAAS cascade · Animated AKI mechanism</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE SUMMARY -->
+  <section class="case-box">
+    <h2>Case Vignette — 73-year-old man with refractory HTN and AKI</h2>
+    <p>Admitted with CHF. Started on IV furosemide while already on carvedilol, lisinopril, and isosorbide mononitrate. Creatinine rose from <strong>1.4 → 2.6 mg/dL</strong>. Bruits heard over carotid and femoral regions. Persistent severe hypertension.</p>
+    <div class="case-grid">
+      <div class="case-stat warn"><div class="cs-label">BP</div><div class="cs-value">190/105 → 160/98</div></div>
+      <div class="case-stat warn"><div class="cs-label">Creatinine</div><div class="cs-value">1.4 → 2.6 mg/dL</div></div>
+      <div class="case-stat warn"><div class="cs-label">Urine Protein</div><div class="cs-value">3+</div></div>
+      <div class="case-stat"><div class="cs-label">Ejection Fraction</div><div class="cs-value">65% (preserved)</div></div>
+      <div class="case-stat"><div class="cs-label">Bruits</div><div class="cs-value">Carotid + femoral</div></div>
+      <div class="case-stat warn"><div class="cs-label">K⁺ / HCO₃⁻</div><div class="cs-value">3.4 / 28</div></div>
+      <div class="case-stat"><div class="cs-label">Na⁺</div><div class="cs-value">132 mEq/L</div></div>
+      <div class="case-stat ok"><div class="cs-label">Troponins / ECG</div><div class="cs-value">No changes</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section class="stage">
+    <h2>Interactive Renovascular Anatomy</h2>
+    <p class="sub">Toggle between states to see how renal artery stenosis drives RAAS activation and AKI — especially after ACEi + diuretic.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill unilateral" id="btnUnilateral" onclick="setMode('unilateral')">Unilateral RAS</button>
+      <button class="pill bilateral" id="btnBilateral" onclick="setMode('bilateral')">Bilateral RAS ★</button>
+      <button class="pill acei" id="btnAcei" onclick="setMode('acei')">After ACEi + Diuretic</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="aortaGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e5e7eb"/><stop offset="50%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#4b5563"/>
+          </linearGradient>
+          <linearGradient id="kidneyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#991b1b"/>
+          </linearGradient>
+          <linearGradient id="kidneyIschemic" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#cbd5e1"/><stop offset="100%" stop-color="#475569"/>
+          </linearGradient>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="stenosisGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1200" height="620" fill="#fdfdfd"/>
+        <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Renal Arteries, Kidneys, and RAAS Cascade</text>
+
+        <!-- AORTA -->
+        <rect x="580" y="60" width="40" height="500" rx="8" fill="url(#aortaGrad)"/>
+        <text x="600" y="590" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#475569">AORTA</text>
+
+        <!-- Atherosclerotic plaques on aorta (mild) -->
+        <g fill="#fbbf24" opacity="0.7">
+          <ellipse cx="600" cy="120" rx="10" ry="6"/>
+          <ellipse cx="600" cy="200" rx="8" ry="5"/>
+          <ellipse cx="600" cy="440" rx="9" ry="6"/>
+        </g>
+
+        <!-- RIGHT KIDNEY (viewer left) -->
+        <g id="kidney-right" transform="translate(280, 280)">
+          <path d="M -80 -80 C -130 -40 -130 60 -80 90 C -30 110 60 100 80 60 C 100 30 100 -30 80 -60 C 60 -90 -30 -110 -80 -80 Z" fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="3" opacity="0.9"/>
+          <!-- Renal pelvis -->
+          <path d="M -20 -20 L -40 0 L -20 20 L -10 0 Z" fill="#fecaca" opacity="0.7"/>
+          <!-- Ureter -->
+          <path d="M -20 20 L -10 90" stroke="#fecaca" stroke-width="6" fill="none" opacity="0.7"/>
+          <text x="0" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7f1d1d">RIGHT KIDNEY</text>
+        </g>
+
+        <!-- LEFT KIDNEY (viewer right) -->
+        <g id="kidney-left" transform="translate(920, 280)">
+          <path d="M 80 -80 C 130 -40 130 60 80 90 C 30 110 -60 100 -80 60 C -100 30 -100 -30 -80 -60 C -60 -90 30 -110 80 -80 Z" fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="3" opacity="0.9"/>
+          <path d="M 20 -20 L 40 0 L 20 20 L 10 0 Z" fill="#fecaca" opacity="0.7"/>
+          <path d="M 20 20 L 10 90" stroke="#fecaca" stroke-width="6" fill="none" opacity="0.7"/>
+          <text x="0" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7f1d1d">LEFT KIDNEY</text>
+        </g>
+
+        <!-- RIGHT RENAL ARTERY -->
+        <g id="artery-right">
+          <path d="M 580 220 L 480 230 L 380 260" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 580 220 L 480 230 L 380 260" fill="none" stroke="#f87171" stroke-width="8" stroke-linecap="round"/>
+        </g>
+        <text x="460" y="205" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#7f1d1d">R. renal a.</text>
+
+        <!-- LEFT RENAL ARTERY -->
+        <g id="artery-left">
+          <path d="M 620 220 L 720 230 L 820 260" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 620 220 L 720 230 L 820 260" fill="none" stroke="#f87171" stroke-width="8" stroke-linecap="round"/>
+        </g>
+        <text x="740" y="205" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#7f1d1d">L. renal a.</text>
+
+        <!-- =============================================== -->
+        <!-- STENOSIS OVERLAYS                               -->
+        <!-- =============================================== -->
+
+        <!-- UNILATERAL — right renal artery stenosis -->
+        <g id="sten-right" style="display:none;">
+          <ellipse cx="450" cy="238" rx="14" ry="10" fill="#f59e0b" opacity="0.9" filter="url(#stenosisGlow)">
+            <animate attributeName="rx" values="12;18;12" dur="1.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <text x="450" y="220" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#92400e">Stenosis</text>
+          <text x="450" y="290" text-anchor="middle" font-family="Arial" font-size="9" fill="#b45309">~80% occlusion</text>
+        </g>
+
+        <!-- BILATERAL — both renal arteries stenotic -->
+        <g id="sten-both" style="display:none;">
+          <!-- Right stenosis -->
+          <ellipse cx="450" cy="238" rx="14" ry="10" fill="#dc2626" opacity="0.9" filter="url(#stenosisGlow)">
+            <animate attributeName="rx" values="12;18;12" dur="1.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <text x="450" y="220" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#991b1b">Stenosis</text>
+          <!-- Left stenosis -->
+          <ellipse cx="750" cy="238" rx="14" ry="10" fill="#dc2626" opacity="0.9" filter="url(#stenosisGlow)">
+            <animate attributeName="rx" values="12;18;12" dur="1.8s" begin="0.5s" repeatCount="indefinite"/>
+          </ellipse>
+          <text x="750" y="220" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#991b1b">Stenosis</text>
+        </g>
+
+        <!-- ACEi overlay — vasodilation of efferent arteriole -->
+        <g id="acei-overlay" style="display:none;">
+          <!-- Efferent arteriole dilation symbols -->
+          <g fill="none" stroke="#7c3aed" stroke-width="3" opacity="0.9" filter="url(#softGlow)">
+            <path d="M 240 320 Q 200 340 220 370"/>
+            <path d="M 960 320 Q 1000 340 980 370"/>
+          </g>
+          <text x="180" y="370" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#4c1d95">Efferent dilation</text>
+          <text x="1020" y="370" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#4c1d95">Efferent dilation</text>
+          <text x="600" y="570" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#4c1d95">ACEi + Diuretic → GFR collapses in stenotic kidneys → AKI</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- RAAS CASCADE (right side panel)                 -->
+        <!-- =============================================== -->
+        <g id="raas-panel">
+          <rect x="1030" y="60" width="150" height="500" rx="12" fill="#fff7ed" stroke="#fcd34d" stroke-width="1.5"/>
+          <text x="1105" y="85" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">RAAS</text>
+          <text x="1105" y="100" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">Cascade</text>
+
+          <g font-family="Arial" font-size="9" fill="#7c2d12">
+            <text x="1105" y="135" text-anchor="middle">↓ Renal perfusion</text>
+            <text x="1105" y="160" text-anchor="middle">↓</text>
+            <text x="1105" y="185" text-anchor="middle">Renin ↑</text>
+            <text x="1105" y="210" text-anchor="middle">↓</text>
+            <text x="1105" y="235" text-anchor="middle">Angiotensin II ↑</text>
+            <text x="1105" y="260" text-anchor="middle">↓</text>
+            <text x="1105" y="285" text-anchor="middle">Aldosterone ↑</text>
+            <text x="1105" y="310" text-anchor="middle">↓</text>
+            <text x="1105" y="335" text-anchor="middle">Na⁺ &amp; H₂O retention</text>
+            <text x="1105" y="360" text-anchor="middle">K⁺ wasting</text>
+            <text x="1105" y="385" text-anchor="middle">→ Hypertension</text>
+            <text x="1105" y="410" text-anchor="middle">→ Hypokalemia</text>
+            <text x="1105" y="435" text-anchor="middle">→ Metabolic alkalosis</text>
+          </g>
+
+          <!-- Activation indicator -->
+          <rect id="raas-active" x="1040" y="470" width="130" height="30" rx="6" fill="#dc2626" opacity="0.9" style="display:none;"/>
+          <text id="raas-active-text" x="1105" y="490" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff" style="display:none;">ACTIVATED</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- BLOOD FLOW ARROWS (per-kidney perfusion)        -->
+        <!-- =============================================== -->
+        <!-- Right kidney perfusion indicator -->
+        <g id="perf-right">
+          <text x="280" y="450" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#166534">Perfusion: Normal</text>
+        </g>
+        <!-- Left kidney perfusion indicator -->
+        <g id="perf-left">
+          <text x="920" y="450" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#166534">Perfusion: Normal</text>
+        </g>
+
+        <!-- Metadata overlay -->
+        <g font-family="monospace" font-size="9" fill="#4b5563" opacity="0.7">
+          <text x="30" y="30">Renal Duplex Ultrasound — Peak Systolic Velocity</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Renal Perfusion</div>
+        <div class="rc-value" id="rcPerfValue">—</div>
+        <div class="rc-sub" id="rcPerfSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">RAAS Activity</div>
+        <div class="rc-value" id="rcRaasValue">—</div>
+        <div class="rc-sub" id="rcRaasSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">BP</div>
+        <div class="rc-value" id="rcBpValue">—</div>
+        <div class="rc-sub" id="rcBpSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">GFR / Creatinine</div>
+        <div class="rc-value" id="rcGfrValue">—</div>
+        <div class="rc-sub" id="rcGfrSub">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Interpretation</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+
+    <!-- RAAS CASCADE VISUALIZER -->
+    <div class="raas-box">
+      <h3>RAAS Cascade Activation</h3>
+      <p style="margin:8px 0 0; font-size:.85rem; color:#cbd5e1; line-height:1.55;">
+        Renal artery stenosis reduces perfusion pressure → renin release → angiotensin II → aldosterone → hypertension, hypokalemia, and metabolic alkalosis. ACE inhibitors and ARBs block this cascade, which lowers BP but also dilates the efferent arteriole — precipitating AKI in bilateral stenosis.
+      </p>
+
+      <div class="raas-flow">
+        <div class="raas-step" id="step1">
+          <div class="rs-name">↓ Renal Perfusion</div>
+          <div class="rs-effect">Stenosis</div>
+        </div>
+        <div class="raas-arrow">→</div>
+        <div class="raas-step" id="step2">
+          <div class="rs-name">Renin ↑</div>
+          <div class="rs-effect">JG cells</div>
+        </div>
+        <div class="raas-arrow">→</div>
+        <div class="raas-step" id="step3">
+          <div class="rs-name">Angiotensin II ↑</div>
+          <div class="rs-effect">Vasoconstriction</div>
+        </div>
+        <div class="raas-arrow">→</div>
+        <div class="raas-step" id="step4">
+          <div class="rs-name">Aldosterone ↑</div>
+          <div class="rs-effect">Na⁺ retention / K⁺ loss</div>
+        </div>
+        <div class="raas-arrow">→</div>
+        <div class="raas-step" id="step5">
+          <div class="rs-name">Hypertension</div>
+          <div class="rs-effect">+ Hypokalemia + Alkalosis</div>
+        </div>
+      </div>
+
+      <div class="raas-interp" id="raasInterp">
+        Select a state above to see how the RAAS cascade responds.
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Diagnostic Options for Renovascular Hypertension</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>What It Shows</th>
+          <th>Advantages</th>
+          <th>Limitations</th>
+          <th>When to Choose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-duplex">
+          <td><strong>Renal Artery Duplex Ultrasound</strong> <span class="tag tag-dup">Correct</span></td>
+          <td>Peak systolic velocity, renal artery anatomy, resistive index, kidney size</td>
+          <td>Non-invasive, no contrast, no radiation, reproducible, safe in CKD</td>
+          <td>Operator-dependent, limited by body habitus, accessory arteries may be missed</td>
+          <td><strong>Screening test of choice</strong> in suspected ARAS with CKD</td>
+        </tr>
+        <tr>
+          <td><strong>24-hour urine protein</strong> <span class="tag tag-lab">Distractor</span></td>
+          <td>Quantifies proteinuria</td>
+          <td>Defines nephrotic-range vs. sub-nephrotic</td>
+          <td>Does not identify the cause of AKI or hypertension</td>
+          <td>When defining the degree of proteinuria is needed for prognosis</td>
+        </tr>
+        <tr>
+          <td><strong>Urinary sodium excretion</strong> <span class="tag tag-lab">Distractor</span></td>
+          <td>Differentiates prerenal from intrinsic AKI</td>
+          <td>Cheap, readily available</td>
+          <td>Influenced by diuretics (furosemide); not diagnostic of RAS</td>
+          <td>When the differential is prerenal vs. ATN</td>
+        </tr>
+        <tr>
+          <td><strong>Aldosterone-to-renin ratio</strong> <span class="tag tag-lab">Distractor</span></td>
+          <td>Screens for primary aldosteronism</td>
+          <td>Non-invasive; high yield in resistant HTN</td>
+          <td>Interfered with by carvedilol and lisinopril (both alter renin/aldosterone); no bruits in primary aldosteronism</td>
+          <td>When primary hyperaldosteronism is suspected without vascular clues</td>
+        </tr>
+        <tr>
+          <td><strong>HbA1c</strong> <span class="tag tag-lab">Distractor</span></td>
+          <td>Screens for diabetes</td>
+          <td>Cheap, widely available</td>
+          <td>Irrelevant to the acute presentation; does not explain bruits or AKI</td>
+          <td>Routine diabetes screening — but not here</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. Which finding in this case most strongly suggests bilateral renal artery stenosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Ejection fraction of 65%</button>
+        <button class="opt" onclick="answer(this,false)">B. Elevated troponins</button>
+        <button class="opt" onclick="answer(this,true)">C. Diffuse bruits over carotid and femoral arteries with refractory hypertension</button>
+        <button class="opt" onclick="answer(this,false)">D. Mild aortic stenosis</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> The presence of <strong>carotid and femoral bruits</strong> indicates diffuse atherosclerosis, and the <strong>refractory hypertension</strong> in an older patient strongly suggests renovascular hypertension from bilateral renal artery stenosis.</div>
+    </div>
+
+    <div class="q">
+      <p>2. Why did this patient develop AKI after starting furosemide while on lisinopril?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Lisinopril caused direct nephrotoxicity</button>
+        <button class="opt" onclick="answer(this,false)">B. Furosemide caused acute interstitial nephritis</button>
+        <button class="opt" onclick="answer(this,true)">C. The combination of volume depletion and efferent arteriolar dilation collapsed GFR in stenotic kidneys</button>
+        <button class="opt" onclick="answer(this,false)">D. The patient developed sepsis</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> In bilateral renal artery stenosis, GFR is maintained by angiotensin II–mediated <strong>efferent arteriolar constriction</strong>. ACE inhibitors (lisinopril) remove this compensation, and diuretics (furosemide) reduce volume — together, GFR collapses → AKI. This is a classic presentation of "ACE inhibitor–induced AKI" in bilateral RAS.</div>
+    </div>
+
+    <div class="q">
+      <p>3. Which is the best next diagnostic test?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. 24-hour urine protein</button>
+        <button class="opt" onclick="answer(this,false)">B. Urinary sodium excretion</button>
+        <button class="opt" onclick="answer(this,false)">C. Aldosterone-to-renin ratio</button>
+        <button class="opt" onclick="answer(this,true)">D. Renal artery duplex ultrasound</button>
+      </div>
+      <div class="explain"><strong>Correct: D.</strong> Renal artery duplex ultrasound is the non-invasive screening test of choice for renal artery stenosis. It evaluates flow velocities and anatomy without contrast or radiation, making it safe in CKD.</div>
+    </div>
+
+    <div class="q">
+      <p>4. What classic electrolyte and acid–base abnormalities are expected in renovascular hypertension?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Hyperkalemia and metabolic acidosis</button>
+        <button class="opt" onclick="answer(this,true)">B. Hypokalemia and metabolic alkalosis</button>
+        <button class="opt" onclick="answer(this,false)">C. Hypocalcemia and respiratory acidosis</button>
+        <button class="opt" onclick="answer(this,false)">D. Hypernatremia and metabolic acidosis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Renovascular hypertension activates the RAAS → aldosterone ↑ → K⁺ wasting and H⁺ secretion in the distal tubule → <strong>hypokalemia and metabolic alkalosis</strong>. The patient's K⁺ of 3.4 and HCO₃⁻ of 28 fit this picture.</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which of the following would best support a diagnosis of primary aldosteronism over renovascular disease?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">A. Hypertension WITHOUT bruits and WITHOUT AKI after ACEi</button>
+        <button class="opt" onclick="answer(this,false)">B. Diffuse atherosclerotic bruits</button>
+        <button class="opt" onclick="answer(this,false)">C. AKI after starting an ACE inhibitor</button>
+        <button class="opt" onclick="answer(this,false)">D. Low serum bicarbonate</button>
+      </div>
+      <div class="explain"><strong>Correct: A.</strong> Primary aldosteronism typically presents with hypertension <strong>without bruits</strong>, and the kidneys are not dependent on angiotensin II — so AKI after ACEi is not typical. The presence of diffuse bruits and AKI after ACEi strongly favors renovascular disease instead.</div>
+    </div>
+
+    <div class="q">
+      <p>6. Which hemodynamic change from ACE inhibitors precipitates AKI in bilateral renal artery stenosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Constriction of the afferent arteriole</button>
+        <button class="opt" onclick="answer(this,true)">B. Dilation of the efferent arteriole</button>
+        <button class="opt" onclick="answer(this,false)">C. Increased systemic vascular resistance</button>
+        <button class="opt" onclick="answer(this,false)">D. Enhanced proximal Na⁺ reabsorption</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Angiotensin II normally constricts the <strong>efferent arteriole</strong> to maintain GFR when renal perfusion is low. ACE inhibitors block this, causing efferent dilation → GFR falls → AKI. This is the key mechanism linking bilateral RAS to ACEi-induced AKI.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and cardiology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      perf: 'Normal',
+      perfSub: 'Both kidneys well perfused',
+      raas: 'Baseline',
+      raasSub: 'Normal renin/aldosterone',
+      bp: '120/75 mm Hg',
+      bpSub: 'Normotensive',
+      gfr: '1.0 mg/dL',
+      gfrSub: 'Normal GFR',
+      verdict: 'Normal renovascular physiology — no stenosis, no RAAS activation, no AKI.',
+      color: '#065f46'
+    },
+    unilateral: {
+      perf: 'Right kidney ↓',
+      perfSub: 'Left kidney compensates',
+      raas: 'Mild ↑',
+      raasSub: 'Compensated by contralateral kidney',
+      bp: '150/90 mm Hg',
+      bpSub: 'Moderate hypertension',
+      gfr: '1.2 mg/dL',
+      gfrSub: 'Mildly reduced',
+      verdict: 'Unilateral RAS: contralateral kidney compensates. Hypertension may be present, but GFR is usually preserved unless ACEi is added.',
+      color: '#b45309'
+    },
+    bilateral: {
+      perf: 'Both kidneys ↓',
+      perfSub: 'Bilateral hypoperfusion',
+      raas: 'Markedly ↑',
+      raasSub: 'Renin ↑↑, Ang II ↑↑, Aldosterone ↑↑',
+      bp: '190/105 mm Hg',
+      bpSub: 'Severe refractory hypertension',
+      gfr: '1.4 mg/dL',
+      gfrSub: 'Preserved by Ang II (efferent constriction)',
+      verdict: 'Bilateral RAS ★: GFR is maintained by Ang II–mediated efferent constriction. This is the classic presentation with refractory HTN, hypokalemic metabolic alkalosis, and diffuse atherosclerotic bruits.',
+      color: '#dc2626'
+    },
+    acei: {
+      perf: 'Both kidneys ↓↓',
+      perfSub: 'Efferent dilation → GFR collapse',
+      raas: 'Blocked by ACEi',
+      raasSub: 'But efferent dilation worsens GFR',
+      bp: '160/98 mm Hg',
+      bpSub: 'Still hypertensive (residual volume)',
+      gfr: '2.6 mg/dL',
+      gfrSub: 'AKI — creatinine doubled',
+      verdict: 'After ACEi + Diuretic: efferent arteriolar dilation removes the compensatory mechanism, and volume depletion from furosemide collapses GFR → AKI. This is the moment to suspect bilateral renal artery stenosis.',
+      color: '#7c3aed'
+    }
+  };
+
+  function setMode(mode) {
+    ['sten-right','sten-both','acei-overlay'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    // Reset RAAS panel highlight
+    document.getElementById('raas-active').style.display = 'none';
+    document.getElementById('raas-active-text').style.display = 'none';
+
+    // Reset kidney colors
+    document.getElementById('kidney-right').querySelector('path').setAttribute('fill', 'url(#kidneyGrad)');
+    document.getElementById('kidney-left').querySelector('path').setAttribute('fill', 'url(#kidneyGrad)');
+
+    ['btnNormal','btnUnilateral','btnBilateral','btnAcei'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', unilateral:'btnUnilateral',
+      bilateral:'btnBilateral', acei:'btnAcei'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode === 'unilateral') {
+      document.getElementById('sten-right').style.display = 'block';
+      document.getElementById('kidney-right').querySelector('path').setAttribute('fill', 'url(#kidneyIschemic)');
+    } else if (mode === 'bilateral') {
+      document.getElementById('sten-both').style.display = 'block';
+      document.getElementById('kidney-right').querySelector('path').setAttribute('fill', 'url(#kidneyIschemic)');
+      document.getElementById('kidney-left').querySelector('path').setAttribute('fill', 'url(#kidneyIschemic)');
+      document.getElementById('raas-active').style.display = 'block';
+      document.getElementById('raas-active-text').style.display = 'block';
+    } else if (mode === 'acei') {
+      document.getElementById('sten-both').style.display = 'block';
+      document.getElementById('acei-overlay').style.display = 'block';
+      document.getElementById('kidney-right').querySelector('path').setAttribute('fill', 'url(#kidneyIschemic)');
+      document.getElementById('kidney-left').querySelector('path').setAttribute('fill', 'url(#kidneyIschemic)');
+      document.getElementById('raas-active').style.display = 'block';
+      document.getElementById('raas-active-text').style.display = 'block';
+    }
+
+    // Readout cards
+    document.getElementById('rcPerfValue').textContent = d.perf;
+    document.getElementById('rcPerfValue').style.color = d.color;
+    document.getElementById('rcPerfSub').textContent = d.perfSub;
+
+    document.getElementById('rcRaasValue').textContent = d.raas;
+    document.getElementById('rcRaasValue').style.color = d.color;
+    document.getElementById('rcRaasSub').textContent = d.raasSub;
+
+    document.getElementById('rcBpValue').textContent = d.bp;
+    document.getElementById('rcBpValue').style.color = d.color;
+    document.getElementById('rcBpSub').textContent = d.bpSub;
+
+    document.getElementById('rcGfrValue').textContent = d.gfr;
+    document.getElementById('rcGfrValue').style.color = d.color;
+    document.getElementById('rcGfrSub').textContent = d.gfrSub;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+
+    // RAAS cascade visualizer highlight
+    const stepEls = ['step1','step2','step3','step4','step5'].map(id => document.getElementById(id));
+    stepEls.forEach(el => { el.style.background = 'rgba(255,255,255,.08)'; el.style.borderColor = 'transparent'; });
+
+    if (mode === 'unilateral') {
+      stepEls[0].style.background = 'rgba(180,83,9,.4)';
+      stepEls[0].style.borderColor = '#f59e0b';
+      document.getElementById('raasInterp').innerHTML = 'Unilateral stenosis causes <strong>mild RAAS activation</strong>. The contralateral kidney compensates by excreting sodium and water, so BP may be only moderately elevated and GFR often remains normal.';
+    } else if (mode === 'bilateral') {
+      stepEls.forEach((el, i) => {
+        el.style.background = 'rgba(220,38,38,.4)';
+        el.style.borderColor = '#dc2626';
+      });
+      document.getElementById('raasInterp').innerHTML = '<strong>Bilateral stenosis → full RAAS activation.</strong> Both kidneys sense low perfusion → renin ↑↑ → angiotensin II ↑↑ → aldosterone ↑↑. This produces severe hypertension, hypokalemia, and metabolic alkalosis. GFR is maintained only by Ang II–mediated efferent arteriolar constriction.';
+    } else if (mode === 'acei') {
+      stepEls.forEach((el, i) => {
+        el.style.background = 'rgba(124,58,237,.4)';
+        el.style.borderColor = '#7c3aed';
+      });
+      document.getElementById('raasInterp').innerHTML = '<strong>ACE inhibitor blocks the cascade</strong> — renin ↑ (no feedback), but angiotensin II and aldosterone ↓. The efferent arteriole dilates → GFR collapses in the stenotic kidneys. Combined with diuretic-induced volume depletion, this produces the classic <strong>ACEi-induced AKI of bilateral RAS</strong>.';
+    } else {
+      document.getElementById('raasInterp').innerHTML = 'Normal renal perfusion. RAAS is at baseline — renin, angiotensin II, and aldosterone are within normal range.';
+    }
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>
