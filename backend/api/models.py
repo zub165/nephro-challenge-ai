@@ -253,6 +253,8 @@ class QuizAttempt(models.Model):
         PRACTICE = "practice", "Practice"
         CHAPTER = "chapter", "Chapter"
         CATEGORY = "category", "Category"
+        BOARD_PREP = "board_prep", "Board Prep"
+        REVIEW = "review", "Review"
 
     user = models.ForeignKey(
         User,
@@ -317,12 +319,25 @@ class Answer(models.Model):
     )
     is_correct = models.BooleanField(default=False)
     time_taken = models.PositiveIntegerField(default=0)
+    confidence = models.CharField(
+        max_length=10,
+        choices=[("know", "Know"), ("guessed", "Guessed")],
+        default="know",
+    )
 
     class Meta:
         ordering = ["id"]
 
     def __str__(self) -> str:
         return f"Q: {self.question_id} - {'Correct' if self.is_correct else 'Incorrect'}"
+
+    @property
+    def review_tag(self) -> str:
+        if not self.is_correct:
+            return "wrong"
+        if self.confidence == "guessed":
+            return "guessed"
+        return "know"
 
 
 class Leaderboard(models.Model):
@@ -622,3 +637,59 @@ class BoardExamAttemptItem(models.Model):
 
     def __str__(self) -> str:
         return f"{self.attempt_id} - #{self.position}"
+
+
+class BoardPrepSettings(models.Model):
+    """Per-user 25-day board calendar (exam date + workdays)."""
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="board_prep_settings",
+    )
+    exam_date = models.DateField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    work_weekdays = models.JSONField(blank=True, default=list)
+    workday_question_target = models.PositiveIntegerField(default=25)
+    day_off_question_target = models.PositiveIntegerField(default=80)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.user.username} board plan"
+
+
+class Last48HourFact(models.Model):
+    """Running rapid-review sheet: formulas, biopsy patterns, toxicities, misses."""
+
+    class Kind(models.TextChoices):
+        FORMULA = "formula", "Formula"
+        BIOPSY = "biopsy", "Biopsy"
+        TOXICITY = "toxicity", "Drug toxicity"
+        ELECTROLYTE = "electrolyte", "Electrolyte algorithm"
+        DIALYSIS = "dialysis", "Dialysis number"
+        TRANSPLANT = "transplant", "Transplant rejection"
+        PEARL = "pearl", "Pearl"
+        MISS = "miss", "Repeated miss"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="last48_facts",
+    )
+    kind = models.CharField(max_length=20, choices=Kind.choices, default=Kind.PEARL)
+    text = models.TextField()
+    source_question = models.ForeignKey(
+        Question,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="last48_facts",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.user.username} {self.kind}: {self.text[:40]}"

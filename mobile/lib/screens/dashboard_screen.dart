@@ -33,7 +33,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer2<DashboardProvider, AuthProvider>(
+      body: SafeArea(
+      child: Consumer2<DashboardProvider, AuthProvider>(
         builder: (context, dashboard, auth, _) {
           return RefreshIndicator(
             onRefresh: dashboard.loadDashboard,
@@ -80,6 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           );
         },
       ),
+      ),
     );
   }
 
@@ -89,7 +91,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.menu),
+              tooltip: 'Menu',
+              onPressed: () => context.read<NavigationProvider>().openMenu(),
+            ),
+            Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -109,6 +118,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
               ),
+            ),
+          ],
             ),
           ],
         ),
@@ -396,10 +407,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
             final acc = (topic['accuracy'] as num?)?.toDouble() ?? 0.0;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
+              child: InkWell(
+                onTap: () {
+                  final slug = topic['chapterSlug'] as String?;
+                  if (slug != null && slug.isNotEmpty) {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.chapterDetail,
+                      arguments: slug,
+                    );
+                  }
+                },
+                child: Row(
                 children: [
                   Expanded(
-                    child: Text(name, style: GoogleFonts.inter(fontSize: 14)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name, style: GoogleFonts.inter(fontSize: 14)),
+                        Text(
+                          (topic['recommend'] as String?) ??
+                              'Read this chapter, then redo the quiz.',
+                          style: GoogleFonts.inter(
+                              fontSize: 11, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(width: 12),
                   SizedBox(
@@ -426,6 +459,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                 ],
+              ),
               ),
             );
           }),
@@ -650,7 +684,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Fresh AI-written board questions, generated on demand',
+                  '25-day plan: questions, review, and Last 48 Hours — not a textbook reread',
                   style: GoogleFonts.inter(
                     fontSize: 13,
                     color: Theme.of(context)

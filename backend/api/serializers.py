@@ -249,26 +249,73 @@ class QuestionExplanationSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
+    question_id = serializers.SerializerMethodField()
     question_text = serializers.CharField(source="question.question_text", read_only=True)
     chosen_text = serializers.CharField(source="chosen_choice.choice_text", read_only=True)
+    chosen_choice_id = serializers.CharField(source="chosen_choice.id", read_only=True)
+    correct_choice_id = serializers.SerializerMethodField()
     correct_answer_text = serializers.SerializerMethodField()
+    why_wrong = serializers.SerializerMethodField()
+    explanation = serializers.CharField(source="question.explanation", read_only=True)
+    clinical_pearl = serializers.CharField(source="question.clinical_pearl", read_only=True)
+    references = serializers.SerializerMethodField()
+    tag = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
         fields = [
             "id",
             "question",
+            "question_id",
             "question_text",
             "chosen_choice",
+            "chosen_choice_id",
             "chosen_text",
+            "correct_choice_id",
             "correct_answer_text",
+            "why_wrong",
+            "explanation",
+            "clinical_pearl",
+            "references",
             "is_correct",
             "time_taken",
+            "confidence",
+            "tag",
         ]
 
+    def get_question_id(self, obj) -> str:
+        return str(obj.question_id)
+
+    def _correct(self, obj):
+        return obj.question.choices.filter(is_correct=True).first()
+
     def get_correct_answer_text(self, obj) -> str:
-        correct = obj.question.choices.filter(is_correct=True).first()
+        correct = self._correct(obj)
         return correct.choice_text if correct else ""
+
+    def get_correct_choice_id(self, obj) -> str:
+        correct = self._correct(obj)
+        return str(correct.id) if correct else ""
+
+    def get_why_wrong(self, obj) -> str:
+        if obj.is_correct or not obj.chosen_choice_id:
+            return ""
+        return obj.chosen_choice.why_wrong or ""
+
+    def get_references(self, obj) -> list:
+        from api.data.medical_references import references_for_topic, resolve_reference_field
+
+        refs = resolve_reference_field(obj.question.reference or "")
+        if not refs:
+            topic = (
+                obj.question.topic.title if obj.question.topic_id else (obj.question.subcategory or "")
+            )
+            slug = obj.question.chapter.slug if obj.question.chapter_id else None
+            refs = references_for_topic(topic, slug)
+        return refs
+
+    def get_tag(self, obj) -> str:
+        return obj.review_tag
 
 
 class QuizAttemptSerializer(serializers.ModelSerializer):
@@ -302,7 +349,7 @@ class QuizAttemptSerializer(serializers.ModelSerializer):
 
 
 class QuizAttemptCreateSerializer(serializers.ModelSerializer):
-    answers_data = serializers.ListField(write_only=True)
+    answers_data = serializers.ListField(write_only=True, allow_empty=True)
 
     class Meta:
         model = QuizAttempt
@@ -315,11 +362,6 @@ class QuizAttemptCreateSerializer(serializers.ModelSerializer):
             "time_taken",
             "answers_data",
         ]
-
-    def validate_answers_data(self, value):
-        if not value:
-            raise serializers.ValidationError("At least one answer is required")
-        return value
 
     def create(self, validated_data):
         from api.services.board_exam_service import question_in_published_board_exam
@@ -365,12 +407,21 @@ class QuizAttemptCreateSerializer(serializers.ModelSerializer):
                 is_correct = chosen.is_correct
                 if is_correct:
                     score += 1
+                confidence = (item.get("confidence") or "know").strip().lower()
+                if confidence not in ("know", "guessed"):
+                    confidence = "know"
                 Answer.objects.create(
                     quiz_attempt=attempt,
                     question=question,
                     chosen_choice=chosen,
                     is_correct=is_correct,
                     time_taken=item.get("time_taken", 0),
+                    confidence=confidence,
+                )
+                from api.services.board_prep_service import maybe_add_last48_fact
+
+                maybe_add_last48_fact(
+                    user, question, is_correct=is_correct, confidence=confidence
                 )
                 Question.objects.filter(id=question.id).update(
                     times_answered=models.F("times_answered") + 1,
@@ -613,5 +664,31 @@ class BoardExamDetailSerializer(BoardExamSerializer):
 
 class BoardExamAnswerSerializer(serializers.Serializer):
     selected_choice_key = serializers.CharField(max_length=2, trim_whitespace=True, allow_blank=False)
+
+
+class BoardPrepSettingsSerializer(serializers.Serializer):
+    exam_date = serializers.DateField(required=False, allow_null=True)
+    work_weekdays = serializers.ListField(
+        child=serializers.IntegerField(min_value=1, max_value=7),
+        required=False,
+    )
+
+
+class Last48HourFactSerializer(serializers.Serializer):
+    kind = serializers.ChoiceField(
+        choices=[
+            "formula",
+            "biopsy",
+            "toxicity",
+            "electrolyte",
+            "dialysis",
+            "transplant",
+            "pearl",
+            "miss",
+        ],
+        default="pearl",
+    )
+    text = serializers.CharField()
+    source_question_id = serializers.IntegerField(required=False, allow_null=True)
 
 

@@ -24,12 +24,17 @@ class QuizProvider extends ChangeNotifier {
   int _timeLeft = 30;
   Timer? _timer;
   QuizAttempt? _lastAttempt;
+  final Map<String, QuizAnswerFeedback> _feedback = {};
   AIExplanation? _currentExplanation;
   bool _isLoadingExplanation = false;
   String? _error;
   String? _categoryId;
   String? _chapterId;
   bool _isDailyChallenge = false;
+  bool _revealing = false;
+  bool get isRevealingAnswer => _revealing;
+  int? _boardDay;
+  final Map<int, String> _confidence = {};
 
   QuizStatus get status => _status;
   List<Question> get questions => _questions;
@@ -47,6 +52,9 @@ class QuizProvider extends ChangeNotifier {
   bool get isDailyChallenge => _isDailyChallenge;
   int get answeredCount => _answers.length;
 
+  /// Server-marked feedback for a question, or null if not yet known.
+  QuizAnswerFeedback? feedbackFor(String questionId) => _feedback[questionId];
+
   double get progress => _questions.isEmpty
       ? 0.0
       : (_currentIndex + 1) / _questions.length;
@@ -60,12 +68,15 @@ class QuizProvider extends ChangeNotifier {
     String? categoryId,
     String? chapterId,
     bool isDailyChallenge = false,
+    int? boardDay,
+    int? limit,
   }) async {
     _status = QuizStatus.loading;
     _error = null;
     _categoryId = categoryId;
     _chapterId = chapterId;
     _isDailyChallenge = isDailyChallenge;
+    _boardDay = boardDay;
     notifyListeners();
 
     List<Question> questions;
@@ -75,9 +86,13 @@ class QuizProvider extends ChangeNotifier {
       questions = await _quizService.fetchQuizQuestions(
         categoryId: categoryId,
         daily: isDailyChallenge,
-        limit: isDailyChallenge
-            ? AppConstants.dailyChallengeQuestions
-            : 10,
+        boardDay: boardDay,
+        limit: limit ??
+            (isDailyChallenge
+                ? AppConstants.dailyChallengeQuestions
+                : boardDay != null
+                    ? 18
+                    : 10),
       );
     }
 
@@ -92,9 +107,11 @@ class QuizProvider extends ChangeNotifier {
     _currentIndex = 0;
     _answers.clear();
     _answerTimes.clear();
+    _confidence.clear();
     _correctCount = 0;
     _incorrectCount = 0;
     _selectedChoiceId = null;
+    _feedback.clear();
     _currentExplanation = null;
     _error = null;
     _status = QuizStatus.playing;
@@ -128,19 +145,46 @@ class QuizProvider extends ChangeNotifier {
     _timer?.cancel();
     final question = currentQuestion;
     if (question != null) {
-      final isCorrect = choiceId != null &&
-          (choiceId == question.correctChoiceId ||
-              question.choices.any((c) => c.id == choiceId && c.isCorrect));
-      if (isCorrect) {
+      _answers[_currentIndex] = choiceId;
+      _answerTimes[_currentIndex] =
+          (question.timeLimitSeconds - _timeLeft).clamp(0, question.timeLimitSeconds);
+    }
+    notifyListeners();
+    if (choiceId != null) {
+      _revealAnswer(choiceId);
+    }
+  }
+
+  Future<void> _revealAnswer(String choiceId) async {
+    final question = currentQuestion;
+    if (question == null) return;
+    _revealing = true;
+    notifyListeners();
+    final feedback = await _quizService.checkAnswer(
+      questionId: question.id,
+      choiceId: choiceId,
+    );
+    if (feedback != null) {
+      _feedback[question.id] = feedback;
+      if (feedback.isCorrect) {
         _correctCount++;
       } else {
         _incorrectCount++;
       }
-      _answers[_currentIndex] = choiceId;
-      _answerTimes[_currentIndex] = (question.timeLimitSeconds - _timeLeft).clamp(0, question.timeLimitSeconds);
+    } else {
+      _error = 'Could not load the correct answer. Check your connection.';
     }
+    _revealing = false;
     notifyListeners();
   }
+
+  void tagConfidence(String tag) {
+    if (tag != 'know' && tag != 'guessed') return;
+    _confidence[_currentIndex] = tag;
+    notifyListeners();
+  }
+
+  String? confidenceForCurrent() => _confidence[_currentIndex];
 
   void nextQuestion() {
     if (_currentIndex < _questions.length - 1) {
@@ -182,6 +226,7 @@ class QuizProvider extends ChangeNotifier {
         'question_id': question.id,
         'chosen_choice_id': e.value,
         'time_taken': _answerTimes[e.key] ?? 30,
+        'confidence': _confidence[e.key] ?? 'know',
       };
     }).toList();
 
@@ -192,18 +237,30 @@ class QuizProvider extends ChangeNotifier {
           answersData: answersData,
           mode: _isDailyChallenge
               ? 'daily'
-              : _chapterId != null
-                  ? 'chapter'
-                  : _categoryId != null
-                      ? 'category'
-                      : 'practice',
+              : _boardDay != null
+                  ? 'board_prep'
+                  : _chapterId != null
+                      ? 'chapter'
+                      : _categoryId != null
+                          ? 'category'
+                          : 'practice',
           categoryId: _categoryId,
           chapterId: _chapterId,
           timeTaken: totalTimeTaken,
         );
         if (_lastAttempt == null) {
           _error =
-              'Your score was computed locally but could not be saved to the server. Connect & try again later.';
+              'Your quiz could not be saved to the server. Check your connection and try again.';
+        } else {
+          // The server is the only place answers live. Its marked attempt is
+          // the source of truth for the summary and the per-question review.
+          _feedback.clear();
+          for (final answer in _lastAttempt!.answers) {
+            _feedback[answer.questionId] = answer;
+          }
+          _correctCount = _lastAttempt!.score;
+          _incorrectCount =
+              (_lastAttempt!.totalQuestions - _lastAttempt!.score).clamp(0, _lastAttempt!.totalQuestions);
         }
       }
     } catch (e) {
@@ -232,10 +289,12 @@ class QuizProvider extends ChangeNotifier {
     _selectedChoiceId = null;
     _answers.clear();
     _answerTimes.clear();
+    _confidence.clear();
     _correctCount = 0;
     _incorrectCount = 0;
     _timeLeft = 30;
     _lastAttempt = null;
+    _feedback.clear();
     _currentExplanation = null;
     _error = null;
     notifyListeners();

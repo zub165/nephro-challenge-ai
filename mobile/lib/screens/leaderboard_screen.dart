@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/leaderboard_entry.dart';
 import '../providers/leaderboard_provider.dart';
+import '../widgets/app_nav_drawer.dart';
 import '../widgets/leaderboard_tile.dart';
 import '../widgets/loading_shimmer.dart';
 
@@ -45,6 +46,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const AppMenuButton(),
         title: const Text('Leaderboard'),
         bottom: TabBar(
           controller: _tabController,

@@ -4,8 +4,10 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/routes.dart';
+import '../models/quiz_attempt.dart';
 import '../providers/navigation_provider.dart';
 import '../providers/quiz_provider.dart';
+import '../widgets/app_nav_drawer.dart';
 import '../widgets/question_card.dart';
 import '../widgets/choice_button.dart';
 
@@ -29,6 +31,8 @@ class _QuizScreenState extends State<QuizScreen> {
             categoryId: args['category_id'] as String? ?? args['categoryId'] as String?,
             chapterId: args['chapterId'] as String?,
             isDailyChallenge: args['is_daily_challenge'] as bool? ?? args['daily'] as bool? ?? false,
+            boardDay: args['boardDay'] as int?,
+            limit: args['limit'] as int?,
           );
         }
       }
@@ -43,8 +47,14 @@ class _QuizScreenState extends State<QuizScreen> {
           appBar: quiz.status == QuizStatus.playing
               ? _buildQuizAppBar(context, quiz)
               : quiz.status == QuizStatus.completed
-                  ? AppBar(title: const Text('Quiz Complete'))
-                  : AppBar(title: const Text('Quiz')),
+                  ? AppBar(
+                      leading: const AppMenuButton(),
+                      title: const Text('Quiz Complete'),
+                    )
+                  : AppBar(
+                      leading: const AppMenuButton(),
+                      title: const Text('Quiz'),
+                    ),
           body: _buildBody(context, quiz),
         );
       },
@@ -53,6 +63,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   PreferredSizeWidget _buildQuizAppBar(BuildContext context, QuizProvider quiz) {
     return AppBar(
+      leading: const AppMenuButton(),
       title: Column(
         children: [
           Text(
@@ -136,39 +147,83 @@ class _QuizScreenState extends State<QuizScreen> {
                   ...question.choices.map((choice) {
                     final isSelected = quiz.selectedChoiceId == choice.id;
                     final isAnswered = quiz.answers.containsKey(quiz.currentIndex);
+                    final feedback = quiz.feedbackFor(question.id);
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: ChoiceButton(
                         choice: choice,
                         isSelected: isSelected,
-                        isAnswered: isAnswered,
-                        correctAnswerId: isAnswered
-                            ? question.resolvedCorrectChoiceId
-                            : null,
+                        isAnswered: isAnswered && feedback != null,
+                        correctAnswerId: feedback?.correctChoiceId,
                         onTap: () => quiz.selectAnswer(choice.id),
                       ),
                     );
                   }),
+                  if (quiz.isRevealingAnswer) ...[
+                    const SizedBox(height: 12),
+                    const CircularProgressIndicator(),
+                  ],
+                  if (quiz.feedbackFor(question.id) != null) ...[
+                    const SizedBox(height: 12),
+                    _buildFeedbackCard(context, quiz.feedbackFor(question.id)!),
+                  ],
                   const SizedBox(height: 24),
                   if (quiz.selectedChoiceId != null ||
-                      quiz.answers.containsKey(quiz.currentIndex))
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: quiz.nextQuestion,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        child: Text(
-                          quiz.currentIndex < quiz.totalQuestions - 1
-                              ? 'Next Question'
-                              : 'See Results',
+                      quiz.answers.containsKey(quiz.currentIndex)) ...[
+                    if (quiz.feedbackFor(question.id) == null &&
+                        !quiz.isRevealingAnswer)
+                      Text(
+                        'Waiting for the explanation…',
+                        style: GoogleFonts.inter(fontSize: 13),
+                      )
+                    else if (quiz.confidenceForCurrent() == null) ...[
+                      Text(
+                        'Classify before continuing',
+                        style: GoogleFonts.inter(fontSize: 13),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                quiz.tagConfidence('know');
+                                quiz.nextQuestion();
+                              },
+                              child: const Text('Know'),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                quiz.tagConfidence('guessed');
+                                quiz.nextQuestion();
+                              },
+                              child: const Text('Guessed'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: quiz.nextQuestion,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: Text(
+                            quiz.currentIndex < quiz.totalQuestions - 1
+                                ? 'Next Question'
+                                : 'See Results',
+                          ),
                         ),
                       ),
-                    ),
+                  ],
                 ],
               ),
             ),
@@ -462,6 +517,73 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
+  Widget _buildFeedbackCard(BuildContext context, QuizAnswerFeedback feedback) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D9488).withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF0D9488).withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            feedback.isCorrect ? 'Correct' : 'Incorrect',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: feedback.isCorrect
+                  ? const Color(0xFF22C55E)
+                  : const Color(0xFFEF4444),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            feedback.explanation,
+            style: GoogleFonts.inter(fontSize: 14, height: 1.45),
+          ),
+          if (feedback.whyWrong.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Why it\'s wrong: ${feedback.whyWrong}',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                height: 1.4,
+                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.85),
+              ),
+            ),
+          ],
+          if (feedback.clinicalPearl.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Pearl: ${feedback.clinicalPearl}',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                height: 1.4,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFD97706),
+              ),
+            ),
+          ],
+          if (feedback.reference.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Reference: ${feedback.reference}',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                height: 1.4,
+                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   Widget _buildResultStat(String label, String value, Color color) {
     return Column(
       children: [
@@ -504,6 +626,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (question == null) {
       return const Center(child: Text('No question'));
     }
+    final feedback = quiz.feedbackFor(question.id);
 
     return Column(
       children: [
@@ -548,12 +671,16 @@ class _QuizScreenState extends State<QuizScreen> {
                       choice: choice,
                       isSelected: isSelected,
                       isAnswered: true,
-                      correctAnswerId: question.resolvedCorrectChoiceId,
+                      correctAnswerId: feedback?.correctChoiceId,
                       onTap: () {},
                       readOnly: true,
                     ),
                   );
                 }),
+                if (feedback != null) ...[
+                  const SizedBox(height: 8),
+                  _buildFeedbackCard(context, feedback),
+                ],
               ],
             ),
           ),

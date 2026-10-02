@@ -9,6 +9,7 @@ interface QuestionCardProps {
   onAnswer: (choiceId: string) => void;
   questionNumber: number;
   totalQuestions: number;
+  whyWrong?: string;
 }
 
 const difficultyColors: Record<string, string> = {
@@ -25,6 +26,7 @@ export default function QuestionCard({
   onAnswer,
   questionNumber,
   totalQuestions,
+  whyWrong,
 }: QuestionCardProps) {
   const getChoiceClass = (choiceId: string) => {
     const base = 'flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left text-sm font-medium transition-all duration-200 ';
@@ -124,8 +126,13 @@ export default function QuestionCard({
             Explanation
           </p>
           <p className="mt-1 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-            {question.explanation}
+            {question.explanation || 'No explanation was returned for this item.'}
           </p>
+          {whyWrong && (
+            <p className="mt-3 text-sm text-red-800 dark:text-red-200">
+              <span className="font-semibold">Why that choice is wrong: </span>{whyWrong}
+            </p>
+          )}
           {question.clinicalPearl && (
             <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-900/30 dark:text-amber-200">
               <span className="font-semibold">Pearl: </span>{question.clinicalPearl}

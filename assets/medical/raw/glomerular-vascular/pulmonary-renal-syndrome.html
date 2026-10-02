@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anti-GBM Disease — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --antigbm:#1d4ed8; --anca:#b45309; --lupus:#7c3aed; --aps:#dc2626; --cryo:#0d9488; --normal:#065f46;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.antigbm.active{background:#dbeafe; border-color:var(--antigbm); color:#1e3a8a;}
+  .pill.anca.active{background:#ffedd5; border-color:var(--anca); color:#7c2d12;}
+  .pill.lupus.active{background:#ede9fe; border-color:var(--lupus); color:#4c1d95;}
+  .pill.aps.active{background:#fee2e2; border-color:var(--aps); color:#7f1d1d;}
+  .pill.cryo.active{background:#ccfbf1; border-color:var(--cryo); color:#134e4a;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:600px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-gbm { background-color:#eff6ff; box-shadow: inset 4px 0 0 var(--antigbm); }
+  tr.highlight-gbm td { font-weight:600; color:#1e3a8a; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-gbm{background:#dbeafe; color:#1e3a8a;}
+  .tag-anca{background:#ffedd5; color:#7c2d12;}
+  .tag-lupus{background:#ede9fe; color:#4c1d95;}
+  .tag-aps{background:#fee2e2; color:#7f1d1d;}
+  .tag-cryo{background:#ccfbf1; color:#134e4a;}
+
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Pulmonary-Renal Syndrome — Anti-GBM Disease</h1>
+      <p>Interactive biopsy atlas · LM + IF patterns · Crescentic GN differential</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <section class="stage">
+    <h2>Interactive Biopsy Diagram</h2>
+    <p class="sub">Toggle between diseases to compare the LM and IF patterns of each crescentic GN.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill antigbm" id="btnAntiGbm" onclick="setMode('antigbm')">Anti-GBM ★</button>
+      <button class="pill anca" id="btnAnca" onclick="setMode('anca')">ANCA Vasculitis</button>
+      <button class="pill lupus" id="btnLupus" onclick="setMode('lupus')">Class IV Lupus</button>
+      <button class="pill aps" id="btnAps" onclick="setMode('aps')">APS Nephropathy</button>
+      <button class="pill cryo" id="btnCryo" onclick="setMode('cryo')">Cryoglobulinemia</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Kidney tissue background -->
+          <radialGradient id="tissueBg" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#fdf2f8"/><stop offset="100%" stop-color="#fbcfe8"/>
+          </radialGradient>
+          <!-- Glomerular tuft -->
+          <radialGradient id="tuftGrad" cx="40%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#ef4444"/>
+          </radialGradient>
+          <!-- Crescent -->
+          <linearGradient id="crescentGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fcd34d"/><stop offset="100%" stop-color="#d97706"/>
+          </linearGradient>
+          <!-- IF green -->
+          <radialGradient id="ifGreen" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/>
+          </radialGradient>
+          <!-- Filters -->
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="ifGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="nucGlow">
+            <feGaussianBlur stdDeviation="1" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- ============================================ -->
+        <!-- LEFT PANEL — LIGHT MICROSCOPY               -->
+        <!-- ============================================ -->
+        <g id="lm-panel">
+          <rect x="20" y="20" width="560" height="560" rx="12" fill="url(#tissueBg)" stroke="#94a3b8" stroke-width="2"/>
+          <text x="300" y="50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Light Microscopy (H&amp;E / PAS)</text>
+
+          <!-- Bowman's capsule -->
+          <circle cx="300" cy="320" r="180" fill="none" stroke="#be185d" stroke-width="3" opacity="0.7"/>
+
+          <!-- Glomerular tuft (normal base) -->
+          <g id="lm-tuft" fill="url(#tuftGrad)" stroke="#991b1b" stroke-width="2">
+            <path d="M 220 250 Q 260 200 320 200 Q 380 200 420 250 Q 460 300 420 360 Q 380 420 320 420 Q 260 420 220 360 Q 180 300 220 250 Z" opacity="0.85"/>
+            <path d="M 250 280 Q 280 240 320 240 Q 360 240 390 280 Q 410 320 390 360 Q 360 400 320 400 Q 280 400 250 360 Q 230 320 250 280 Z" fill="none" stroke="#7f1d1d" stroke-width="3"/>
+            <path d="M 280 300 Q 320 280 360 300 Q 380 340 360 360 Q 320 380 280 360 Q 260 340 280 300 Z" fill="none" stroke="#7f1d1d" stroke-width="3"/>
+          </g>
+
+          <!-- Nuclei -->
+          <g id="lm-nuclei" fill="#4c1d95" opacity="0.85" filter="url(#nucGlow)">
+            <circle cx="260" cy="240" r="5"/><circle cx="300" cy="220" r="6"/><circle cx="340" cy="220" r="5"/>
+            <circle cx="380" cy="240" r="5"/><circle cx="400" cy="280" r="6"/><circle cx="410" cy="320" r="5"/>
+            <circle cx="400" cy="360" r="5"/><circle cx="380" cy="390" r="6"/><circle cx="340" cy="410" r="5"/>
+            <circle cx="300" cy="410" r="5"/><circle cx="260" cy="400" r="6"/><circle cx="230" cy="370" r="5"/>
+            <circle cx="220" cy="330" r="5"/><circle cx="230" cy="290" r="6"/><circle cx="320" cy="310" r="5"/>
+          </g>
+        </g>
+
+        <!-- ============================================ -->
+        <!-- RIGHT PANEL — IMMUNOFLUORESCENCE            -->
+        <!-- ============================================ -->
+        <g id="if-panel">
+          <rect x="620" y="20" width="560" height="560" rx="12" fill="#0a0a0a" stroke="#1e293b" stroke-width="2"/>
+          <text x="900" y="50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#4ade80">Immunofluorescence — IgG</text>
+
+          <!-- Bowman's capsule outline -->
+          <circle cx="900" cy="320" r="180" fill="none" stroke="#16a34a" stroke-width="2" opacity="0.3"/>
+
+          <!-- IF pattern (base — will be modified per state) -->
+          <g id="if-pattern">
+            <!-- Base: linear GBM staining (Anti-GBM default) -->
+            <path id="if-linear" d="M 220 250 Q 260 200 320 200 Q 380 200 420 250 Q 460 300 420 360 Q 380 420 320 420 Q 260 420 220 360 Q 180 300 220 250 Z" 
+                  fill="none" stroke="#4ade80" stroke-width="6" filter="url(#ifGlow)" 
+                  transform="translate(580,0)"/>
+            <path id="if-linear2" d="M 250 280 Q 280 240 320 240 Q 360 240 390 280 Q 410 320 390 360 Q 360 400 320 400 Q 280 400 250 360 Q 230 320 250 280 Z" 
+                  fill="none" stroke="#4ade80" stroke-width="5" filter="url(#ifGlow)" 
+                  transform="translate(580,0)"/>
+            <path id="if-linear3" d="M 280 300 Q 320 280 360 300 Q 380 340 360 360 Q 320 380 280 360 Q 260 340 280 300 Z" 
+                  fill="none" stroke="#4ade80" stroke-width="4" filter="url(#ifGlow)" 
+                  transform="translate(580,0)"/>
+          </g>
+
+          <!-- IF granular pattern (hidden by default) -->
+          <g id="if-granular" style="display:none;" filter="url(#ifGlow)">
+            <g fill="#4ade80" opacity="0.9">
+              <!-- Granular deposits along capillary loops -->
+              <circle cx="800" cy="250" r="6"/><circle cx="820" cy="235" r="5"/><circle cx="840" cy="225" r="6"/>
+              <circle cx="860" cy="220" r="5"/><circle cx="880" cy="220" r="6"/><circle cx="900" cy="225" r="5"/>
+              <circle cx="920" cy="235" r="6"/><circle cx="940" cy="250" r="5"/><circle cx="960" cy="270" r="6"/>
+              <circle cx="970" cy="295" r="5"/><circle cx="975" cy="320" r="6"/><circle cx="970" cy="345" r="5"/>
+              <circle cx="960" cy="370" r="6"/><circle cx="940" cy="390" r="5"/><circle cx="920" cy="405" r="6"/>
+              <circle cx="900" cy="415" r="5"/><circle cx="880" cy="420" r="6"/><circle cx="860" cy="420" r="5"/>
+              <circle cx="840" cy="415" r="6"/><circle cx="820" cy="405" r="5"/><circle cx="800" cy="390" r="6"/>
+              <circle cx="790" cy="365" r="5"/><circle cx="785" cy="340" r="6"/><circle cx="790" cy="315" r="5"/>
+              <circle cx="800" cy="290" r="6"/><circle cx="800" cy="270" r="5"/>
+              <!-- Mesangial deposits -->
+              <circle cx="880" cy="300" r="5"/><circle cx="900" cy="320" r="5"/><circle cx="920" cy="340" r="5"/>
+            </g>
+          </g>
+
+          <!-- IF pauci-immune (nearly blank) — hidden -->
+          <g id="if-pauci" style="display:none;">
+            <g fill="#4ade80" opacity="0.15">
+              <circle cx="820" cy="270" r="4"/>
+              <circle cx="960" cy="350" r="4"/>
+              <circle cx="880" cy="400" r="4"/>
+            </g>
+          </g>
+
+          <!-- IF TMA (fibrinogen, red) — hidden -->
+          <g id="if-tma" style="display:none;" filter="url(#ifGlow)">
+            <g fill="#f97316" opacity="0.9">
+              <ellipse cx="850" cy="270" rx="14" ry="9"/>
+              <ellipse cx="920" cy="290" rx="16" ry="10"/>
+              <ellipse cx="900" cy="370" rx="12" ry="8"/>
+              <ellipse cx="830" cy="360" rx="15" ry="9"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================ -->
+        <!-- LM OVERLAYS                                 -->
+        <!-- ============================================ -->
+
+        <!-- Anti-GBM: Cellular crescent -->
+        <g id="lm-crescent-gbm" style="display:none;">
+          <path d="M 140 320 Q 160 180 300 150 Q 440 180 460 320 Q 440 250 300 220 Q 160 250 140 320 Z" 
+                fill="url(#crescentGrad)" stroke="#b45309" stroke-width="2.5" opacity="0.9">
+            <animate attributeName="opacity" values="0.75;0.95;0.75" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <g fill="#78350f" opacity="0.85" filter="url(#nucGlow)">
+            <circle cx="200" cy="220" r="5"/><circle cx="240" cy="195" r="5"/><circle cx="280" cy="180" r="6"/>
+            <circle cx="320" cy="180" r="5"/><circle cx="360" cy="195" r="5"/><circle cx="400" cy="220" r="6"/>
+            <circle cx="180" cy="260" r="5"/><circle cx="420" cy="260" r="5"/>
+          </g>
+          <rect x="150" y="520" width="300" height="46" rx="8" fill="#1e3a8a" opacity="0.95"/>
+          <text x="300" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#dbeafe">CELLULAR CRESCENT</text>
+          <text x="300" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#bfdbfe">Compresses the glomerular tuft</text>
+        </g>
+
+        <!-- ANCA: Crescent with fibrinoid necrosis -->
+        <g id="lm-crescent-anca" style="display:none;">
+          <path d="M 140 320 Q 160 180 300 150 Q 440 180 460 320 Q 440 250 300 220 Q 160 250 140 320 Z" 
+                fill="url(#crescentGrad)" stroke="#b45309" stroke-width="2.5" opacity="0.9">
+            <animate attributeName="opacity" values="0.75;0.95;0.75" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <!-- Fibrinoid necrosis -->
+          <path d="M 180 280 Q 200 260 240 260 Q 260 280 240 300 Q 200 310 180 280 Z" 
+                fill="#dc2626" opacity="0.85" stroke="#7f1d1d" stroke-width="2"/>
+          <g fill="#78350f" opacity="0.85" filter="url(#nucGlow)">
+            <circle cx="200" cy="220" r="5"/><circle cx="240" cy="195" r="5"/><circle cx="280" cy="180" r="6"/>
+            <circle cx="320" cy="180" r="5"/><circle cx="360" cy="195" r="5"/><circle cx="400" cy="220" r="6"/>
+          </g>
+          <rect x="150" y="520" width="300" height="46" rx="8" fill="#7c2d12" opacity="0.95"/>
+          <text x="300" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fed7aa">CRESCENT + FIBRINOID NECROSIS</text>
+          <text x="300" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#fdba74">Necrotizing crescentic GN (pauci-immune)</text>
+        </g>
+
+        <!-- Lupus: Wire loops + hypercellularity -->
+        <g id="lm-lupus" style="display:none;">
+          <!-- Wire loops -->
+          <g fill="none" stroke="#f59e0b" stroke-width="4" opacity="0.9">
+            <path d="M 250 280 Q 280 240 320 240 Q 360 240 390 280 Q 410 320 390 360 Q 360 400 320 400 Q 280 400 250 360 Q 230 320 250 280 Z"/>
+            <path d="M 280 300 Q 320 280 360 300 Q 380 340 360 360 Q 320 380 280 360 Q 260 340 280 300 Z"/>
+          </g>
+          <!-- Extra nuclei (hypercellularity) -->
+          <g fill="#4c1d95" opacity="0.9" filter="url(#nucGlow)">
+            <circle cx="290" cy="290" r="5"/><circle cx="330" cy="300" r="6"/><circle cx="350" cy="330" r="5"/>
+            <circle cx="310" cy="350" r="5"/><circle cx="270" cy="330" r="6"/>
+          </g>
+          <rect x="150" y="520" width="300" height="46" rx="8" fill="#4c1d95" opacity="0.95"/>
+          <text x="300" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#ede9fe">WIRE LOOPS + HYPERCELLULARITY</text>
+          <text x="300" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#c4b5fd">Diffuse proliferative lupus nephritis (Class IV)</text>
+        </g>
+
+        <!-- APS: TMA with thrombi -->
+        <g id="lm-aps" style="display:none;">
+          <g fill="#2563eb" opacity="0.9" filter="url(#softGlow)">
+            <ellipse cx="270" cy="270" rx="16" ry="10"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/></ellipse>
+            <ellipse cx="350" cy="290" rx="14" ry="9"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0.5s" repeatCount="indefinite"/></ellipse>
+            <ellipse cx="320" cy="380" rx="16" ry="10"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="1s" repeatCount="indefinite"/></ellipse>
+            <ellipse cx="380" cy="350" rx="12" ry="8"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="1.5s" repeatCount="indefinite"/></ellipse>
+          </g>
+          <rect x="150" y="520" width="300" height="46" rx="8" fill="#7f1d1d" opacity="0.95"/>
+          <text x="300" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fee2e2">INTRACAPILLARY THROMBI (TMA)</text>
+          <text x="300" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">Thrombotic microangiopathy (APS)</text>
+        </g>
+
+        <!-- Cryoglobulinemia: MPGN pattern -->
+        <g id="lm-cryo" style="display:none;">
+          <!-- MPGN with lobular pattern -->
+          <g fill="none" stroke="#0d9488" stroke-width="4" opacity="0.9">
+            <path d="M 240 260 Q 280 220 320 220 Q 360 220 400 260 Q 420 300 400 340 Q 360 380 320 380 Q 280 380 240 340 Q 220 300 240 260 Z"/>
+            <path d="M 280 290 Q 320 270 360 290 Q 380 320 360 350 Q 320 370 280 350 Q 260 320 280 290 Z"/>
+          </g>
+          <!-- Duplicated GBM (tram-track) -->
+          <g stroke="#0f766e" stroke-width="2" fill="none" opacity="0.7">
+            <path d="M 250 275 Q 320 240 390 275"/>
+            <path d="M 250 285 Q 320 250 390 285"/>
+          </g>
+          <!-- Monocytes in capillary loops -->
+          <g fill="#4c1d95" opacity="0.9" filter="url(#nucGlow)">
+            <circle cx="270" cy="290" r="6"/><circle cx="370" cy="290" r="6"/>
+            <circle cx="320" cy="360" r="6"/>
+          </g>
+          <rect x="150" y="520" width="300" height="46" rx="8" fill="#134e4a" opacity="0.95"/>
+          <text x="300" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#ccfbf1">MEMBRANOPROLIFERATIVE PATTERN</text>
+          <text x="300" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#5eead4">Cryoglobulinemic GN (tram-tracking)</text>
+        </g>
+
+        <!-- IF Labels -->
+        <g id="if-label-linear" style="display:block;">
+          <rect x="740" y="520" width="320" height="46" rx="8" fill="#1e3a8a" opacity="0.95"/>
+          <text x="900" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#dbeafe">LINEAR IgG ALONG GBM</text>
+          <text x="900" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#bfdbfe">Pathognomonic for Anti-GBM disease</text>
+        </g>
+        <g id="if-label-granular" style="display:none;">
+          <rect x="740" y="520" width="320" height="46" rx="8" fill="#4c1d95" opacity="0.95"/>
+          <text x="900" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#ede9fe">GRANULAR IgG ("FULL HOUSE")</text>
+          <text x="900" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#c4b5fd">Classic for lupus nephritis</text>
+        </g>
+        <g id="if-label-pauci" style="display:none;">
+          <rect x="740" y="520" width="320" height="46" rx="8" fill="#7c2d12" opacity="0.95"/>
+          <text x="900" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fed7aa">PAUCI-IMMUNE (NEGATIVE IF)</text>
+          <text x="900" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#fdba74">ANCA-associated vasculitis</text>
+        </g>
+        <g id="if-label-tma" style="display:none;">
+          <rect x="740" y="520" width="320" height="46" rx="8" fill="#7f1d1d" opacity="0.95"/>
+          <text x="900" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fee2e2">FIBRINOGEN IN THROMBI</text>
+          <text x="900" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">TMA pattern — APS</text>
+        </g>
+        <g id="if-label-cryo" style="display:none;">
+          <rect x="740" y="520" width="320" height="46" rx="8" fill="#134e4a" opacity="0.95"/>
+          <text x="900" y="540" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#ccfbf1">GRANULAR IgG + C3</text>
+          <text x="900" y="557" text-anchor="middle" font-family="Arial" font-size="10" fill="#5eead4">Cryoglobulinemic GN</text>
+        </g>
+
+        <!-- Panel titles -->
+        <text x="300" y="600" text-anchor="middle" font-family="Arial" font-size="11" fill="#64748b">Left: Light Microscopy (H&amp;E)</text>
+        <text x="900" y="600" text-anchor="middle" font-family="Arial" font-size="11" fill="#64748b">Right: Immunofluorescence (IgG)</text>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">LM Pattern</div>
+        <div class="rc-value" id="rcLmValue">—</div>
+        <div class="rc-sub" id="rcLmSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">IF Pattern</div>
+        <div class="rc-value" id="rcIfValue">—</div>
+        <div class="rc-sub" id="rcIfSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Clinical / Serology</div>
+        <div class="rc-note" id="rcClinValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Diagnosis</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis of Crescentic / Pulmonary-Renal Syndromes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>LM Pattern</th>
+          <th>IF Pattern</th>
+          <th>Serology</th>
+          <th>Clinical Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-gbm">
+          <td><strong>Anti-GBM Disease</strong> <span class="tag tag-gbm">Correct</span></td>
+          <td>Crescentic GN with cellular crescents; <strong>no fibrinoid necrosis</strong> typically</td>
+          <td><strong>Linear IgG</strong> along the GBM (pathognomonic)</td>
+          <td><strong>Anti-GBM antibodies</strong> (anti-α3 type IV collagen)</td>
+          <td>Young adults; <strong>pulmonary-renal syndrome</strong> (Goodpasture) with hemoptysis; may follow URI or smoking</td>
+        </tr>
+        <tr>
+          <td><strong>ANCA Vasculitis</strong> <span class="tag tag-anca">Distractor</span></td>
+          <td>Crescentic GN with <strong>fibrinoid necrosis</strong>; granulomas (GPA)</td>
+          <td><strong>Pauci-immune</strong> — little to no staining</td>
+          <td><strong>ANCA</strong> (anti-PR3 or anti-MPO)</td>
+          <td>Multi-system: sinusitis, hemoptysis, palpable purpura, mononeuritis multiplex</td>
+        </tr>
+        <tr>
+          <td><strong>Class IV Lupus Nephritis</strong> <span class="tag tag-lupus">Distractor</span></td>
+          <td>Diffuse proliferative GN with <strong>wire loops</strong> and hypercellularity</td>
+          <td><strong>Granular "full house"</strong> (IgG, IgA, IgM, C3, C1q)</td>
+          <td>ANA+, anti-dsDNA+, <strong>low C3/C4</strong></td>
+          <td>Young women; malar rash, alopecia, oral ulcers, arthritis, serositis</td>
+        </tr>
+        <tr>
+          <td><strong>APS Nephropathy</strong> <span class="tag tag-aps">Distractor</span></td>
+          <td>Thrombotic microangiopathy (TMA) with <strong>intracapillary thrombi</strong></td>
+          <td>Fibrinogen in thrombi; <strong>no immune complexes</strong></td>
+          <td><strong>Antiphospholipid antibodies</strong> (lupus anticoagulant, anticardiolipin, anti-β2GPI)</td>
+          <td>Thrombosis, recurrent fetal loss, livedo reticularis; may be primary or secondary to SLE</td>
+        </tr>
+        <tr>
+          <td><strong>Cryoglobulinemic GN</strong> <span class="tag tag-cryo">Distractor</span></td>
+          <td>Membranoproliferative GN (MPGN) with <strong>tram-tracking</strong> / double contours</td>
+          <td><strong>Granular IgG, IgM, C3</strong></td>
+          <td><strong>Cryoglobulins</strong>; usually Hepatitis C positive</td>
+          <td>Palpable purpura, neuropathy, arthralgia, Raynaud's, hepatitis C</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 41-year-old woman presents with AKI, hematuria with RBC casts, and bilateral interstitial lung edema. Biopsy shows crescentic GN and linear IgG on IF. What is the diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. ANCA vasculitis</button>
+        <button class="opt" onclick="answer(this,false)">B. Class IV lupus nephritis</button>
+        <button class="opt" onclick="answer(this,true)">C. Anti-GBM disease</button>
+        <button class="opt" onclick="answer(this,false)">D. Cryoglobulinemic GN</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> The combination of <strong>crescentic GN</strong> on LM, <strong>linear IgG along the GBM</strong> on IF, and a <strong>pulmonary-renal syndrome</strong> is diagnostic of <strong>Anti-GBM disease</strong>. When associated with pulmonary hemorrhage, it is called <strong>Goodpasture's syndrome</strong>.</div>
+    </div>
+
+    <div class="q">
+      <p>2. What is the pathognomonic IF finding in anti-GBM disease?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Granular "full house" staining</button>
+        <button class="opt" onclick="answer(this,true)">B. Linear IgG along the GBM</button>
+        <button class="opt" onclick="answer(this,false)">C. Pauci-immune (negative) pattern</button>
+        <button class="opt" onclick="answer(this,false)">D. Fibrinogen in thrombi</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The classic IF pattern in anti-GBM disease is <strong>linear IgG deposition along the GBM</strong>. This reflects autoantibodies directed against the non-collagenous domain of the α3 chain of type IV collagen.</div>
+    </div>
+
+    <div class="q">
+      <p>3. Which IF pattern is characteristic of ANCA-associated vasculitis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Linear IgG</button>
+        <button class="opt" onclick="answer(this,false)">B. Granular "full house"</button>
+        <button class="opt" onclick="answer(this,true)">C. Pauci-immune (little to no staining)</button>
+        <button class="opt" onclick="answer(this,false)">D. Fibrinogen in thrombi</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> ANCA-associated vasculitis causes a <strong>pauci-immune</strong> crescentic GN, meaning IF shows little to no immunoglobulin or complement deposition. Serology for ANCA (anti-PR3 or anti-MPO) is positive.</div>
+    </div>
+
+    <div class="q">
+      <p>4. What is the initial treatment of choice for anti-GBM disease with pulmonary hemorrhage?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. High-dose steroids alone</button>
+        <button class="opt" onclick="answer(this,false)">B. Cyclophosphamide alone</button>
+        <button class="opt" onclick="answer(this,true)">C. Plasmapheresis + cyclophosphamide + steroids</button>
+        <button class="opt" onclick="answer(this,false)">D. Rituximab alone</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Anti-GBM disease is treated with <strong>plasmapheresis</strong> (to remove autoantibodies) combined with <strong>immunosuppression</strong> (cyclophosphamide + high-dose corticosteroids). Rituximab is a second-line option. Prompt treatment is critical to preserve kidney function.</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which IF pattern is seen in class IV lupus nephritis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Linear IgG</button>
+        <button class="opt" onclick="answer(this,true)">B. Granular "full house" (IgG, IgA, IgM, C3, C1q)</button>
+        <button class="opt" onclick="answer(this,false)">C. Pauci-immune</button>
+        <button class="opt" onclick="answer(this,false)">D. Fibrinogen in thrombi</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Lupus nephritis typically shows a <strong>granular "full house"</strong> pattern on IF, with deposition of IgG, IgA, IgM, C3, and C1q along the capillary loops and mesangium. This reflects the polyclonal immune complex nature of the disease.</div>
+    </div>
+
+    <div class="q">
+      <p>6. A patient presents with palpable purpura, neuropathy, and MPGN on biopsy with tram-tracking. What is the most likely underlying cause?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Anti-GBM disease</button>
+        <button class="opt" onclick="answer(this,false)">B. ANCA vasculitis</button>
+        <button class="opt" onclick="answer(this,true)">C. Hepatitis C with cryoglobulinemia</button>
+        <button class="opt" onclick="answer(this,false)">D. Lupus nephritis</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Cryoglobulinemic GN typically presents as an MPGN pattern on LM with <strong>tram-tracking / double contours</strong>, and is strongly associated with <strong>Hepatitis C</strong> infection. Palpable purpura and neuropathy are classic extrarenal features.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      lm: 'Normal glomerulus',
+      lmSub: 'Patent capillary loops, thin GBM',
+      if: 'Negative',
+      ifSub: 'No immune deposits',
+      clin: 'Healthy patient with normal kidney function.',
+      verdict: 'Normal renal biopsy — no immune complex or crescentic disease.',
+      color: '#065f46'
+    },
+    antigbm: {
+      lm: 'Crescentic GN',
+      lmSub: 'Cellular crescent compressing the tuft',
+      if: 'LINEAR IgG',
+      ifSub: 'Along the GBM — pathognomonic',
+      clin: '<strong>Pulmonary-renal syndrome</strong>: hemoptysis, dyspnea, anemia, AKI with active sediment. <strong>Anti-GBM antibodies</strong> positive.',
+      verdict: 'Anti-GBM Disease (Goodpasture syndrome when pulmonary hemorrhage present). Treat urgently with plasmapheresis + cyclophosphamide + steroids.',
+      color: '#1d4ed8'
+    },
+    anca: {
+      lm: 'Crescentic GN + fibrinoid necrosis',
+      lmSub: 'Necrotizing lesions in the tuft',
+      if: 'PAUCI-IMMUNE',
+      ifSub: 'Little to no staining',
+      clin: 'Multi-system involvement: sinusitis, hemoptysis, palpable purpura, mononeuritis multiplex. <strong>ANCA positive</strong> (anti-PR3 or anti-MPO).',
+      verdict: 'ANCA-Associated Vasculitis — pauci-immune crescentic GN. Treat with steroids + rituximab or cyclophosphamide.',
+      color: '#b45309'
+    },
+    lupus: {
+      lm: 'Wire loops + hypercellularity',
+      lmSub: 'Diffuse proliferative GN (Class IV)',
+      if: 'GRANULAR "FULL HOUSE"',
+      ifSub: 'IgG, IgA, IgM, C3, C1q',
+      clin: 'Young women with malar rash, alopecia, oral ulcers, arthritis, serositis. <strong>ANA+, anti-dsDNA+, low C3/C4</strong>.',
+      verdict: 'Class IV Lupus Nephritis — diffuse proliferative GN. Treat with steroids + mycophenolate mofetil or cyclophosphamide.',
+      color: '#7c3aed'
+    },
+    aps: {
+      lm: 'TMA with intracapillary thrombi',
+      lmSub: 'Thrombotic microangiopathy',
+      if: 'FIBRINOGEN in thrombi',
+      ifSub: 'No immune complexes',
+      clin: 'Thrombosis, recurrent fetal loss, livedo reticularis. May be primary or secondary to SLE. <strong>Antiphospholipid antibodies</strong> positive (lupus anticoagulant, anticardiolipin, anti-β2GPI).',
+      verdict: 'APS Nephropathy — renal TMA. Treat with anticoagulation; manage underlying SLE if present.',
+      color: '#dc2626'
+    },
+    cryo: {
+      lm: 'MPGN with tram-tracking',
+      lmSub: 'Double contours, lobular pattern',
+      if: 'GRANULAR IgG + C3',
+      ifSub: 'Immune complexes in loops',
+      clin: 'Palpable purpura, neuropathy, arthralgia, Raynaud\'s. <strong>Hepatitis C</strong> positive with <strong>cryoglobulins</strong>.',
+      verdict: 'Cryoglobulinemic GN — MPGN pattern. Treat underlying Hepatitis C with direct-acting antivirals; consider rituximab.',
+      color: '#0d9488'
+    }
+  };
+
+  function setMode(mode) {
+    // Hide all overlays
+    ['lm-crescent-gbm','lm-crescent-anca','lm-lupus','lm-aps','lm-cryo'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    ['if-label-linear','if-label-granular','if-label-pauci','if-label-tma','if-label-cryo'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.getElementById('if-linear').style.display = 'none';
+    document.getElementById('if-linear2').style.display = 'none';
+    document.getElementById('if-linear3').style.display = 'none';
+    document.getElementById('if-granular').style.display = 'none';
+    document.getElementById('if-pauci').style.display = 'none';
+    document.getElementById('if-tma').style.display = 'none';
+
+    ['btnNormal','btnAntiGbm','btnAnca','btnLupus','btnAps','btnCryo'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', antigbm:'btnAntiGbm', anca:'btnAnca',
+      lupus:'btnLupus', aps:'btnAps', cryo:'btnCryo'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    // Show LM overlay
+    if (mode === 'antigbm') {
+      document.getElementById('lm-crescent-gbm').style.display = 'block';
+      document.getElementById('if-linear').style.display = 'block';
+      document.getElementById('if-linear2').style.display = 'block';
+      document.getElementById('if-linear3').style.display = 'block';
+      document.getElementById('if-label-linear').style.display = 'block';
+    } else if (mode === 'anca') {
+      document.getElementById('lm-crescent-anca').style.display = 'block';
+      document.getElementById('if-pauci').style.display = 'block';
+      document.getElementById('if-label-pauci').style.display = 'block';
+    } else if (mode === 'lupus') {
+      document.getElementById('lm-lupus').style.display = 'block';
+      document.getElementById('if-granular').style.display = 'block';
+      document.getElementById('if-label-granular').style.display = 'block';
+    } else if (mode === 'aps') {
+      document.getElementById('lm-aps').style.display = 'block';
+      document.getElementById('if-tma').style.display = 'block';
+      document.getElementById('if-label-tma').style.display = 'block';
+    } else if (mode === 'cryo') {
+      document.getElementById('lm-cryo').style.display = 'block';
+      document.getElementById('if-granular').style.display = 'block';
+      document.getElementById('if-label-cryo').style.display = 'block';
+    } else {
+      // Normal — show linear pattern faded as a reference
+      document.getElementById('if-linear').style.display = 'block';
+      document.getElementById('if-linear').style.opacity = '0.15';
+      document.getElementById('if-linear2').style.opacity = '0.15';
+      document.getElementById('if-linear3').style.opacity = '0.15';
+    }
+
+    // Reset opacity for non-normal states
+    if (mode !== 'normal') {
+      document.getElementById('if-linear').style.opacity = '1';
+      document.getElementById('if-linear2').style.opacity = '1';
+      document.getElementById('if-linear3').style.opacity = '1';
+    }
+
+    // Readout cards
+    document.getElementById('rcLmValue').textContent = d.lm;
+    document.getElementById('rcLmValue').style.color = d.color;
+    document.getElementById('rcLmSub').textContent = d.lmSub;
+
+    document.getElementById('rcIfValue').textContent = d.if;
+    document.getElementById('rcIfValue').style.color = d.color;
+    document.getElementById('rcIfSub').textContent = d.ifSub;
+
+    document.getElementById('rcClinValue').innerHTML = d.clin;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

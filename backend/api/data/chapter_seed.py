@@ -185,6 +185,16 @@ CHAPTERS = [
                         "duration_seconds": 130,
                         "interactive_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/renal-tubular-acidosis-patterns.html",
                         "reference_ids": ["statpearls-rta", "ajkd-rta-core-2025"],
+                    },
+                    {
+                        "title": "Fanconi Syndrome",
+                        "lesson_slug": "fanconi-syndrome",
+                        "lesson_type": "article",
+                        "summary": "Generalized proximal tubule wasting: glucose, phosphate, amino acids, bicarbonate.",
+                        "content_md": "Fanconi syndrome is generalized proximal tubular dysfunction. Look for normoglycemic glycosuria, phosphaturia, aminoaciduria, uric acid wasting, and type 2 RTA. Causes include myeloma light chains, tenofovir, ifosfamide, cystinosis, and heavy metals.",
+                        "duration_seconds": 90,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/acid-base-disorders/fanconi-syndrome.html",
+                        "reference_ids": ["statpearls-rta", "ajkd-rta-core-2025"],
                     }
                 ],
                 "mcqs": [
@@ -438,6 +448,8 @@ CHAPTERS = [
                         "summary": "When to use fractional excretion of sodium versus fractional excretion of urea.",
                         "animation_url": f"{ANIMATION_BASE}/fena-feuera.json",
                         "duration_seconds": 85,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/hrs-aki-flow.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/hrs-aki-flow-thumb.webp",
                         "reference_ids": ["kdigo-aki-2012"],
                     }
                 ],
@@ -513,6 +525,17 @@ CHAPTERS = [
                         "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/renal-papillary-necrosis.webp",
                         "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/renal-papillary-necrosis-thumb.webp",
                         "reference_ids": ["kdigo-aki-2012", "abim-nephrology-blueprint-2026"],
+                    },
+                    {
+                        "title": "Tumor Lysis Syndrome",
+                        "lesson_slug": "tumor-lysis-syndrome",
+                        "lesson_type": "article",
+                        "summary": "Rapid recognition, uric acid, phosphate, and prevention of AKI in TLS.",
+                        "content_md": "Tumor lysis syndrome produces a surge of uric acid, potassium, and phosphate that can precipitate uric acid nephropathy and acute kidney injury. Rasburicase is used when uric acid is already high; allopurinol is used for prevention when risk is high but uric acid is not yet elevated. Volume expansion and, when needed, dialysis treat established AKI.",
+                        "duration_seconds": 80,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/tumor-lysis-syndrome.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/tumor-lysis-syndrome-thumb.webp",
+                        "reference_ids": ["kdigo-aki-2012"],
                     }
                 ],
                 "mcqs": [
@@ -630,6 +653,7 @@ CHAPTERS = [
                         "summary": "Interpreting access and return pressures to find clotting or access problems.",
                         "animation_url": f"{ANIMATION_BASE}/crrt-circuit-pressures.json",
                         "duration_seconds": 90,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/crrt-clotting.html",
                         "reference_ids": ["kdigo-aki-2012"],
                     },
                     {
@@ -639,6 +663,8 @@ CHAPTERS = [
                         "summary": "Anticoagulation, electrolyte trends, and nutrition during CRRT.",
                         "animation_url": f"{ANIMATION_BASE}/crrt-monitoring.json",
                         "duration_seconds": 90,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/vasoactive-drugs-potassium.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/acute-kidney-injury-icu/vasoactive-drugs-potassium-thumb.webp",
                         "reference_ids": ["kdigo-aki-2012"],
                     },
                 ],
@@ -1163,7 +1189,7 @@ CHAPTERS = [
                         "duration_seconds": 110,
                         "image_url": f"{MEDICAL_ASSET_BASE}/hypertension/renovascular-hypertension-angiogram.webp",
                         "thumbnail_url": f"{MEDICAL_ASSET_BASE}/hypertension/renovascular-hypertension-angiogram-thumb.webp",
-                        "interactive_url": f"{MEDICAL_ASSET_BASE}/hypertension/renovascular-hypertension.html",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/hypertension/renal-artery-stenosis.html",
                         "reference_ids": ["uptodate-renovascular"],
                     },
                     {
@@ -1190,6 +1216,7 @@ CHAPTERS = [
                             "hypertension and may reduce the need for intervention."
                         ),
                         "duration_seconds": 210,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/hypertension/fibromuscular-dysplasia.html",
                         "reference_ids": ["uptodate-renovascular"],
                     },
                 ],
@@ -1491,6 +1518,8 @@ CHAPTERS = [
                             "stenosis; thrombectomy, thrombectomy with angioplasty, or a jump graft treats occlusion."
                         ),
                         "duration_seconds": 210,
+                        "image_url": f"{MEDICAL_ASSET_BASE}/dialysis/hd-catheter-position.webp",
+                        "thumbnail_url": f"{MEDICAL_ASSET_BASE}/dialysis/hd-catheter-position-thumb.webp",
                         "reference_ids": ["kdoqi-dialysis-2015"],
                     },
                 ],
@@ -1628,6 +1657,7 @@ CHAPTERS = [
                             "recovery and less dialysis dependence."
                         ),
                         "duration_seconds": 240,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/tubulointerstitial-cystic/tinu.html",
                         "reference_ids": ["kdigo-ckd-2024"],
                     },
                 ],
@@ -2128,6 +2158,7 @@ CHAPTERS = [
                             "liver function."
                         ),
                         "duration_seconds": 240,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/glomerular-vascular/pulmonary-renal-syndrome.html",
                         "reference_ids": ["kdigo-anca-aav-2024"],
                     },
                 ],
@@ -2269,6 +2300,7 @@ CHAPTERS = [
                             "reviewed carefully (calcineurin inhibitors are CYP3A substrates)."
                         ),
                         "duration_seconds": 270,
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/transplantation/age-based-eras.html",
                         "reference_ids": ["kdigo-transplant-2009"],
                     },
                     {
@@ -2721,6 +2753,7 @@ CHAPTERS = [
                         "duration_seconds": 240,
                         "image_url": f"{MEDICAL_ASSET_BASE}/nephrology-pharmacology/toxic-alcohols-differential.webp",
                         "thumbnail_url": f"{MEDICAL_ASSET_BASE}/nephrology-pharmacology/toxic-alcohols-differential-thumb.webp",
+                        "interactive_url": f"{MEDICAL_ASSET_BASE}/nephrology-pharmacology/salicylate-toxicity.html",
                         "reference_ids": ["kdigo-ckd-2024", "kdigo-aki-2012"],
                     },
                     {

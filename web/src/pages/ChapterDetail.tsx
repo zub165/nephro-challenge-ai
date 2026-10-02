@@ -19,9 +19,12 @@ import {
   PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 
-interface PearlsResponse {
-  chapters: { chapter: { slug: string }; pearls: PearlItem[]; count: number }[];
-  total: number;
+interface KnowledgeResponse {
+  chapter: { slug: string; title: string };
+  high_yield: string[];
+  pearls: PearlItem[];
+  pearl_count: number;
+  lessons: { id: number; title: string; summary: string; content_md: string }[];
 }
 
 export default function ChapterDetail() {
@@ -33,13 +36,14 @@ export default function ChapterDetail() {
     enabled: !!slug,
   });
 
-  const { data: pearlsData } = useQuery<PearlsResponse>({
-    queryKey: ['board-pearls', slug],
-    queryFn: () => api.get('/pearls/', { params: { chapter: slug } }).then((r) => r.data),
+  const { data: knowledge } = useQuery<KnowledgeResponse>({
+    queryKey: ['chapter-knowledge', slug],
+    queryFn: () => api.get(`/chapters/${slug}/knowledge/`).then((r) => r.data),
     enabled: !!slug,
   });
 
-  const pearls = pearlsData?.chapters[0]?.pearls ?? [];
+  const pearls = knowledge?.pearls ?? [];
+  const highYield = knowledge?.high_yield ?? [];
 
   if (isLoading) return <LoadingSpinner text="Loading chapter..." />;
   if (!chapter) {
@@ -69,6 +73,19 @@ export default function ChapterDetail() {
         </div>
       </div>
 
+      {highYield.length > 0 && (
+        <section className="rounded-2xl border border-teal-200 bg-teal-50/40 p-5 dark:border-teal-900/50 dark:bg-teal-950/20">
+          <h2 className="mb-3 text-lg font-bold text-gray-900 dark:text-teal-100">Exam knowledge — high yield</h2>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {highYield.map((item) => (
+              <li key={item} className="text-sm text-gray-700 dark:text-gray-300">
+                • {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {pearls.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 12 }}
@@ -90,7 +107,7 @@ export default function ChapterDetail() {
             ))}
           </div>
           {pearls.length > 4 && (
-            <Link to="/pearls" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-amber-800 dark:text-amber-300">
+            <Link to={`/pearls`} className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-amber-800 dark:text-amber-300">
               View all {pearls.length} pearls <ArrowRightIcon className="h-3 w-3" />
             </Link>
           )}

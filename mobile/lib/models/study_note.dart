@@ -52,12 +52,18 @@ class NotesChapterGroup {
   final String title;
   final int order;
   final List<StudyNote> notes;
+  final List<String> highYield;
+  final List<PearlItem> bookPearls;
+  final List<Map<String, dynamic>> lessons;
 
   const NotesChapterGroup({
     required this.key,
     required this.title,
     this.order = 0,
     this.notes = const [],
+    this.highYield = const [],
+    this.bookPearls = const [],
+    this.lessons = const [],
   });
 
   List<StudyNote> get pearls =>
@@ -86,11 +92,24 @@ class NotesReview {
           final notes = (m['notes'] as List<dynamic>? ?? [])
               .map((n) => StudyNote.fromJson(n as Map<String, dynamic>))
               .toList();
+          final book = m['book'] as Map<String, dynamic>? ?? {};
+          final bookPearls = (book['pearls'] as List<dynamic>? ?? [])
+              .map((p) => PearlItem.fromJson(p as Map<String, dynamic>))
+              .toList();
+          final lessons = (book['lessons'] as List<dynamic>? ?? [])
+              .map((l) => Map<String, dynamic>.from(l as Map))
+              .toList();
+          final highYield = (book['high_yield'] as List<dynamic>? ?? [])
+              .map((e) => e.toString())
+              .toList();
           return NotesChapterGroup(
             key: ch['slug'] as String? ?? 'other',
             title: ch['title'] as String? ?? 'Other',
             order: ch['order_index'] as int? ?? 99,
             notes: notes,
+            highYield: highYield,
+            bookPearls: bookPearls,
+            lessons: lessons,
           );
         })
         .toList();

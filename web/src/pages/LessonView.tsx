@@ -144,7 +144,7 @@ export default function LessonView() {
         </div>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">{lesson.summary}</p>
         {lesson.content_md && (
-          <div className="prose prose-sm mt-4 dark:prose-invert" dangerouslySetInnerHTML={{ __html: lesson.content_md }} />
+          <div className="prose prose-sm mt-4 whitespace-pre-wrap dark:prose-invert">{lesson.content_md}</div>
         )}
       </div>
 

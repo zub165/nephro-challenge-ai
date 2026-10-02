@@ -85,6 +85,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Web App'),
             onTap: () => _openUrl(AppConstants.webAppUrl),
           ),
+          ListTile(
+            leading: const Icon(Icons.delete_outline),
+            title: const Text('Delete my data (web instructions)'),
+            onTap: () => _openUrl(AppConstants.deleteAccountUrl),
+          ),
           _section('Account'),
           ListTile(
             leading: const Icon(Icons.delete_forever, color: Colors.red),

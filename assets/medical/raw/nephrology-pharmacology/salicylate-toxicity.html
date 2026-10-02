@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salicylate Toxicity — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --salicylate:#b91c1c; --keto:#b45309; --lactic:#7c3aed; --ethylene:#0d9488; --methanol:#1d4ed8; --normal:#065f46;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  /* CASE SUMMARY */
+  .case-box{background:#fff; border-radius:18px; padding:20px 24px; margin-top:22px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border-left:6px solid var(--salicylate);}
+  .case-box h2{margin:0 0 10px; font-size:1.05rem; color:#991b1b;}
+  .case-box p{margin:0 0 8px; font-size:.9rem; color:#334155;}
+  .case-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-top:12px;}
+  .case-stat{background:#fee2e2; border-radius:10px; padding:10px 14px; border:1px solid #fca5a5;}
+  .case-stat .cs-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#991b1b;}
+  .case-stat .cs-value{font-size:1rem; font-weight:800; color:#7f1d1d; margin-top:2px;}
+  .case-stat.ok{background:#dcfce7; border-color:#86efac;}
+  .case-stat.ok .cs-label{color:#166534;}
+  .case-stat.ok .cs-value{color:#14532d;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.salicylate.active{background:#fee2e2; border-color:var(--salicylate); color:#7f1d1d;}
+  .pill.keto.active{background:#ffedd5; border-color:var(--keto); color:#7c2d12;}
+  .pill.lactic.active{background:#ede9fe; border-color:var(--lactic); color:#4c1d95;}
+  .pill.ethylene.active{background:#ccfbf1; border-color:var(--ethylene); color:#134e4a;}
+  .pill.methanol.active{background:#dbeafe; border-color:var(--methanol); color:#1e3a8a;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:600px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  /* ANION GAP SCALE */
+  .ag-box{margin-top:22px; border-radius:16px; padding:22px 24px;
+    background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); color:#e2e8f0; text-align:left;}
+  .ag-box h3{margin:0 0 4px; font-size:1.05rem; color:#f8fafc; display:flex; align-items:center; gap:8px;}
+  .ag-box h3::before{content:"⚖️"; font-size:1.1rem;}
+  .ag-box .ag-formula{font-family:"Courier New",monospace; font-size:1rem; font-weight:700;
+    background:#334155; display:inline-block; padding:8px 16px; border-radius:8px; margin:12px 0; color:#fbbf24;}
+  .ag-scale{position:relative; height:60px; margin:18px 0 12px;}
+  .ag-track{position:absolute; top:20px; left:0; right:0; height:20px; border-radius:10px;
+    background:linear-gradient(90deg,#16a34a 0%,#22c55e 30%,#fbbf24 50%,#f59e0b 70%,#dc2626 100%);}
+  .ag-marker{position:absolute; top:8px; width:0; height:0;
+    border-left:10px solid transparent; border-right:10px solid transparent;
+    border-top:14px solid #f8fafc; transition:left .6s cubic-bezier(.4,0,.2,1); transform:translateX(-50%);}
+  .ag-marker-label{position:absolute; top:34px; transform:translateX(-50%);
+    font-size:.75rem; font-weight:800; color:#f8fafc; transition:left .6s cubic-bezier(.4,0,.2,1); white-space:nowrap;}
+  .ag-labels{display:flex; justify-content:space-between; font-size:.68rem; color:#94a3b8; margin-top:4px;}
+  .ag-interp{margin-top:12px; padding:12px 16px; border-radius:10px;
+    background:rgba(255,255,255,.08); font-size:.85rem; line-height:1.55; color:#e2e8f0;}
+  .ag-interp strong{color:#fbbf24;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1100px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-sal { background-color:#fef2f2; box-shadow: inset 4px 0 0 var(--salicylate); }
+  tr.highlight-sal td { font-weight:600; color:#7f1d1d; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-sal{background:#fee2e2; color:#7f1d1d;}
+  .tag-keto{background:#ffedd5; color:#7c2d12;}
+  .tag-lac{background:#ede9fe; color:#4c1d95;}
+  .tag-eth{background:#ccfbf1; color:#134e4a;}
+  .tag-met{background:#dbeafe; color:#1e3a8a;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Salicylate Toxicity</h1>
+      <p>Mixed acid–base disorder · Anion gap visualizer · Uricosuric effect</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE SUMMARY -->
+  <section class="case-box">
+    <h2>Case Vignette — 55-year-old man, aspirin overdose</h2>
+    <p>Intentional large ingestion of aspirin. Presents with a <strong>mixed acid–base disorder</strong>.</p>
+    <div class="case-grid">
+      <div class="case-stat"><div class="cs-label">Arterial pH</div><div class="cs-value">7.48 ↑</div></div>
+      <div class="case-stat"><div class="cs-label">PCO₂</div><div class="cs-value">21 mm Hg ↓</div></div>
+      <div class="case-stat"><div class="cs-label">HCO₃⁻</div><div class="cs-value">18 mmol/L ↓</div></div>
+      <div class="case-stat"><div class="cs-label">Anion Gap</div><div class="cs-value">18 ↑</div></div>
+      <div class="case-stat"><div class="cs-label">Serum K⁺</div><div class="cs-value">3.2 mmol/L ↓</div></div>
+      <div class="case-stat"><div class="cs-label">Urine Na⁺ / Cl⁻</div><div class="cs-value">38 / &lt;10</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section class="stage">
+    <h2>Interactive Acid–Base Diagram</h2>
+    <p class="sub">Select a condition to compare the pattern of the anion gap, pH, and organ effects.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill salicylate" id="btnSal" onclick="setMode('salicylate')">Salicylate ★</button>
+      <button class="pill keto" id="btnKeto" onclick="setMode('keto')">Diabetic Ketoacidosis</button>
+      <button class="pill lactic" id="btnLactic" onclick="setMode('lactic')">Lactic Acidosis</button>
+      <button class="pill ethylene" id="btnEth" onclick="setMode('ethylene')">Ethylene Glycol</button>
+      <button class="pill methanol" id="btnMet" onclick="setMode('methanol')">Methanol</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="tissueBg" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#fdf2f8"/><stop offset="100%" stop-color="#fbcfe8"/>
+          </radialGradient>
+          <linearGradient id="brainGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#c084fc"/>
+          </linearGradient>
+          <linearGradient id="kidneyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#f59e0b"/>
+          </linearGradient>
+          <linearGradient id="liverGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#ef4444"/>
+          </linearGradient>
+          <linearGradient id="muscleGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </linearGradient>
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="nucGlow">
+            <feGaussianBlur stdDeviation="1" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1000" height="640" fill="url(#tissueBg)"/>
+        <text x="500" y="30" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#0f172a">Organ-Level Effects of Salicylate Toxicity</text>
+
+        <!-- BRAIN -->
+        <g transform="translate(140, 100)">
+          <ellipse cx="0" cy="0" rx="90" ry="70" fill="url(#brainGrad)" stroke="#7c3aed" stroke-width="2" opacity="0.9"/>
+          <path d="M -60 -20 Q -40 -60 0 -50 Q 40 -60 60 -20 M -70 10 Q -40 -10 0 0 Q 40 -10 70 10 M -60 40 Q -40 20 0 30 Q 40 20 60 40" 
+                fill="none" stroke="#6b21a8" stroke-width="2" opacity="0.6"/>
+          <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#4c1d95">BRAIN</text>
+          <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="10" fill="#7c3aed">Respiratory center</text>
+        </g>
+
+        <!-- KIDNEY -->
+        <g transform="translate(500, 100)">
+          <path d="M -60 -50 C -85 -20 -85 30 -55 55 C -25 75 20 70 40 45 C 55 25 55 -20 35 -45 C 15 -65 -35 -70 -60 -50 Z" 
+                fill="url(#kidneyGrad)" stroke="#b45309" stroke-width="2" opacity="0.9"/>
+          <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#78350f">KIDNEY</text>
+          <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">Uric acid handling</text>
+        </g>
+
+        <!-- LIVER -->
+        <g transform="translate(860, 100)">
+          <path d="M -70 -40 Q 0 -70 70 -40 Q 80 30 30 55 Q 0 65 -30 55 Q -80 30 -70 -40 Z" 
+                fill="url(#liverGrad)" stroke="#991b1b" stroke-width="2" opacity="0.9"/>
+          <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7f1d1d">LIVER</text>
+          <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">Ketone production</text>
+        </g>
+
+        <!-- MUSCLE / MITOCHONDRIA -->
+        <g transform="translate(500, 340)">
+          <ellipse cx="0" cy="0" rx="130" ry="60" fill="url(#muscleGrad)" stroke="#0e7490" stroke-width="2" opacity="0.9"/>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#155e75">MITOCHONDRIA</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">Oxidative phosphorylation</text>
+        </g>
+
+        <!-- ARROWS showing effects -->
+        <!-- Brain → respiratory center stimulation -->
+        <g id="effect-brain" style="display:none;">
+          <path d="M 230 100 Q 350 60 440 90" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrowPurple)"/>
+          <text x="335" y="55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#4c1d95">Stimulates respiratory center</text>
+          <text x="335" y="70" text-anchor="middle" font-family="Arial" font-size="10" fill="#7c3aed">→ hyperventilation → respiratory alkalosis</text>
+        </g>
+
+        <!-- Liver → ketones -->
+        <g id="effect-liver" style="display:none;">
+          <path d="M 790 100 Q 720 150 620 280" stroke="#dc2626" stroke-width="3" fill="none" stroke-dasharray="6 4"/>
+          <text x="720" y="200" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#7f1d1d">↑ Lipolysis → ketones</text>
+        </g>
+
+        <!-- Mitochondria → lactate -->
+        <g id="effect-mito" style="display:none;">
+          <text x="500" y="420" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#155e75">Uncoupling → ↑ lactate, ↑ ketones</text>
+          <text x="500" y="438" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">→ high anion gap metabolic acidosis</text>
+        </g>
+
+        <!-- Kidney → uric acid -->
+        <g id="effect-kidney" style="display:none;">
+          <path d="M 500 180 Q 500 220 500 280" stroke="#b45309" stroke-width="3" fill="none"/>
+          <text x="500" y="250" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#78350f">Uricosuria → hypouricemia</text>
+        </g>
+
+        <!-- Renal tubule detail (bottom) -->
+        <g transform="translate(0, 460)">
+          <rect x="40" y="20" width="920" height="150" rx="12" fill="#fff7ed" stroke="#fcd34d" stroke-width="1.5" opacity="0.9"/>
+          <text x="60" y="45" font-family="Arial" font-size="12" font-weight="700" fill="#78350f">Renal Tubule — Uric Acid Handling</text>
+
+          <!-- Lumen -->
+          <rect x="60" y="60" width="880" height="60" rx="8" fill="#fefce8" stroke="#fcd34d"/>
+          <text x="80" y="80" font-family="Arial" font-size="10" font-weight="700" fill="#92400e">Tubular lumen</text>
+
+          <!-- Uric acid particles -->
+          <g id="uric-acid-flow">
+            <circle r="8" fill="#b45309" opacity="0.85">
+              <animateMotion dur="3s" repeatCount="indefinite" path="M 150 90 L 400 90 L 700 90 L 900 90"/>
+              <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          <text x="400" y="140" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#78350f">Salicylate inhibits URAT1 → urate reabsorption ↓ → uricosuria</text>
+        </g>
+
+        <!-- Anion gap indicator -->
+        <g id="ag-indicator">
+          <rect x="700" y="20" width="260" height="60" rx="10" fill="#1e293b" opacity="0.95"/>
+          <text x="830" y="42" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8" font-weight="700">ANION GAP</text>
+          <text id="agValueText" x="830" y="68" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#fbbf24">18</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Primary Disorder</div>
+        <div class="rc-value" id="rcPrimaryValue">—</div>
+        <div class="rc-sub" id="rcPrimarySub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Anion Gap</div>
+        <div class="rc-value" id="rcAgValue">—</div>
+        <div class="rc-sub" id="rcAgSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Serum K⁺</div>
+        <div class="rc-value" id="rcKValue">—</div>
+        <div class="rc-sub" id="rcKSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Uric Acid</div>
+        <div class="rc-value" id="rcUricValue">—</div>
+        <div class="rc-sub" id="rcUricSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Unique Feature</div>
+        <div class="rc-note" id="rcUniqueValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Interpretation</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+
+    <!-- ANION GAP VISUALIZER -->
+    <div class="ag-box">
+      <h3>Anion Gap Visualizer</h3>
+      <p style="margin:8px 0 0; font-size:.85rem; color:#cbd5e1; line-height:1.55;">
+        The anion gap reflects unmeasured anions in the blood. Normal = 8–12. Elevation indicates accumulation of unmeasured acids (lactate, ketones, salicylate, oxalate, formate, etc.).
+      </p>
+      <div class="ag-formula">Anion Gap = Na⁺ − (Cl⁻ + HCO₃⁻)</div>
+
+      <div class="ag-scale">
+        <div class="ag-track"></div>
+        <div class="ag-marker" id="agMarker" style="left:50%;"></div>
+        <div class="ag-marker-label" id="agMarkerLabel" style="left:50%;">Normal</div>
+      </div>
+      <div class="ag-labels">
+        <span>← 0 (low)</span>
+        <span>Normal 8–12</span>
+        <span>Elevated &gt; 12 →</span>
+      </div>
+
+      <div class="ag-interp" id="agInterp">
+        Select a condition above to visualize the anion gap.
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis of High Anion Gap Metabolic Acidosis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Condition</th>
+          <th>pH / Primary Disorder</th>
+          <th>Anion Gap</th>
+          <th>Serum K⁺</th>
+          <th>Uric Acid</th>
+          <th>Key Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-sal">
+          <td><strong>Salicylate Toxicity</strong> <span class="tag tag-sal">Correct</span></td>
+          <td><strong>Mixed:</strong> respiratory alkalosis + high-AG metabolic acidosis</td>
+          <td><strong>Elevated</strong> (variable)</td>
+          <td><strong>Low</strong> (multifactorial: shift + renal loss)</td>
+          <td><strong>Low (hypouricemia)</strong> — salicylates are uricosuric</td>
+          <td>Mixed acid–base picture; tinnitus, hyperventilation, altered mental status; <strong>hypouricemia</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Diabetic Ketoacidosis</strong> <span class="tag tag-keto">Distractor</span></td>
+          <td>High-AG metabolic acidosis (may have respiratory compensation)</td>
+          <td><strong>Elevated</strong></td>
+          <td>Variable (often low or normal)</td>
+          <td>Often low (uricosuria from glucose)</td>
+          <td>Glucose &gt; 250, ketonuria, Kussmaul respirations, history of diabetes</td>
+        </tr>
+        <tr>
+          <td><strong>Lactic Acidosis</strong> <span class="tag tag-lac">Distractor</span></td>
+          <td>High-AG metabolic acidosis</td>
+          <td><strong>Elevated</strong></td>
+          <td>Variable (often high in hypoperfusion)</td>
+          <td>Variable</td>
+          <td>Lactate &gt; 4–5 mmol/L; shock, sepsis, metformin, mitochondrial disease</td>
+        </tr>
+        <tr>
+          <td><strong>Ethylene Glycol Toxicity</strong> <span class="tag tag-eth">Distractor</span></td>
+          <td>High-AG metabolic acidosis</td>
+          <td><strong>Elevated</strong></td>
+          <td>Variable</td>
+          <td>Normal</td>
+          <td>Osmolar gap, calcium oxalate crystals in urine, renal failure</td>
+        </tr>
+        <tr>
+          <td><strong>Methanol Toxicity</strong> <span class="tag tag-met">Distractor</span></td>
+          <td>High-AG metabolic acidosis</td>
+          <td><strong>Elevated</strong></td>
+          <td>Variable</td>
+          <td>Normal</td>
+          <td>Osmolar gap, visual disturbances ("snowstorm"), optic nerve damage</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 55-year-old man presents after aspirin overdose with pH 7.48, PCO₂ 21, HCO₃⁻ 18, and anion gap 18. Which metabolic abnormality is expected?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Hypokalemia is due to a shift of K⁺ into cells only</button>
+        <button class="opt" onclick="answer(this,true)">B. Hypouricemia is an expected complication</button>
+        <button class="opt" onclick="answer(this,false)">C. Lactic acid levels are likely normal</button>
+        <button class="opt" onclick="answer(this,false)">D. High-AG acidosis is due to unsuspected ingestion</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> At high doses, salicylates are <strong>uricosuric</strong> — they inhibit URAT1 in the proximal tubule, causing increased uric acid excretion and <strong>hypouricemia</strong>. This is a well-recognized but often overlooked effect of salicylate poisoning.</div>
+    </div>
+
+    <div class="q">
+      <p>2. What type of acid–base disorder is most characteristic of acute salicylate toxicity?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Pure respiratory alkalosis</button>
+        <button class="opt" onclick="answer(this,false)">B. Pure high-anion gap metabolic acidosis</button>
+        <button class="opt" onclick="answer(this,true)">C. Mixed respiratory alkalosis + high-anion gap metabolic acidosis</button>
+        <button class="opt" onclick="answer(this,false)">D. Normal-anion gap metabolic acidosis</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Salicylates cause a classic <strong>mixed disorder</strong>: they directly stimulate the respiratory center (<strong>respiratory alkalosis</strong>) and also cause accumulation of salicylate, ketones, and lactate (<strong>high-anion gap metabolic acidosis</strong>). The pH may be normal, elevated, or reduced depending on the dominant process.</div>
+    </div>
+
+    <div class="q">
+      <p>3. Why does this patient have a low serum potassium despite a shift of K⁺ into cells from alkalosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Salicylates cause hyperkalemia</button>
+        <button class="opt" onclick="answer(this,true)">B. Renal K⁺ losses from aldosterone and possibly vomiting drive hypokalemia</button>
+        <button class="opt" onclick="answer(this,false)">C. The low K⁺ is an artifact</button>
+        <button class="opt" onclick="answer(this,false)">D. Low K⁺ is due to insulin</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The hypokalemia in salicylate toxicity is <strong>multifactorial</strong>: respiratory alkalosis shifts K⁺ into cells, and renal losses occur from secondary hyperaldosteronism (from volume depletion) and possibly vomiting. It is not just a shift.</div>
+    </div>
+
+    <div class="q">
+      <p>4. Which laboratory pattern is expected in salicylate toxicity?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Normal anion gap, low urine Na⁺, high urine Cl⁻</button>
+        <button class="opt" onclick="answer(this,true)">B. Elevated anion gap, low serum K⁺, low serum uric acid</button>
+        <button class="opt" onclick="answer(this,false)">C. Elevated anion gap, hyperkalemia, hyperuricemia</button>
+        <button class="opt" onclick="answer(this,false)">D. Normal anion gap, hyperkalemia, low uric acid</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The classic triad of salicylate toxicity is: <strong>elevated anion gap</strong> (from salicylate, ketones, lactate), <strong>hypokalemia</strong> (from shifts + renal losses), and <strong>hypouricemia</strong> (from uricosuric effect of salicylates).</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which of the following statements about the respiratory alkalosis in salicylate toxicity is TRUE?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">A. It is due to direct stimulation of the medullary respiratory center by salicylate</button>
+        <button class="opt" onclick="answer(this,false)">B. It is a compensatory response to metabolic acidosis</button>
+        <button class="opt" onclick="answer(this,false)">C. It is caused by anxiety</button>
+        <button class="opt" onclick="answer(this,false)">D. It is unrelated to the salicylate level</button>
+      </div>
+      <div class="explain"><strong>Correct: A.</strong> Unlike the compensatory hyperventilation of metabolic acidosis, the respiratory alkalosis in salicylate toxicity is due to <strong>direct stimulation of the medullary respiratory center</strong> by salicylate. This is why the PCO₂ is often lower than expected for the degree of metabolic acidosis.</div>
+    </div>
+
+    <div class="q">
+      <p>6. A patient with a high anion gap metabolic acidosis has calcium oxalate crystals in the urine and an elevated osmolar gap. What is the most likely toxin?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Salicylate</button>
+        <button class="opt" onclick="answer(this,false)">B. Methanol</button>
+        <button class="opt" onclick="answer(this,true)">C. Ethylene glycol</button>
+        <button class="opt" onclick="answer(this,false)">D. Metformin</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> <strong>Ethylene glycol</strong> toxicity is classically associated with calcium oxalate crystals in the urine, an elevated osmolar gap, and a high anion gap metabolic acidosis. Methanol also causes an elevated osmolar gap but does not produce oxalate crystals — it causes visual disturbances.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      primary: 'Normal',
+      primarySub: 'No acid–base disturbance',
+      ag: '10',
+      agSub: 'Normal (8–12)',
+      k: '4.0',
+      kSub: 'Normokalemic',
+      uric: 'Normal',
+      uricSub: '5–7 mg/dL',
+      unique: 'Healthy patient with normal kidney, liver, and mitochondrial function.',
+      verdict: 'Normal acid–base status with normal uric acid handling.',
+      color: '#065f46',
+      agValue: 10
+    },
+    salicylate: {
+      primary: 'MIXED',
+      primarySub: 'Respiratory alkalosis + high-AG metabolic acidosis',
+      ag: '18',
+      agSub: 'Elevated (>12)',
+      k: '3.2',
+      kSub: 'Hypokalemia (shift + renal loss)',
+      uric: 'LOW',
+      uricSub: 'Hypouricemia (uricosuria)',
+      unique: '<strong>Salicylates are uricosuric</strong> — they inhibit URAT1 in the proximal tubule → hypouricemia. Mixed acid–base pattern is classic. Tinnitus, hyperventilation, altered mental status.',
+      verdict: 'Salicylate Toxicity — mixed disorder + hypouricemia. Treat with sodium bicarbonate, urinary alkalinization, and hemodialysis if severe.',
+      color: '#b91c1c',
+      agValue: 18
+    },
+    keto: {
+      primary: 'High-AG metabolic acidosis',
+      primarySub: 'With respiratory compensation',
+      ag: '24',
+      agSub: 'Elevated (>12)',
+      k: '4.5',
+      kSub: 'Variable (often normal or high)',
+      uric: 'Low (from glucosuria)',
+      uricSub: 'Often low',
+      unique: 'Glucose > 250, ketonuria, Kussmaul respirations, history of diabetes. Uric acid may be low from osmotic diuresis.',
+      verdict: 'Diabetic Ketoacidosis — treat with IV fluids, insulin, and electrolyte repletion.',
+      color: '#b45309',
+      agValue: 24
+    },
+    lactic: {
+      primary: 'High-AG metabolic acidosis',
+      primarySub: 'Lactate > 4–5 mmol/L',
+      ag: '22',
+      agSub: 'Elevated (>12)',
+      k: '5.0',
+      kSub: 'Variable (often high in shock)',
+      uric: 'Variable',
+      uricSub: 'Depends on underlying cause',
+      unique: 'Shock, sepsis, metformin, mitochondrial disease. Lactate elevation is the defining feature.',
+      verdict: 'Lactic Acidosis — treat the underlying cause (perfusion, infection, drug).',
+      color: '#7c3aed',
+      agValue: 22
+    },
+    ethylene: {
+      primary: 'High-AG metabolic acidosis',
+      primarySub: 'With elevated osmolar gap',
+      ag: '24',
+      agSub: 'Elevated (>12)',
+      k: 'Variable',
+      kSub: 'Variable',
+      uric: 'Normal',
+      uricSub: 'Normal',
+      unique: '<strong>Calcium oxalate crystals in urine</strong>, elevated osmolar gap, acute kidney injury. Metabolized to glycolate and oxalate.',
+      verdict: 'Ethylene Glycol Toxicity — treat with fomepizole or ethanol, hemodialysis.',
+      color: '#0d9488',
+      agValue: 24
+    },
+    methanol: {
+      primary: 'High-AG metabolic acidosis',
+      primarySub: 'With elevated osmolar gap',
+      ag: '26',
+      agSub: 'Elevated (>12)',
+      k: 'Variable',
+      kSub: 'Variable',
+      uric: 'Normal',
+      uricSub: 'Normal',
+      unique: '<strong>Visual disturbances ("snowstorm", blindness)</strong>, optic nerve damage, elevated osmolar gap. Metabolized to formate.',
+      verdict: 'Methanol Toxicity — treat with fomepizole or ethanol, hemodialysis.',
+      color: '#1d4ed8',
+      agValue: 26
+    }
+  };
+
+  function setMode(mode) {
+    ['effect-brain','effect-liver','effect-mito','effect-kidney'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnSal','btnKeto','btnLactic','btnEth','btnMet'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', salicylate:'btnSal', keto:'btnKeto',
+      lactic:'btnLactic', ethylene:'btnEth', methanol:'btnMet'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode === 'salicylate') {
+      document.getElementById('effect-brain').style.display = 'block';
+      document.getElementById('effect-mito').style.display = 'block';
+      document.getElementById('effect-kidney').style.display = 'block';
+    } else if (mode === 'keto') {
+      document.getElementById('effect-liver').style.display = 'block';
+      document.getElementById('effect-mito').style.display = 'block';
+    } else if (mode === 'lactic') {
+      document.getElementById('effect-mito').style.display = 'block';
+    } else if (mode === 'ethylene' || mode === 'methanol') {
+      document.getElementById('effect-mito').style.display = 'block';
+    }
+
+    document.getElementById('rcPrimaryValue').textContent = d.primary;
+    document.getElementById('rcPrimaryValue').style.color = d.color;
+    document.getElementById('rcPrimarySub').textContent = d.primarySub;
+
+    document.getElementById('rcAgValue').textContent = d.ag;
+    document.getElementById('rcAgValue').style.color = d.color;
+    document.getElementById('rcAgSub').textContent = d.agSub;
+
+    document.getElementById('rcKValue').textContent = d.k;
+    document.getElementById('rcKValue').style.color = d.color;
+    document.getElementById('rcKSub').textContent = d.kSub;
+
+    document.getElementById('rcUricValue').textContent = d.uric;
+    document.getElementById('rcUricValue').style.color = d.color;
+    document.getElementById('rcUricSub').textContent = d.uricSub;
+
+    document.getElementById('rcUniqueValue').innerHTML = d.unique;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+
+    // Anion gap visualizer
+    const marker = document.getElementById('agMarker');
+    const markerLabel = document.getElementById('agMarkerLabel');
+    const uagMin = 0, uagMax = 30;
+    const pct = ((d.agValue - uagMin) / (uagMax - uagMin)) * 100;
+    marker.style.left = pct + '%';
+    markerLabel.style.left = pct + '%';
+    markerLabel.textContent = d.agValue;
+
+    document.getElementById('agInterp').innerHTML = 
+      mode === 'normal' 
+        ? 'Normal anion gap (8–12). Unmeasured anions are balanced by unmeasured cations.'
+        : '<strong>Elevated anion gap = ' + d.agValue + '</strong> — unmeasured acids (lactate, ketones, salicylate, oxalate, or formate) are accumulating. This drives the high-anion gap metabolic acidosis.';
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

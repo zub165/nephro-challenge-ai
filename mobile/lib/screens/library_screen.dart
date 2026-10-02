@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../widgets/app_nav_drawer.dart';
 import 'chapters_screen.dart';
 import 'my_book_screen.dart';
 import 'pearls_screen.dart';
@@ -46,6 +47,7 @@ class _LibraryScreenState extends State<LibraryScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const AppMenuButton(),
         title: const Text('Study Library'),
         bottom: TabBar(
           controller: _tabController,

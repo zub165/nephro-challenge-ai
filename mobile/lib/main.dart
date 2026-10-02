@@ -10,7 +10,9 @@ import 'providers/notes_provider.dart';
 import 'providers/quiz_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/ai_tutor_screen.dart';
-import 'screens/board_prep_screen.dart';
+import 'screens/board_exam_take_screen.dart';
+import 'screens/board_exams_screen.dart';
+import 'screens/board_plan_screen.dart';
 import 'screens/categories_screen.dart';
 import 'screens/category_questions_screen.dart';
 import 'screens/daily_challenge_screen.dart';
@@ -29,8 +31,12 @@ import 'screens/settings_screen.dart';
 import 'screens/performance_analytics_screen.dart';
 import 'screens/study_history_screen.dart';
 import 'screens/about_screen.dart';
+import 'screens/admin_ai_review_screen.dart';
+import 'screens/admin_dashboard_screen.dart';
+import 'screens/admin_questions_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/storage_service.dart';
+import 'widgets/app_nav_drawer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -137,7 +143,17 @@ class NephroChallengeApp extends StatelessWidget {
         );
       case AppRoutes.boardPrep:
         return MaterialPageRoute(
-          builder: (_) => const BoardPrepScreen(),
+          builder: (_) => const BoardPlanScreen(),
+          settings: settings,
+        );
+      case AppRoutes.boardExams:
+        return MaterialPageRoute(
+          builder: (_) => const BoardExamsScreen(),
+          settings: settings,
+        );
+      case AppRoutes.boardExamTake:
+        return MaterialPageRoute(
+          builder: (_) => const BoardExamTakeScreen(),
           settings: settings,
         );
       case AppRoutes.chapters:
@@ -172,6 +188,21 @@ class NephroChallengeApp extends StatelessWidget {
           builder: (_) => const AboutScreen(),
           settings: settings,
         );
+      case AppRoutes.admin:
+        return MaterialPageRoute(
+          builder: (_) => const AdminDashboardScreen(),
+          settings: settings,
+        );
+      case AppRoutes.adminQuestions:
+        return MaterialPageRoute(
+          builder: (_) => const AdminQuestionsScreen(),
+          settings: settings,
+        );
+      case AppRoutes.adminAiReview:
+        return MaterialPageRoute(
+          builder: (_) => const AdminAiReviewScreen(),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),
@@ -203,6 +234,8 @@ class _MainShellState extends State<MainShell> {
     ];
 
     return Scaffold(
+      key: nav.scaffoldKey,
+      drawer: const AppNavDrawer(),
       body: IndexedStack(
         index: nav.shellIndex,
         children: screens,

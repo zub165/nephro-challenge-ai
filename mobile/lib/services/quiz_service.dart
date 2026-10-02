@@ -20,6 +20,7 @@ class QuizService {
     String? categoryId,
     String? chapterId,
     bool daily = false,
+    int? boardDay,
     int limit = 10,
   }) async {
     try {
@@ -27,6 +28,7 @@ class QuizService {
         if (categoryId != null) 'categoryId': categoryId,
         if (chapterId != null) 'chapterId': chapterId,
         if (daily) 'daily': 'true',
+        if (boardDay != null) 'board_day': boardDay,
         'limit': limit,
       });
       final data = response.data as Map<String, dynamic>;
@@ -91,6 +93,15 @@ class QuizService {
     }
   }
 
+  Future<Map<String, dynamic>?> fetchChapterKnowledge(String slug) async {
+    try {
+      final response = await _api.get('/chapters/$slug/knowledge/');
+      return response.data as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<Lesson?> fetchLesson(String lessonId) async {
     try {
       final response = await _api.get('/lessons/$lessonId/');
@@ -117,6 +128,24 @@ class QuizService {
         'answers_data': answersData,
       });
       return QuizAttempt.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<QuizAnswerFeedback?> checkAnswer({
+    required String questionId,
+    required String choiceId,
+  }) async {
+    try {
+      final response = await _api.post('/quiz/answer/', data: {
+        'question_id': questionId,
+        'chosen_choice_id': choiceId,
+      });
+      final data = Map<String, dynamic>.from(response.data as Map);
+      data['question'] = data['question_id'] ?? questionId;
+      data['chosen_choice_id'] = choiceId;
+      return QuizAnswerFeedback.fromJson(data);
     } catch (_) {
       return null;
     }

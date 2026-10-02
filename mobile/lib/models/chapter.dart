@@ -77,6 +77,7 @@ class Lesson {
   final String title;
   final String lessonType;
   final String summary;
+  final String contentMd;
   final String animationUrl;
   final String imageUrl;
   final String interactiveUrl;
@@ -92,6 +93,7 @@ class Lesson {
     this.imageUrl = '',
     this.interactiveUrl = '',
     this.thumbnailUrl = '',
+    this.contentMd = '',
     this.durationSeconds = 0,
   });
 
@@ -105,6 +107,7 @@ class Lesson {
       imageUrl: JsonHelpers.str(json['image_url']),
       interactiveUrl: JsonHelpers.str(json['interactive_url']),
       thumbnailUrl: JsonHelpers.str(json['thumbnail_url']),
+      contentMd: JsonHelpers.str(json['content_md']),
       durationSeconds: JsonHelpers.integer(json['duration_seconds']),
     );
   }

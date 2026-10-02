@@ -20,4 +20,9 @@ class AppRoutes {
   static const String studyHistory = '/study-history';
   static const String about = '/about';
   static const String boardPrep = '/board-prep';
+  static const String boardExams = '/board-exams';
+  static const String boardExamTake = '/board-exam-take';
+  static const String admin = '/admin';
+  static const String adminQuestions = '/admin-questions';
+  static const String adminAiReview = '/admin-ai-review';
 }
