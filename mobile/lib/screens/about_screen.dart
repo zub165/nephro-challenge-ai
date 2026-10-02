@@ -6,7 +6,7 @@ import '../config/theme.dart';
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
-  static const _appVersion = '1.2.1';
+  static const _appVersion = AppConstants.appVersion;
 
   Future<void> _openUrl(String url) async {
     final uri = Uri.parse(url);

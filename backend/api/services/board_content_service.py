@@ -250,11 +250,18 @@ def _upsert_lesson(
     order_index: int,
     report: SeedReport,
 ) -> Lesson:
-    lesson, created = Lesson.objects.get_or_create(
-        topic=topic,
-        title=lesson_data["title"],
-        defaults={"order_index": order_index},
+    lesson = (
+        Lesson.objects.filter(topic=topic, title=lesson_data["title"])
+        .order_by("id")
+        .first()
     )
+    created = lesson is None
+    if created:
+        lesson = Lesson.objects.create(
+            topic=topic,
+            title=lesson_data["title"],
+            order_index=order_index,
+        )
     reference_ids = list(lesson_data.get("reference_ids", []))
     fingerprint, media_fingerprint = _lesson_fingerprints(lesson_data, topic_slug)
     defaults = {
@@ -300,6 +307,7 @@ def _upsert_question(
     topic: Topic,
     lesson: Lesson | None,
     report: SeedReport,
+    publish: bool = False,
 ) -> Question | None:
     reference_ids = list(mcq_data.get("reference_ids", []))
     question, created = Question.objects.get_or_create(
@@ -331,6 +339,8 @@ def _upsert_question(
         difficulty=mcq_data.get("difficulty", "medium"),
         content_fingerprint=fingerprint,
     )
+    if publish:
+        question.is_published = True
     question.save()
 
     if created:
@@ -417,14 +427,8 @@ def seed_curriculum(
                     topic=topic,
                     lesson=lessons_by_slug.get(mcq_data.get("lesson_slug", "")),
                     report=report,
+                    publish=publish_questions,
                 )
-                if publish_questions:
-                    question = Question.objects.filter(
-                        question_text=mcq_data["question_text"], chapter=chapter
-                    ).first()
-                    if question is not None and not question.is_published:
-                        question.is_published = True
-                        question.save(update_fields=["is_published"])
     return report
 
 

@@ -27,12 +27,14 @@ interface PearlsResponse {
 const TAB_LABELS: Record<string, string> = {
   'acid-base-disorders': 'Acid-Base',
   electrolytes: 'Na & K',
-  aki: 'AKI & ICU',
-  ckd: 'CKD',
-  'glomerular-diseases': 'Glomerular',
+  'acute-kidney-injury-icu': 'AKI & ICU',
+  'chronic-kidney-disease': 'CKD',
+  'glomerular-vascular': 'Glomerular',
+  'tubulointerstitial-cystic': 'Tubules / Cystic',
   dialysis: 'Dialysis',
   hypertension: 'HTN',
   transplantation: 'Transplant',
+  'nephrology-pharmacology': 'Onco / Tox / Drugs',
 };
 
 export default function BoardPearls() {
@@ -81,7 +83,7 @@ export default function BoardPearls() {
               Board Examination Pearls
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-amber-100/90">
-              Curated mnemonics, algorithms, and one-liners for nephrology boards. Includes pearls from MCQs and your saved My Book notes.
+              Curated mnemonics, algorithms, and one-liners for nephrology boards. MCQ pearls are included; your My Book notes stay on the Notes page.
             </p>
           </div>
           <div className="flex flex-wrap gap-2 text-sm">

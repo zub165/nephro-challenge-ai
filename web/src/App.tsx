@@ -19,6 +19,9 @@ import LessonView from '@/pages/LessonView';
 import AdminAIGenerated from '@/pages/AdminAIGenerated';
 import Notes from '@/pages/Notes';
 import BoardPearls from '@/pages/BoardPearls';
+import BoardPrep from '@/pages/BoardPrep';
+import BoardExams from '@/pages/BoardExams';
+import BoardExamTake from '@/pages/BoardExamTake';
 
 export default function App() {
   const { isAuthenticated, user } = useAuthStore();
@@ -54,6 +57,9 @@ export default function App() {
         <Route path="/pearls" element={<BoardPearls />} />
         <Route path="/lessons/:lessonId" element={<LessonView />} />
         <Route path="/notes" element={<Notes />} />
+        <Route path="/board-prep" element={<BoardPrep />} />
+        <Route path="/board-exams" element={<BoardExams />} />
+        <Route path="/board-exams/:slug/attempt/:attemptId" element={<BoardExamTake />} />
 
         {user?.role === 'admin' && (
           <>

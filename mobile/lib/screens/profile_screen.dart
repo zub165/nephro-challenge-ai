@@ -33,18 +33,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer2<AuthProvider, DashboardProvider>(
+      body: SafeArea(
+      child: Consumer2<AuthProvider, DashboardProvider>(
         builder: (context, auth, dashboard, _) {
           final user = auth.user;
           if (user == null) {
-            return const Center(child: CircularProgressIndicator());
+            return Column(
+              children: [
+                const LinearProgressIndicator(minHeight: 3),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      Text(
+                        'Loading profile…',
+                        style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text('If this stays empty, sign in again from Settings.'),
+                    ],
+                  ),
+                ),
+              ],
+            );
           }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.menu),
+                    tooltip: 'Menu',
+                    onPressed: () =>
+                        context.read<NavigationProvider>().openMenu(),
+                  ),
+                ),
                 _buildProfileHeader(context, user, auth, dashboard),
                 const SizedBox(height: 24),
                 _buildStatsSection(context, dashboard),
@@ -55,6 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         },
+      ),
       ),
     );
   }
@@ -274,7 +301,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildMenuItems(BuildContext context) {
+    final isAdmin = context.watch<AuthProvider>().user?.role == 'admin';
     final items = [
+      if (isAdmin) ...[
+        {
+          'icon': Icons.admin_panel_settings_outlined,
+          'title': 'Admin',
+          'route': AppRoutes.admin,
+        },
+        {
+          'icon': Icons.quiz_outlined,
+          'title': 'Questions',
+          'route': AppRoutes.adminQuestions,
+        },
+        {
+          'icon': Icons.auto_awesome_outlined,
+          'title': 'AI Review',
+          'route': AppRoutes.adminAiReview,
+        },
+      ],
       {
         'icon': Icons.auto_stories_outlined,
         'title': 'My Book',
@@ -284,6 +329,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'icon': Icons.lightbulb_outline,
         'title': 'Board Pearls',
         'action': () => context.read<NavigationProvider>().goToLibrary(2),
+      },
+      {
+        'icon': Icons.timer_outlined,
+        'title': 'Timed Board Exam',
+        'route': AppRoutes.boardExams,
       },
       {
         'icon': Icons.settings_outlined,

@@ -1,11 +1,11 @@
 {
-    "name": "nephro_challenge_ai",
-    "short_name": "nephro_challenge_ai",
+    "name": "Nephro Challenge AI",
+    "short_name": "NephroChallenge",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Nephrology board prep: 25-day plan, quizzes, pearls, timed exams.",
+    "theme_color": "#1E3A5F",
+    "background_color": "#1E3A5F",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

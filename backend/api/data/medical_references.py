@@ -278,6 +278,17 @@ MEDICAL_REFERENCES: dict[str, dict[str, Any]] = {
         "citation": "Kliegman RM, et al. Nelson Textbook of Pediatrics. 21st ed. Nephrotic syndrome. Elsevier; 2020.",
         "topics": ["nephrotic", "mcd", "pediatrics"],
     },
+    "nejm-tma-2014": {
+        "id": "nejm-tma-2014",
+        "title": "Syndromes of thrombotic microangiopathy",
+        "source": "N Engl J Med",
+        "authors": "George JN, Nester CM",
+        "year": 2014,
+        "citation": "George JN, Nester CM. Syndromes of thrombotic microangiopathy. N Engl J Med. 2014;371(7):654-666.",
+        "pmid": "25119611",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/25119611/",
+        "topics": ["tma", "thrombotic-microangiopathies", "glomerular"],
+    },
 }
 
 # Default refs when pearl/MCQ lists topic but no explicit reference_ids
@@ -288,6 +299,7 @@ TOPIC_DEFAULT_REFS: dict[str, list[str]] = {
     "metabolic-acidosis": ["winters-formula-1979", "statpearls-rta"],
     "rta": ["statpearls-rta", "ajkd-rta-core-2025"],
     "normal-anion-gap": ["statpearls-rta", "ajkd-rta-core-2025"],
+    "renal-tubular-acidosis": ["statpearls-rta", "ajkd-rta-core-2025"],
     "respiratory-acidosis": ["kdigo-aki-2012"],
     "mixed-acid-base": ["winters-formula-1979", "kdigo-aki-2012"],
     "hyperkalemia": ["aha-hyperk-2015", "uptodate-hyperk"],
@@ -297,6 +309,8 @@ TOPIC_DEFAULT_REFS: dict[str, list[str]] = {
     "prerenal-aki": ["kdigo-aki-2012"],
     "dialysis-indications": ["kdigo-aki-2012"],
     "atn": ["kdigo-aki-2012"],
+    "intrinsic-aki": ["kdigo-aki-2012"],
+    "renal-replacement-therapy": ["kdigo-aki-2012"],
     "crrt": ["kdigo-aki-2012", "kdoqi-hd-adequacy-2015"],
     "ckd-mbd": ["kdigo-ckd-mbd-2017", "kdigo-ckd-2024"],
     "anemia": ["nkf-anemia-2021", "kdigo-ckd-2024"],
@@ -307,6 +321,8 @@ TOPIC_DEFAULT_REFS: dict[str, list[str]] = {
     "rpgc": ["kdigo-glomerular-2021", "kdigo-anca-aav-2024"],
     "complement": ["kdigo-glomerular-2021"],
     "igan": ["kdigo-igan-2025"],
+    "iga-nephropathy": ["kdigo-igan-2025"],
+    "thrombotic-microangiopathies": ["nejm-tma-2014", "kdigo-glomerular-2021"],
     "vasculitis": ["kdigo-anca-aav-2024"],
     "dialysis": ["kdoqi-hd-adequacy-2015", "kdigo-aki-2012"],
     "adequacy": ["kdoqi-hd-adequacy-2015"],
@@ -327,6 +343,7 @@ TOPIC_DEFAULT_REFS: dict[str, list[str]] = {
     "diuretics": ["kdigo-aki-2012", "kdigo-ckd-2024"],
     "drug-dosing": ["awdishu-kdigo-ckd-pharm-2025", "kdigo-ckd-2024"],
     "nephrotoxins": ["awdishu-kdigo-ckd-pharm-2025", "kdigo-aki-2012"],
+    "nephrotoxicity": ["awdishu-kdigo-ckd-pharm-2025", "kdigo-aki-2012"],
     "raas": ["kdigo-ckd-2024", "kdigo-bp-2021"],
 }
 

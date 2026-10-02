@@ -1,5 +1,48 @@
 import '../utils/json_helpers.dart';
 
+/// Per-question result returned by the server after a quiz is marked. This is
+/// the single source of truth; the quiz payload never contains the answer.
+class QuizAnswerFeedback {
+  final String questionId;
+  final String? chosenChoiceId;
+  final String? correctChoiceId;
+  final bool isCorrect;
+  final String whyWrong;
+  final String explanation;
+  final String clinicalPearl;
+  final String reference;
+
+  QuizAnswerFeedback({
+    required this.questionId,
+    this.chosenChoiceId,
+    this.correctChoiceId,
+    this.isCorrect = false,
+    this.whyWrong = '',
+    this.explanation = '',
+    this.clinicalPearl = '',
+    this.reference = '',
+  });
+
+  factory QuizAnswerFeedback.fromJson(Map<String, dynamic> json) {
+    final refs = json['references'] as List<dynamic>? ?? const [];
+    final reference = refs
+        .whereType<Map>()
+        .map((r) => JsonHelpers.str(r['citation'] ?? r['title']))
+        .where((s) => s.isNotEmpty)
+        .join(' | ');
+    return QuizAnswerFeedback(
+      questionId: JsonHelpers.str(json['question_id'] ?? json['question']),
+      chosenChoiceId: json['chosen_choice_id']?.toString(),
+      correctChoiceId: json['correct_choice_id']?.toString(),
+      isCorrect: json['is_correct'] as bool? ?? false,
+      whyWrong: JsonHelpers.str(json['why_wrong']),
+      explanation: JsonHelpers.str(json['explanation']),
+      clinicalPearl: JsonHelpers.str(json['clinical_pearl']),
+      reference: reference,
+    );
+  }
+}
+
 class QuizAttempt {
   final String id;
   final String mode;
@@ -9,6 +52,7 @@ class QuizAttempt {
   final double percentage;
   final int timeTaken;
   final DateTime? completedAt;
+  final List<QuizAnswerFeedback> answers;
 
   QuizAttempt({
     required this.id,
@@ -19,6 +63,7 @@ class QuizAttempt {
     this.percentage = 0.0,
     this.timeTaken = 0,
     this.completedAt,
+    this.answers = const [],
   });
 
   factory QuizAttempt.fromJson(Map<String, dynamic> json) {
@@ -33,6 +78,9 @@ class QuizAttempt {
       completedAt: json['completed_at'] != null
           ? DateTime.tryParse(json['completed_at'].toString())
           : null,
+      answers: JsonHelpers.listOfMaps(json['answers'])
+          .map(QuizAnswerFeedback.fromJson)
+          .toList(),
     );
   }
 

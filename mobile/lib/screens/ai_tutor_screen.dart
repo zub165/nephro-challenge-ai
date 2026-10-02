@@ -54,7 +54,7 @@ class _AITutorScreenState extends State<AITutorScreen> {
       _isLoading = false;
       _messages.add(
         ChatMessage(
-          text: response ?? 'I\'m sorry, I couldn\'t process that request.',
+          text: response,
           isUser: false,
         ),
       );

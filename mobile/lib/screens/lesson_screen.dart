@@ -51,11 +51,8 @@ class _LessonScreenState extends State<LessonScreen> {
     if (url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null) return;
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the interactive lesson')),
-      );
+    if (!await launchUrl(uri, mode: LaunchMode.inAppBrowserView)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 
@@ -103,18 +100,34 @@ class _LessonScreenState extends State<LessonScreen> {
           ),
           if (lesson.imageUrl.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: AspectRatio(
-                  aspectRatio: 3 / 4,
-                  child: _buildImage(lesson.imageUrl),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => Scaffold(
+                      appBar: AppBar(title: const Text('Teaching figure')),
+                      body: InteractiveViewer(
+                        minScale: 0.8,
+                        maxScale: 4,
+                        child: Center(child: _buildImage(lesson.imageUrl)),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: AspectRatio(
+                    aspectRatio: 3 / 4,
+                    child: _buildImage(lesson.imageUrl),
+                  ),
                 ),
               ),
             ),
@@ -125,6 +138,13 @@ class _LessonScreenState extends State<LessonScreen> {
                   fontSize: 22, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text(lesson.summary, style: GoogleFonts.inter(fontSize: 15)),
+          if (lesson.contentMd.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              lesson.contentMd,
+              style: GoogleFonts.inter(fontSize: 14, height: 1.45),
+            ),
+          ],
           const SizedBox(height: 24),
           if (lesson.animationUrl.isNotEmpty)
             SizedBox(
@@ -142,7 +162,7 @@ class _LessonScreenState extends State<LessonScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => _openInteractive(lesson.interactiveUrl),
                 icon: const Icon(Icons.touch_app_outlined),
-                label: const Text('Open Interactive Lesson'),
+                label: const Text('Review interactive lesson in app'),
               ),
             ),
           ],

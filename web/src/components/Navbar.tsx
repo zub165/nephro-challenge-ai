@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { path: '/board-prep', label: 'Board Plan', icon: AcademicCapIcon },
   { path: '/chapters', label: 'Chapters', icon: BookOpenIcon },
   { path: '/pearls', label: 'Board Pearls', icon: LightBulbIcon },
   { path: '/notes', label: 'My Book', icon: DocumentTextIcon },

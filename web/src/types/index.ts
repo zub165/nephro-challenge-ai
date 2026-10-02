@@ -144,6 +144,18 @@ export interface UserStats {
   categoryBreakdown: CategoryPerformance[];
   dailyQuizCompleted: boolean;
   recentActivity: ActivityEntry[];
+  boardPrep?: BoardPrepSummary;
+}
+
+export interface BoardPrepSummary {
+  dayNumber: number;
+  daysUntilExam: number | null;
+  questionsInPlan: number;
+  todayAnswered: number;
+  targetMin: number;
+  targetMax: number;
+  todayFocus: string;
+  classification: { total: number; know: number; guessed: number; wrong: number };
 }
 
 export interface CategoryPerformance {
@@ -152,6 +164,7 @@ export interface CategoryPerformance {
   totalQuestions: number;
   correctAnswers: number;
   accuracy: number;
+  chapterSlug?: string;
 }
 
 export interface ActivityEntry {
@@ -205,12 +218,18 @@ export interface NotesChapterGroup {
   };
   notes: StudyNote[];
   count: number;
+  book?: {
+    high_yield: string[];
+    pearls: { topic: string; pearl: string; mnemonic?: string | null; source?: string }[];
+    lessons: { id: number; title: string; topic: string; summary: string; content_md: string }[];
+  };
 }
 
 export interface NotesReview {
   chapters: NotesChapterGroup[];
   uncategorized: StudyNote[];
   total: number;
+  curriculum_chapters?: number;
 }
 
 export interface OrganizeNotesResponse {

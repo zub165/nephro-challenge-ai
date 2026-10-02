@@ -37,6 +37,7 @@ interface BookChapter {
   pearls: StudyNote[];
   clinicalNotes: StudyNote[];
   chapter?: Chapter;
+  book?: NotesReview['chapters'][number]['book'];
 }
 
 function splitNotes(notes: StudyNote[]) {
@@ -126,12 +127,13 @@ export default function Notes() {
   const displayReview = review ?? cachedReview;
 
   const bookChapters = useMemo((): BookChapter[] => {
-    const bySlug = new Map<string, StudyNote[]>();
+    const bySlug = new Map<string, NotesReview['chapters'][number]>();
     for (const group of displayReview?.chapters ?? []) {
-      bySlug.set(group.chapter.slug, group.notes);
+      bySlug.set(group.chapter.slug, group);
     }
     const list: BookChapter[] = (chapters ?? []).map((ch) => {
-      const notes = dedupeStudyNotes(bySlug.get(ch.slug) ?? []);
+      const group = bySlug.get(ch.slug);
+      const notes = dedupeStudyNotes(group?.notes ?? []);
       const { pearls, clinicalNotes } = splitNotes(notes);
       return {
         key: ch.slug,
@@ -142,6 +144,7 @@ export default function Notes() {
         pearls,
         clinicalNotes,
         chapter: ch,
+        book: group?.book,
       };
     });
     if (displayReview?.uncategorized?.length) {
@@ -160,7 +163,12 @@ export default function Notes() {
     return list;
   }, [displayReview, chapters]);
 
-  const chaptersWithContent = bookChapters.filter((c) => c.notes.length > 0);
+  const chaptersWithContent = bookChapters.filter(
+    (c) =>
+      c.notes.length > 0 ||
+      (c.book?.lessons?.length ?? 0) > 0 ||
+      (c.book?.pearls?.length ?? 0) > 0
+  );
   const activeChapter = bookChapters.find((c) => c.key === activeSection);
   const activeIndex = chaptersWithContent.findIndex((c) => c.key === activeSection);
 
@@ -268,7 +276,7 @@ Retroperitoneal fibrosis → bilateral ureteral obstruction`}</pre>
         <div className="py-16 text-center">
           <button onClick={() => refetch()} className="btn-primary text-sm">Retry</button>
         </div>
-      ) : !displayReview?.total ? (
+      ) : !displayReview || (chaptersWithContent.length === 0 && !displayReview.total) ? (
         <div className="py-16 text-center">
           <BookOpenIcon className="mx-auto h-12 w-12 text-gray-300" />
           <p className="mt-4 font-medium">Your book is empty</p>
@@ -297,7 +305,9 @@ Retroperitoneal fibrosis → bilateral ureteral obstruction`}</pre>
                 <span>Table of Contents</span>
               </button>
               {bookChapters.map((ch) => {
-                if (ch.notes.length === 0) return null;
+                const hasBook =
+                  (ch.book?.lessons?.length ?? 0) > 0 || (ch.book?.pearls?.length ?? 0) > 0;
+                if (ch.notes.length === 0 && !hasBook) return null;
                 return (
                   <button
                     key={ch.key}
@@ -430,12 +440,76 @@ function BookPage({
       </header>
 
       <div className="space-y-8 p-6 sm:p-8">
+        {(chapter.book?.high_yield?.length ?? 0) > 0 && (
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-teal-800 dark:text-teal-300">
+              Exam knowledge — high yield
+            </h3>
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {chapter.book!.high_yield.map((item) => (
+                <li key={item} className="text-sm text-gray-700 dark:text-gray-300">
+                  • {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {(chapter.book?.pearls?.length ?? 0) > 0 && (
+          <section>
+            <div className="mb-4 flex items-center gap-2 border-b border-amber-200 pb-2 dark:border-amber-800">
+              <LightBulbIcon className="h-5 w-5 text-amber-600" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                Board Pearls
+              </h3>
+              <span className="ml-auto text-xs text-gray-400">{chapter.book!.pearls.length}</span>
+            </div>
+            <ol className="space-y-3">
+              {chapter.book!.pearls.map((pearl, i) => (
+                <li key={`${pearl.topic}-${i}`}>
+                  <PearlCard
+                    item={{
+                      topic: pearl.topic,
+                      pearl: pearl.pearl,
+                      mnemonic: pearl.mnemonic,
+                      source: (pearl.source as 'curated' | 'mcq' | 'my_book' | undefined),
+                    }}
+                    compact
+                  />
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {(chapter.book?.lessons?.length ?? 0) > 0 && (
+          <section>
+            <div className="mb-4 flex items-center gap-2 border-b border-gray-200 pb-2 dark:border-gray-700">
+              <DocumentTextIcon className="h-5 w-5 text-gray-500" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                Chapter teaching notes
+              </h3>
+            </div>
+            <div className="space-y-4">
+              {chapter.book!.lessons.map((lesson) => (
+                <div key={lesson.id} className="rounded-xl border border-stone-200 bg-white/90 p-4 dark:border-stone-700 dark:bg-stone-800/50">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-400">{lesson.topic}</p>
+                  <h4 className="mt-1 font-semibold text-gray-900 dark:text-gray-100">{lesson.title}</h4>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                    {lesson.content_md || lesson.summary}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Pearls section */}
         <section>
           <div className="mb-4 flex items-center gap-2 border-b border-amber-200 pb-2 dark:border-amber-800">
             <LightBulbIcon className="h-5 w-5 text-amber-600" />
             <h3 className="text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
-              Board Pearls
+              My pearls
             </h3>
             <span className="ml-auto text-xs text-gray-400">{chapter.pearls.length}</span>
           </div>

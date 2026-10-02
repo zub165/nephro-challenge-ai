@@ -25,6 +25,25 @@ export default function Dashboard() {
     queryFn: () => api.get('/stats/').then((r) => r.data),
   });
 
+  const { data: weaknesses } = useQuery<
+    {
+      name: string;
+      accuracy: number;
+      incorrect_count: number;
+      total_count: number;
+      chapterSlug?: string;
+      chapterId?: string;
+      recommend?: string;
+      read_path?: string;
+      practice_path?: string;
+    }[]
+  >({
+    queryKey: ['weaknesses'],
+    queryFn: () => api.get('/weaknesses/').then((r) => r.data),
+  });
+
+  if (isLoading) return <LoadingSpinner text="Loading your dashboard..." />;
+
   if (isLoading) return <LoadingSpinner text="Loading your dashboard..." />;
 
   if (error) {
@@ -41,10 +60,24 @@ export default function Dashboard() {
     );
   }
 
-  const weakTopics = stats?.categoryBreakdown
-    ?.filter((c) => c.totalQuestions > 0)
-    ?.sort((a, b) => a.accuracy - b.accuracy)
-    ?.slice(0, 3);
+  const weakTopics =
+    (weaknesses && weaknesses.length > 0
+      ? weaknesses
+      : stats?.categoryBreakdown
+          ?.filter((c) => c.totalQuestions > 0)
+          ?.sort((a, b) => a.accuracy - b.accuracy)
+          ?.slice(0, 3)
+          ?.map((c) => ({
+            name: c.categoryName,
+            accuracy: c.accuracy,
+            incorrect_count: c.totalQuestions - c.correctAnswers,
+            total_count: c.totalQuestions,
+            chapterSlug: c.chapterSlug,
+            chapterId: c.categoryId,
+            recommend: `Read ${c.categoryName}, then redo chapter questions.`,
+            read_path: c.chapterSlug ? `/chapters/${c.chapterSlug}` : '/chapters',
+            practice_path: `/quiz/chapter/${c.categoryId}`,
+          }))) ?? [];
 
   return (
     <div className="space-y-8">
@@ -102,27 +135,26 @@ export default function Dashboard() {
         >
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Topics to Improve
+              Read your weak subjects
             </h2>
             <Link
-              to="/categories"
+              to="/chapters"
               className="flex items-center gap-1 text-xs font-medium text-teal-700 hover:text-teal-600 dark:text-teal-400"
             >
-              All Topics <ArrowRightIcon className="h-3 w-3" />
+              All Chapters <ArrowRightIcon className="h-3 w-3" />
             </Link>
           </div>
 
-          {weakTopics && weakTopics.length > 0 ? (
+          {weakTopics.length > 0 ? (
             <div className="space-y-3">
-              {weakTopics.map((topic, i) => (
-                <Link
-                  key={topic.categoryId}
-                  to={`/quiz/category/${topic.categoryId}`}
-                  className="block rounded-xl border border-gray-100 p-4 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+              {weakTopics.map((topic) => (
+                <div
+                  key={topic.name}
+                  className="rounded-xl border border-gray-100 p-4 dark:border-gray-700"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {topic.categoryName}
+                      {topic.name}
                     </span>
                     <span className={`text-sm font-bold ${
                       topic.accuracy < 50 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'
@@ -130,6 +162,10 @@ export default function Dashboard() {
                       {topic.accuracy}%
                     </span>
                   </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {topic.recommend ||
+                      `${topic.incorrect_count} missed of ${topic.total_count}. Read this chapter, then quiz it again.`}
+                  </p>
                   <div className="mt-2 h-2 w-full rounded-full bg-gray-100 dark:bg-gray-700">
                     <div
                       className={`h-2 rounded-full transition-all ${
@@ -138,12 +174,34 @@ export default function Dashboard() {
                       style={{ width: `${topic.accuracy}%` }}
                     />
                   </div>
-                </Link>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link
+                      to={topic.read_path || (topic.chapterSlug ? `/chapters/${topic.chapterSlug}` : '/chapters')}
+                      className="rounded-lg bg-teal-700 px-3 py-1.5 text-xs font-semibold text-white"
+                    >
+                      Read chapter
+                    </Link>
+                    <Link
+                      to={topic.practice_path || `/quiz/chapter/${topic.chapterId}`}
+                      className="rounded-lg border border-teal-700 px-3 py-1.5 text-xs font-semibold text-teal-800 dark:text-teal-300"
+                    >
+                      Redo quiz
+                    </Link>
+                    {topic.chapterSlug && (
+                      <Link
+                        to={`/notes?chapter=${topic.chapterSlug}`}
+                        className="rounded-lg border border-amber-400 px-3 py-1.5 text-xs font-semibold text-amber-800 dark:text-amber-300"
+                      >
+                        Open book
+                      </Link>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
             <p className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-              Take your first quiz to see topic breakdown
+              Take a chapter quiz. Missed topics will appear here with a reading assignment.
             </p>
           )}
         </motion.div>
@@ -161,6 +219,21 @@ export default function Dashboard() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
+            <Link
+              to="/board-prep"
+              className="flex flex-col items-center gap-2 rounded-xl border-2 border-indigo-100 bg-indigo-50 p-5 text-center transition-all hover:border-indigo-300 hover:shadow-md dark:border-indigo-900/50 dark:bg-indigo-900/20"
+            >
+              <AcademicCapIcon className="h-8 w-8 text-indigo-700 dark:text-indigo-300" />
+              <span className="text-sm font-semibold text-indigo-800 dark:text-indigo-200">
+                25-Day Board Plan
+              </span>
+              <span className="text-xs text-indigo-600 dark:text-indigo-400">
+                {stats?.boardPrep?.todayFocus
+                  ? `Day ${stats.boardPrep.dayNumber}: ${stats.boardPrep.todayFocus}`
+                  : 'Questions + review, not a textbook reread'}
+              </span>
+            </Link>
+
             <Link
               to="/daily-challenge"
               className="flex flex-col items-center gap-2 rounded-xl border-2 border-teal-100 bg-teal-50 p-5 text-center transition-all hover:border-teal-300 hover:shadow-md dark:border-teal-900/50 dark:bg-teal-900/20 dark:hover:border-teal-700"

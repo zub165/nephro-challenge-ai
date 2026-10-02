@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TINU Syndrome — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --tinu:#1d4ed8; --drug:#b45309; --sjogren:#7c3aed; --sarcoid:#0d9488; --tb:#dc2626; --viral:#ca8a04;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:#065f46; color:#065f46;}
+  .pill.tinu.active{background:#dbeafe; border-color:var(--tinu); color:#1e3a8a;}
+  .pill.drug.active{background:#ffedd5; border-color:var(--drug); color:#7c2d12;}
+  .pill.sjogren.active{background:#ede9fe; border-color:var(--sjogren); color:#4c1d95;}
+  .pill.sarcoid.active{background:#ccfbf1; border-color:var(--sarcoid); color:#134e4a;}
+  .pill.tb.active{background:#fee2e2; border-color:var(--tb); color:#7f1d1d;}
+  .pill.viral.active{background:#fef9c3; border-color:var(--viral); color:#713f12;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:560px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.15rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-tinu { background-color:#eff6ff; box-shadow: inset 4px 0 0 var(--tinu); }
+  tr.highlight-tinu td { font-weight:600; color:#1e3a8a; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-tinu{background:#dbeafe; color:#1e3a8a;}
+  .tag-drug{background:#ffedd5; color:#7c2d12;}
+  .tag-sjog{background:#ede9fe; color:#4c1d95;}
+  .tag-sarc{background:#ccfbf1; color:#134e4a;}
+  .tag-tb{background:#fee2e2; color:#7f1d1d;}
+  .tag-viral{background:#fef9c3; color:#713f12;}
+
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Tubulointerstitial Nephritis &amp; Uveitis (TINU)</h1>
+      <p>Interactive biopsy pathology · Differential diagnosis · Clinical management</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <section class="stage">
+    <h2>Interactive Renal Biopsy Diagram</h2>
+    <p class="sub">Select a diagnosis to compare the histologic pattern of each interstitial disease.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill tinu" id="btnTinu" onclick="setMode('tinu')">TINU Syndrome ★</button>
+      <button class="pill drug" id="btnDrug" onclick="setMode('drug')">Drug-Induced AIN</button>
+      <button class="pill sjogren" id="btnSjogren" onclick="setMode('sjogren')">Sjögren AIN</button>
+      <button class="pill sarcoid" id="btnSarcoid" onclick="setMode('sarcoid')">Sarcoid AIN</button>
+      <button class="pill tb" id="btnTb" onclick="setMode('tb')">Renal TB</button>
+      <button class="pill viral" id="btnViral" onclick="setMode('viral')">Viral AIN</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="tissueBg" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#fdf2f8"/><stop offset="100%" stop-color="#fbcfe8"/>
+          </radialGradient>
+          <radialGradient id="tubuleLumen" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="#fff7ed"/><stop offset="100%" stop-color="#fed7aa"/>
+          </radialGradient>
+          <radialGradient id="tubuleCell" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#f9a8d4"/>
+          </radialGradient>
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="nucGlow">
+            <feGaussianBlur stdDeviation="1" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1000" height="620" fill="url(#tissueBg)"/>
+
+        <!-- TITLE -->
+        <text x="500" y="30" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#0f172a">Renal Cortex — H&amp;E Stain (High Power)</text>
+
+        <!-- ============== -->
+        <!-- NORMAL TUBULES -->
+        <!-- ============== -->
+        <g id="base-tissue">
+          <!-- Tightly packed tubules with minimal interstitium -->
+          <g id="tubules-normal">
+            <!-- Row 1 -->
+            <g transform="translate(80,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(180,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(280,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(380,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(480,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(580,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(680,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(780,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(880,80)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+
+            <!-- Row 2 -->
+            <g transform="translate(80,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(180,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(280,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(380,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(480,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(580,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(680,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(780,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(880,180)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+
+            <!-- Row 3 -->
+            <g transform="translate(80,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(180,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(280,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(380,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(480,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(580,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(680,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(780,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(880,280)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+
+            <!-- Row 4 -->
+            <g transform="translate(80,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(180,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(280,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(380,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(480,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(580,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(680,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(780,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(880,380)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+
+            <!-- Row 5 -->
+            <g transform="translate(80,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(180,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(280,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(380,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(480,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(580,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(680,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(780,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+            <g transform="translate(880,480)">
+              <circle r="38" fill="url(#tubuleCell)" stroke="#be185d" stroke-width="2"/>
+              <circle r="20" fill="url(#tubuleLumen)"/>
+              <circle cx="-15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="-15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="-15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+              <circle cx="15" cy="15" r="4" fill="#4c1d95" opacity="0.8"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- TINU OVERLAY — Dense interstitial infiltrate     -->
+        <!-- =============================================== -->
+        <g id="state-tinu" style="display:none;">
+          <!-- Massive interstitial infiltrate covering the gaps -->
+          <g filter="url(#nucGlow)">
+            <!-- Lymphocytes (dark purple) -->
+            <g fill="#4c1d95" opacity="0.9">
+              <circle cx="130" cy="130" r="5"/><circle cx="150" cy="125" r="4"/><circle cx="160" cy="145" r="5"/>
+              <circle cx="135" cy="155" r="4"/><circle cx="145" cy="170" r="5"/><circle cx="230" cy="130" r="5"/>
+              <circle cx="250" cy="120" r="4"/><circle cx="245" cy="145" r="5"/><circle cx="235" cy="160" r="4"/>
+              <circle cx="330" cy="125" r="5"/><circle cx="350" cy="120" r="4"/><circle cx="345" cy="145" r="5"/>
+              <circle cx="335" cy="160" r="4"/><circle cx="430" cy="130" r="5"/><circle cx="450" cy="125" r="4"/>
+              <circle cx="445" cy="150" r="5"/><circle cx="435" cy="165" r="4"/><circle cx="530" cy="125" r="5"/>
+              <circle cx="545" cy="120" r="4"/><circle cx="540" cy="145" r="5"/><circle cx="535" cy="160" r="4"/>
+              <circle cx="630" cy="130" r="5"/><circle cx="650" cy="125" r="4"/><circle cx="645" cy="150" r="5"/>
+              <circle cx="635" cy="165" r="4"/><circle cx="730" cy="130" r="5"/><circle cx="750" cy="125" r="4"/>
+              <circle cx="745" cy="150" r="5"/><circle cx="735" cy="165" r="4"/><circle cx="830" cy="130" r="5"/>
+              <circle cx="850" cy="125" r="4"/><circle cx="845" cy="150" r="5"/><circle cx="835" cy="165" r="4"/>
+              <circle cx="930" cy="130" r="5"/><circle cx="950" cy="125" r="4"/><circle cx="945" cy="150" r="5"/>
+              <circle cx="935" cy="165" r="4"/>
+              <!-- Additional infiltrate in lower rows -->
+              <circle cx="130" cy="230" r="5"/><circle cx="150" cy="225" r="4"/><circle cx="160" cy="245" r="5"/>
+              <circle cx="135" cy="255" r="4"/><circle cx="230" cy="230" r="5"/><circle cx="250" cy="225" r="4"/>
+              <circle cx="245" cy="245" r="5"/><circle cx="235" cy="260" r="4"/><circle cx="330" cy="230" r="5"/>
+              <circle cx="350" cy="225" r="4"/><circle cx="345" cy="245" r="5"/><circle cx="335" cy="260" r="4"/>
+              <circle cx="430" cy="230" r="5"/><circle cx="450" cy="225" r="4"/><circle cx="445" cy="245" r="5"/>
+              <circle cx="435" cy="260" r="4"/><circle cx="530" cy="230" r="5"/><circle cx="545" cy="225" r="4"/>
+              <circle cx="540" cy="245" r="5"/><circle cx="535" cy="260" r="4"/><circle cx="630" cy="230" r="5"/>
+              <circle cx="650" cy="225" r="4"/><circle cx="645" cy="245" r="5"/><circle cx="635" cy="260" r="4"/>
+              <circle cx="730" cy="230" r="5"/><circle cx="750" cy="225" r="4"/><circle cx="745" cy="245" r="5"/>
+              <circle cx="735" cy="260" r="4"/><circle cx="830" cy="230" r="5"/><circle cx="850" cy="225" r="4"/>
+              <circle cx="845" cy="245" r="5"/><circle cx="835" cy="260" r="4"/><circle cx="930" cy="230" r="5"/>
+              <circle cx="950" cy="225" r="4"/><circle cx="945" cy="245" r="5"/><circle cx="935" cy="260" r="4"/>
+            </g>
+            <!-- Eosinophils (pink granules) -->
+            <g fill="#f472b6" opacity="0.85">
+              <circle cx="200" cy="140" r="4"/><circle cx="300" cy="150" r="4"/><circle cx="400" cy="140" r="4"/>
+              <circle cx="500" cy="145" r="4"/><circle cx="600" cy="140" r="4"/><circle cx="700" cy="150" r="4"/>
+              <circle cx="800" cy="140" r="4"/><circle cx="900" cy="145" r="4"/>
+              <circle cx="200" cy="240" r="4"/><circle cx="300" cy="250" r="4"/><circle cx="400" cy="240" r="4"/>
+              <circle cx="500" cy="245" r="4"/><circle cx="600" cy="240" r="4"/><circle cx="700" cy="250" r="4"/>
+              <circle cx="800" cy="240" r="4"/><circle cx="900" cy="245" r="4"/>
+            </g>
+            <!-- Plasma cells (eccentric nuclei with clear halo) -->
+            <g fill="#7c3aed" opacity="0.85">
+              <circle cx="180" cy="160" r="6"/><circle cx="280" cy="155" r="6"/><circle cx="380" cy="160" r="6"/>
+              <circle cx="480" cy="155" r="6"/><circle cx="580" cy="160" r="6"/><circle cx="680" cy="155" r="6"/>
+              <circle cx="780" cy="160" r="6"/><circle cx="880" cy="155" r="6"/>
+            </g>
+          </g>
+
+          <!-- Tubulitis (lymphocytes invading tubular epithelium) -->
+          <g filter="url(#nucGlow)">
+            <circle cx="90" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="190" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="290" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="390" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="490" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="590" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="690" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="790" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+            <circle cx="890" cy="60" r="5" fill="#4c1d95" opacity="0.95"/>
+          </g>
+
+          <!-- Label -->
+          <rect x="330" y="555" width="340" height="50" rx="8" fill="#1e3a8a" opacity="0.95"/>
+          <text x="500" y="577" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#dbeafe">DENSE MONONUCLEAR INFILTRATE + TUBULITIS</text>
+          <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="10" fill="#bfdbfe">Lymphocytes, plasma cells, eosinophils — classic AIN</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- DRUG OVERLAY — Infiltrate with eosinophils      -->
+        <!-- =============================================== -->
+        <g id="state-drug" style="display:none;">
+          <!-- Moderate infiltrate + prominent eosinophils -->
+          <g filter="url(#nucGlow)">
+            <g fill="#4c1d95" opacity="0.85">
+              <circle cx="140" cy="140" r="4"/><circle cx="240" cy="130" r="4"/><circle cx="340" cy="140" r="4"/>
+              <circle cx="440" cy="130" r="4"/><circle cx="540" cy="140" r="4"/><circle cx="640" cy="130" r="4"/>
+              <circle cx="740" cy="140" r="4"/><circle cx="840" cy="130" r="4"/>
+            </g>
+            <!-- Very prominent eosinophils (bilobed nuclei) -->
+            <g fill="#ec4899" opacity="0.95">
+              <ellipse cx="180" cy="150" rx="5" ry="3"/><ellipse cx="180" cy="156" rx="5" ry="3"/>
+              <ellipse cx="280" cy="145" rx="5" ry="3"/><ellipse cx="280" cy="151" rx="5" ry="3"/>
+              <ellipse cx="380" cy="150" rx="5" ry="3"/><ellipse cx="380" cy="156" rx="5" ry="3"/>
+              <ellipse cx="480" cy="145" rx="5" ry="3"/><ellipse cx="480" cy="151" rx="5" ry="3"/>
+              <ellipse cx="580" cy="150" rx="5" ry="3"/><ellipse cx="580" cy="156" rx="5" ry="3"/>
+              <ellipse cx="680" cy="145" rx="5" ry="3"/><ellipse cx="680" cy="151" rx="5" ry="3"/>
+              <ellipse cx="780" cy="150" rx="5" ry="3"/><ellipse cx="780" cy="156" rx="5" ry="3"/>
+              <ellipse cx="880" cy="145" rx="5" ry="3"/><ellipse cx="880" cy="151" rx="5" ry="3"/>
+            </g>
+          </g>
+          <rect x="330" y="555" width="340" height="50" rx="8" fill="#7c2d12" opacity="0.95"/>
+          <text x="500" y="577" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fed7aa">INFILTRATE WITH PROMINENT EOSINOPHILS</text>
+          <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="10" fill="#fdba74">Drug-induced AIN (NSAIDs, antibiotics, PPIs)</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- SJOGREN OVERLAY — Chronic, fibrotic pattern     -->
+        <!-- =============================================== -->
+        <g id="state-sjogren" style="display:none;">
+          <!-- Chronic mononuclear infiltrate + tubular atrophy -->
+          <g filter="url(#nucGlow)">
+            <g fill="#7c3aed" opacity="0.85">
+              <circle cx="140" cy="140" r="5"/><circle cx="180" cy="160" r="5"/><circle cx="220" cy="130" r="5"/>
+              <circle cx="260" cy="155" r="5"/><circle cx="340" cy="140" r="5"/><circle cx="380" cy="160" r="5"/>
+              <circle cx="420" cy="130" r="5"/><circle cx="460" cy="155" r="5"/><circle cx="540" cy="140" r="5"/>
+              <circle cx="580" cy="160" r="5"/><circle cx="620" cy="130" r="5"/><circle cx="660" cy="155" r="5"/>
+              <circle cx="740" cy="140" r="5"/><circle cx="780" cy="160" r="5"/><circle cx="820" cy="130" r="5"/>
+              <circle cx="860" cy="155" r="5"/><circle cx="900" cy="140" r="5"/>
+            </g>
+          </g>
+          <!-- Tubular atrophy (shrunken tubules) -->
+          <g opacity="0.6">
+            <circle cx="180" cy="80" r="25" fill="none" stroke="#be185d" stroke-width="3" stroke-dasharray="3 2"/>
+            <circle cx="380" cy="80" r="25" fill="none" stroke="#be185d" stroke-width="3" stroke-dasharray="3 2"/>
+            <circle cx="580" cy="80" r="25" fill="none" stroke="#be185d" stroke-width="3" stroke-dasharray="3 2"/>
+            <circle cx="780" cy="80" r="25" fill="none" stroke="#be185d" stroke-width="3" stroke-dasharray="3 2"/>
+          </g>
+          <!-- Fibrosis (light brown streaks) -->
+          <g stroke="#a16207" stroke-width="3" fill="none" opacity="0.5">
+            <path d="M 100 100 Q 300 130 500 100"/>
+            <path d="M 100 300 Q 300 330 500 300"/>
+          </g>
+          <rect x="330" y="555" width="340" height="50" rx="8" fill="#4c1d95" opacity="0.95"/>
+          <text x="500" y="577" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#ede9fe">CHRONIC INFLAMMATE + TUBULAR ATROPHY + FIBROSIS</text>
+          <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="10" fill="#c4b5fd">Sjögren syndrome — often older women, sicca symptoms</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- SARCOID OVERLAY — Non-caseating granulomas      -->
+        <!-- =============================================== -->
+        <g id="state-sarcoid" style="display:none;">
+          <!-- Granulomas (clusters of epithelioid histiocytes) -->
+          <g>
+            <!-- Granuloma 1 -->
+            <circle cx="200" cy="150" r="35" fill="#ccfbf1" stroke="#0d9488" stroke-width="2" opacity="0.9"/>
+            <g fill="#134e4a" opacity="0.85">
+              <circle cx="185" cy="140" r="4"/><circle cx="200" cy="135" r="4"/><circle cx="215" cy="140" r="4"/>
+              <circle cx="220" cy="155" r="4"/><circle cx="215" cy="170" r="4"/><circle cx="200" cy="175" r="4"/>
+              <circle cx="185" cy="170" r="4"/><circle cx="180" cy="155" r="4"/><circle cx="200" cy="155" r="6"/>
+            </g>
+            <!-- Giant cell -->
+            <ellipse cx="200" cy="155" rx="10" ry="7" fill="#0d9488" opacity="0.7"/>
+            <text x="200" y="205" text-anchor="middle" font-family="Arial" font-size="9" fill="#134e4a" font-weight="700">Granuloma</text>
+
+            <!-- Granuloma 2 -->
+            <circle cx="500" cy="180" r="35" fill="#ccfbf1" stroke="#0d9488" stroke-width="2" opacity="0.9"/>
+            <g fill="#134e4a" opacity="0.85">
+              <circle cx="485" cy="170" r="4"/><circle cx="500" cy="165" r="4"/><circle cx="515" cy="170" r="4"/>
+              <circle cx="520" cy="185" r="4"/><circle cx="515" cy="200" r="4"/><circle cx="500" cy="205" r="4"/>
+              <circle cx="485" cy="200" r="4"/><circle cx="480" cy="185" r="4"/><circle cx="500" cy="185" r="6"/>
+            </g>
+            <text x="500" y="235" text-anchor="middle" font-family="Arial" font-size="9" fill="#134e4a" font-weight="700">Granuloma</text>
+
+            <!-- Granuloma 3 -->
+            <circle cx="800" cy="160" r="35" fill="#ccfbf1" stroke="#0d9488" stroke-width="2" opacity="0.9"/>
+            <g fill="#134e4a" opacity="0.85">
+              <circle cx="785" cy="150" r="4"/><circle cx="800" cy="145" r="4"/><circle cx="815" cy="150" r="4"/>
+              <circle cx="820" cy="165" r="4"/><circle cx="815" cy="180" r="4"/><circle cx="800" cy="185" r="4"/>
+              <circle cx="785" cy="180" r="4"/><circle cx="780" cy="165" r="4"/><circle cx="800" cy="165" r="6"/>
+            </g>
+            <text x="800" y="215" text-anchor="middle" font-family="Arial" font-size="9" fill="#134e4a" font-weight="700">Granuloma</text>
+          </g>
+          <rect x="330" y="555" width="340" height="50" rx="8" fill="#134e4a" opacity="0.95"/>
+          <text x="500" y="577" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#ccfbf1">NON-CASEATING GRANULOMAS</text>
+          <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="10" fill="#5eead4">Sarcoidosis — hilar adenopathy, hypercalcemia, uveitis</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- TB OVERLAY — Caseating granulomas                -->
+        <!-- =============================================== -->
+        <g id="state-tb" style="display:none;">
+          <!-- Caseating granulomas (central necrosis) -->
+          <g>
+            <circle cx="200" cy="160" r="40" fill="#fecaca" stroke="#dc2626" stroke-width="2.5" opacity="0.95"/>
+            <circle cx="200" cy="160" r="20" fill="#fef3c7" opacity="0.9"/>
+            <text x="200" y="163" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d" font-weight="700">Caseous</text>
+            <text x="200" y="175" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d" font-weight="700">necrosis</text>
+
+            <circle cx="500" cy="180" r="40" fill="#fecaca" stroke="#dc2626" stroke-width="2.5" opacity="0.95"/>
+            <circle cx="500" cy="180" r="20" fill="#fef3c7" opacity="0.9"/>
+            <text x="500" y="183" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d" font-weight="700">Caseous</text>
+            <text x="500" y="195" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d" font-weight="700">necrosis</text>
+
+            <circle cx="800" cy="160" r="40" fill="#fecaca" stroke="#dc2626" stroke-width="2.5" opacity="0.95"/>
+            <circle cx="800" cy="160" r="20" fill="#fef3c7" opacity="0.9"/>
+            <text x="800" y="163" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d" font-weight="700">Caseous</text>
+            <text x="800" y="175" text-anchor="middle" font-family="Arial" font-size="9" fill="#7f1d1d" font-weight="700">necrosis</text>
+          </g>
+          <!-- Langhans giant cells -->
+          <g>
+            <circle cx="170" cy="130" r="5" fill="#7f1d1d" opacity="0.9"/>
+            <circle cx="230" cy="130" r="5" fill="#7f1d1d" opacity="0.9"/>
+            <circle cx="470" cy="150" r="5" fill="#7f1d1d" opacity="0.9"/>
+            <circle cx="530" cy="150" r="5" fill="#7f1d1d" opacity="0.9"/>
+            <circle cx="770" cy="130" r="5" fill="#7f1d1d" opacity="0.9"/>
+            <circle cx="830" cy="130" r="5" fill="#7f1d1d" opacity="0.9"/>
+          </g>
+          <rect x="330" y="555" width="340" height="50" rx="8" fill="#7f1d1d" opacity="0.95"/>
+          <text x="500" y="577" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fee2e2">CASEATING GRANULOMAS</text>
+          <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">Renal TB — sterile pyuria, hematuria, Langhans giant cells</text>
+        </g>
+
+        <!-- =============================================== -->
+        <!-- VIRAL OVERLAY — Mild interstitial infiltrate    -->
+        <!-- =============================================== -->
+        <g id="state-viral" style="display:none;">
+          <!-- Mild scattered infiltrate -->
+          <g filter="url(#nucGlow)">
+            <g fill="#ca8a04" opacity="0.8">
+              <circle cx="150" cy="140" r="4"/><circle cx="250" cy="150" r="4"/><circle cx="350" cy="140" r="4"/>
+              <circle cx="450" cy="150" r="4"/><circle cx="550" cy="140" r="4"/><circle cx="650" cy="150" r="4"/>
+              <circle cx="750" cy="140" r="4"/><circle cx="850" cy="150" r="4"/>
+            </g>
+            <!-- Viral inclusions (smudge cells) -->
+            <g fill="#fbbf24" opacity="0.9">
+              <circle cx="200" cy="120" r="8"/>
+              <circle cx="500" cy="120" r="8"/>
+              <circle cx="800" cy="120" r="8"/>
+            </g>
+          </g>
+          <rect x="330" y="555" width="340" height="50" rx="8" fill="#713f12" opacity="0.95"/>
+          <text x="500" y="577" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#fef9c3">MILD INFILTRATE + VIRAL INCLUSIONS</text>
+          <text x="500" y="595" text-anchor="middle" font-family="Arial" font-size="10" fill="#fde047">Parvovirus B19, CMV, EBV — often self-limited</text>
+        </g>
+
+        <!-- Scale bar -->
+        <g transform="translate(870, 570)">
+          <line x1="0" y1="0" x2="80" y2="0" stroke="#0f172a" stroke-width="3"/>
+          <line x1="0" y1="-5" x2="0" y2="5" stroke="#0f172a" stroke-width="3"/>
+          <line x1="80" y1="-5" x2="80" y2="5" stroke="#0f172a" stroke-width="3"/>
+          <text x="40" y="20" text-anchor="middle" font-family="Arial" font-size="10" fill="#0f172a">50 μm</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Typical Patient</div>
+        <div class="rc-value" id="rcDemoValue">—</div>
+        <div class="rc-sub" id="rcDemoSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Histology</div>
+        <div class="rc-value" id="rcHistoValue">—</div>
+        <div class="rc-sub" id="rcHistoSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Extra-renal Features</div>
+        <div class="rc-note" id="rcSysValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Diagnosis</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis of Interstitial Nephritis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>Typical Patient</th>
+          <th>Histology</th>
+          <th>Extra-renal Features</th>
+          <th>Key Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-tinu">
+          <td><strong>TINU Syndrome</strong> <span class="tag tag-tinu">Correct</span></td>
+          <td>Adolescents &amp; young adults (median age ~15–25)</td>
+          <td>Acute interstitial nephritis with mixed infiltrate (lymphocytes, plasma cells, eosinophils) + tubulitis</td>
+          <td><strong>Bilateral anterior uveitis</strong> (painful red eyes, photophobia, blurred vision)</td>
+          <td>Young patient + AIN + uveitis = TINU; often responds to steroids</td>
+        </tr>
+        <tr>
+          <td><strong>Drug-Induced AIN</strong> <span class="tag tag-drug">Distractor</span></td>
+          <td>Any age; recent exposure to NSAIDs, antibiotics, PPIs</td>
+          <td>Interstitial infiltrate with <strong>prominent eosinophils</strong>; may have granulomas</td>
+          <td>Fever, rash, eosinophilia (may form a triad)</td>
+          <td>Recent drug exposure; eosinophils on biopsy; resolves after drug withdrawal</td>
+        </tr>
+        <tr>
+          <td><strong>Sjögren Syndrome</strong> <span class="tag tag-sjog">Distractor</span></td>
+          <td>Older women; known or suspected autoimmune disease</td>
+          <td>Chronic interstitial nephritis with <strong>tubular atrophy and fibrosis</strong>; often CD4+ T-cell infiltrate</td>
+          <td>Dry eyes, dry mouth (sicca), arthritis, Raynaud's, anti-SSA/SSB antibodies</td>
+          <td>Sicca symptoms + chronic AIN + positive autoantibodies</td>
+        </tr>
+        <tr>
+          <td><strong>Sarcoidosis</strong> <span class="tag tag-sarc">Distractor</span></td>
+          <td>Adults 20–40; often Black or Northern European</td>
+          <td><strong>Non-caseating granulomas</strong> in interstitium; may have nephrocalcinosis</td>
+          <td>Hilar adenopathy, uveitis, erythema nodosum, hypercalcemia</td>
+          <td>Bilateral hilar adenopathy + uveitis + AIN + hypercalcemia</td>
+        </tr>
+        <tr>
+          <td><strong>Renal Tuberculosis</strong> <span class="tag tag-tb">Distractor</span></td>
+          <td>Patients from endemic regions or immunocompromised</td>
+          <td><strong>Caseating granulomas</strong> with Langhans giant cells; acid-fast bacilli</td>
+          <td>Pulmonary TB, constitutional symptoms, sterile pyuria</td>
+          <td>Sterile pyuria + hematuria + caseating granulomas + positive AFB culture</td>
+        </tr>
+        <tr>
+          <td><strong>Viral AIN</strong> <span class="tag tag-viral">Distractor</span></td>
+          <td>Any age; often immunocompromised (CMV) or children (parvovirus)</td>
+          <td>Mild interstitial infiltrate; <strong>viral inclusions</strong> (smudge cells for CMV)</td>
+          <td>Depends on virus — CMV (colitis, pneumonitis), parvovirus (arthralgia, rash)</td>
+          <td>Viral inclusion bodies; positive PCR/serology; often self-limited</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 28-year-old man presents with malaise, bilateral painful red eyes, and AKI (creatinine 3.8 mg/dL). Urinalysis shows sterile pyuria and granular casts. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Drug-induced AIN</button>
+        <button class="opt" onclick="answer(this,true)">B. TINU syndrome</button>
+        <button class="opt" onclick="answer(this,false)">C. Sjögren syndrome</button>
+        <button class="opt" onclick="answer(this,false)">D. Renal tuberculosis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The combination of <strong>acute interstitial nephritis</strong> (sterile pyuria, granular casts, AKI) with <strong>bilateral anterior uveitis</strong> (painful red eyes) in a young adult is diagnostic of <strong>TINU syndrome</strong>.</div>
+    </div>
+
+    <div class="q">
+      <p>2. Which histologic finding is most characteristic of TINU on kidney biopsy?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">A. Dense mononuclear infiltrate with tubulitis and eosinophils</button>
+        <button class="opt" onclick="answer(this,false)">B. Caseating granulomas with Langhans giant cells</button>
+        <button class="opt" onclick="answer(this,false)">C. Subepithelial immune complex deposits</button>
+        <button class="opt" onclick="answer(this,false)">D. Global glomerulosclerosis</button>
+      </div>
+      <div class="explain"><strong>Correct: A.</strong> TINU is a form of <strong>acute interstitial nephritis</strong>. Biopsy typically shows a dense interstitial infiltrate of lymphocytes, plasma cells, and often eosinophils, with tubulitis. Caseating granulomas suggest TB, and subepithelial deposits suggest glomerulonephritis.</div>
+    </div>
+
+    <div class="q">
+      <p>3. What is the initial management step in TINU syndrome?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Start high-dose prednisone immediately</button>
+        <button class="opt" onclick="answer(this,true)">B. Stop all potentially offending drugs (e.g., NSAIDs)</button>
+        <button class="opt" onclick="answer(this,false)">C. Start cyclophosphamide</button>
+        <button class="opt" onclick="answer(this,false)">D. Begin dialysis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The first step is to <strong>discontinue any potentially offending drugs</strong> (NSAIDs, antibiotics) that could be contributing to the AIN. If kidney function does not improve or the uveitis is significant, systemic corticosteroids are then indicated.</div>
+    </div>
+
+    <div class="q">
+      <p>4. Which of the following is the most likely cause of drug-induced AIN?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Beta-blockers</button>
+        <button class="opt" onclick="answer(this,true)">B. NSAIDs and proton-pump inhibitors</button>
+        <button class="opt" onclick="answer(this,false)">C. Statins</button>
+        <button class="opt" onclick="answer(this,false)">D. Aspirin at low dose</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The most common causes of drug-induced AIN are <strong>NSAIDs</strong>, <strong>proton-pump inhibitors</strong>, and certain antibiotics (penicillins, cephalosporins, rifampin, sulfonamides). Other drugs can also cause it, but these are the classic offenders.</div>
+    </div>
+
+    <div class="q">
+      <p>5. A patient has chronic interstitial nephritis with fibrosis and sicca symptoms. Which antibody is most likely to be positive?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Anti-dsDNA</button>
+        <button class="opt" onclick="answer(this,false)">B. ANCA</button>
+        <button class="opt" onclick="answer(this,true)">C. Anti-SSA (Ro) and anti-SSB (La)</button>
+        <button class="opt" onclick="answer(this,false)">D. Anti-GBM</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Chronic interstitial nephritis with <strong>sicca symptoms</strong> (dry eyes, dry mouth) is characteristic of <strong>Sjögren syndrome</strong>, which is associated with <strong>anti-SSA (Ro)</strong> and <strong>anti-SSB (La)</strong> antibodies.</div>
+    </div>
+
+    <div class="q">
+      <p>6. Which finding on kidney biopsy is most consistent with renal tuberculosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Eosinophil-rich interstitial infiltrate</button>
+        <button class="opt" onclick="answer(this,false)">B. Non-caseating granulomas</button>
+        <button class="opt" onclick="answer(this,true)">C. Caseating granulomas with Langhans giant cells</button>
+        <button class="opt" onclick="answer(this,false)">D. Diffuse foot process effacement</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Renal TB is characterized by <strong>caseating granulomas</strong> with <strong>Langhans giant cells</strong>, along with sterile pyuria and hematuria. Non-caseating granulomas are more typical of sarcoidosis.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      demo: 'Healthy kidney',
+      demoSub: 'No interstitial disease',
+      histo: 'Normal tubules',
+      histoSub: 'Tightly packed, minimal interstitium',
+      sys: 'No systemic symptoms; normal kidney function.',
+      verdict: 'Normal renal cortex — no interstitial inflammation.',
+      color: '#065f46',
+      state: null
+    },
+    tinu: {
+      demo: 'Adolescents & young adults',
+      demoSub: 'Median age 15–25 years',
+      histo: 'Acute interstitial nephritis',
+      histoSub: 'Dense mononuclear infiltrate + tubulitis + eosinophils',
+      sys: '<strong>Bilateral anterior uveitis</strong> (painful red eyes, photophobia, blurry vision). Systemic symptoms: malaise, fatigue, weight loss, body aches. Sterile pyuria with granular casts.',
+      verdict: 'TINU Syndrome — AIN + uveitis. Stop offending drugs; consider systemic corticosteroids.',
+      color: '#1d4ed8',
+      state: 'state-tinu'
+    },
+    drug: {
+      demo: 'Any age, recent drug exposure',
+      demoSub: 'NSAIDs, PPIs, antibiotics',
+      histo: 'Eosinophil-rich infiltrate',
+      histoSub: 'Prominent eosinophils; may have granulomas',
+      sys: 'Fever, rash, eosinophilia (may form a triad). Recent drug exposure is key. Symptoms resolve after drug withdrawal.',
+      verdict: 'Drug-Induced AIN — stop the offending drug. Steroids if kidney function does not recover.',
+      color: '#b45309',
+      state: 'state-drug'
+    },
+    sjogren: {
+      demo: 'Older women',
+      demoSub: 'Known or suspected autoimmune disease',
+      histo: 'Chronic interstitial nephritis',
+      histoSub: 'CD4+ T-cell infiltrate + tubular atrophy + fibrosis',
+      sys: 'Dry eyes and dry mouth (sicca), arthritis, Raynaud\'s phenomenon. Anti-SSA (Ro) and anti-SSB (La) antibodies.',
+      verdict: 'Sjögren Syndrome with chronic AIN — treat underlying autoimmune disease; steroids if progressive.',
+      color: '#7c3aed',
+      state: 'state-sjogren'
+    },
+    sarcoid: {
+      demo: 'Adults 20–40',
+      demoSub: 'Black or Northern European ancestry',
+      histo: 'Non-caseating granulomas',
+      histoSub: 'Interstitial granulomas; may have nephrocalcinosis',
+      sys: 'Hilar adenopathy, uveitis, erythema nodosum, hypercalcemia. May have elevated ACE level.',
+      verdict: 'Sarcoidosis with renal involvement — treat with steroids; monitor calcium.',
+      color: '#0d9488',
+      state: 'state-sarcoid'
+    },
+    tb: {
+      demo: 'Endemic region or immunocompromised',
+      demoSub: 'Pulmonary TB or disseminated disease',
+      histo: 'Caseating granulomas',
+      histoSub: 'Central caseous necrosis + Langhans giant cells',
+      sys: 'Constitutional symptoms (fever, night sweats, weight loss), sterile pyuria, hematuria. Positive AFB culture or PCR.',
+      verdict: 'Renal Tuberculosis — treat with standard anti-TB therapy (RIPE).',
+      color: '#dc2626',
+      state: 'state-tb'
+    },
+    viral: {
+      demo: 'Immunocompromised or children',
+      demoSub: 'CMV, parvovirus B19, EBV',
+      histo: 'Mild interstitial infiltrate',
+      histoSub: 'Viral inclusions (e.g., smudge cells for CMV)',
+      sys: 'Depends on virus — CMV (colitis, pneumonitis), parvovirus (arthralgia, rash). Often self-limited.',
+      verdict: 'Viral AIN — treat underlying virus if symptomatic; usually supportive care.',
+      color: '#ca8a04',
+      state: 'state-viral'
+    }
+  };
+
+  function setMode(mode) {
+    ['state-tinu','state-drug','state-sjogren','state-sarcoid','state-tb','state-viral'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnTinu','btnDrug','btnSjogren','btnSarcoid','btnTb','btnViral'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', tinu:'btnTinu', drug:'btnDrug',
+      sjogren:'btnSjogren', sarcoid:'btnSarcoid', tb:'btnTb', viral:'btnViral'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (d.state) {
+      const el = document.getElementById(d.state);
+      if (el) el.style.display = 'block';
+    }
+
+    document.getElementById('rcDemoValue').textContent = d.demo;
+    document.getElementById('rcDemoSub').textContent = d.demoSub;
+
+    document.getElementById('rcHistoValue').textContent = d.histo;
+    document.getElementById('rcHistoValue').style.color = d.color;
+    document.getElementById('rcHistoSub').textContent = d.histoSub;
+
+    document.getElementById('rcSysValue').innerHTML = d.sys;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

@@ -25,6 +25,7 @@ from api.models import (
     Category,
     Chapter,
     Choice,
+    Last48HourFact,
     Leaderboard,
     Lesson,
     Question,
@@ -40,6 +41,8 @@ from api.serializers import (
     BoardExamAnswerSerializer,
     BoardExamDetailSerializer,
     BoardExamSerializer,
+    BoardPrepSettingsSerializer,
+    Last48HourFactSerializer,
     CategorySerializer,
     ChapterDetailSerializer,
     ChapterSerializer,
@@ -85,6 +88,8 @@ from api.services.board_exam_service import (
     submit_attempt,
 )
 from api.services.leaderboard_service import build_leaderboard, user_leaderboard_rank
+from api.data.board_prep_plan import BOARD_PREP_DAYS
+from api.data.chapter_aliases import LEGACY_CHAPTER_SLUGS, canonical_slug, slugs_for_query
 from api.services.notes_enrichment_service import enrich_note_payload, enrich_study_note, references_for_study_note
 from api.services.notes_service import normalize_note_content, organize_pasted_notes
 
@@ -99,6 +104,122 @@ def _parse_limit(value, default: int = 10, maximum: int = 100) -> int:
         return max(1, min(parsed, maximum))
     except (TypeError, ValueError):
         return default
+
+
+def _chapter_q(slug: str | None) -> Q:
+    return Q(chapter__slug__in=slugs_for_query(slug))
+
+
+def _high_yield_for_chapter(slug: str) -> list[str]:
+    items: list[str] = []
+    seen: set[str] = set()
+    for day in BOARD_PREP_DAYS:
+        if slug not in (day.get("chapter_slugs") or []):
+            continue
+        for item in day.get("high_yield") or []:
+            key = item.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            items.append(item)
+    return items
+
+
+def _grouped_board_pearls(user, chapter_slug: str | None = None, include_notes: bool = False):
+    from api.data.board_pearls import BOARD_PEARLS
+    from api.data.medical_references import enrich_pearl, references_for_topic, resolve_reference_field
+
+    chapter_slug = canonical_slug(chapter_slug)
+    chapters = Chapter.objects.exclude(slug__in=LEGACY_CHAPTER_SLUGS.keys()).order_by("order_index")
+    if chapter_slug:
+        chapters = chapters.filter(slug=chapter_slug)
+    chapter_map = {c.slug: c for c in chapters}
+    grouped: dict = {}
+
+    def add_pearl(slug: str | None, item: dict):
+        slug = canonical_slug(slug)
+        if not slug or slug not in chapter_map:
+            return
+        if slug not in grouped:
+            ch = chapter_map[slug]
+            grouped[slug] = {
+                "chapter": {
+                    "id": str(ch.id),
+                    "title": ch.title,
+                    "slug": slug,
+                    "order_index": ch.order_index,
+                },
+                "pearls": [],
+            }
+        grouped[slug]["pearls"].append(item)
+
+    seen_text: set[str] = set()
+    for p in BOARD_PEARLS:
+        mapped_slug = canonical_slug(p["chapter_slug"])
+        if chapter_slug and mapped_slug != chapter_slug:
+            continue
+        text = p["pearl"].strip()
+        if text.lower() in seen_text:
+            continue
+        seen_text.add(text.lower())
+        enriched = enrich_pearl({**p, "pearl": text})
+        add_pearl(mapped_slug, {
+            "topic": enriched["topic"],
+            "pearl": text,
+            "mnemonic": enriched.get("mnemonic"),
+            "source": "curated",
+            "references": enriched.get("references", []),
+        })
+
+    db_qs = exclude_board_exam_questions(
+        Question.objects.filter(is_published=True)
+    ).exclude(clinical_pearl="").select_related("chapter", "topic")
+    if chapter_slug:
+        db_qs = db_qs.filter(_chapter_q(chapter_slug))
+    for q in db_qs:
+        text = q.clinical_pearl.strip()
+        if not text or text.lower() in seen_text:
+            continue
+        seen_text.add(text.lower())
+        slug = canonical_slug(q.chapter.slug if q.chapter_id else None)
+        if slug and slug in chapter_map:
+            refs = resolve_reference_field(q.reference or "")
+            if not refs:
+                topic = q.topic.title if q.topic_id else (q.subcategory or "From MCQ")
+                refs = references_for_topic(topic, slug)
+            add_pearl(slug, {
+                "topic": q.topic.title if q.topic_id else (q.subcategory or "From MCQ"),
+                "pearl": text,
+                "mnemonic": None,
+                "source": "mcq",
+                "references": refs,
+            })
+
+    if include_notes and user and getattr(user, "is_authenticated", False):
+        note_qs = StudyNote.objects.filter(user=user).exclude(chapter__isnull=True).select_related("chapter")
+        if chapter_slug:
+            note_qs = note_qs.filter(_chapter_q(chapter_slug))
+        for note in note_qs:
+            text = note.content.strip()
+            if len(text) > 220 or not text or text.lower() in seen_text:
+                continue
+            seen_text.add(text.lower())
+            add_pearl(note.chapter.slug if note.chapter_id else None, {
+                "topic": note.topic_title or "My Pearl",
+                "pearl": text,
+                "mnemonic": None,
+                "source": "my_book",
+                "note_id": str(note.id),
+                "references": references_for_study_note(note),
+                "verified": note.verified,
+                "verification_confidence": note.verification_confidence or None,
+            })
+
+    result = sorted(list(grouped.values()), key=lambda x: x["chapter"]["order_index"])
+    for g in result:
+        g["count"] = len(g["pearls"])
+    total = sum(g["count"] for g in result)
+    return result, total
 
 
 def _user_is_premium(user) -> bool:
@@ -385,6 +506,14 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             return QuizAttemptCreateSerializer
         return QuizAttemptSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        attempt = serializer.save()
+        # Return the marked attempt (score + per-answer reveal), not the bare create payload.
+        out = QuizAttemptSerializer(attempt, context={"request": request})
+        return Response(out.data, status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
         return QuizAttempt.objects.filter(user=self.request.user).select_related(
@@ -695,6 +824,110 @@ class BoardPrepView(APIView):
         )
 
 
+class BoardPrepPlanView(APIView):
+    """GET/POST /api/board-prep/plan/ — 25-day calendar + exam date / workdays."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from api.services.board_prep_service import build_plan_payload
+
+        return Response(build_plan_payload(request.user))
+
+    def post(self, request):
+        from api.services.board_prep_service import build_plan_payload, save_settings
+
+        serializer = BoardPrepSettingsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        save_settings(
+            request.user,
+            exam_date=serializer.validated_data.get("exam_date"),
+            work_weekdays=serializer.validated_data.get("work_weekdays"),
+        )
+        return Response(build_plan_payload(request.user))
+
+
+class BoardPrepTodayView(APIView):
+    """GET /api/board-prep/today/ — today's session from the 25-day plan."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from api.services.board_prep_service import build_plan_payload
+
+        payload = build_plan_payload(request.user)
+        return Response(
+            {
+                "today": payload["today"],
+                "day_number": payload["day_number"],
+                "days_until_exam": payload["days_until_exam"],
+                "is_workday": payload["is_workday"],
+                "today_answered": payload["today_answered"],
+                "session": payload["today_session"],
+                "classification": payload["classification"],
+                "method": payload["method"],
+            }
+        )
+
+
+class BoardPrepReviewQueueView(APIView):
+    """GET /api/board-prep/review-queue/?tag=wrong|guessed|know|review"""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from api.services.board_prep_service import review_queryset, serialize_review_item
+
+        tag = (request.query_params.get("tag") or "review").strip().lower()
+        if tag not in ("wrong", "guessed", "know", "review"):
+            tag = "review"
+        qs = review_queryset(request.user, tag=tag)[:200]
+        items = [serialize_review_item(answer) for answer in qs]
+        return Response({"tag": tag, "count": len(items), "items": items})
+
+
+class BoardPrepLast48View(APIView):
+    """GET/POST /api/board-prep/last-48h/ — rapid-review sheet."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from api.services.board_prep_service import last48_payload
+
+        return Response(last48_payload(request.user))
+
+    def post(self, request):
+        from api.services.board_prep_service import last48_payload
+
+        serializer = Last48HourFactSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        question = None
+        qid = serializer.validated_data.get("source_question_id")
+        if qid:
+            question = Question.objects.filter(id=qid).first()
+        Last48HourFact.objects.create(
+            user=request.user,
+            kind=serializer.validated_data["kind"],
+            text=serializer.validated_data["text"].strip(),
+            source_question=question,
+        )
+        return Response(last48_payload(request.user), status=status.HTTP_201_CREATED)
+
+
+class BoardPrepLast48DetailView(APIView):
+    """DELETE /api/board-prep/last-48h/<id>/"""
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, fact_id):
+        from api.services.board_prep_service import last48_payload
+
+        deleted, _ = Last48HourFact.objects.filter(user=request.user, id=fact_id).delete()
+        if not deleted:
+            return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(last48_payload(request.user))
+
+
 class SubscriptionViewSet(viewsets.ModelViewSet):
     """Manage user subscriptions."""
 
@@ -743,78 +976,83 @@ class DailyChallengeView(APIView):
 
 
 class WeaknessView(APIView):
-    """GET endpoint returning user's weak topics."""
+    """GET endpoint returning chapters the user should reread."""
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         answers = Answer.objects.filter(
-            quiz_attempt__user=request.user
-        ).select_related("question__category", "question__chapter")
-        wrong = answers.filter(is_correct=False)
+            quiz_attempt__user=request.user,
+            question__chapter__isnull=False,
+        ).select_related("question__chapter")
         stats = (
             answers.values(
-                "question__category__id",
-                "question__category__name",
                 "question__chapter__id",
                 "question__chapter__title",
-                "question__subcategory",
+                "question__chapter__slug",
             )
-            .annotate(total_count=Count("id"))
-            .order_by("-total_count")[:40]
+            .annotate(
+                total_count=Count("id"),
+                incorrect_count=Count("id", filter=Q(is_correct=False)),
+            )
         )
-        wrong_by_key = {}
-        for item in wrong.values(
-            "question__category__id",
-            "question__chapter__id",
-            "question__subcategory",
-        ).annotate(incorrect_count=Count("id")):
-            key = (
-                item["question__category__id"],
-                item["question__chapter__id"],
-                item["question__subcategory"],
-            )
-            wrong_by_key[key] = item["incorrect_count"]
-
         result = []
         for item in stats:
-            key = (
-                item["question__category__id"],
-                item["question__chapter__id"],
-                item["question__subcategory"],
-            )
-            incorrect = wrong_by_key.get(key, 0)
             total = item["total_count"]
-            name = (
-                item["question__subcategory"]
-                or item["question__chapter__title"]
-                or item["question__category__name"]
-                or "Unknown Topic"
-            )
+            incorrect = item["incorrect_count"]
+            if total == 0:
+                continue
+            accuracy = round((total - incorrect) / total * 100, 1)
+            if incorrect == 0 and accuracy >= 80:
+                continue
+            slug = item["question__chapter__slug"]
+            chapter_id = str(item["question__chapter__id"])
+            title = item["question__chapter__title"]
             result.append(
                 {
-                    "name": name,
-                    "category": item["question__category__name"],
-                    "categoryId": str(item["question__category__id"]) if item["question__category__id"] else None,
-                    "chapter": item["question__chapter__title"],
-                    "chapterId": str(item["question__chapter__id"]) if item["question__chapter__id"] else None,
-                    "subcategory": item["question__subcategory"],
+                    "name": title,
+                    "chapter": title,
+                    "chapterId": chapter_id,
+                    "chapterSlug": slug,
+                    "category": title,
+                    "categoryId": chapter_id,
+                    "subcategory": title,
                     "total_count": total,
                     "incorrect_count": incorrect,
-                    "accuracy": round((total - incorrect) / total * 100, 1) if total else 0,
+                    "accuracy": accuracy,
+                    "recommend": (
+                        f"Read {title} in the Nephrology Book, then redo that chapter quiz."
+                    ),
+                    "read_path": f"/chapters/{slug}",
+                    "book_path": f"/notes?chapter={slug}",
+                    "practice_path": f"/quiz/chapter/{chapter_id}",
                 }
             )
-        result.sort(key=lambda r: r["incorrect_count"] / r["total_count"] if r["total_count"] else 0, reverse=True)
+        result.sort(
+            key=lambda r: (
+                r["incorrect_count"] / r["total_count"] if r["total_count"] else 0,
+                r["incorrect_count"],
+            ),
+            reverse=True,
+        )
         return Response(result[:10])
 
 
 class ChapterViewSet(viewsets.ReadOnlyModelViewSet):
     """List and retrieve board-review chapters with topics."""
 
-    queryset = Chapter.objects.prefetch_related("topics", "topics__lessons")
+    queryset = Chapter.objects.exclude(slug__in=LEGACY_CHAPTER_SLUGS.keys()).prefetch_related(
+        "topics", "topics__lessons"
+    )
     serializer_class = ChapterSerializer
     permission_classes = [AllowAny]
     lookup_field = "slug"
+
+    def get_object(self):
+        slug = canonical_slug(self.kwargs.get(self.lookup_field))
+        if slug:
+            self.kwargs[self.lookup_field] = slug
+        return super().get_object()
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -827,6 +1065,49 @@ class ChapterViewSet(viewsets.ReadOnlyModelViewSet):
         topics = chapter.topics.prefetch_related("lessons")
         serializer = TopicDetailSerializer(topics, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["get"], url_path="knowledge")
+    def knowledge(self, request, slug=None):
+        """Chapter-wise exam knowledge: lessons, high-yield list, and pearls."""
+        chapter = self.get_object()
+        lessons = (
+            Lesson.objects.filter(topic__chapter=chapter)
+            .select_related("topic")
+            .order_by("topic__order_index", "order_index")
+        )
+        pearls, pearl_count = _grouped_board_pearls(request.user, chapter.slug, include_notes=False)
+        pearl_items = pearls[0]["pearls"] if pearls else []
+        return Response({
+            "chapter": {
+                "id": str(chapter.id),
+                "title": chapter.title,
+                "slug": chapter.slug,
+                "description": chapter.description,
+                "order_index": chapter.order_index,
+            },
+            "high_yield": _high_yield_for_chapter(chapter.slug),
+            "pearls": pearl_items,
+            "pearl_count": pearl_count,
+            "lessons": [
+                {
+                    "id": lesson.id,
+                    "title": lesson.title,
+                    "topic": lesson.topic.title,
+                    "topic_slug": lesson.topic.slug,
+                    "lesson_type": lesson.lesson_type,
+                    "summary": lesson.summary,
+                    "content_md": (lesson.content_md or lesson.summary or "").strip(),
+                    "animation_url": lesson.animation_url,
+                    "thumbnail_url": lesson.thumbnail_url,
+                    "interactive_url": lesson.interactive_url,
+                    "duration_seconds": lesson.duration_seconds,
+                }
+                for lesson in lessons
+            ],
+            "lesson_count": lessons.count(),
+            "question_count": chapter.questions.filter(is_published=True).count(),
+            "topic_count": chapter.topics.count(),
+        })
 
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
@@ -887,10 +1168,21 @@ class QuizQuestionsView(APIView):
         daily = request.query_params.get("daily") == "true"
         category_id = request.query_params.get("categoryId")
         chapter_id = request.query_params.get("chapterId")
+        chapter_slug = request.query_params.get("chapterSlug")
         topic_id = request.query_params.get("topicId")
+        board_day = request.query_params.get("board_day") or request.query_params.get("boardDay")
         qs = _published_questions_for_user(request.user)
 
-        if daily:
+        if board_day:
+            from api.data.board_prep_plan import day_spec
+            from api.services.board_prep_service import questions_for_day
+
+            try:
+                day_number = int(board_day)
+            except (TypeError, ValueError):
+                day_number = 1
+            questions = questions_for_day(request.user, day_spec(day_number), limit)
+        elif daily:
             today = date.today()
             qs_list = list(qs)
             random.Random(today.toordinal()).shuffle(qs_list)
@@ -899,6 +1191,8 @@ class QuizQuestionsView(APIView):
             questions = list(qs.filter(topic_id=topic_id).order_by("?")[:limit])
         elif chapter_id:
             questions = list(qs.filter(chapter_id=chapter_id).order_by("?")[:limit])
+        elif chapter_slug:
+            questions = list(qs.filter(_chapter_q(chapter_slug)).order_by("?")[:limit])
         elif category_id:
             questions = list(qs.filter(category_id=category_id).order_by("?")[:limit])
         else:
@@ -925,7 +1219,7 @@ class QuizAnswerView(APIView):
             return Response({"error": "mcq_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            question = Question.objects.prefetch_related("choices").get(
+            question = Question.objects.prefetch_related("choices").select_related("chapter").get(
                 id=mcq_id, is_published=True
             )
         except Question.DoesNotExist:
@@ -953,20 +1247,19 @@ class QuizAnswerView(APIView):
         is_correct = chosen.is_correct
         correct = question.choices.filter(is_correct=True).first()
 
-        Question.objects.filter(id=question.id).update(
-            times_answered=F("times_answered") + 1,
-            times_correct=F("times_correct") + (1 if is_correct else 0),
-        )
-
         return Response({
+            "question_id": str(question.id),
             "is_correct": is_correct,
             "correct_choice_key": correct.choice_key if correct else "",
             "correct_choice_id": str(correct.id) if correct else "",
+            "correct_answer_text": correct.choice_text if correct else "",
             "explanation": question.explanation,
             "clinical_pearl": question.clinical_pearl,
             "references": _references_for_question(question),
             "why_wrong": chosen.why_wrong if not is_correct else "",
-            "choices": ChoiceSerializer(question.choices.all(), many=True).data,
+            "chapter_slug": question.chapter.slug if question.chapter_id else None,
+            "chapter_title": question.chapter.title if question.chapter_id else None,
+            "chapter_id": str(question.chapter_id) if question.chapter_id else None,
         })
 
 
@@ -1025,6 +1318,32 @@ class UserProgressView(APIView):
             for item in category_stats
         ]
 
+        chapter_stats = (
+            answers.filter(question__chapter__isnull=False)
+            .values(
+                "question__chapter__id",
+                "question__chapter__title",
+                "question__chapter__slug",
+            )
+            .annotate(
+                total=Count("id"),
+                correct=Count("id", filter=Q(is_correct=True)),
+            )
+        )
+        chapter_breakdown = [
+            {
+                "categoryId": str(item["question__chapter__id"]),
+                "categoryName": item["question__chapter__title"],
+                "chapterId": str(item["question__chapter__id"]),
+                "chapterSlug": item["question__chapter__slug"],
+                "totalQuestions": item["total"],
+                "correctAnswers": item["correct"],
+                "accuracy": round((item["correct"] / item["total"]) * 100, 1) if item["total"] else 0,
+            }
+            for item in chapter_stats
+        ]
+        chapter_breakdown.sort(key=lambda c: c["accuracy"])
+
         recent_dates = (
             attempts.values("completed_at__date")
             .distinct()
@@ -1042,6 +1361,9 @@ class UserProgressView(APIView):
                 "correctAnswers": day_answers.filter(is_correct=True).count(),
             })
 
+        from api.services.board_prep_service import build_plan_payload
+
+        plan = build_plan_payload(user)
         return Response({
             "totalQuizzes": attempts.count(),
             "totalQuestions": total_questions,
@@ -1049,9 +1371,20 @@ class UserProgressView(APIView):
             "accuracy": accuracy,
             "currentStreak": user.streak_count,
             "longestStreak": user.longest_streak,
-            "categoryBreakdown": category_breakdown,
+            "categoryBreakdown": chapter_breakdown or category_breakdown,
+            "chapterBreakdown": chapter_breakdown,
             "dailyQuizCompleted": daily_completed,
             "recentActivity": recent_activity,
+            "boardPrep": {
+                "dayNumber": plan["day_number"],
+                "daysUntilExam": plan["days_until_exam"],
+                "questionsInPlan": plan["questions_in_plan"],
+                "todayAnswered": plan["today_answered"],
+                "targetMin": plan["target_min"],
+                "targetMax": plan["target_max"],
+                "classification": plan["classification"],
+                "todayFocus": plan["today_session"]["focus"],
+            },
         })
 
 
@@ -1061,109 +1394,24 @@ class StatsView(UserProgressView):
 
 
 class BoardPearlsView(APIView):
-    """GET /api/pearls/ — high-yield board pearls grouped by chapter."""
+    """GET /api/pearls/ — curated + MCQ board pearls grouped by chapter.
+
+    Short My Book notes are excluded unless include_notes=1.
+    """
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        from api.data.board_pearls import BOARD_PEARLS
-        from api.data.medical_references import enrich_pearl, references_for_topic, resolve_reference_field
-
-        chapter_slug = request.query_params.get("chapter")
-        chapters = Chapter.objects.order_by("order_index")
-        if chapter_slug:
-            chapters = chapters.filter(slug=chapter_slug)
-
-        chapter_map = {c.slug: c for c in chapters}
-        grouped: dict = {}
-
-        def add_pearl(slug: str | None, item: dict):
-            if not slug or slug not in chapter_map:
-                slug = slug or "_general"
-            if slug not in grouped:
-                ch = chapter_map.get(slug)
-                grouped[slug] = {
-                    "chapter": {
-                        "id": str(ch.id) if ch else "",
-                        "title": ch.title if ch else "General",
-                        "slug": slug,
-                        "order_index": ch.order_index if ch else 99,
-                    },
-                    "pearls": [],
-                }
-            grouped[slug]["pearls"].append(item)
-
-        seen_text: set[str] = set()
-        for p in BOARD_PEARLS:
-            if chapter_slug and p["chapter_slug"] != chapter_slug:
-                continue
-            text = p["pearl"].strip()
-            if text.lower() in seen_text:
-                continue
-            seen_text.add(text.lower())
-            enriched = enrich_pearl({**p, "pearl": text})
-            add_pearl(p["chapter_slug"], {
-                "topic": enriched["topic"],
-                "pearl": text,
-                "mnemonic": enriched.get("mnemonic"),
-                "source": "curated",
-                "references": enriched.get("references", []),
-            })
-
-        db_qs = exclude_board_exam_questions(
-            Question.objects.filter(is_published=True)
-        ).exclude(clinical_pearl="").select_related("chapter", "topic")
-        if chapter_slug:
-            db_qs = db_qs.filter(chapter__slug=chapter_slug)
-        for q in db_qs:
-            text = q.clinical_pearl.strip()
-            if not text or text.lower() in seen_text:
-                continue
-            seen_text.add(text.lower())
-            slug = q.chapter.slug if q.chapter_id else None
-            if slug and slug in chapter_map:
-                refs = resolve_reference_field(q.reference or "")
-                if not refs:
-                    topic = q.topic.title if q.topic_id else (q.subcategory or "From MCQ")
-                    refs = references_for_topic(topic, slug)
-                add_pearl(slug, {
-                    "topic": q.topic.title if q.topic_id else (q.subcategory or "From MCQ"),
-                    "pearl": text,
-                    "mnemonic": None,
-                    "source": "mcq",
-                    "references": refs,
-                })
-
-        note_qs = StudyNote.objects.filter(user=request.user).select_related("chapter")
-        if chapter_slug:
-            note_qs = note_qs.filter(chapter__slug=chapter_slug)
-        for note in note_qs:
-            text = note.content.strip()
-            if len(text) > 220 or not text or text.lower() in seen_text:
-                continue
-            seen_text.add(text.lower())
-            slug = note.chapter.slug if note.chapter_id else "other"
-            if slug in chapter_map or not chapter_slug:
-                refs = references_for_study_note(note)
-                add_pearl(slug if note.chapter_id else None, {
-                    "topic": note.topic_title or "My Pearl",
-                    "pearl": text,
-                    "mnemonic": None,
-                    "source": "my_book",
-                    "note_id": str(note.id),
-                    "references": refs,
-                    "verified": note.verified,
-                    "verification_confidence": note.verification_confidence or None,
-                })
-
-        result = sorted(
-            [g for g in grouped.values() if g["chapter"]["slug"] in chapter_map or not chapter_slug],
-            key=lambda x: x["chapter"]["order_index"],
+        include_notes = str(request.query_params.get("include_notes", "")).lower() in (
+            "1",
+            "true",
+            "yes",
         )
-        for g in result:
-            g["count"] = len(g["pearls"])
-
-        total = sum(g["count"] for g in result)
+        result, total = _grouped_board_pearls(
+            request.user,
+            request.query_params.get("chapter"),
+            include_notes=include_notes,
+        )
         return Response({"chapters": result, "total": total})
 
 
@@ -1346,17 +1594,50 @@ class StudyNotesReviewView(APIView):
             else:
                 uncategorized.append(data)
 
+        for chapter in Chapter.objects.exclude(slug__in=LEGACY_CHAPTER_SLUGS.keys()).order_by("order_index"):
+            if chapter.id not in chapters_map:
+                chapters_map[chapter.id] = {
+                    "chapter": {
+                        "id": str(chapter.id),
+                        "title": chapter.title,
+                        "slug": chapter.slug,
+                        "order_index": chapter.order_index,
+                    },
+                    "notes": [],
+                }
+            lessons = (
+                Lesson.objects.filter(topic__chapter=chapter)
+                .select_related("topic")
+                .order_by("topic__order_index", "order_index")
+            )
+            pearls, _pearl_count = _grouped_board_pearls(request.user, chapter.slug, include_notes=False)
+            chapters_map[chapter.id]["book"] = {
+                "high_yield": _high_yield_for_chapter(chapter.slug),
+                "pearls": pearls[0]["pearls"] if pearls else [],
+                "lessons": [
+                    {
+                        "id": lesson.id,
+                        "title": lesson.title,
+                        "topic": lesson.topic.title,
+                        "summary": lesson.summary,
+                        "content_md": (lesson.content_md or lesson.summary or "").strip(),
+                    }
+                    for lesson in lessons
+                ],
+            }
+
         chapters = sorted(
             chapters_map.values(),
             key=lambda x: x["chapter"]["order_index"],
         )
         for group in chapters:
-            group["count"] = len(group["notes"])
+            group["count"] = len(group["notes"]) + len(group.get("book", {}).get("lessons") or [])
 
         return Response({
             "chapters": chapters,
             "uncategorized": uncategorized,
             "total": notes.count(),
+            "curriculum_chapters": len(chapters),
         })
 
 

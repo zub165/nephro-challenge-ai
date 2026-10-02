@@ -15,6 +15,7 @@ class ChapterDetailScreen extends StatefulWidget {
 class _ChapterDetailScreenState extends State<ChapterDetailScreen> {
   final _service = QuizService.instance;
   Chapter? _chapter;
+  Map<String, dynamic>? _knowledge;
   bool _loading = true;
 
   @override
@@ -26,7 +27,14 @@ class _ChapterDetailScreenState extends State<ChapterDetailScreen> {
 
   Future<void> _load(String slug) async {
     final chapter = await _service.fetchChapterDetail(slug);
-    if (mounted) setState(() { _chapter = chapter; _loading = false; });
+    final knowledge = await _service.fetchChapterKnowledge(slug);
+    if (mounted) {
+      setState(() {
+        _chapter = chapter;
+        _knowledge = knowledge;
+        _loading = false;
+      });
+    }
   }
 
   void _startQuiz(String chapterId) {
@@ -63,6 +71,55 @@ class _ChapterDetailScreenState extends State<ChapterDetailScreen> {
               label: const Text('Start Chapter Quiz'),
             ),
           ),
+          if ((_knowledge?['high_yield'] as List?)?.isNotEmpty == true) ...[
+            const SizedBox(height: 20),
+            Text('Exam knowledge — high yield',
+                style: GoogleFonts.inter(
+                    fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            ...((_knowledge!['high_yield'] as List).map((item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text('• $item',
+                      style: GoogleFonts.inter(fontSize: 14, height: 1.35)),
+                ))),
+          ],
+          if ((_knowledge?['pearls'] as List?)?.isNotEmpty == true) ...[
+            const SizedBox(height: 16),
+            Text('Board pearls',
+                style: GoogleFonts.inter(
+                    fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            ...((_knowledge!['pearls'] as List).take(8).map((raw) {
+              final pearl = raw as Map<String, dynamic>;
+              return Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${pearl['topic'] ?? ''}',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.amber[900],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${pearl['pearl'] ?? ''}',
+                      style: GoogleFonts.inter(fontSize: 14, height: 1.35),
+                    ),
+                  ],
+                ),
+              );
+            })),
+          ],
           const SizedBox(height: 24),
           Text('Topics & Lessons',
               style: GoogleFonts.inter(

@@ -163,7 +163,7 @@ class _MyBookScreenState extends State<MyBookScreen>
           return const LoadingShimmer();
         }
         final review = notes.review;
-        if (review == null || review.total == 0) {
+        if (review == null || review.chapters.isEmpty) {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(24),
@@ -278,9 +278,53 @@ class _BookChapterSection extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '${pearls.length} pearl${pearls.length == 1 ? '' : 's'} · ${cases.length} case note${cases.length == 1 ? '' : 's'}',
+              '${pearls.length} my pearls · ${cases.length} my notes · ${group.bookPearls.length} board pearls',
               style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
             ),
+            if (group.highYield.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text('Exam knowledge',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+              ...group.highYield.map((item) => Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text('• $item',
+                        style: GoogleFonts.inter(fontSize: 13, height: 1.35)),
+                  )),
+            ],
+            if (group.bookPearls.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text('Board pearls',
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600, color: Colors.amber[800])),
+              ...group.bookPearls.map((p) => Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text('${p.topic}: ${p.pearl}',
+                        style: GoogleFonts.inter(fontSize: 13, height: 1.4)),
+                  )),
+            ],
+            if (group.lessons.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text('Chapter teaching notes',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+              ...group.lessons.map((lesson) => Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${lesson['topic'] ?? ''} — ${lesson['title'] ?? ''}',
+                          style: GoogleFonts.inter(
+                              fontSize: 13, fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${lesson['content_md'] ?? lesson['summary'] ?? ''}',
+                          style: GoogleFonts.inter(fontSize: 13, height: 1.4),
+                        ),
+                      ],
+                    ),
+                  )),
+            ],
             if (pearls.isNotEmpty) ...[
               const SizedBox(height: 12),
               Text('★ Pearls',

@@ -3,6 +3,7 @@
   "chapters": [
     "acid-base-disorders",
     "acute-kidney-injury-icu",
+    "dialysis",
     "electrolytes",
     "glomerular-vascular",
     "hypertension",
@@ -11,9 +12,9 @@
     "tubulointerstitial-cystic"
   ],
   "counts": {
-    "image": 22,
+    "image": 27,
     "diagram": 1,
-    "interactive": 10
+    "interactive": 18
   },
   "assets": [
     {
@@ -302,8 +303,8 @@
       "raw_path": "assets/medical/raw/hypertension/secondary-hypertension-renin-aldosterone.png",
       "image_url": "medical/hypertension/secondary-hypertension-renin-aldosterone.webp",
       "thumbnail_url": "medical/hypertension/secondary-hypertension-renin-aldosterone-thumb.webp",
-      "width": 1309,
-      "height": 1600,
+      "width": 1800,
+      "height": 2200,
       "variant_of": null
     },
     {
@@ -495,6 +496,162 @@
       "width": 1024,
       "height": 1536,
       "variant_of": "urinary-casts-morphology"
+    },
+    {
+      "kind": "image",
+      "slug": "hrs-aki-flow",
+      "title": "Hepatorenal Syndrome vs AKI: Diagnostic Flow",
+      "chapter": "acute-kidney-injury-icu",
+      "topic": null,
+      "lesson": null,
+      "source_file": "Figure_HRS_AKI_Flow_v2.png",
+      "raw_path": "assets/medical/raw/acute-kidney-injury-icu/hrs-aki-flow.png",
+      "image_url": "medical/acute-kidney-injury-icu/hrs-aki-flow.webp",
+      "thumbnail_url": "medical/acute-kidney-injury-icu/hrs-aki-flow-thumb.webp",
+      "width": 5460,
+      "height": 3360,
+      "variant_of": null
+    },
+    {
+      "kind": "image",
+      "slug": "hrs-aki-flow-alt",
+      "title": "Hepatorenal Syndrome vs AKI (alternate)",
+      "chapter": "acute-kidney-injury-icu",
+      "topic": null,
+      "lesson": null,
+      "source_file": "Figure_HRS_AKI_Flow.png",
+      "raw_path": "assets/medical/raw/acute-kidney-injury-icu/hrs-aki-flow-alt.png",
+      "image_url": "medical/acute-kidney-injury-icu/hrs-aki-flow-alt.webp",
+      "thumbnail_url": "medical/acute-kidney-injury-icu/hrs-aki-flow-alt-thumb.webp",
+      "width": 4260,
+      "height": 2460,
+      "variant_of": "hrs-aki-flow"
+    },
+    {
+      "kind": "image",
+      "slug": "hrs-aki-flow-upload",
+      "title": "Hepatorenal Syndrome vs AKI (upload render)",
+      "chapter": "acute-kidney-injury-icu",
+      "topic": null,
+      "lesson": null,
+      "source_file": "Figure_HRS_AKI_Flow_upload.png",
+      "raw_path": "assets/medical/raw/acute-kidney-injury-icu/hrs-aki-flow-upload.png",
+      "image_url": "medical/acute-kidney-injury-icu/hrs-aki-flow-upload.webp",
+      "thumbnail_url": "medical/acute-kidney-injury-icu/hrs-aki-flow-upload-thumb.webp",
+      "width": 4260,
+      "height": 2160,
+      "variant_of": "hrs-aki-flow"
+    },
+    {
+      "kind": "image",
+      "slug": "hd-catheter-position",
+      "title": "Hemodialysis Catheter Position",
+      "chapter": "dialysis",
+      "topic": null,
+      "lesson": null,
+      "source_file": "Position HD cath.png",
+      "raw_path": "assets/medical/raw/dialysis/hd-catheter-position.png",
+      "image_url": "medical/dialysis/hd-catheter-position.webp",
+      "thumbnail_url": "medical/dialysis/hd-catheter-position-thumb.webp",
+      "width": 1024,
+      "height": 1536,
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "pulmonary-renal-syndrome",
+      "title": "Pulmonary-Renal Syndrome",
+      "chapter": "glomerular-vascular",
+      "topic": null,
+      "lesson": null,
+      "source_file": "Pulmonary Renal Syndrome.html",
+      "raw_path": "assets/medical/raw/glomerular-vascular/pulmonary-renal-syndrome.html",
+      "interactive_url": "medical/glomerular-vascular/pulmonary-renal-syndrome.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "fibromuscular-dysplasia",
+      "title": "Fibromuscular Dysplasia",
+      "chapter": "hypertension",
+      "topic": null,
+      "lesson": null,
+      "source_file": "fibromuscular Dysplasia.html",
+      "raw_path": "assets/medical/raw/hypertension/fibromuscular-dysplasia.html",
+      "interactive_url": "medical/hypertension/fibromuscular-dysplasia.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "renal-artery-stenosis",
+      "title": "Renal Artery Stenosis",
+      "chapter": "hypertension",
+      "topic": null,
+      "lesson": null,
+      "source_file": "Renal Artery stenosis.html",
+      "raw_path": "assets/medical/raw/hypertension/renal-artery-stenosis.html",
+      "interactive_url": "medical/hypertension/renal-artery-stenosis.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "age-based-eras",
+      "title": "Age-Based ERAS / Immunosuppression",
+      "chapter": "transplantation",
+      "topic": null,
+      "lesson": null,
+      "source_file": "age based ERAS.html",
+      "raw_path": "assets/medical/raw/transplantation/age-based-eras.html",
+      "interactive_url": "medical/transplantation/age-based-eras.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "crrt-clotting",
+      "title": "CRRT Circuit Clotting",
+      "chapter": "acute-kidney-injury-icu",
+      "topic": null,
+      "lesson": null,
+      "source_file": "CRRT Clotting.html",
+      "raw_path": "assets/medical/raw/acute-kidney-injury-icu/crrt-clotting.html",
+      "interactive_url": "medical/acute-kidney-injury-icu/crrt-clotting.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "fanconi-syndrome",
+      "title": "Fanconi Syndrome",
+      "chapter": "acid-base-disorders",
+      "topic": null,
+      "lesson": null,
+      "source_file": "fanconi syndrome.html",
+      "raw_path": "assets/medical/raw/acid-base-disorders/fanconi-syndrome.html",
+      "interactive_url": "medical/acid-base-disorders/fanconi-syndrome.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "tinu",
+      "title": "TINU Syndrome",
+      "chapter": "tubulointerstitial-cystic",
+      "topic": null,
+      "lesson": null,
+      "source_file": "TINU.html",
+      "raw_path": "assets/medical/raw/tubulointerstitial-cystic/tinu.html",
+      "interactive_url": "medical/tubulointerstitial-cystic/tinu.html",
+      "variant_of": null
+    },
+    {
+      "kind": "interactive",
+      "slug": "salicylate-toxicity",
+      "title": "Salicylate Toxicity",
+      "chapter": "nephrology-pharmacology",
+      "topic": null,
+      "lesson": null,
+      "source_file": "salicylate toxicity.html",
+      "raw_path": "assets/medical/raw/nephrology-pharmacology/salicylate-toxicity.html",
+      "interactive_url": "medical/nephrology-pharmacology/salicylate-toxicity.html",
+      "variant_of": null
     }
   ]
 }

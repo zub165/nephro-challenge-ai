@@ -7,9 +7,11 @@ from api.models import (
     BoardExam,
     BoardExamAttempt,
     BoardExamAttemptItem,
+    BoardPrepSettings,
     Category,
     Chapter,
     Choice,
+    Last48HourFact,
     Leaderboard,
     Lesson,
     Question,
@@ -217,3 +219,5 @@ admin.site.register(SavedPearl, SavedPearlAdmin)
 admin.site.register(StudyNote, StudyNoteAdmin)
 admin.site.register(BoardExam, BoardExamAdmin)
 admin.site.register(BoardExamAttempt, BoardExamAttemptAdmin)
+admin.site.register(BoardPrepSettings)
+admin.site.register(Last48HourFact)
