@@ -106,7 +106,7 @@
       "slug": "aki",
       "title": "Acute Kidney Injury & ICU",
       "order": 3,
-      "count": 9,
+      "count": 8,
       "animations": [
         {
           "slug": "acute-encephalopathy",
@@ -135,13 +135,6 @@
           "flat": "cholesterol-embolization.html",
           "title": "Cholesterol Crystal Embolization Syndrome \u2014 Atheroembolic Renal Disease",
           "bytes": 46555
-        },
-        {
-          "slug": "light-chain-nephropathy",
-          "file": "chapters/aki/light-chain-nephropathy.html",
-          "flat": "light-chain-nephropathy.html",
-          "title": "Light Chains & Kidney Disease \u2014 Gift by Dr. Malik",
-          "bytes": 17102
         },
         {
           "slug": "tls",
@@ -213,7 +206,7 @@
       "slug": "glomerular-diseases",
       "title": "Glomerular & Vascular Disorders",
       "order": 5,
-      "count": 14,
+      "count": 15,
       "animations": [
         {
           "slug": "ahus",
@@ -277,6 +270,13 @@
           "flat": "lcd.html",
           "title": "Light Chain Diseases \u2014 A Gift by Dr. Malik",
           "bytes": 48160
+        },
+        {
+          "slug": "light-chain-nephropathy",
+          "file": "chapters/glomerular-diseases/light-chain-nephropathy.html",
+          "flat": "light-chain-nephropathy.html",
+          "title": "Light Chains & Kidney Disease \u2014 Gift by Dr. Malik",
+          "bytes": 17102
         },
         {
           "slug": "membranous",
