@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acute T Cell-Mediated Rejection — Banff Classification</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; border-left:4px solid var(--opt1);}
+  .stat-card:nth-child(1){border-left-color:#dc2626;}
+  .stat-card:nth-child(2){border-left-color:#7c3aed;}
+  .stat-card:nth-child(3){border-left-color:#0891b2;}
+  .stat-card:nth-child(4){border-left-color:#16a34a;}
+  .stat-card .k{font-size:.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat-card .v{font-size:1rem; font-weight:800; color:var(--ink);}
+  .stat-card .sub{font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:290px;
+    max-width:calc(100% - 40px); transition:all .3s ease;
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800; color:#0f172a;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Acute T Cell-Mediated Rejection — Banff Classification</h1>
+      <p>Kidney transplant recipient with rising creatinine at 3 weeks post-transplant</p>
+    </div>
+    <div class="badge">Transplant Pathology</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>51-year-old woman, 3 weeks post kidney transplant — creatinine rises 1.2 → 2.5</h2>
+      <p>Donor-specific antibodies: <strong>Negative</strong>. BK viral PCR: <strong>Negative</strong>. Biopsy: interstitial inflammation involving ~35% of nonscarred cortex, moderate tubulitis (6–10 mononuclear cells per tubular cross-section), arteritis absent, C4d negative.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">Cr 1.2 → 2.5</span>
+      <span class="lab-chip pos">DSA Negative</span>
+      <span class="lab-chip pos">BK PCR Negative</span>
+      <span class="lab-chip abn">Tubulitis t2</span>
+      <span class="lab-chip abn">Interstitial i2</span>
+      <span class="lab-chip pos">v0 (no arteritis)</span>
+      <span class="lab-chip pos">C4d Negative</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="k">Diagnosis</div>
+      <div class="v">Acute TCMR, Grade IA</div>
+      <div class="sub">i2 + t2 + v0 + C4d−</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Interstitial (i)</div>
+      <div class="v">i2 (26–50%)</div>
+      <div class="sub">35% of nonscarred cortex</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Tubulitis (t)</div>
+      <div class="v">t2 (5–10 cells)</div>
+      <div class="sub">6–10 mononuclear cells/tubule</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Treatment</div>
+      <div class="v">IV Steroids</div>
+      <div class="sub">Methylprednisolone pulse</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- DIAGRAM 1 — DIAGNOSIS: GRADE IA -->
+      <g id="diagram-opt1">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">BANFF CLASSIFICATION — ACUTE T CELL-MEDIATED REJECTION</text>
+
+        <!-- i score -->
+        <g transform="translate(160, 240)">
+          <rect x="-105" y="-85" width="210" height="170" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">INTERSTITIAL (i)</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="26">🔴</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#7f1d1d">i2</text>
+          <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="10" fill="#7f1d1d">26–50% of cortex</text>
+          <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">This patient: 35%</text>
+        </g>
+
+        <text x="310" y="245" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#dc2626">+</text>
+
+        <!-- t score -->
+        <g transform="translate(440, 240)">
+          <rect x="-105" y="-85" width="210" height="170" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">TUBULITIS (t)</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="26">🔴</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#7f1d1d">t2</text>
+          <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="10" fill="#7f1d1d">5–10 cells/tubule</text>
+          <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">This patient: 6–10</text>
+        </g>
+
+        <text x="590" y="245" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#dc2626">+</text>
+
+        <!-- v score -->
+        <g transform="translate(720, 240)">
+          <rect x="-105" y="-85" width="210" height="170" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">ARTERITIS (v)</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="26">✅</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#16a34a">v0</text>
+          <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="10" fill="#7f1d1d">Absent</text>
+          <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">Confirmed</text>
+        </g>
+
+        <text x="870" y="245" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#dc2626">=</text>
+
+        <!-- Result -->
+        <g transform="translate(1040, 240)">
+          <rect x="-115" y="-85" width="230" height="170" rx="14" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">RESULT</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="26" font-weight="800" fill="#fef3c7">IA</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">Acute TCMR</text>
+          <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="10" fill="#fee2e2">Grade IA</text>
+          <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fef3c7">i2 + t2 + v0</text>
+        </g>
+
+        <!-- C4d -->
+        <g transform="translate(600, 480)">
+          <rect x="-380" y="-50" width="760" height="100" rx="14" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">C4d NEGATIVE · DSA NEGATIVE → NOT antibody-mediated</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">Pure T cell-mediated rejection · BK PCR negative → not BK nephropathy</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fef3c7">Grade IA is the correct classification</text>
+        </g>
+
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Banff Grade IA = significant interstitial inflammation (i2/i3) + moderate tubulitis (t2) + no arteritis</text>
+      </g>
+
+      <!-- DIAGRAM 2 — BORDERLINE (WRONG) -->
+      <g id="diagram-opt2" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">OPTION A — BORDERLINE CHANGES (WRONG)</text>
+
+        <g transform="translate(300, 260)">
+          <rect x="-180" y="-100" width="360" height="200" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Borderline requires:</text>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">i1 (10–25% inflammation)</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">+ t1 (1–4 cells/tubule)</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#7c3aed">OR</text>
+          <text x="0" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">i0 + t1</text>
+          <text x="0" y="75" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">This patient has i2 + t2 ✗</text>
+        </g>
+
+        <path d="M 500 260 L 580 260" stroke="#7c3aed" stroke-width="3" fill="none"/>
+
+        <g transform="translate(850, 260)">
+          <rect x="-200" y="-100" width="400" height="200" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Why NOT borderline</text>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">Interstitial inflammation is 35%</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">— that's i2 (26–50%)</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">Tubulitis is 6–10 cells</text>
+          <text x="0" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">— that's t2, not t1</text>
+          <text x="0" y="75" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Meets Grade IA, not borderline ✗</text>
+        </g>
+
+        <g transform="translate(600, 490)">
+          <rect x="-400" y="-60" width="800" height="120" rx="16" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY NOT BORDERLINE</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">Borderline = i1 + t1 or i0 + t1</text>
+          <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">This patient exceeds the borderline threshold — meets Grade IA</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 3 — GRADE IB / IIA (WRONG) -->
+      <g id="diagram-opt3" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">OPTIONS C & D — GRADE IB / IIA (WRONG)</text>
+
+        <!-- IB -->
+        <g transform="translate(280, 260)">
+          <rect x="-160" y="-110" width="320" height="220" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Grade IB requires:</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" fill="#155e75">i2 or i3</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">+ t3 (severe tubulitis, >10 cells)</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">This patient: t2 (6–10 cells)</text>
+          <text x="0" y="45" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">Does NOT meet t3 ✗</text>
+        </g>
+
+        <path d="M 450 260 L 530 260" stroke="#0891b2" stroke-width="3" fill="none"/>
+
+        <!-- IIA -->
+        <g transform="translate(780, 260)">
+          <rect x="-180" y="-110" width="360" height="220" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Grade IIA requires:</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">v1 (intimal arteritis)</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" fill="#155e75">Mild-to-moderate</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">This patient: v0 (no arteritis)</text>
+          <text x="0" y="45" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">Does NOT meet v1 ✗</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-400" y="-70" width="800" height="140" rx="16" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY NOT IB OR IIA</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">Grade IB requires severe tubulitis (t3, >10 cells) — this patient has t2 (6–10 cells)</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">Grade IIA requires intimal arteritis (v1) — this patient has v0 (no arteritis)</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 4 — ANTIBODY-MEDIATED (WRONG) -->
+      <g id="diagram-opt4" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">OPTION E — ACTIVE ANTIBODY-MEDIATED REJECTION (WRONG)</text>
+
+        <g transform="translate(300, 260)">
+          <rect x="-180" y="-110" width="360" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">AMR requires:</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">• Donor-specific antibodies (DSA)</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">• C4d positive in peritubular caps</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">• Microvascular inflammation</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">This patient: DSA− and C4d− ✗</text>
+        </g>
+
+        <path d="M 500 260 L 580 260" stroke="#ca8a04" stroke-width="3" fill="none"/>
+
+        <g transform="translate(850, 260)">
+          <rect x="-200" y="-110" width="400" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Why NOT AMR</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">DSA is negative</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">C4d is negative</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">Biopsy shows T cell infiltrate</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">No antibody features present ✗</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-400" y="-70" width="800" height="140" rx="16" fill="#ca8a04" stroke="#713f12" stroke-width="3"/>
+          <text x="0" y="-32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY NOT ANTIBODY-MEDIATED REJECTION</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="12" fill="#fef9c3">AMR requires DSA positivity and C4d deposition (or microvascular inflammation)</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="12" fill="#fef9c3">This patient has neither — pure T cell-mediated rejection</text>
+        </g>
+      </g>
+
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-540" y="-30" width="1080" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount">0</span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+// ==================== DATA ====================
+var TABS = [
+  { id: "opt1", label: "🔴 Grade IA ✓" },
+  { id: "opt2", label: "🟣 Borderline (Wrong)" },
+  { id: "opt3", label: "🔵 Grade IB / IIA (Wrong)" },
+  { id: "opt4", label: "🟡 Antibody-Mediated (Wrong)" }
+];
+
+var MODES = {
+  opt1: {
+    panelClass: "highlight-opt1",
+    infoTitle: "🔴 Acute TCMR — Banff Grade IA",
+    infoRows: [
+      { k: "Interstitial (i)", v: "i2 (26–50%)" },
+      { k: "Tubulitis (t)", v: "t2 (5–10 cells)" },
+      { k: "Arteritis (v)", v: "v0 (absent)" },
+      { k: "C4d / DSA", v: "Negative" }
+    ],
+    svgTitle: "Banff Classification — Acute T Cell-Mediated Rejection Grade IA",
+    svgSubtitle: "i2 + t2 + v0 + C4d negative = Grade IA · No antibody-mediated component",
+    bannerBg: "#dc2626",
+    bannerText1: "🔴 Acute TCMR — Banff Grade IA (i2 + t2 + v0)",
+    bannerText2: "Interstitial inflammation 35% (i2) · Tubulitis 6–10 cells (t2) · No arteritis (v0) · C4d negative",
+    panel1Title: "🔴 Banff Grading — How We Got IA",
+    panel1Tagline: "Scoring the three key lesions",
+    panel1List: [
+      "<strong>Interstitial inflammation (i):</strong> 35% of nonscarred cortex → <strong>i2</strong> (26–50%)",
+      "<strong>Tubulitis (t):</strong> 6–10 mononuclear cells per tubular cross-section → <strong>t2</strong> (5–10 cells)",
+      "<strong>Arteritis (v):</strong> Absent → <strong>v0</strong>",
+      "<strong>Banff Grade IA criteria:</strong> i2 or i3 + t2, with v0 and no antibody features",
+      "<strong>This patient:</strong> i2 + t2 + v0 → <strong>Grade IA</strong>"
+    ],
+    panel2Title: "🔴 Why NOT Higher Grades",
+    panel2Tagline: "What would change the grade",
+    panel2List: [
+      "<strong>Grade IB:</strong> Would require t3 (severe tubulitis, >10 cells) — this patient has t2",
+      "<strong>Grade IIA:</strong> Would require v1 (mild-to-moderate intimal arteritis) — this patient has v0",
+      "<strong>Grade IIB:</strong> Would require v2 (severe intimal arteritis ≥25% luminal area)",
+      "<strong>Grade III:</strong> Would require v3 (transmural arteritis/fibrinoid necrosis)",
+      "<strong>Antibody-mediated:</strong> Would require DSA+ and/or C4d+ — both negative here"
+    ],
+    alertIcon: "🔴",
+    alertTitle: "Board Pearl — Grade IA = i2 + t2 + v0",
+    alertText: "Banff Grade IA acute T cell-mediated rejection is defined as <strong>significant interstitial inflammation (i2 or i3) with moderate tubulitis (t2)</strong>. The presence of any intimal arteritis (v1+) upgrades to Grade IIA. This patient has <strong>i2, t2, v0 → Grade IA</strong>."
+  },
+  opt2: {
+    panelClass: "highlight-opt2",
+    infoInfo: "Borderline",
+    infoTitle: "🟣 Borderline Changes — Why Not",
+    infoRows: [
+      { k: "Borderline i", v: "i0 or i1 (≤25%)" },
+      { k: "Borderline t", v: "t1 (1–4 cells)" },
+      { k: "This patient i", v: "i2 (35%)" },
+      { k: "This patient t", v: "t2 (6–10 cells)" }
+    ],
+    svgTitle: "Borderline Changes — Suspicious for Acute TCMR",
+    svgSubtitle: "Borderline requires i0/i1 + t1 — this patient has i2 + t2, exceeding the threshold",
+    bannerBg: "#7c3aed",
+    bannerText1: "🟣 Borderline Changes — Wrong, This Patient Exceeds the Threshold",
+    bannerText2: "Borderline = i1 + t1 or i0 + t1 · This patient has i2 + t2 = Grade IA",
+    panel1Title: "🟣 Borderline — Definition",
+    panel1Tagline: "A lower diagnostic threshold",
+    panel1List: [
+      "<strong>Banff borderline category:</strong> Used when findings fall short of Grade IA",
+      "<strong>Original threshold:</strong> i1 (10–25%) + t1 (1–4 cells/tubule)",
+      "<strong>Modified threshold (Banff 2005):</strong> Expanded to include i0 + t1",
+      "<strong>Key point:</strong> Borderline is for <em>milder</em> inflammation than Grade IA",
+      "<strong>This patient:</strong> Has i2 + t2 — clearly exceeds borderline"
+    ],
+    panel2Title: "🟣 Why This Case Is NOT Borderline",
+    panel2List: [
+      "<strong>Interstitial inflammation:</strong> 35% is i2 (26–50%), not i1 or i0",
+      "<strong>Tubulitis:</strong> 6–10 cells is t2, not t1 (1–4 cells)",
+      "<strong>Biopsy meets criteria:</strong> i2 + t2 = Grade IA by definition",
+      "<strong>Clinical significance:</strong> Grade IA is treated more aggressively than borderline",
+      "<strong>Treatment implication:</strong> Grade IA warrants IV steroids; borderline may be monitored"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Board Pearl — Borderline = i1/t1 or i0/t1",
+    alertText: "Borderline changes suspicious for acute TCMR are defined by <strong>i1 (10–25%) + t1 (1–4 cells)</strong> or <strong>i0 + t1</strong>. This patient has <strong>i2 + t2</strong>, which exceeds borderline and meets Grade IA criteria."
+  },
+  opt3: {
+    panelClass: "highlight-opt3",
+    infoTitle: "🔵 Grade IB / IIA — Why Not",
+    infoRows: [
+      { k: "IB requires", v: "t3 (>10 cells)" },
+      { k: "IIA requires", v: "v1 (intimal arteritis)" },
+      { k: "This patient t", v: "t2 (6–10 cells)" },
+      { k: "This patient v", v: "v0 (absent)" }
+    ],
+    svgTitle: "Grade IB and IIA — Higher Grades Require More Severe Findings",
+    svgSubtitle: "Grade IB needs t3 (severe tubulitis) · Grade IIA needs v1 (intimal arteritis)",
+    bannerBg: "#0891b2",
+    bannerText1: "🔵 Grade IB and IIA — Wrong, This Patient Has Neither t3 Nor v1",
+    bannerText2: "Grade IB = i2 + t3 · Grade IIA = v1 · Patient has t2 and v0",
+    panel1Title: "🔵 Grade IB — Definition",
+    panel1Tagline: "Severe tubulitis required",
+    panel1List: [
+      "<strong>Grade IB criteria:</strong> i2 or i3 + <strong>t3</strong> (severe tubulitis, >10 mononuclear cells per tubular cross-section)",
+      "<strong>This patient:</strong> Tubulitis is 6–10 cells = t2, not t3",
+      "<strong>Difference from IA:</strong> IB has more severe tubulitis but still no arteritis",
+      "<strong>Clinical implication:</strong> IB may require more aggressive immunosuppression",
+      "<strong>Key point:</strong> The tubulitis score determines IA vs IB"
+    ],
+    panel2Title: "🔵 Grade IIA — Definition",
+    panel2List: [
+      "<strong>Grade IIA criteria:</strong> <strong>v1</strong> — mild-to-moderate intimal arteritis involving < 25% of luminal circumference",
+      "<strong>This patient:</strong> No arteritis (v0)",
+      "<strong>Grade IIB:</strong> v2 — severe intimal arteritis involving ≥25% of luminal area",
+      "<strong>Grade III:</strong> v3 — transmural arteritis and/or fibrinoid necrosis",
+      "<strong>Key point:</strong> Any arteritis (v1+) upgrades to Grade II"
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Board Pearl — IB = t3 · IIA = v1",
+    alertText: "Grade IB requires <strong>severe tubulitis (t3, >10 cells)</strong>. Grade IIA requires <strong>intimal arteritis (v1)</strong>. This patient has <strong>t2 and v0</strong> — neither higher grade criteria is met."
+  },
+  opt4: {
+    panelClass: "highlight-opt4",
+    infoTitle: "🟡 Antibody-Mediated Rejection — Why Not",
+    infoRows: [
+      { k: "DSA", v: "Negative" },
+      { k: "C4d", v: "Negative" },
+      { k: "Microvascular inflammation", v: "Not described" },
+      { k: "Diagnosis", v: "Pure T cell-mediated" }
+    ],
+    svgTitle: "Antibody-Mediated Rejection — Requires DSA and C4d",
+    svgSubtitle: "AMR requires donor-specific antibodies and/or C4d deposition — both negative here",
+    bannerBg: "#ca8a04",
+    bannerText1: "🟡 Antibody-Mediated Rejection — Wrong, DSA and C4d Both Negative",
+    bannerText2: "AMR requires DSA+ and/or C4d+ in peritubular capillaries · This patient has neither",
+    panel1Title: "🟡 AMR — Diagnostic Criteria",
+    panel1Tagline: "What defines antibody-mediated rejection",
+    panel1List: [
+      "<strong>Donor-specific antibodies (DSA):</strong> Circulating antibodies against donor HLA — negative in this patient",
+      "<strong>C4d deposition:</strong> Complement split product in peritubular capillaries — negative here",
+      "<strong>Microvascular inflammation:</strong> Glomerulitis (g) and peritubular capillaritis (ptc) — not described",
+      "<strong>Biopsy findings:</strong> Show T cell infiltrate (interstitial + tubular), not microvascular",
+      "<strong>Key point:</strong> Pure TCMR has negative DSA and negative C4d"
+    ],
+    panel2Title: "🟡 Why This Case Is Pure TCMR",
+    panel2List: [
+      "<strong>DSA negative:</strong> Rules out antibody-mediated component",
+      "<strong>C4d negative:</strong> No complement deposition in peritubular capillaries",
+      "<strong>Biopsy:</strong> Interstitial inflammation + tubulitis = T cell-mediated pattern",
+      "<strong>No microvascular inflammation:</strong> Glomeruli and peritubular capillaries are not involved",
+      "<strong>Treatment:</strong> Steroids (not plasmapheresis or IVIG, which are for AMR)"
+    ],
+    alertIcon: "🟡",
+    alertTitle: "Board Pearl — Pure TCMR Has Negative DSA and C4d",
+    alertText: "Antibody-mediated rejection requires <strong>DSA positivity and/or C4d deposition</strong> in peritubular capillaries. This patient has <strong>both negative</strong> — the diagnosis is <strong>pure T cell-mediated rejection (Grade IA)</strong>, treated with steroids, not plasmapheresis."
+  }
+};
+
+var QUIZ = [
+  {
+    question: "Which Banff classification is most appropriate for this patient?",
+    options: [
+      { text: "A. Borderline changes suspicious for acute T cell-mediated rejection", correct: false, explanation: "Borderline requires <strong>i1 (10–25%) + t1 (1–4 cells)</strong> or i0 + t1. This patient has i2 (35%) and t2 (6–10 cells), which exceeds the borderline threshold and meets Grade IA criteria." },
+      { text: "B. Acute T cell-mediated rejection, Banff grade IA", correct: true, explanation: "Grade IA is defined as <strong>significant interstitial inflammation (i2 or i3) + moderate tubulitis (t2)</strong>, with no arteritis (v0) and no antibody features. This patient has i2 (35%), t2 (6–10 cells), v0, DSA−, C4d− → <strong>Grade IA</strong>." },
+      { text: "C. Acute T cell-mediated rejection, Banff grade IB", correct: false, explanation: "Grade IB requires <strong>severe tubulitis (t3, >10 mononuclear cells per tubular cross-section)</strong>. This patient has t2 (6–10 cells)." },
+      { text: "D. Acute T cell-mediated rejection, Banff grade IIA", correct: false, explanation: "Grade IIA requires <strong>intimal arteritis (v1)</strong>. This patient has no arteritis (v0)." },
+      { text: "E. Active antibody-mediated rejection", correct: false, explanation: "AMR requires <strong>donor-specific antibodies (DSA) and/or C4d deposition</strong>. Both are negative in this patient." }
+    ]
+  },
+  {
+    question: "What is the interstitial inflammation score (i) in this patient?",
+    options: [
+      { text: "A. i1 (10–25%)", correct: false, explanation: "i1 is 10–25% of nonscarred cortex. This patient has 35% involvement, which is i2." },
+      { text: "B. i2 (26–50%)", correct: true, explanation: "Interstitial inflammation involving approximately <strong>35%</strong> of nonscarred cortex falls in the <strong>i2</strong> category (26–50%)." },
+      { text: "C. i3 (>50%)", correct: false, explanation: "i3 requires >50% involvement. This patient has 35%, which is i2." }
+    ]
+  },
+  {
+    question: "What is the tubulitis score (t) in this patient?",
+    options: [
+      { text: "A. t1 (1–4 cells)", correct: false, explanation: "t1 is 1–4 mononuclear cells per tubular cross-section. This patient has 6–10 cells." },
+      { text: "B. t2 (5–10 cells)", correct: true, explanation: "Tubulitis with <strong>6–10 mononuclear cells per tubular cross-section</strong> is classified as <strong>t2</strong> (moderate tubulitis)." },
+      { text: "C. t3 (>10 cells)", correct: false, explanation: "t3 requires >10 cells per tubular cross-section. This patient has 6–10 cells, which is t2." }
+    ]
+  },
+  {
+    question: "Which finding would upgrade this patient's rejection to Banff Grade IIA?",
+    options: [
+      { text: "A. More severe tubulitis (t3)", correct: false, explanation: "t3 would upgrade to Grade IB, not IIA. Grade IB is still a cellular rejection without vascular involvement." },
+      { text: "B. Intimal arteritis (v1)", correct: true, explanation: "The presence of any <strong>intimal arteritis (v1)</strong> automatically upgrades the rejection to <strong>Grade IIA</strong> (mild vascular rejection), regardless of the tubulitis score." },
+      { text: "C. C4d positivity", correct: false, explanation: "C4d positivity would suggest an antibody-mediated component, which would change the diagnosis to mixed or AMR — not Grade IIA TCMR." }
+    ]
+  },
+  {
+    question: "What is the first-line treatment for Banff Grade IA acute T cell-mediated rejection?",
+    options: [
+      { text: "A. Plasmapheresis and IVIG", correct: false, explanation: "Plasmapheresis and IVIG are treatments for <strong>antibody-mediated rejection</strong>, not pure T cell-mediated rejection." },
+      { text: "B. High-dose IV corticosteroids (methylprednisolone pulse)", correct: true, explanation: "First-line treatment for Grade IA TCMR is <strong>high-dose IV corticosteroids</strong> (e.g., methylprednisolone 250–500 mg/day for 3 days). Most patients respond well to steroid pulse therapy." },
+      { text: "C. Rituximab", correct: false, explanation: "Rituximab targets B cells and is used for antibody-mediated rejection or desensitization — not first-line for Grade IA TCMR." }
+    ]
+  },
+  {
+    question: "Why is BK viral PCR checked in this patient?",
+    options: [
+      { text: "A. To diagnose antibody-mediated rejection", correct: false, explanation: "BK PCR does not diagnose AMR. It is used to rule out BK virus nephropathy." },
+      { text: "B. To rule out BK virus nephropathy, which can mimic TCMR on biopsy", correct: true, explanation: "BK virus nephropathy causes <strong>interstitial inflammation and tubulitis</strong> that can mimic acute T cell-mediated rejection. A negative BK PCR helps exclude this important differential diagnosis." },
+      { text: "C. To assess the risk of post-transplant lymphoproliferative disorder", correct: false, explanation: "BK PCR is specific to BK virus, not EBV/PTLD." }
+    ]
+  },
+  {
+    question: "What is the definition of Banff borderline changes suspicious for acute TCMR?",
+    options: [
+      { text: "A. i2 + t2", correct: false, explanation: "i2 + t2 defines Grade IA, not borderline. Borderline is a milder category." },
+      { text: "B. i1 + t1 or i0 + t1", correct: true, explanation: "Borderline changes are defined as <strong>i1 (10–25%) + t1 (1–4 cells)</strong> or <strong>i0 + t1</strong>. This category captures findings that fall short of Grade IA." },
+      { text: "C. i3 + t3", correct: false, explanation: "i3 + t3 would be severe rejection (Grade IB or higher), not borderline." }
+    ]
+  },
+  {
+    question: "What is the Banff 'v' score in this patient, and what does it mean?",
+    options: [
+      { text: "A. v1 — mild intimal arteritis", correct: false, explanation: "v1 indicates mild-to-moderate intimal arteritis. This patient has no arteritis." },
+      { text: "B. v0 — no arteritis", correct: true, explanation: "The biopsy shows <strong>arteritis is absent</strong>, which corresponds to <strong>v0</strong>. This is consistent with Grade IA rejection (no vascular involvement)." },
+      { text: "C. v3 — transmural arteritis", correct: false, explanation: "v3 indicates severe transmural arteritis with fibrinoid necrosis — this would be Grade III rejection." }
+    ]
+  }
+];
+
+// ==================== RENDER ====================
+function buildTabs() {
+  var html = "";
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    html += '<button class="tab ' + t.id + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }
+  document.getElementById("tabs").innerHTML = html;
+}
+
+function buildQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  var grid = document.getElementById("quizGrid");
+  var html = "";
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="q" data-q="' + i + '">';
+    html += '<p>' + (i + 1) + '. ' + q.question + '</p>';
+    html += '<div class="opts">';
+    for (var j = 0; j < q.options.length; j++) {
+      var o = q.options[j];
+      html += '<button class="opt" data-q="' + i + '" data-o="' + j + '">' + o.text + '</button>';
+    }
+    html += '</div>';
+    html += '<div class="explain"></div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+
+  var buttons = grid.querySelectorAll(".opt");
+  for (var k = 0; k < buttons.length; k++) {
+    buttons[k].addEventListener("click", handleAnswer);
+  }
+}
+
+function handleAnswer(e) {
+  var btn = e.currentTarget;
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-o"), 10);
+  var q = QUIZ[qi];
+  var opt = q.options[oi];
+  var box = btn.closest(".q");
+
+  var allOpts = box.querySelectorAll(".opt");
+  for (var i = 0; i < allOpts.length; i++) {
+    allOpts[i].classList.remove("correct", "wrong");
+  }
+  btn.classList.add(opt.correct ? "correct" : "wrong");
+
+  var explain = box.querySelector(".explain");
+  if (opt.correct) {
+    explain.className = "explain show correct-explain";
+    explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+  } else {
+    explain.className = "explain show wrong-explain";
+    explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+  }
+}
+
+function setMode(mode) {
+  var d = MODES[mode];
+  if (!d) return;
+
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    var el = document.getElementById("tab" + t.id);
+    if (el) el.classList.remove("active");
+  }
+  var activeEl = document.getElementById("tab" + mode);
+  if (activeEl) activeEl.classList.add("active");
+
+  var optIds = ["opt1", "opt2", "opt3", "opt4"];
+  for (var j = 0; j < optIds.length; j++) {
+    var dg = document.getElementById("diagram-" + optIds[j]);
+    if (dg) dg.style.display = "none";
+  }
+  var target = document.getElementById("diagram-" + mode);
+  if (target) target.style.display = "block";
+
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  document.getElementById("banner-bg").setAttribute("fill", d.bannerBg);
+  document.getElementById("banner-text-1").textContent = d.bannerText1;
+  document.getElementById("banner-text-2").textContent = d.bannerText2;
+
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass + (panel.classList.contains("collapsed") ? " collapsed" : "");
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+
+  var infoHtml = "";
+  for (var m = 0; m < d.infoRows.length; m++) {
+    var r = d.infoRows[m];
+    infoHtml += '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }
+  document.getElementById("infoBody").innerHTML = infoHtml;
+
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  var p1 = "";
+  for (var n = 0; n < d.panel1List.length; n++) {
+    p1 += "<li>" + d.panel1List[n] + "</li>";
+  }
+  document.getElementById("panel1-list").innerHTML = p1;
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  var p2 = "";
+  for (var p = 0; p < d.panel2List.length; p++) {
+    p2 += "<li>" + d.panel2List[p] + "</li>";
+  }
+  document.getElementById("panel2-list").innerHTML = p2;
+
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById("infoPanel");
+  var btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildTabs();
+  buildQuiz();
+  setMode("opt1");
+});
+</script>
+</body>
+</html>

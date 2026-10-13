@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peritoneal Dialysis — Low Transporter, Dwell Time & Prescription</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;
+    animation:slideDown .6s cubic-bezier(.4,0,.2,1);}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+    animation:slideDown .7s cubic-bezier(.4,0,.2,1);}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1; transform:translateY(-1px);}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;
+    animation:slideDown .8s cubic-bezier(.4,0,.2,1);}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:280px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:165px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);
+    animation:slideDown .9s cubic-bezier(.4,0,.2,1);}
+  .panel.two{border-top-color:#475569; animation-delay:.1s;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;
+    animation:slideDown 1s cubic-bezier(.4,0,.2,1);}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    animation:slideDown 1.1s cubic-bezier(.4,0,.2,1);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);
+    animation:cardFadeIn .45s cubic-bezier(.4,0,.2,1) backwards;
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .q:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.06);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8; transform:translateX(3px);}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;
+    animation:correctPop .4s cubic-bezier(.34,1.56,.64,1);}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;
+    animation:shake .4s cubic-bezier(.36,.07,.19,.97);}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:boxSlide .35s cubic-bezier(.4,0,.2,1);}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes slideDown{
+    0%{opacity:0; transform:translateY(-16px);}
+    100%{opacity:1; transform:translateY(0);}
+  }
+  @keyframes cardFadeIn{
+    0%{opacity:0; transform:translateY(12px) scale(.97);}
+    100%{opacity:1; transform:translateY(0) scale(1);}
+  }
+  @keyframes boxSlide{
+    0%{opacity:0; transform:translateX(-14px);}
+    100%{opacity:1; transform:translateX(0);}
+  }
+  @keyframes correctPop{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.04);}
+    100%{transform:scale(1);}
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+  }
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="g2" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="g3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+        </radialGradient>
+        <radialGradient id="g4" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+        </marker>
+        <marker id="arrow4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ DIAGRAM 1 — LOW TRANSPORTER ============ -->
+      <g id="diagram-opt1">
+        <text x="600" y="110" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">LOW TRANSPORTER — SLOW SOLUTE MOVEMENT, PRESERVED UF</text>
+
+        <g transform="translate(180, 300)">
+          <rect x="-120" y="-100" width="240" height="200" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-72" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">BLOOD SIDE</text>
+          <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-size="30">🩸</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Urea, creatinine, K⁺</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Phosphate</text>
+        </g>
+
+        <path d="M 305 300 L 385 300" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrow1)" class="flow-anim"/>
+        <text x="345" y="285" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">slow</text>
+
+        <g transform="translate(540, 300)">
+          <rect x="-105" y="-100" width="210" height="200" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-72" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">PERITONEUM</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="30">🚪</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Slow doorway</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">D/P Cr 0.42</text>
+        </g>
+
+        <path d="M 650 300 L 730 300" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrow1)" class="flow-anim"/>
+        <text x="690" y="285" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">slow</text>
+
+        <g transform="translate(890, 300)">
+          <rect x="-120" y="-100" width="240" height="200" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-72" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">DIALYSATE</text>
+          <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-size="30">💧</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Solute arrives</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">only with time</text>
+        </g>
+
+        <g transform="translate(600, 540)">
+          <rect x="-360" y="-60" width="720" height="120" rx="16" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">LOW TRANSPORTER = SLOW EQUILIBRATION</text>
+          <text x="0" y="2" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">D/P Cr 0.42 · D/D₀ glucose 0.62 · Net UF 850 mL (preserved)</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fef3c7">→ Long dwells needed for solute clearance</text>
+        </g>
+        <text x="600" y="650" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Slow solutes need more TIME to cross — short dwells = poor clearance</text>
+      </g>
+
+      <!-- ============ DIAGRAM 2 — LONGER DWELL ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <g transform="translate(200, 260)">
+          <rect x="-125" y="-80" width="250" height="160" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">SHORT DWELL</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="26">⏱️</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">30 min</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7c3aed">↓ clearance</text>
+        </g>
+
+        <path d="M 330 260 L 410 260" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrow2)"/>
+        <text x="370" y="245" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7c3aed">vs</text>
+
+        <g transform="translate(590, 260)">
+          <rect x="-145" y="-80" width="290" height="160" rx="14" fill="#7c3aed" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">LONG DWELL</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="26">⏱️</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">6–8 hours</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fef3c7">↑ clearance ✓</text>
+        </g>
+
+        <path d="M 740 260 L 820 260" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrow2)"/>
+
+        <g transform="translate(1000, 260)">
+          <rect x="-120" y="-80" width="240" height="160" rx="14" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">RESULT</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="26" font-weight="800" fill="#fef3c7">↑</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">Solute clearance</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fef3c7">Answer B ✓</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-360" y="-65" width="720" height="130" rx="16" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">INCREASE DWELL DURATION</text>
+          <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">Low transporters need more time for solute equilibration</text>
+          <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fef3c7">Longer dwells → more solute transfer per exchange</text>
+        </g>
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#5b21b6">For a LOW transporter, prolong the dwell — do NOT shorten it</text>
+      </g>
+
+      <!-- ============ DIAGRAM 3 — ICODEXTRIN ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <g transform="translate(200, 260)">
+          <rect x="-130" y="-100" width="260" height="200" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">ICODEXTRIN</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="30">💧</text>
+          <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Colloid osmotic agent</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Long dwell (8–16 h)</text>
+        </g>
+
+        <path d="M 335 260 L 415 260" stroke="#0891b2" stroke-width="3" fill="none" marker-end="url(#arrow3)"/>
+
+        <g transform="translate(620, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">PRIMARY BENEFIT</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="30" font-weight="800" fill="#0891b2">↑</text>
+          <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">ULTRAFILTRATION</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">during long dwells</text>
+        </g>
+
+        <path d="M 765 260 L 845 260" stroke="#0891b2" stroke-width="3" fill="none" marker-end="url(#arrow3)"/>
+
+        <g transform="translate(1020, 260)">
+          <rect x="-115" y="-100" width="230" height="200" rx="14" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">NOT PRIMARY</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="30" font-weight="800" fill="#fef3c7">≠</text>
+          <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="11" fill="#cffafe">Does not directly</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" fill="#cffafe">improve clearance</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-360" y="-65" width="720" height="130" rx="16" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY NOT ICODEXTRIN</text>
+          <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">Icodextrin helps with VOLUME (UF) — not with SMALL-SOLUTE CLEARANCE</text>
+          <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fef3c7">This patient already has good UF (850 mL) — the problem is clearance</text>
+        </g>
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#155e75">Icodextrin is for UF failure, not for inadequate solute clearance</text>
+      </g>
+
+      <!-- ============ DIAGRAM 4 — PET CATEGORIES ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <g transform="translate(190, 210)">
+          <rect x="-145" y="-80" width="290" height="160" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">HIGH</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#713f12">D/P Cr &gt; 0.82</text>
+          <text x="0" y="4" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Fast equilibration</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#ca8a04">→ SHORT dwells</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">UF failure common</text>
+        </g>
+
+        <g transform="translate(600, 210)">
+          <rect x="-145" y="-80" width="290" height="160" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">HIGH-AVERAGE</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#713f12">D/P Cr 0.65–0.81</text>
+          <text x="0" y="4" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Moderate-fast</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#ca8a04">→ Short-medium</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Standard prescription</text>
+        </g>
+
+        <g transform="translate(1010, 210)">
+          <rect x="-145" y="-80" width="290" height="160" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">LOW-AVERAGE</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#713f12">D/P Cr 0.50–0.64</text>
+          <text x="0" y="4" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Moderate-slow</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#ca8a04">→ Medium dwells</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Increase dwell time</text>
+        </g>
+
+        <g transform="translate(600, 460)">
+          <rect x="-380" y="-85" width="760" height="170" rx="16" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">THIS PATIENT — LOW TRANSPORTER</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2">D/P Cr 0.42 (low) · D/D₀ glucose 0.62 · Net UF 850 mL (preserved)</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fef3c7">→ INCREASE DWELL DURATION for better solute clearance</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">Slow transporters need longer contact time</text>
+        </g>
+        <text x="600" y="650" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Match dwell time to transport status — longer for low transporters</text>
+      </g>
+
+      <!-- ============ DYNAMIC BANNER ============ -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Peritoneal Dialysis — Low Transporter & Dwell Time",
+  subtitle: "Why a low D/P creatinine means LENGTHEN the dwell, not shorten it",
+  badge: "Renal Replacement Therapy",
+
+  caseTitle: "65-year-old woman on automated PD — inadequate solute clearance, good volume control",
+  caseDescription: "Standardized 4-hour PET with 3.86% glucose:<br><br>• D/P creatinine at 4 h = <strong>0.42</strong> (low transporter)<br>• D/D₀ glucose at 4 h = <strong>0.62</strong> (slow glucose absorption)<br>• Net UF = <strong>850 mL</strong> (preserved, normal &gt; 400 mL)<br>• Residual kidney function: minimal<br><br><strong>Diagnosis:</strong> Low transporter with preserved UF but inadequate solute clearance.<br><strong>Answer:</strong> B — Increase dwell duration to allow more time for solute equilibration.",
+  labChips: [
+    { text: "D/P Cr 0.42", abnormal: true },
+    { text: "D/D₀ glucose 0.62", abnormal: false },
+    { text: "Net UF 850 mL", abnormal: false, pos: true },
+    { text: "Low transporter", abnormal: true },
+    { text: "Clearance ↓", abnormal: true }
+  ],
+
+  tabs: [
+    { id: "opt1", label: "🔴 Low Transporter" },
+    { id: "opt2", label: "🟣 Longer Dwell ✓" },
+    { id: "opt3", label: "🔵 Icodextrin? No" },
+    { id: "opt4", label: "🟡 PET Categories" }
+  ],
+
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      infoTitle: "🔴 Low Transporter — The Problem",
+      infoRows: [
+        { k: "D/P Cr at 4 h", v: "0.42 (low)" },
+        { k: "D/D₀ glucose", v: "0.62 (high)" },
+        { k: "Net UF", v: "850 mL (good)" },
+        { k: "Issue", v: "Slow solute equilibration" }
+      ],
+      svgTitle: "Low Transporter — Slow Solute Movement, Preserved UF",
+      svgSubtitle: "D/P Cr 0.42 · D/D₀ glucose 0.62 · Net UF 850 mL — good volume, poor clearance",
+      bannerBg: "#dc2626",
+      bannerText1: "🔴 Low Transporter — Slow Solute Equilibration",
+      bannerText2: "D/P Cr 0.42 · Short dwells give solutes no time to cross → poor clearance",
+      panel1Title: "🔴 Low Transporter — What It Means",
+      panel1Tagline: "A slow doorway for solutes",
+      panel1List: [
+        "<strong>D/P creatinine at 4 h = 0.42:</strong> Low → solutes cross the peritoneal membrane slowly",
+        "<strong>D/D₀ glucose = 0.62:</strong> High → glucose stays in the dialysate longer (because the membrane is slow)",
+        "<strong>Net UF = 850 mL:</strong> Preserved → the osmotic gradient lasts longer in a slow transporter",
+        "<strong>Problem:</strong> With short dwells, solutes leave before equilibrating → inadequate clearance",
+        "<strong>Clinical clue:</strong> Adequate volume control, inadequate solute clearance"
+      ],
+      panel2Title: "🔴 Why a Short Dwell Makes It Worse",
+      panel2Tagline: "Timing matters",
+      panel2List: [
+        "<strong>Solute kinetics:</strong> Solutes move down a concentration gradient over time",
+        "<strong>Short dwell (30 min):</strong> Solutes cross only a small fraction of the way before the drain",
+        "<strong>Long dwell (6–8 h):</strong> Solutes have time to equilibrate — much higher D/P ratio",
+        "<strong>Contrast with high transporters:</strong> They equilibrate fast, so short dwells are preferred to avoid reabsorption",
+        "<strong>This patient:</strong> Needs longer contact time, not shorter"
+      ],
+      alertIcon: "🔴",
+      alertTitle: "Board Pearl — Low Transporter = Slow Equilibration",
+      alertText: "A <strong>D/P creatinine &lt; 0.50</strong> at 4 hours means <strong>low transport</strong>. Solutes cross slowly, so short dwells cause inadequate clearance. This patient also has preserved UF, confirming a low transporter pattern."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      infoTitle: "🟣 Longer Dwell — The Answer",
+      infoRows: [
+        { k: "Adjustment", v: "Increase dwell duration" },
+        { k: "Target", v: "6–8 hours per exchange" },
+        { k: "Effect", v: "↑ Solute equilibration" },
+        { k: "Answer", v: "Option B" }
+      ],
+      svgTitle: "Increase Dwell Duration — Better Solute Clearance",
+      svgSubtitle: "Low transporters need more time for waste to move from blood to dialysate",
+      bannerBg: "#7c3aed",
+      bannerText1: "🟣 Increase Dwell Duration — Correct Answer",
+      bannerText2: "Longer dwells → more solute transfer per exchange → better clearance",
+      panel1Title: "🟣 Why Longer Dwells Help",
+      panel1Tagline: "More time = more solute movement",
+      panel1List: [
+        "<strong>Mechanism:</strong> Solutes diffuse down their concentration gradient continuously during the dwell",
+        "<strong>Longer time:</strong> More solute accumulates in the dialysate before it is drained",
+        "<strong>No downside here:</strong> UF is preserved (850 mL), so extending dwells doesn't compromise fluid removal",
+        "<strong>Practical approach:</strong> Extend daytime dwells to 6–8 h, or use an overnight dwell of 8–10 h",
+        "<strong>Result:</strong> Higher total solute removal per day (Kt/V urea, creatinine clearance)"
+      ],
+      panel2Title: "🟣 How to Prescribe Longer Dwells",
+      panel2Tagline: "Practical adjustments",
+      panel2List: [
+        "<strong>CAPD:</strong> Increase daytime dwell from 4 h to 6 h; keep overnight dwell 8–10 h",
+        "<strong>APD:</strong> Lengthen each cycle; consider fewer but longer cycles; add a long day dwell",
+        "<strong>Monitor:</strong> Check Kt/V urea and creatinine clearance after adjustment",
+        "<strong>Reassess PET:</strong> Repeat PET every 1–2 years or after peritonitis to detect change in transport status",
+        "<strong>Watch for:</strong> Signs of overhydration — reassess if UF drops with longer dwells"
+      ],
+      alertIcon: "🟣",
+      alertTitle: "Board Pearl — Low Transporter = Longer Dwells",
+      alertText: "In a <strong>low transporter</strong>, the correct prescription adjustment is to <strong>increase dwell duration</strong>. Solutes need more time to cross the membrane. Since UF is already good, lengthening the dwell does not compromise volume control."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      infoTitle: "🔵 Icodextrin? Not the Answer Here",
+      infoRows: [
+        { k: "Icodextrin", v: "Colloid osmotic agent" },
+        { k: "Primary benefit", v: "Ultrafiltration" },
+        { k: "Use case", v: "UF failure (high transporters)" },
+        { k: "Not for", v: "Solute clearance" }
+      ],
+      svgTitle: "Icodextrin — For UF, Not for Solute Clearance",
+      svgSubtitle: "Colloid osmotic agent maintains UF during long dwells but does not directly improve small-solute clearance",
+      bannerBg: "#0891b2",
+      bannerText1: "🔵 Icodextrin — Wrong Answer for This Patient",
+      bannerText2: "Patient already has good UF (850 mL) — the problem is clearance, not volume",
+      panel1Title: "🔵 What Icodextrin Does",
+      panel1Tagline: "A colloid, not a crystalloid",
+      panel1List: [
+        "<strong>Icodextrin:</strong> A glucose polymer that acts as a colloid osmotic agent",
+        "<strong>Primary use:</strong> Maintains ultrafiltration across long dwells (8–16 h) when glucose-based solutions fail",
+        "<strong>Best for:</strong> High transporters who lose the glucose gradient quickly",
+        "<strong>Benefit:</strong> Better fluid control in patients with UF failure",
+        "<strong>Not primary benefit:</strong> Small-solute clearance (urea, creatinine)"
+      ],
+      panel2Title: "🔵 Why NOT for This Patient",
+      panel2List: [
+        "<strong>UF already good:</strong> 850 mL at 4 h with 3.86% glucose is well above the 400 mL threshold",
+        "<strong>Problem is clearance:</strong> Icodextrin doesn't directly increase urea or creatinine removal",
+        "<strong>Icodextrin doesn't fix slow transport:</strong> The membrane is still slow; only longer contact time helps",
+        "<strong>Could still be used:</strong> If long overnight dwells with glucose cause reabsorption or if UF declines later",
+        "<strong>For now:</strong> Focus on dwell time to fix clearance"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Board Pearl — Icodextrin Is for UF Failure, Not Clearance",
+      alertText: "Icodextrin is a <strong>colloid osmotic agent</strong> used to improve <strong>ultrafiltration</strong>, especially in <strong>high transporters</strong> with UF failure. It does not directly improve <strong>small-solute clearance</strong>. This patient needs longer dwells."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      infoTitle: "🟡 PET Categories & Normal Values",
+      infoRows: [
+        { k: "High", v: "D/P Cr > 0.82" },
+        { k: "High-average", v: "D/P Cr 0.65–0.81" },
+        { k: "Low-average", v: "D/P Cr 0.50–0.64" },
+        { k: "Low", v: "D/P Cr < 0.50" }
+      ],
+      svgTitle: "PET Categories — Match Prescription to Transport Type",
+      svgSubtitle: "High transporters → short dwells · Low transporters → long dwells · This patient is LOW",
+      bannerBg: "#ca8a04",
+      bannerText1: "🟡 PET Categories — This Patient Is a Low Transporter",
+      bannerText2: "D/P Cr 0.42 falls below 0.50 → LOW → longer dwells needed",
+      panel1Title: "🟡 PET Categories & Prescription",
+      panel1Tagline: "The D/P creatinine determines the prescription",
+      panel1List: [
+        "<strong>High (> 0.82):</strong> Rapid solute and glucose transport → <strong>short dwells</strong>; consider icodextrin for the long dwell",
+        "<strong>High-average (0.65–0.81):</strong> Standard prescription; short-to-medium dwells",
+        "<strong>Low-average (0.50–0.64):</strong> Medium dwells; may need longer to improve clearance",
+        "<strong>Low (&lt; 0.50):</strong> Slow transport → <strong>long dwells</strong> for adequate solute clearance",
+        "<strong>This patient (0.42):</strong> Low transporter → increase dwell duration"
+      ],
+      panel2Title: "🟡 Normal PET Reference Values",
+      panel2List: [
+        "<strong>D/P creatinine (3.86% glucose, 4 h):</strong> 0.70 (95% CI 0.52–0.88)",
+        "<strong>D/D₀ glucose (3.86% glucose, 4 h):</strong> 0.28 (95% CI 0.18–0.38)",
+        "<strong>Net UF (3.86% glucose, 4 h):</strong> ~675 mL (95% CI 375–975 mL)",
+        "<strong>Adequate UF:</strong> Generally &gt; 400 mL at 4 h with 3.86% glucose",
+        "<strong>Residual kidney function:</strong> Even small amounts contribute significantly to total clearance"
+      ],
+      alertIcon: "🟡",
+      alertTitle: "Board Pearl — PET Determines Prescription",
+      alertText: "Use the <strong>4-hour D/P creatinine</strong> to classify transport status. <strong>High transporters</strong> need short dwells; <strong>low transporters</strong> need long dwells. Normal values: D/P Cr ~0.70, D/D₀ glucose ~0.28, net UF ~675 mL."
+    }
+  },
+
+  quiz: [
+    {
+      question: "What is dwell time in peritoneal dialysis?",
+      options: [
+        { text: "A. The time to fill the peritoneum with dialysate", correct: false, explanation: "That is the <strong>fill phase</strong> (10–15 min). Dwell time is the period the dialysate <em>sits</em> in the peritoneum before draining." },
+        { text: "B. The time dialysate sits in the peritoneal cavity before being drained", correct: true, explanation: "<strong>Dwell time</strong> is how long the dialysate stays in the peritoneal cavity, allowing solutes to diffuse across the membrane. It follows the fill phase and precedes the drain phase." },
+        { text: "C. The time to drain dialysate out of the peritoneum", correct: false, explanation: "That is the <strong>drain phase</strong> (15–30 min). Dwell time is the period in between fill and drain." }
+      ]
+    },
+    {
+      question: "Based on this patient's PET, what type of transporter is she?",
+      options: [
+        { text: "A. High transporter", correct: false, explanation: "High transporters have D/P creatinine > 0.82. This patient's value is 0.42." },
+        { text: "B. Low transporter", correct: true, explanation: "A D/P creatinine of <strong>0.42</strong> at 4 hours is well below 0.50, placing her in the <strong>low transporter</strong> category. Low transporters equilibrate slowly." },
+        { text: "C. High-average transporter", correct: false, explanation: "High-average transporters have D/P creatinine 0.65–0.81. Her value is 0.42." }
+      ]
+    },
+    {
+      question: "Which prescription adjustment would most likely improve small-solute clearance in this patient?",
+      options: [
+        { text: "A. Shorten all dwell times to 30 minutes", correct: false, explanation: "Shortening dwells would <strong>worsen</strong> clearance in a low transporter. Short dwells help high transporters, not low transporters." },
+        { text: "B. Increase dwell duration to allow more time for solute equilibration", correct: true, explanation: "Low transporters need <strong>more time</strong> for solutes to cross the peritoneal membrane. Increasing dwell duration improves solute clearance without compromising UF, since UF is already preserved." },
+        { text: "C. Use icodextrin exclusively for every exchange", correct: false, explanation: "Icodextrin is a <strong>colloid osmotic agent</strong> used for ultrafiltration in high transporters with UF failure. It does not directly improve small-solute clearance." },
+        { text: "D. Reduce total dialysate volume and number of exchanges", correct: false, explanation: "This would <strong>decrease</strong> clearance further. Less dialysate = less solute removed." },
+        { text: "E. Discontinue peritoneal dialysis immediately", correct: false, explanation: "Ultrafiltration is <strong>not</strong> inadequate (850 mL). The problem is clearance, which can be fixed with a prescription adjustment. Discontinuing PD is premature." }
+      ]
+    },
+    {
+      question: "Which finding confirms that ultrafiltration is preserved in this patient?",
+      options: [
+        { text: "A. D/P creatinine 0.42", correct: false, explanation: "D/P creatinine reflects solute transport, not ultrafiltration. A low value indicates slow solute transport." },
+        { text: "B. Net ultrafiltration 850 mL at 4 hours", correct: true, explanation: "A net UF of <strong>850 mL</strong> at 4 hours with 3.86% glucose is well above the 400 mL threshold, indicating <strong>preserved ultrafiltration</strong>. This is typical of low transporters." },
+        { text: "C. D/D₀ glucose 0.62", correct: false, explanation: "D/D₀ glucose reflects how much glucose remains in the dialysate. A high value is consistent with slow transport, but it does not directly indicate UF volume." }
+      ]
+    },
+    {
+      question: "Why does this patient have preserved ultrafiltration despite being a low transporter?",
+      options: [
+        { text: "A. Because the osmotic gradient is quickly lost", correct: false, explanation: "The gradient is <em>preserved</em>, not lost — that's why UF is good. Rapid gradient loss occurs in high transporters." },
+        { text: "B. Because glucose is absorbed slowly, so the osmotic gradient lasts longer", correct: true, explanation: "In a <strong>low transporter</strong>, glucose is absorbed slowly (D/D₀ glucose 0.62, high). The osmotic gradient driving ultrafiltration therefore persists longer, giving good net UF." },
+        { text: "C. Because aquaporin channels are upregulated", correct: false, explanation: "AQP1 upregulation is not the mechanism here. The preserved UF is due to slow glucose absorption, which maintains the osmotic gradient." }
+      ]
+    },
+    {
+      question: "What is the main difference between how you would treat a high transporter vs a low transporter?",
+      options: [
+        { text: "A. High transporters need long dwells; low transporters need short dwells", correct: false, explanation: "This is backwards. High transporters need <strong>short</strong> dwells; low transporters need <strong>long</strong> dwells." },
+        { text: "B. High transporters need short dwells; low transporters need long dwells", correct: true, explanation: "High transporters equilibrate fast, so short dwells prevent reabsorption of solutes and fluid. Low transporters equilibrate slowly, so longer dwells allow solutes to cross." },
+        { text: "C. Both need the same dwell times", correct: false, explanation: "Dwell time must be <strong>matched</strong> to transport status. High transporters → short dwells; low transporters → long dwells." }
+      ]
+    },
+    {
+      question: "What is the normal 4-hour D/P creatinine value in a standard PET?",
+      options: [
+        { text: "A. 0.20", correct: false, explanation: "0.20 is far below normal. Normal D/P creatinine is around 0.70." },
+        { text: "B. 0.70", correct: true, explanation: "The mean normal D/P creatinine at 4 hours with 3.86% glucose is <strong>~0.70</strong> (95% CI 0.52–0.88). This patient's 0.42 is low." },
+        { text: "C. 0.95", correct: false, explanation: "0.95 is above the normal range. Normal is ~0.70, with an upper limit around 0.88." }
+      ]
+    },
+    {
+      question: "If the patient were a HIGH transporter instead, which adjustment would you consider?",
+      options: [
+        { text: "A. Lengthen dwell times", correct: false, explanation: "Lengthening dwells in a high transporter would worsen UF because glucose is absorbed rapidly and the gradient collapses early." },
+        { text: "B. Shorten dwell times and consider icodextrin for the long dwell", correct: true, explanation: "High transporters need <strong>short dwells</strong> to prevent reabsorption and <strong>icodextrin</strong> for the long dwell to maintain UF when the glucose gradient is lost." },
+        { text: "C. Discontinue PD", correct: false, explanation: "High transporters can still be managed with prescription adjustments — discontinuation is a last resort." }
+      ]
+    }
+  ],
+
+  footerCredit: "A Gift by Dr. Malik",
+  footerNote: "Educational use only · Not medical advice"
+};
+
+(function () {
+  "use strict";
+
+  document.title = CONFIG.title;
+  document.getElementById("pageTitle").textContent = CONFIG.title;
+  document.getElementById("pageSubtitle").textContent = CONFIG.subtitle;
+  document.getElementById("pageBadge").textContent = CONFIG.badge;
+
+  document.getElementById("caseTitle").textContent = CONFIG.caseTitle;
+  document.getElementById("caseDescription").innerHTML = CONFIG.caseDescription;
+
+  document.getElementById("labChips").innerHTML = CONFIG.labChips
+    .map(c => `<span class="lab-chip${c.abnormal ? " abn" : ""}${c.pos ? " pos" : ""}">${c.text}</span>`)
+    .join("");
+
+  document.getElementById("tabs").innerHTML = CONFIG.tabs
+    .map(t => `<button class="tab ${t.id}" id="tab${t.id}" onclick="setMode('${t.id}')">${t.label}</button>`)
+    .join("");
+
+  document.getElementById("quizCount").textContent = CONFIG.quiz.length;
+  document.getElementById("footerCredit").textContent = CONFIG.footerCredit;
+  document.getElementById("footerNote").textContent = CONFIG.footerNote;
+
+  const quizGrid = document.getElementById("quizGrid");
+  quizGrid.innerHTML = CONFIG.quiz.map((q, qi) => `
+    <div class="q" data-q="${qi}" style="animation-delay:${qi * 0.06}s">
+      <p>${qi + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map((o, oi) => `
+          <button class="opt" data-q="${qi}" data-o="${oi}">${o.text}</button>
+        `).join("")}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join("");
+
+  quizGrid.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const qi = parseInt(btn.dataset.q, 10);
+      const oi = parseInt(btn.dataset.o, 10);
+      const q = CONFIG.quiz[qi];
+      const opt = q.options[oi];
+      const box = btn.closest(".q");
+
+      box.querySelectorAll(".opt").forEach(b => b.classList.remove("correct", "wrong"));
+      btn.classList.add(opt.correct ? "correct" : "wrong");
+
+      const explain = box.querySelector(".explain");
+      if (opt.correct) {
+        explain.className = "explain show correct-explain";
+        explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+      } else {
+        explain.className = "explain show wrong-explain";
+        explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+      }
+    });
+  });
+
+  setMode("opt1");
+})();
+
+function setMode(mode) {
+  const d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(t => {
+    document.getElementById("tab" + t.id).classList.remove("active");
+  });
+  document.getElementById("tab" + mode).classList.add("active");
+
+  ["opt1", "opt2", "opt3", "opt4"].forEach(id => {
+    document.getElementById("diagram-" + id).style.display = "none";
+  });
+  document.getElementById("diagram-" + mode).style.display = "block";
+
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  document.getElementById("banner-bg").setAttribute("fill", d.bannerBg);
+  document.getElementById("banner-text-1").textContent = d.bannerText1;
+  document.getElementById("banner-text-2").textContent = d.bannerText2;
+
+  const panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass +
+    (panel.classList.contains("collapsed") ? " collapsed" : "");
+
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+  document.getElementById("infoBody").innerHTML = d.infoRows
+    .map(r => `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`)
+    .join("");
+
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  document.getElementById("panel1-list").innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join("");
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  document.getElementById("panel2-list").innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join("");
+
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById("infoPanel");
+  const btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+</script>
+</body>
+</html>

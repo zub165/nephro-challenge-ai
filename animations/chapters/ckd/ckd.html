@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question 350 — Metabolic Acidosis in CKD — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent:#2563eb; --accent2:#dc2626; --accent3:#7c3aed; --accent4:#ca8a04;
+    --good:#16a34a; --bad:#ef4444; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#eff6ff; border-color:var(--accent); color:#1e40af;}
+  .tab.opt2.active{background:#fef2f2; border-color:var(--accent2); color:#991b1b;}
+  .tab.opt3.active{background:#f5f3ff; border-color:var(--accent3); color:#5b21b6;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--accent);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#eff6ff; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#fee2e2;}
+  .info-float.highlight-opt3 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,var(--accent),#3b82f6); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(37,99,235,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#dbeafe;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:var(--good); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--bad); color:#991b1b;}
+
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:fade .25s ease;}
+  .explain.correct-explain{border-left-color:var(--good); background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:var(--bad); background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Question 350 — Metabolic Acidosis in CKD</h1>
+      <p>56-year-old woman · family history of PKD · eGFR 44 · metabolic acidosis</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>56-year-old woman with family history of PKD and metabolic acidosis</h2>
+      <p>Sister on dialysis. BP 138/80. No palpable kidneys. Labs: Na 140, K 3.6, Cl 114, HCO3 19, BUN 16, Cr 1.6, albumin 4.0. ABG: pH 7.32, pCO2 35. eGFR 44. Urinalysis: SG 1.015, pH 5.0, negative protein and blood.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">HCO3 19</span>
+      <span class="lab-chip abn">pH 7.32</span>
+      <span class="lab-chip abn">Cl 114</span>
+      <span class="lab-chip abn">eGFR 44</span>
+      <span class="lab-chip">K 3.6</span>
+      <span class="lab-chip">Cr 1.6</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab opt1 active" id="tabOpt1" onclick="setMode('opt1')">🔵 CKD Stage 3 Metabolic Acidosis ✓</button>
+    <button class="tab opt2" id="tabOpt2" onclick="setMode('opt2')">🔴 Distal RTA</button>
+    <button class="tab opt3" id="tabOpt3" onclick="setMode('opt3')">🟣 Organic Acid Accumulation</button>
+    <button class="tab opt4" id="tabOpt4" onclick="setMode('opt4')">🟡 Hyperaldosteronism</button>
+  </div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="grad1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#2563eb"/>
+        </radialGradient>
+        <radialGradient id="grad2" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="grad3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="grad4" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrowYellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">
+        CKD Stage 3 — Decreased Acid Excretion → Metabolic Acidosis
+      </text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">
+        Reduced GFR + tubular dysfunction → impaired NH4+ excretion → H+ retention → low HCO3
+      </text>
+
+      <!-- DIAGRAM 1 — CKD Stage 3 Metabolic Acidosis -->
+      <g id="diagram-opt1">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">PKD</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">FAMILY HISTORY</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#1e40af">eGFR 44</text>
+          <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">Stage 3 CKD</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad1)" stroke="#1e40af" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">REDUCED</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">ACID EXCRETION</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#dbeafe">↓ NH4+ excretion</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e40af">H+ RETENTION</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">Metabolic acidosis</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">pH 7.32</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">HCO3 19</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#2563eb">Normal anion gap</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#2563eb" stroke="#1e40af" stroke-width="3"/>
+          <text x="0" y="-42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">★ CORRECT ANSWER</text>
+          <text x="0" y="-16" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dbeafe">CKD Stage 3</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#dbeafe">↓ Acid excretion</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#dbeafe">due to reduced</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#dbeafe">filtration + tubular dysfunction</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 2 — Distal RTA -->
+      <g id="diagram-opt2" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">DISTAL</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">NEPHRON</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">impaired H+ secretion</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad2)" stroke="#991b1b" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">FAILURE TO</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">ACIDIFY URINE</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">Urine pH >5.5</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">HYPERCHLOREMIC</text>
+          <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">METABOLIC ACIDOSIS</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">+ hypokalemia</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">+ hypercalciuria</text>
+          <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#dc2626">Urine pH >5.5</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">✗ NOT THE ANSWER</text>
+          <text x="0" y="-16" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">This patient has</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">urine pH 5.0</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">(appropriately acidic)</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">Ruling out distal RTA</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 3 — Organic Acid Accumulation -->
+      <g id="diagram-opt3" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">LACTATE</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">KETONES</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#6d28d9">unmeasured anions</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrowPurple)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad3)" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">ANION GAP</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">ACIDOSIS</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#ede9fe">MUDPILES</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrowPurple)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">HIGH ANION GAP</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="11" fill="#6d28d9">Na - (Cl + HCO3)</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" fill="#6d28d9">= 140 - (114 + 19)</text>
+          <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">= 7 (normal)</text>
+          <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#7c3aed">NO anion gap</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">✗ NOT THE ANSWER</text>
+          <text x="0" y="-16" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">This patient has a</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">normal anion gap</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">(hyperchloremic)</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">metabolic acidosis</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 4 — Hyperaldosteronism -->
+      <g id="diagram-opt4" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">ADRENAL</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">GLAND</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">aldosterone excess</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrowYellow)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad4)" stroke="#854d0e" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">Na+ RETENTION</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">K+ WASTING</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#fef3c7">hypertension + hypokalemia</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrowYellow)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">METABOLIC</text>
+          <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">ALKALOSIS</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">HCO3 ↑</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">pH ↑</text>
+          <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#ca8a04">NOT acidosis</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">✗ NOT THE ANSWER</text>
+          <text x="0" y="-16" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Hyperaldosteronism</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">causes alkalosis,</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">not acidosis</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">This patient is acidotic</text>
+        </g>
+      </g>
+
+      <!-- DYNAMIC BANNER -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#2563eb" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🔵 CKD Stage 3 — Decreased Acid Excretion → Metabolic Acidosis
+        </text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#dbeafe">
+          Reduced GFR + tubular dysfunction → impaired NH4+ excretion → H+ retention → low HCO3
+        </text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">🔵 CKD Stage 3 Metabolic Acidosis</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">eGFR</span><span class="v" id="iVal1">44 mL/min/1.73 m² (Stage 3b)</span></div>
+        <div class="row"><span class="k">Acid-base</span><span class="v" id="iVal2">pH 7.32, HCO3 19 (metabolic acidosis)</span></div>
+        <div class="row"><span class="k">Anion gap</span><span class="v" id="iVal3">140 - (114 + 19) = 7 (normal)</span></div>
+        <div class="row"><span class="k">Urine pH</span><span class="v" id="iVal4">5.0 (appropriately acidic — rules out distal RTA)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title">🔵 CKD Stage 3 — Mechanism of Acidosis</h3>
+      <p class="tagline" id="panel1-tagline">Reduced GFR + tubular dysfunction → impaired acid excretion</p>
+      <ul id="panel1-list">
+        <li><strong>Stage 3 CKD:</strong> eGFR 30–59 mL/min/1.73 m² — this patient's eGFR is 44</li>
+        <li><strong>Acid retention:</strong> The kidneys cannot excrete the daily acid load as ammonium (NH4+) and titratable acid[reference:0]</li>
+        <li><strong>Mechanism:</strong> Reduced nephron mass → globally reduced ammonia excretion, despite increased ammoniagenesis in remaining nephrons[reference:1]</li>
+        <li><strong>Result:</strong> H+ retention → metabolic acidosis with a normal anion gap (hyperchloremic)[reference:2]</li>
+        <li><strong>Prevalence:</strong> Metabolic acidosis is present in ~13% of CKD 3 patients and increases with declining GFR[reference:3]</li>
+      </ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title">📊 Key Laboratory Interpretation</h3>
+      <p class="tagline" id="panel2-tagline">What the numbers tell us</p>
+      <ul id="panel2-list">
+        <li><strong>pH 7.32:</strong> Acidemia (normal 7.35–7.45)</li>
+        <li><strong>HCO3 19:</strong> Low (normal 22–28) — primary metabolic acidosis</li>
+        <li><strong>pCO2 35:</strong> Appropriate respiratory compensation (Winter's formula: expected pCO2 = 1.5 × 19 + 8 ± 2 = 34.5–38.5)</li>
+        <li><strong>Anion gap:</strong> 140 − (114 + 19) = 7 — normal anion gap (hyperchloremic acidosis)</li>
+        <li><strong>Urine pH 5.0:</strong> Appropriately acidic — rules out distal RTA (which would have urine pH >5.5)</li>
+        <li><strong>Urine studies:</strong> Negative protein/blood — consistent with CKD, not glomerulonephritis</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon">🔵</div>
+    <div>
+      <h3 id="alertTitle">Board Pearl — CKD Stage 3 Metabolic Acidosis = Impaired Acid Excretion</h3>
+      <p id="alertText">In CKD, metabolic acidosis develops when <strong>net acid excretion falls short of net endogenous acid production</strong>. The kidneys lose the capacity to excrete ammonium (NH4+) and titratable acid, leading to <strong>H+ retention and low serum bicarbonate</strong>[reference:4]. This is a <strong>normal anion gap (hyperchloremic) acidosis</strong>. The urine pH is appropriately acidic (5.0), distinguishing it from distal RTA (which would have urine pH >5.5).</p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <div class="q">
+        <p>1. What is the most accurate explanation for this patient's laboratory results?</p>
+        <div class="opts">
+          <button class="opt" data-correct="true" onclick="answerWithFeedback(this, true, 'Correct', 'Stage 3 CKD causes decreased urinary acid excretion due to reduced filtration and tubular dysfunction. This leads to H+ retention and metabolic acidosis — the classic mechanism in CKD.', '')">She has stage 3 CKD causing decreased urinary acid excretion</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Distal RTA</strong> would present with urine pH >5.5 (inability to acidify urine). This patient has urine pH 5.0, ruling out distal RTA.')">She has distal renal tubular acidosis due to PKD</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Accumulation of organic acids</strong> would cause a high anion gap acidosis. This patient has a normal anion gap (7), ruling out organic acid accumulation.')">Accumulation of organic, phosphoric, and sulfuric acids</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>2. What is the calculated anion gap in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>High anion gap (≥12)</strong> would suggest accumulation of organic acids, which is not seen here. The anion gap is normal.')">High anion gap (≥12)</button>
+          <button class="opt" data-correct="true" onclick="answerWithFeedback(this, true, 'Correct', 'Normal anion gap (7). Calculated as Na − (Cl + HCO3) = 140 − (114 + 19) = 7. This is a hyperchloremic, normal anion gap metabolic acidosis.', '')">Normal anion gap (7)</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Low anion gap (<6)</strong> is not present here. The anion gap is 7, which is within the normal range.', '')">Low anion gap (<6)</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>3. What does the urine pH of 5.0 indicate?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Distal RTA</strong> would cause urine pH >5.5. This patient can appropriately acidify her urine, ruling out distal RTA.')">It confirms distal RTA</button>
+          <button class="opt" data-correct="true" onclick="answerWithFeedback(this, true, 'Correct', 'Appropriate urine acidification. The kidneys can still secrete H+ in the distal nephron, ruling out distal RTA. The acidosis is due to reduced total acid excretion capacity from CKD.', '')">Appropriate urine acidification</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Complete distal acidification failure</strong> would result in urine pH >5.5. This patient has intact distal acidification.', '')">Complete distal acidification failure</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>4. Which of the following is the primary mechanism of metabolic acidosis in CKD?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Overproduction of organic acids</strong> causes high anion gap acidosis (e.g., DKA, lactic acidosis), not the normal anion gap acidosis of CKD.')">Overproduction of organic acids</button>
+          <button class="opt" data-correct="true" onclick="answerWithFeedback(this, true, 'Correct', 'Impaired ammonium (NH4+) excretion. In CKD, the capacity to excrete the daily acid load as ammonium and titratable acid is impaired, leading to acid retention.', '')">Impaired ammonium excretion</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Increased bicarbonate wasting</strong> is seen in proximal RTA (type 2), not the primary mechanism of CKD-related acidosis.')">Increased bicarbonate wasting</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>5. At what eGFR does metabolic acidosis typically become evident in CKD?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>eGFR <20</strong> would be stage 4–5 CKD. Metabolic acidosis can occur earlier, especially in stage 3.')">eGFR <20 mL/min</button>
+          <button class="opt" data-correct="true" onclick="answerWithFeedback(this, true, 'Correct', 'Metabolic acidosis becomes evident at eGFR <45 mL/min/1.73 m² (stage 3b). This patient has an eGFR of 44, consistent with the development of acidosis.', '')">eGFR <45 mL/min</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>eGFR <60</strong> is the threshold for stage 3 CKD, but acidosis typically becomes evident when eGFR falls below ~45 mL/min.', '')">eGFR <60 mL/min</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+const modes = {
+  opt1: {
+    panelClass: 'highlight-opt1',
+    title: '🔵 CKD Stage 3 Metabolic Acidosis',
+    val1: '44 mL/min/1.73 m² (Stage 3b)',
+    val2: 'pH 7.32, HCO3 19 (metabolic acidosis)',
+    val3: '140 - (114 + 19) = 7 (normal)',
+    val4: '5.0 (appropriately acidic — rules out distal RTA)',
+    activeTab: 'tabOpt1',
+    diagramId: 'diagram-opt1',
+    svgTitle: 'CKD Stage 3 — Decreased Acid Excretion → Metabolic Acidosis',
+    svgSubtitle: 'Reduced GFR + tubular dysfunction → impaired NH4+ excretion → H+ retention → low HCO3',
+    bannerBg: '#2563eb',
+    bannerText1: '🔵 CKD Stage 3 — Decreased Acid Excretion → Metabolic Acidosis',
+    bannerText2: 'Reduced GFR + tubular dysfunction → impaired NH4+ excretion → H+ retention → low HCO3',
+    panel1Title: '🔵 CKD Stage 3 — Mechanism of Acidosis',
+    panel1Tagline: 'Reduced GFR + tubular dysfunction → impaired acid excretion',
+    panel1List: [
+      '<strong>Stage 3 CKD:</strong> eGFR 30–59 mL/min/1.73 m² — this patient\'s eGFR is 44',
+      '<strong>Acid retention:</strong> The kidneys cannot excrete the daily acid load as ammonium (NH4+) and titratable acid',
+      '<strong>Mechanism:</strong> Reduced nephron mass → globally reduced ammonia excretion, despite increased ammoniagenesis in remaining nephrons',
+      '<strong>Result:</strong> H+ retention → metabolic acidosis with a normal anion gap (hyperchloremic)',
+      '<strong>Prevalence:</strong> Metabolic acidosis is present in ~13% of CKD 3 patients and increases with declining GFR'
+    ],
+    panel2Title: '📊 Key Laboratory Interpretation',
+    panel2Tagline: 'What the numbers tell us',
+    panel2List: [
+      '<strong>pH 7.32:</strong> Acidemia (normal 7.35–7.45)',
+      '<strong>HCO3 19:</strong> Low (normal 22–28) — primary metabolic acidosis',
+      '<strong>pCO2 35:</strong> Appropriate respiratory compensation (Winter\'s formula: expected pCO2 = 1.5 × 19 + 8 ± 2 = 34.5–38.5)',
+      '<strong>Anion gap:</strong> 140 − (114 + 19) = 7 — normal anion gap (hyperchloremic acidosis)',
+      '<strong>Urine pH 5.0:</strong> Appropriately acidic — rules out distal RTA (which would have urine pH >5.5)',
+      '<strong>Urine studies:</strong> Negative protein/blood — consistent with CKD, not glomerulonephritis'
+    ],
+    alertIcon: '🔵',
+    alertTitle: 'Board Pearl — CKD Stage 3 Metabolic Acidosis = Impaired Acid Excretion',
+    alertText: 'In CKD, metabolic acidosis develops when <strong>net acid excretion falls short of net endogenous acid production</strong>. The kidneys lose the capacity to excrete ammonium (NH4+) and titratable acid, leading to <strong>H+ retention and low serum bicarbonate</strong>. This is a <strong>normal anion gap (hyperchloremic) acidosis</strong>. The urine pH is appropriately acidic (5.0), distinguishing it from distal RTA (which would have urine pH >5.5).'
+  },
+  opt2: {
+    panelClass: 'highlight-opt2',
+    title: '🔴 Distal RTA',
+    val1: 'Urine pH >5.5 (failure to acidify)',
+    val2: 'Hyperchloremic metabolic acidosis',
+    val3: 'Hypokalemia, hypercalciuria',
+    val4: 'NOT consistent with urine pH 5.0',
+    activeTab: 'tabOpt2',
+    diagramId: 'diagram-opt2',
+    svgTitle: 'Distal RTA — Failure to Acidify Urine',
+    svgSubtitle: 'Impaired H+ secretion in distal nephron → urine pH >5.5 · Hyperchloremic metabolic acidosis',
+    bannerBg: '#dc2626',
+    bannerText1: '🔴 Distal RTA — Does NOT Fit This Case',
+    bannerText2: 'Urine pH >5.5 required · This patient has urine pH 5.0 (appropriately acidic)',
+    panel1Title: '🔴 Distal RTA — Why NOT This Case',
+    panel1Tagline: 'Inability to acidify urine',
+    panel1List: [
+      '<strong>Definition:</strong> Impaired H+ secretion in the distal nephron (collecting duct)',
+      '<strong>Urine pH:</strong> >5.5 (failure to acidify) — this patient has urine pH 5.0',
+      '<strong>Acidosis:</strong> Hyperchloremic metabolic acidosis (similar to CKD)',
+      '<strong>Potassium:</strong> Typically hypokalemic (this patient is hypokalemic)',
+      '<strong>Key discriminator:</strong> Urine pH >5.5 rules in distal RTA; urine pH 5.0 rules it out'
+    ],
+    panel2Title: '🔴 Distal RTA — Clinical Context',
+    panel2Tagline: 'Classic features',
+    panel2List: [
+      '<strong>Urine pH:</strong> >5.5 despite systemic acidosis',
+      '<strong>Serum K+:</strong> Hypokalemia (due to renal K+ wasting)',
+      '<strong>Calcium:</strong> Hypercalciuria → nephrocalcinosis, stones',
+      '<strong>Associations:</strong> Autoimmune disease, sickle cell, obstructive uropathy',
+      '<strong>Diagnosis:</strong> Urine acidification test (furosemide/fludrocortisone)'
+    ],
+    alertIcon: '🔴',
+    alertTitle: 'Board Pearl — Urine pH >5.5 Rules In Distal RTA',
+    alertText: 'Distal RTA is characterized by the <strong>inability to acidify urine below pH 5.5</strong> despite systemic metabolic acidosis. This patient has a urine pH of <strong>5.0</strong>, which is appropriately acidic — ruling out distal RTA.'
+  },
+  opt3: {
+    panelClass: 'highlight-opt3',
+    title: '🟣 Organic Acid Accumulation',
+    val1: 'High anion gap acidosis',
+    val2: 'Lactate, ketones, uremic acids',
+    val3: 'Anion gap >12',
+    val4: 'This patient has normal anion gap (7)',
+    activeTab: 'tabOpt3',
+    diagramId: 'diagram-opt3',
+    svgTitle: 'Organic Acid Accumulation — High Anion Gap Acidosis',
+    svgSubtitle: 'Lactate, ketones, or uremic acids accumulate → anion gap >12 · Not seen in this patient',
+    bannerBg: '#7c3aed',
+    bannerText1: '🟣 Organic Acid Accumulation — High Anion Gap',
+    bannerText2: 'Anion gap >12 required · This patient has normal anion gap (7) · Hyperchloremic acidosis instead',
+    panel1Title: '🟣 Organic Acid Accumulation — Why NOT This Case',
+    panel1Tagline: 'Normal anion gap rules it out',
+    panel1List: [
+      '<strong>Definition:</strong> Accumulation of organic acids (lactate, ketones, uremic acids)',
+      '<strong>Anion gap:</strong> Elevated (>12) — this patient has a normal anion gap (7)',
+      '<strong>Acidosis type:</strong> High anion gap metabolic acidosis — this patient has hyperchloremic acidosis',
+      '<strong>Examples:</strong> Diabetic ketoacidosis, lactic acidosis, uremia',
+      '<strong>This case:</strong> Normal anion gap = no organic acid accumulation'
+    ],
+    panel2Title: '🟣 High Anion Gap Acidosis — Clinical Context',
+    panel2Tagline: 'MUDPILES mnemonic',
+    panel2List: [
+      '<strong>M:</strong> Methanol',
+      '<strong>U:</strong> Uremia',
+      '<strong>D:</strong> Diabetic ketoacidosis',
+      '<strong>P:</strong> Propylene glycol, Paraldehyde',
+      '<strong>I:</strong> Isoniazid, Iron',
+      '<strong>L:</strong> Lactic acidosis',
+      '<strong>E:</strong> Ethylene glycol',
+      '<strong>S:</strong> Salicylates'
+    ],
+    alertIcon: '🟣',
+    alertTitle: 'Board Pearl — High Anion Gap Rules In Organic Acid Accumulation',
+    alertText: 'Accumulation of organic acids (lactate, ketones) causes a <strong>high anion gap metabolic acidosis</strong> (anion gap >12). This patient has a <strong>normal anion gap (7)</strong> with hyperchloremia (Cl 114), indicating a <strong>hyperchloremic metabolic acidosis</strong> from CKD — not organic acid accumulation.'
+  },
+  opt4: {
+    panelClass: 'highlight-opt4',
+    title: '🟡 Hyperaldosteronism',
+    val1: 'Causes metabolic ALKALOSIS',
+    val2: 'Hypertension + hypokalemia',
+    val3: 'HCO3 ↑, pH ↑',
+    val4: 'This patient is acidotic, not alkalotic',
+    activeTab: 'tabOpt4',
+    diagramId: 'diagram-opt4',
+    svgTitle: 'Hyperaldosteronism — Metabolic Alkalosis, Not Acidosis',
+    svgSubtitle: 'Aldosterone excess → Na+ retention, K+ wasting → hypertension + hypokalemia + alkalosis',
+    bannerBg: '#ca8a04',
+    bannerText1: '🟡 Hyperaldosteronism — Causes Alkalosis, Not Acidosis',
+    bannerText2: 'HCO3 ↑ and pH ↑ · This patient is acidotic (pH 7.32, HCO3 19) · Not hyperaldosteronism',
+    panel1Title: '🟡 Hyperaldosteronism — Why NOT This Case',
+    panel1Tagline: 'Causes the opposite acid-base disturbance',
+    panel1List: [
+      '<strong>Acid-base effect:</strong> Metabolic ALKALOSIS (HCO3 ↑, pH ↑) — this patient has acidosis',
+      '<strong>Mechanism:</strong> Aldosterone increases H+ and K+ excretion in exchange for Na+ retention',
+      '<strong>Electrolytes:</strong> Hypokalemia (this patient has K 3.6, which is low-normal)',
+      '<strong>Hypertension:</strong> Yes, but the acidosis argues against hyperaldosteronism',
+      '<strong>This case:</strong> Low HCO3 and low pH = acidosis, not alkalosis'
+    ],
+    panel2Title: '🟡 Hyperaldosteronism — Clinical Context',
+    panel2Tagline: 'Classic features',
+    panel2List: [
+      '<strong>Hypertension:</strong> Often resistant to treatment',
+      '<strong>Hypokalemia:</strong> Due to renal K+ wasting',
+      '<strong>Metabolic alkalosis:</strong> HCO3 >28, pH >7.45',
+      '<strong>Suppressed renin:</strong> Primary hyperaldosteronism',
+      '<strong>Diagnosis:</strong> Aldosterone-to-renin ratio (ARR)'
+    ],
+    alertIcon: '🟡',
+    alertTitle: 'Board Pearl — Hyperaldosteronism Causes Alkalosis',
+    alertText: 'Hyperaldosteronism causes <strong>metabolic alkalosis</strong> (HCO3 ↑, pH ↑), not acidosis. This patient has a pH of <strong>7.32</strong> and HCO3 of <strong>19</strong> — clearly acidotic. Therefore, hyperaldosteronism is not the explanation for these laboratory findings.'
+  }
+};
+
+function setMode(mode) {
+  const d = modes[mode];
+  ['tabOpt1','tabOpt2','tabOpt3','tabOpt4'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById(d.activeTab).classList.add('active');
+
+  ['diagram-opt1','diagram-opt2','diagram-opt3','diagram-opt4'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(d.diagramId).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panel.classList.contains('collapsed') ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('iVal1').textContent = d.val1;
+  document.getElementById('iVal2').textContent = d.val2;
+  document.getElementById('iVal3').textContent = d.val3;
+  document.getElementById('iVal4').textContent = d.val4;
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+  const box = btn.closest('.q');
+  
+  box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+  
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  const explain = box.querySelector('.explain');
+  if (isCorrect) {
+    explain.className = 'explain show correct-explain';
+    explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+  } else {
+    explain.className = 'explain show wrong-explain';
+    explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+  }
+}
+
+setMode('opt1');
+</script>
+</body>
+</html>

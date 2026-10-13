@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aHUS vs C3GN — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --ahus:#dc2626; --c3gn:#2563eb; --shared:#7c3aed; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  /* HEADER */
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700; white-space:nowrap;}
+
+  /* TABS */
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.ahus.active{background:#fef2f2; border-color:var(--ahus); color:#991b1b;}
+  .tab.c3gn.active{background:#eff6ff; border-color:var(--c3gn); color:#1e40af;}
+  .tab.both.active{background:#f5f3ff; border-color:var(--shared); color:#5b21b6;}
+
+  /* DIAGRAM */
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; max-height:520px; display:block;}
+
+  /* INFO PANEL (right side of diagram) */
+  .info-float{position:absolute; top:20px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:14px 16px; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .25s ease;}
+  .info-float h4{margin:0 0 8px; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-float .info-row{display:flex; justify-content:space-between;
+    padding:6px 0; font-size:.76rem; border-bottom:1px solid var(--line);}
+  .info-float .info-row:last-child{border:none;}
+  .info-float .info-row .k{color:var(--muted); font-weight:600;}
+  .info-float .info-row .v{font-weight:800; color:#0f172a; text-align:right;
+    max-width:150px; word-break:break-word;}
+  .info-float.highlight-ahus{border-color:var(--ahus); background:#fef2f2;}
+  .info-float.highlight-c3gn{border-color:var(--c3gn); background:#eff6ff;}
+  .info-float.highlight-both{border-color:var(--shared); background:#f5f3ff;}
+
+  /* KEY CLINICAL PANELS */
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid;}
+  .panel.ahus{border-top-color:var(--ahus);}
+  .panel.c3gn{border-top-color:var(--c3gn);}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  /* SHARED MECHANISM CALLOUT */
+  .shared-box{background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(124,58,237,.25);}
+  .shared-box h3{margin:0 0 6px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .shared-box p{margin:0; font-size:.88rem; line-height:1.6; opacity:.95;}
+  .shared-box strong{color:#fde68a;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px;
+    border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8; background:#fff;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain strong{color:#1e3a8a;}
+
+  /* FOOTER */
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;
+    line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  /* SVG animations */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:.55; transform:scale(1.08);}}
+  @keyframes glow{0%,100%{filter:drop-shadow(0 0 4px rgba(220,38,38,.4));}
+    50%{filter:drop-shadow(0 0 12px rgba(220,38,38,.9));}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .glow-red{animation:glow 2s ease-in-out infinite;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>aHUS vs. C3GN — Shared Alternative Pathway</h1>
+      <p>Both driven by dysregulation of the alternative complement pathway</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab ahus active" id="tabAhus" onclick="setMode('ahus')">🔴 aHUS</button>
+    <button class="tab c3gn" id="tabC3gn" onclick="setMode('c3gn')">🔵 C3GN</button>
+    <button class="tab both" id="tabBoth" onclick="setMode('both')">🟣 Shared Mechanism</button>
+  </div>
+
+  <!-- DIAGRAM -->
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="altGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#a78bfa"/>
+        </radialGradient>
+        <radialGradient id="classGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#93c5fd"/>
+        </radialGradient>
+        <radialGradient id="lectinGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f0fdf4"/><stop offset="100%" stop-color="#86efac"/>
+        </radialGradient>
+        <radialGradient id="c3Grad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#fbbf24"/>
+        </radialGradient>
+        <radialGradient id="c5Grad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#f87171"/>
+        </radialGradient>
+        <radialGradient id="membraneGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#f9a8d4"/>
+        </radialGradient>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="720" fill="#fdfdfd"/>
+
+      <!-- Title -->
+      <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">
+        Complement Cascade — Three Pathways Converging on C3
+      </text>
+
+      <!-- ============== TOP ROW: 3 INITIATION PATHWAYS ============== -->
+
+      <!-- Classical pathway -->
+      <g id="classical">
+        <circle cx="180" cy="110" r="55" fill="url(#classGrad)" stroke="#3b82f6" stroke-width="2.5"/>
+        <text x="180" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#1e3a8a">CLASSICAL</text>
+        <text x="180" y="123" text-anchor="middle" font-family="Arial" font-size="10" fill="#1e40af">Antigen–Ab</text>
+      </g>
+
+      <!-- Lectin pathway -->
+      <g id="lectin">
+        <circle cx="600" cy="110" r="55" fill="url(#lectinGrad)" stroke="#16a34a" stroke-width="2.5"/>
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">LECTIN</text>
+        <text x="600" y="123" text-anchor="middle" font-family="Arial" font-size="10" fill="#15803d">Mannose</text>
+      </g>
+
+      <!-- Alternative pathway (highlighted) -->
+      <g id="alternative">
+        <circle cx="1020" cy="110" r="60" fill="url(#altGrad)" stroke="#7c3aed" stroke-width="3" class="pulse-node"/>
+        <text x="1020" y="100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#4c1d95">ALTERNATIVE</text>
+        <text x="1020" y="118" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Spontaneous</text>
+        <text x="1020" y="132" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">KEY PATHWAY</text>
+      </g>
+
+      <!-- ============== CONVERGENCE ARROWS ============== -->
+
+      <!-- Classical → C3 convertase (dimmed) -->
+      <path id="arrow-classical" d="M 220 145 Q 340 220 480 240" stroke="#94a3b8" stroke-width="2.5"
+            fill="none" stroke-dasharray="6 4" marker-end="url(#arrowGray)" opacity="0.4"/>
+
+      <!-- Lectin → C3 convertase (dimmed) -->
+      <path id="arrow-lectin" d="M 600 175 Q 600 210 600 230" stroke="#94a3b8" stroke-width="2.5"
+            fill="none" stroke-dasharray="6 4" marker-end="url(#arrowGray)" opacity="0.4"/>
+
+      <!-- Alternative → C3 convertase (bright, animated) -->
+      <path id="arrow-alt" d="M 1020 175 Q 950 220 830 240" stroke="#7c3aed" stroke-width="3.5"
+            fill="none" class="flow-anim" marker-end="url(#arrowPurple)"/>
+      <text x="960" y="200" font-family="Arial" font-size="11" font-weight="800" fill="#7c3aed">Unregulated</text>
+
+      <!-- ============== C3 CONVERTASE ============== -->
+
+      <g id="c3-convertase">
+        <ellipse cx="650" cy="270" rx="130" ry="45" fill="url(#c3Grad)" stroke="#d97706" stroke-width="3"/>
+        <text x="650" y="265" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#78350f">C3 CONVERTASE</text>
+        <text x="650" y="283" text-anchor="middle" font-family="Arial" font-size="11" fill="#92400e">C3bBb (alternative) / C4b2a (classical)</text>
+      </g>
+
+      <!-- C3b deposition arrow -->
+      <path d="M 650 315 L 650 360" stroke="#d97706" stroke-width="3"
+            fill="none" marker-end="url(#arrowRed)"/>
+
+      <!-- ============== C3b DEPOSITION ============== -->
+
+      <g id="c3b-deposit">
+        <rect x="475" y="365" width="350" height="55" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
+        <text x="650" y="390" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">C3b DEPOSITION on glomerular surfaces</text>
+        <text x="650" y="408" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">→ Low serum C3 · C3-dominant IF staining</text>
+      </g>
+
+      <!-- C5 convertase arrow (from C3 convertase) -->
+      <path d="M 780 270 Q 900 300 1000 320" stroke="#dc2626" stroke-width="3"
+            fill="none" class="flow-anim" marker-end="url(#arrowRed)"/>
+
+      <!-- ============== C5 CONVERTASE ============== -->
+
+      <g id="c5-convertase">
+        <ellipse cx="1050" cy="355" rx="115" ry="42" fill="url(#c5Grad)" stroke="#991b1b" stroke-width="3"/>
+        <text x="1050" y="350" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">C5 CONVERTASE</text>
+        <text x="1050" y="367" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">→ C5a + C5b-9 (MAC)</text>
+      </g>
+
+      <!-- ============== MEMBRANE ATTACK COMPLEX ============== -->
+
+      <path d="M 1050 397 L 1050 440" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+
+      <g id="mac">
+        <rect x="870" y="445" width="360" height="60" rx="12" fill="#fee2e2" stroke="#991b1b" stroke-width="2.5"/>
+        <text x="1050" y="470" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">MAC (C5b-9)</text>
+        <text x="1050" y="490" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">Membrane attack → endothelial injury</text>
+      </g>
+
+      <!-- ============== BOTTOM: 2 DISEASE OUTCOMES ============== -->
+
+      <!-- aHUS branch -->
+      <path id="branch-ahus" d="M 1050 510 Q 950 570 800 590" stroke="#dc2626" stroke-width="3"
+            fill="none" marker-end="url(#arrowRed)"/>
+
+      <g id="disease-ahus">
+        <rect x="400" y="575" width="390" height="80" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+        <text x="595" y="600" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">
+          🔴 aHUS — Atypical HUS
+        </text>
+        <text x="595" y="620" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">
+          Endothelial injury → thrombotic microangiopathy
+        </text>
+        <text x="595" y="638" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">
+          Schistocytes · thrombocytopenia · AKI
+        </text>
+      </g>
+
+      <!-- C3GN branch -->
+      <path id="branch-c3gn" d="M 650 425 Q 400 520 250 590" stroke="#2563eb" stroke-width="3"
+            fill="none" marker-end="url(#arrowBlue)"/>
+
+      <g id="disease-c3gn">
+        <rect x="60" y="575" width="350" height="80" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+        <text x="235" y="600" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#1e40af">
+          🔵 C3 Glomerulopathy
+        </text>
+        <text x="235" y="620" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">
+          C3b deposition in glomerulus
+        </text>
+        <text x="235" y="638" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">
+          C3-dominant IF · ± MPGN pattern · C3Nef
+        </text>
+      </g>
+
+      <!-- Shared mechanism label -->
+      <g id="shared-label">
+        <rect x="830" y="575" width="340" height="80" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+        <text x="1000" y="600" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">
+          🟣 SHARED MECHANISM
+        </text>
+        <text x="1000" y="620" text-anchor="middle" font-family="Arial" font-size="11" fill="#4c1d95">
+          Alternative pathway dysregulation
+        </text>
+        <text x="1000" y="638" text-anchor="middle" font-family="Arial" font-size="11" fill="#4c1d95">
+          (mutations, autoantibodies, factor deficiency)
+        </text>
+      </g>
+
+      <!-- Legend -->
+      <g transform="translate(30, 690)">
+        <circle cx="0" cy="0" r="7" fill="#7c3aed"/>
+        <text x="14" y="4" font-family="Arial" font-size="11" fill="#475569">Alternative pathway (active)</text>
+        <circle cx="240" cy="0" r="7" fill="#94a3b8" opacity="0.5"/>
+        <text x="254" y="4" font-family="Arial" font-size="11" fill="#475569">Classical / lectin (not primary)</text>
+      </g>
+    </svg>
+
+    <!-- FLOATING INFO PANEL -->
+    <div class="info-float highlight-both" id="infoPanel">
+      <h4 id="infoTitle">🟣 Shared Mechanism</h4>
+      <div class="info-row"><span class="k">Pathway</span><span class="v" id="infoPathway">Alternative</span></div>
+      <div class="info-row"><span class="k">Primary driver</span><span class="v" id="infoDriver">C3 dysregulation</span></div>
+      <div class="info-row"><span class="k">End result</span><span class="v" id="infoEnd">TMA or C3 deposition</span></div>
+      <div class="info-row"><span class="k">Treatment</span><span class="v" id="infoTreat">Eculizumab / supportive</span></div>
+    </div>
+  </section>
+
+  <!-- TWO DISEASE PANELS -->
+  <div class="panels">
+    <div class="panel ahus">
+      <h3>🔴 Atypical HUS (aHUS)</h3>
+      <p class="tagline">Thrombotic microangiopathy from endothelial complement injury</p>
+      <ul>
+        <li><strong>Mechanism:</strong> Uncontrolled alternative pathway → MAC on endothelium</li>
+        <li><strong>Histology:</strong> Thrombotic microangiopathy (TMA) — vessel wall thickening, thrombi</li>
+        <li><strong>Labs:</strong> Schistocytes, thrombocytopenia, ↑ LDH, ↓ haptoglobin, AKI</li>
+        <li><strong>Trigger:</strong> Complement factor mutations (CFH, CFI, MCP, C3, CFB), anti-CFH antibodies</li>
+        <li><strong>ADAMTS13:</strong> Normal (distinguishes from TTP)</li>
+        <li><strong>Treatment:</strong> Eculizumab (anti-C5)</li>
+      </ul>
+    </div>
+
+    <div class="panel c3gn">
+      <h3>🔵 C3 Glomerulopathy (C3GN)</h3>
+      <p class="tagline">C3-dominant deposition within the glomerulus</p>
+      <ul>
+        <li><strong>Mechanism:</strong> C3 convertase dysregulation → C3b deposition in glomeruli</li>
+        <li><strong>Histology:</strong> Often MPGN pattern (some cases); C3-dominant IF staining</li>
+        <li><strong>Labs:</strong> Low C3, proteinuria, hematuria, variable CKD</li>
+        <li><strong>Trigger:</strong> C3 nephritic factor (C3Nef), complement gene mutations, factor H deficiency</li>
+        <li><strong>ADAMTS13:</strong> Normal (no TMA)</li>
+        <li><strong>Treatment:</strong> Supportive, RAAS blockade; MMF or eculizumab in select cases</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SHARED MECHANISM CALLOUT -->
+  <div class="shared-box">
+    <h3>🟣 The Unifying Concept</h3>
+    <p>Despite <strong>very different clinical and histological presentations</strong> — TMA in aHUS vs. glomerular C3 deposition in C3GN — <strong>both syndromes share a single underlying mechanism: dysregulation of the alternative complement pathway</strong>. This is why the correct answer to the exam question is <strong>C</strong>.</p>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <div class="q">
+        <p>1. Which pathway is shared by aHUS and C3GN?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">Classical</button>
+          <button class="opt" onclick="answer(this,true)">Alternative</button>
+          <button class="opt" onclick="answer(this,false)">Lectin</button>
+        </div>
+        <div class="explain"><strong>Alternative.</strong> Both syndromes are driven by dysregulation of the alternative complement pathway.</div>
+      </div>
+
+      <div class="q">
+        <p>2. What histological pattern is characteristic of aHUS?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">MPGN pattern</button>
+          <button class="opt" onclick="answer(this,true)">Thrombotic microangiopathy (TMA)</button>
+          <button class="opt" onclick="answer(this,false)">Crescentic GN</button>
+        </div>
+        <div class="explain"><strong>TMA.</strong> aHUS shows vessel wall thickening and thrombi — not MPGN. C3GN may show MPGN in some cases.</div>
+      </div>
+
+      <div class="q">
+        <p>3. Which autoantibody stabilizes C3 convertase in C3GN?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">Anti-C5 convertase antibody</button>
+          <button class="opt" onclick="answer(this,true)">C3 nephritic factor (C3Nef)</button>
+          <button class="opt" onclick="answer(this,false)">Anti-ADAMTS13 antibody</button>
+        </div>
+        <div class="explain"><strong>C3Nef.</strong> C3Nef stabilizes C3 convertase → uncontrolled alternative pathway activity → C3GN.</div>
+      </div>
+
+      <div class="q">
+        <p>4. What is ADAMTS13 activity in aHUS vs. TTP?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,true)">Normal in aHUS; low in TTP</button>
+          <button class="opt" onclick="answer(this,false)">Low in aHUS; normal in TTP</button>
+          <button class="opt" onclick="answer(this,false)">Low in both</button>
+        </div>
+        <div class="explain"><strong>Normal in aHUS; low in TTP.</strong> Low ADAMTS13 is the defining feature of TTP — NOT aHUS or C3GN.</div>
+      </div>
+
+      <div class="q">
+        <p>5. Which of the following is TRUE about aHUS and C3GN?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">Both involve the classical complement pathway</button>
+          <button class="opt" onclick="answer(this,false)">Both are associated with low ADAMTS13</button>
+          <button class="opt" onclick="answer(this,true)">Both involve dysregulation of the alternative complement pathway</button>
+        </div>
+        <div class="explain"><strong>Correct.</strong> Both aHUS and C3GN — despite different clinical pictures — are driven by alternative pathway dysregulation.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+  const modes = {
+    ahus: {
+      infoClass: 'highlight-ahus',
+      infoTitle: '🔴 Atypical HUS (aHUS)',
+      pathway: 'Alternative',
+      driver: 'Endothelial MAC injury',
+      end: 'Thrombotic microangiopathy',
+      treat: 'Eculizumab (anti-C5)',
+      highlight: ['arrow-alt','arrow-alt'],
+      dim: ['arrow-classical','arrow-lectin']
+    },
+    c3gn: {
+      infoClass: 'highlight-c3gn',
+      infoTitle: '🔵 C3 Glomerulopathy',
+      pathway: 'Alternative',
+      driver: 'C3 convertase dysregulation',
+      end: 'C3b glomerular deposition',
+      treat: 'Supportive ± MMF/Eculizumab',
+      highlight: ['arrow-alt'],
+      dim: ['arrow-classical','arrow-lectin']
+    },
+    both: {
+      infoClass: 'highlight-both',
+      infoTitle: '🟣 Shared Mechanism',
+      pathway: 'Alternative',
+      driver: 'Complement dysregulation',
+      end: 'TMA or C3 deposition',
+      treat: 'Eculizumab / supportive',
+      highlight: ['arrow-alt'],
+      dim: ['arrow-classical','arrow-lectin']
+    }
+  };
+
+  function setMode(mode) {
+    const d = modes[mode];
+
+    // Tabs
+    ['tabAhus','tabC3gn','tabBoth'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const tabMap = { ahus:'tabAhus', c3gn:'tabC3gn', both:'tabBoth' };
+    document.getElementById(tabMap[mode]).classList.add('active');
+
+    // Info panel
+    const panel = document.getElementById('infoPanel');
+    panel.className = 'info-float ' + d.infoClass;
+    document.getElementById('infoTitle').textContent = d.infoTitle;
+    document.getElementById('infoPathway').textContent = d.pathway;
+    document.getElementById('infoDriver').textContent = d.driver;
+    document.getElementById('infoEnd').textContent = d.end;
+    document.getElementById('infoTreat').textContent = d.treat;
+
+    // Highlight aHUS or C3GN disease box
+    const ahusBox = document.getElementById('disease-ahus').querySelector('rect');
+    const c3gnBox = document.getElementById('disease-c3gn').querySelector('rect');
+
+    if (mode === 'ahus') {
+      ahusBox.setAttribute('stroke-width', '5');
+      c3gnBox.setAttribute('stroke-width', '3');
+      ahusBox.setAttribute('filter', 'url(#glowFilter)');
+      c3gnBox.removeAttribute('filter');
+    } else if (mode === 'c3gn') {
+      c3gnBox.setAttribute('stroke-width', '5');
+      ahusBox.setAttribute('stroke-width', '3');
+      c3gnBox.setAttribute('filter', 'url(#glowFilter)');
+      ahusBox.removeAttribute('filter');
+    } else {
+      ahusBox.setAttribute('stroke-width', '5');
+      c3gnBox.setAttribute('stroke-width', '5');
+    }
+
+    // Dim classical/lectin arrows
+    document.getElementById('arrow-classical').setAttribute('opacity', '0.4');
+    document.getElementById('arrow-lectin').setAttribute('opacity', '0.4');
+
+    // Brighten alternative arrow
+    document.getElementById('arrow-alt').setAttribute('stroke-width', '4.5');
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('ahus');
+</script>
+</body>
+</html>

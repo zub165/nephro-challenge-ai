@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mixed Acid-Base Disorder — Septic Shock + Diarrhea</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="g2" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="g3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+        </radialGradient>
+        <radialGradient id="g4" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+        </marker>
+        <marker id="arrow4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ DIAGRAM 1 — HAGMA + NAGMA ============ -->
+      <g id="diagram-opt1">
+        <g transform="translate(140, 380)">
+          <ellipse rx="95" ry="75" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">SEPTIC</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">SHOCK</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#7f1d1d">Lactate 6.5</text>
+        </g>
+        <path d="M 240 380 L 310 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrow1)"/>
+        <g transform="translate(410, 380)">
+          <circle r="75" fill="url(#g1)" stroke="#7f1d1d" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">HAGMA</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">AG 20 (↑8)</text>
+        </g>
+        <path d="M 490 380 L 575 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrow1)"/>
+        <g transform="translate(680, 380)">
+          <rect x="-95" y="-75" width="190" height="150" rx="14" fill="#fecaca" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">DELTA RATIO</text>
+          <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#dc2626">0.57</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">ΔAG 8 / ΔHCO₃ 14</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">0.4–1.0 = MIXED</text>
+        </g>
+        <path d="M 780 380 L 860 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrow1)"/>
+        <g transform="translate(985, 380)">
+          <rect x="-110" y="-75" width="220" height="150" rx="14" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">MIXED DISORDER</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">HAGMA + NAGMA</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">Lactate + Diarrhea</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fef3c7">PCO₂ 23 = appropriate</text>
+          <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">No resp. disorder</text>
+        </g>
+        <text x="600" y="540" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Delta ratio 0.4–1.0 = mixed HAGMA + NAGMA</text>
+      </g>
+
+      <!-- ============ DIAGRAM 2 — PURE HAGMA ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <g transform="translate(140, 380)">
+          <ellipse rx="95" ry="75" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#5b21b6">LACTIC</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#5b21b6">ACIDOSIS</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Lactate 6.5</text>
+        </g>
+        <path d="M 240 380 L 310 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrow2)"/>
+        <g transform="translate(410, 380)">
+          <circle r="75" fill="url(#g2)" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">HAGMA</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">AG 20 (↑8)</text>
+        </g>
+        <path d="M 490 380 L 575 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrow2)"/>
+        <g transform="translate(680, 380)">
+          <rect x="-95" y="-75" width="190" height="150" rx="14" fill="#ede9fe" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">DELTA RATIO</text>
+          <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#7c3aed">1.0–2.0</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Pure HAGMA</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7c3aed">Not seen here</text>
+        </g>
+        <path d="M 780 380 L 860 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrow2)"/>
+        <g transform="translate(985, 380)">
+          <rect x="-110" y="-75" width="220" height="150" rx="14" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">PURE HAGMA</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">ΔAG ≈ ΔHCO₃</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">No NAGMA component</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fef3c7">Would be 1:1</text>
+        </g>
+        <text x="600" y="540" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#5b21b6">Pure HAGMA: delta ratio 1.0–2.0 · Not this case (ratio 0.57)</text>
+      </g>
+
+      <!-- ============ DIAGRAM 3 — PURE NAGMA ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <g transform="translate(140, 380)">
+          <ellipse rx="95" ry="75" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#155e75">DIARRHEA</text>
+          <text x="0" y="2" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#155e75">HCO₃⁻ LOSS</text>
+          <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Cl⁻ 110</text>
+        </g>
+        <path d="M 240 380 L 310 380" stroke="#0891b2" stroke-width="3" fill="none" marker-end="url(#arrow3)"/>
+        <g transform="translate(410, 380)">
+          <circle r="75" fill="url(#g3)" stroke="#155e75" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">NAGMA</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="11" fill="#cffafe">AG normal</text>
+        </g>
+        <path d="M 490 380 L 575 380" stroke="#0891b2" stroke-width="3" fill="none" marker-end="url(#arrow3)"/>
+        <g transform="translate(680, 380)">
+          <rect x="-95" y="-75" width="190" height="150" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">DELTA RATIO</text>
+          <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#0891b2">&lt; 0.4</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Pure NAGMA</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#0891b2">Not this case</text>
+        </g>
+        <path d="M 780 380 L 860 380" stroke="#0891b2" stroke-width="3" fill="none" marker-end="url(#arrow3)"/>
+        <g transform="translate(985, 380)">
+          <rect x="-110" y="-75" width="220" height="150" rx="14" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">PURE NAGMA</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="11" fill="#cffafe">ΔAG ≈ 0</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#cffafe">Only HCO₃⁻ loss</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fef3c7">Would be &lt; 0.4</text>
+        </g>
+        <text x="600" y="540" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#155e75">Pure NAGMA: delta ratio &lt; 0.4 · Not this case (ratio 0.57)</text>
+      </g>
+
+      <!-- ============ DIAGRAM 4 — HAGMA + METABOLIC ALKALOSIS ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <g transform="translate(140, 380)">
+          <ellipse rx="95" ry="75" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#713f12">VOMITING</text>
+          <text x="0" y="2" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#713f12">ALKALOSIS</text>
+          <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">H⁺ loss</text>
+        </g>
+        <path d="M 240 380 L 310 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrow4)"/>
+        <g transform="translate(410, 380)">
+          <circle r="75" fill="url(#g4)" stroke="#713f12" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">ALKALOSIS</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="11" fill="#fef9c3">HCO₃⁻ ↑</text>
+        </g>
+        <path d="M 490 380 L 575 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrow4)"/>
+        <g transform="translate(680, 380)">
+          <rect x="-95" y="-75" width="190" height="150" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">DELTA RATIO</text>
+          <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#ca8a04">&gt; 2.0</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">HAGMA + alkalosis</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#ca8a04">Not this case</text>
+        </g>
+        <path d="M 780 380 L 860 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrow4)"/>
+        <g transform="translate(985, 380)">
+          <rect x="-110" y="-75" width="220" height="150" rx="14" fill="#ca8a04" stroke="#713f12" stroke-width="3"/>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">HAGMA + ALKALOSIS</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="11" fill="#fef9c3">ΔAG &gt; ΔHCO₃⁻</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#fef9c3">Bicarbonate retained</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fef3c7">Would be &gt; 2.0</text>
+        </g>
+        <text x="600" y="540" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#713f12">HAGMA + metabolic alkalosis: delta ratio &gt; 2.0 · Not this case (ratio 0.57)</text>
+      </g>
+
+      <!-- ============ DYNAMIC BANNER ============ -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Mixed Acid-Base Disorder — Septic Shock + Diarrhea",
+  subtitle: "Why delta ratio 0.57 reveals a combined HAGMA and NAGMA",
+  badge: "Acid-Base Reasoning",
+
+  caseTitle: "67-year-old man with septic shock and profuse diarrhea",
+  caseDescription: "Septic shock → lactate 6.5 mmol/L (HAGMA). Profuse diarrhea × 3 days → bicarbonate-rich fluid loss (NAGMA).<br><br><strong>Step-by-step:</strong><br>1. AG = 140 − (110 + 10) = <strong>20 mEq/L</strong> (↑8 from normal)<br>2. ΔHCO₃⁻ = 24 − 10 = <strong>14 mEq/L</strong><br>3. Delta ratio = 8 / 14 = <strong>0.57</strong><br>4. Winter's formula: 1.5(10) + 8 ± 2 = <strong>23 ± 2</strong> → measured 23 ✓<br><br><strong>Diagnosis:</strong> Mixed HAGMA + NAGMA with appropriate respiratory compensation.",
+  labChips: [
+    { text: "Na⁺ 140", abnormal: false },
+    { text: "Cl⁻ 110", abnormal: true },
+    { text: "HCO₃⁻ 10", abnormal: true },
+    { text: "PCO₂ 23", abnormal: true },
+    { text: "Lactate 6.5", abnormal: true }
+  ],
+
+  tabs: [
+    { id: "opt1", label: "🔴 Mixed HAGMA + NAGMA ✓" },
+    { id: "opt2", label: "🟣 Pure HAGMA" },
+    { id: "opt3", label: "🔵 Pure NAGMA" },
+    { id: "opt4", label: "🟡 HAGMA + Alkalosis" }
+  ],
+
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      infoTitle: "🔴 Mixed HAGMA + NAGMA",
+      infoRows: [
+        { k: "Anion gap", v: "20 mEq/L (↑8)" },
+        { k: "Delta ratio", v: "0.57 (0.4–1.0 range)" },
+        { k: "HAGMA cause", v: "Lactic acidosis (septic shock)" },
+        { k: "NAGMA cause", v: "Diarrhea (HCO₃⁻ loss)" }
+      ],
+      svgTitle: "Mixed HAGMA + NAGMA — Delta Ratio 0.57",
+      svgSubtitle: "Lactic acidosis from septic shock + bicarbonate loss from diarrhea",
+      bannerBg: "#dc2626",
+      bannerText1: "🔴 Mixed HAGMA + NAGMA — Most likely diagnosis",
+      bannerText2: "Delta ratio 0.57 · Lactate 6.5 · Diarrhea 3 days · PCO₂ appropriate at 23",
+      panel1Title: "🔴 Mixed Disorder — Mechanism",
+      panel1Tagline: "Two simultaneous metabolic acidosis processes",
+      panel1List: [
+        "<strong>HAGMA:</strong> Septic shock → tissue hypoperfusion → anaerobic metabolism → lactic acidosis (lactate 6.5 mmol/L)",
+        "<strong>NAGMA:</strong> Profuse diarrhea → loss of bicarbonate-rich intestinal fluid → hyperchloremic metabolic acidosis (Cl⁻ 110)",
+        "<strong>Delta ratio:</strong> ΔAG / ΔHCO₃⁻ = 8 / 14 = 0.57 → falls in the 0.4–1.0 range, indicating a mixed HAGMA + NAGMA",
+        "<strong>Respiratory compensation:</strong> Winter's formula predicts PCO₂ 23 ± 2; measured PCO₂ is 23 → appropriate, no primary respiratory disorder",
+        "<strong>Key insight:</strong> The fall in bicarbonate (14) far exceeds the rise in anion gap (8) — this mismatch is the signature of a concurrent NAGMA"
+      ],
+      panel2Title: "🔴 Clinical Correlation",
+      panel2Tagline: "Treat the underlying causes",
+      panel2List: [
+        "<strong>Septic shock:</strong> Source control, antibiotics, vasopressors, fluid resuscitation — lactate should clear with adequate perfusion",
+        "<strong>Diarrhea:</strong> Volume and electrolyte replacement; if infectious, targeted treatment",
+        "<strong>Bicarbonate therapy:</strong> Generally reserved for severe acidemia (pH < 7.1); not routinely indicated",
+        "<strong>Monitoring:</strong> Serial ABGs to track delta ratio and ensure no superimposed respiratory disorder",
+        "<strong>Prognosis:</strong> Mixed disorders carry higher mortality than isolated disorders — early recognition is critical"
+      ],
+      alertIcon: "🔴",
+      alertTitle: "Board Pearl — Delta Ratio 0.4–1.0 = Mixed HAGMA + NAGMA",
+      alertText: "A delta ratio between <strong>0.4 and 1.0</strong> indicates a <strong>mixed high anion gap and normal anion gap metabolic acidosis</strong>. In this patient, septic shock drives the HAGMA (lactate) while profuse diarrhea drives the NAGMA (bicarbonate loss). The PCO₂ of 23 is appropriate by Winter's formula."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      infoTitle: "🟣 Pure HAGMA",
+      infoRows: [
+        { k: "Delta ratio", v: "1.0–2.0" },
+        { k: "ΔAG", v: "≈ ΔHCO₃⁻" },
+        { k: "Expected", v: "ΔHCO₃⁻ = 8 → HCO₃⁻ = 16" },
+        { k: "Actual", v: "ΔHCO₃⁻ = 14 → HCO₃⁻ = 10" }
+      ],
+      svgTitle: "Pure HAGMA — Delta Ratio 1.0–2.0",
+      svgSubtitle: "Uncomplicated high anion gap acidosis · Not this case",
+      bannerBg: "#7c3aed",
+      bannerText1: "🟣 Pure HAGMA — Delta Ratio Would Be 1.0–2.0",
+      bannerText2: "In pure HAGMA, ΔAG ≈ ΔHCO₃⁻ · Here ΔAG 8 ≪ ΔHCO₃⁻ 14",
+      panel1Title: "🟣 Pure HAGMA — Why NOT This Case",
+      panel1Tagline: "The delta ratio is too low for a pure HAGMA",
+      panel1List: [
+        "<strong>Definition:</strong> A single high anion gap metabolic acidosis with no other metabolic disorder",
+        "<strong>Delta ratio:</strong> 1.0–2.0 — the rise in AG should approximate the fall in HCO₃⁻",
+        "<strong>In this patient:</strong> If pure HAGMA with ΔAG 8, expected ΔHCO₃⁻ ≈ 8 → HCO₃⁻ would be 16, not 10",
+        "<strong>Actual ΔHCO₃⁻:</strong> 14 — the extra 6 mEq/L of bicarbonate loss is from diarrhea (NAGMA)",
+        "<strong>This case:</strong> Delta ratio 0.57 rules out pure HAGMA"
+      ],
+      panel2Title: "🟣 Pure HAGMA — Clinical Pattern",
+      panel2Tagline: "Single disorder, single cause",
+      panel2List: [
+        "<strong>Examples:</strong> Diabetic ketoacidosis, lactic acidosis, toxic alcohols, uremia, salicylates",
+        "<strong>Delta ratio:</strong> 1.0–2.0",
+        "<strong>Bicarbonate:</strong> Falls proportionally to the rise in anion gap",
+        "<strong>Compensation:</strong> Winter's formula still applies",
+        "<strong>Treatment:</strong> Treat the underlying cause; bicarbonate rarely needed"
+      ],
+      alertIcon: "🟣",
+      alertTitle: "Board Pearl — Pure HAGMA: Delta Ratio 1.0–2.0",
+      alertText: "In a pure high anion gap metabolic acidosis, the <strong>delta ratio is 1.0–2.0</strong> — the rise in anion gap approximates the fall in bicarbonate. This patient's delta ratio of 0.57 is too low, indicating a concurrent NAGMA."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      infoTitle: "🔵 Pure NAGMA",
+      infoRows: [
+        { k: "Delta ratio", v: "< 0.4" },
+        { k: "ΔAG", v: "≈ 0" },
+        { k: "Anion gap", v: "Normal (8–12)" },
+        { k: "This case", v: "AG 20 — not normal" }
+      ],
+      svgTitle: "Pure NAGMA — Delta Ratio < 0.4",
+      svgSubtitle: "Normal anion gap acidosis · Not this case",
+      bannerBg: "#0891b2",
+      bannerText1: "🔵 Pure NAGMA — Delta Ratio Would Be < 0.4",
+      bannerText2: "AG is normal in pure NAGMA · Here AG is elevated at 20",
+      panel1Title: "🔵 Pure NAGMA — Why NOT This Case",
+      panel1Tagline: "The anion gap is elevated, ruling out pure NAGMA",
+      panel1List: [
+        "<strong>Definition:</strong> Normal anion gap metabolic acidosis from bicarbonate loss or renal tubular dysfunction",
+        "<strong>Delta ratio:</strong> < 0.4 — the anion gap does not rise",
+        "<strong>Anion gap:</strong> Normal (8–12 mEq/L)",
+        "<strong>This patient:</strong> AG is 20 — clearly elevated, so there is a HAGMA component",
+        "<strong>But:</strong> The delta ratio of 0.57 is also too low for pure HAGMA → mixed disorder"
+      ],
+      panel2Title: "🔵 Pure NAGMA — Clinical Pattern",
+      panel2Tagline: "Hyperchloremic acidosis",
+      panel2List: [
+        "<strong>Causes:</strong> Diarrhea, renal tubular acidosis, carbonic anhydrase inhibitors, ureteral diversion",
+        "<strong>Chloride:</strong> Elevated (hyperchloremic)",
+        "<strong>Anion gap:</strong> Normal",
+        "<strong>Urine anion gap:</strong> Negative in diarrhea (GI loss), positive in RTA",
+        "<strong>Treatment:</strong> Bicarbonate replacement if severe; treat underlying cause"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Board Pearl — Pure NAGMA: Anion Gap Is Normal",
+      alertText: "In pure normal anion gap metabolic acidosis, the <strong>anion gap is normal</strong> (8–12 mEq/L) and the <strong>delta ratio is < 0.4</strong>. This patient has an elevated AG of 20, so a HAGMA component is present — the low delta ratio indicates a concurrent NAGMA."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      infoTitle: "🟡 HAGMA + Metabolic Alkalosis",
+      infoRows: [
+        { k: "Delta ratio", v: "> 2.0" },
+        { k: "ΔAG", v: "> ΔHCO₃⁻" },
+        { k: "HCO₃⁻", v: "Retained/added" },
+        { k: "This case", v: "Ratio 0.57 — not > 2.0" }
+      ],
+      svgTitle: "HAGMA + Metabolic Alkalosis — Delta Ratio > 2.0",
+      svgSubtitle: "Bicarbonate retention masks the severity of HAGMA · Not this case",
+      bannerBg: "#ca8a04",
+      bannerText1: "🟡 HAGMA + Alkalosis — Delta Ratio > 2.0",
+      bannerText2: "This patient's ratio is 0.57 — the opposite pattern",
+      panel1Title: "🟡 HAGMA + Alkalosis — Why NOT This Case",
+      panel1Tagline: "The delta ratio is too low, not too high",
+      panel1List: [
+        "<strong>Mechanism:</strong> Concurrent metabolic alkalosis (vomiting, diuretics) raises bicarbonate, masking the HAGMA",
+        "<strong>Delta ratio:</strong> > 2.0 — the rise in AG far exceeds the fall in HCO₃⁻",
+        "<strong>Delta gap:</strong> > +6 mEq/L",
+        "<strong>This patient:</strong> Delta ratio is 0.57 — the fall in bicarbonate exceeds the rise in AG",
+        "<strong>Conclusion:</strong> This is the opposite pattern — NAGMA, not alkalosis"
+      ],
+      panel2Title: "🟡 HAGMA + Alkalosis — Clinical Pattern",
+      panel2Tagline: "Bicarbonate is being retained or added",
+      panel2List: [
+        "<strong>Causes:</strong> Vomiting, nasogastric suction, diuretics, volume contraction",
+        "<strong>Delta ratio:</strong> > 2.0",
+        "<strong>Chloride:</strong> Often low (hypochloremic)",
+        "<strong>Urine chloride:</strong> Low (< 20 mEq/L) in vomiting; high in diuretic use",
+        "<strong>Treatment:</strong> Volume and chloride replacement; treat underlying cause"
+      ],
+      alertIcon: "🟡",
+      alertTitle: "Board Pearl — HAGMA + Alkalosis: Delta Ratio > 2.0",
+      alertText: "A delta ratio <strong>> 2.0</strong> suggests a concurrent metabolic alkalosis. This patient's ratio of <strong>0.57</strong> is the opposite pattern — indicating a concurrent <strong>NAGMA</strong> (diarrhea), not alkalosis."
+    }
+  },
+
+  quiz: [
+    {
+      question: "What is the anion gap in this patient?",
+      options: [
+        { text: "A. 10 mEq/L", correct: false, explanation: "10 would be a normal anion gap. Here: AG = 140 − (110 + 10) = 20 mEq/L." },
+        { text: "B. 20 mEq/L", correct: true, explanation: "AG = Na⁺ − (Cl⁻ + HCO₃⁻) = 140 − (110 + 10) = <strong>20 mEq/L</strong> (elevated, normal 8–12)." },
+        { text: "C. 30 mEq/L", correct: false, explanation: "30 would require a much higher sodium or much lower chloride/bicarbonate. Recalculate: 140 − 120 = 20." }
+      ]
+    },
+    {
+      question: "What is the delta ratio, and what does it indicate?",
+      options: [
+        { text: "A. 0.57 — mixed HAGMA + NAGMA", correct: true, explanation: "Delta ratio = ΔAG / ΔHCO₃⁻ = (20 − 12) / (24 − 10) = 8 / 14 = <strong>0.57</strong>. A ratio of 0.4–1.0 indicates a mixed high anion gap and normal anion gap metabolic acidosis." },
+        { text: "B. 1.75 — pure HAGMA", correct: false, explanation: "1.75 would indicate a pure HAGMA. Here ΔAG is 8 and ΔHCO₃⁻ is 14, giving 8/14 = 0.57." },
+        { text: "C. 2.3 — HAGMA + metabolic alkalosis", correct: false, explanation: "2.3 would suggest a concurrent metabolic alkalosis. Here the ratio is 0.57 — the opposite pattern." }
+      ]
+    },
+    {
+      question: "What is the expected PCO₂ by Winter's formula?",
+      options: [
+        { text: "A. 23 ± 2 mmHg", correct: true, explanation: "Winter's formula: expected PCO₂ = 1.5 × HCO₃⁻ + 8 ± 2 = 1.5(10) + 8 ± 2 = <strong>23 ± 2 mmHg</strong>. Measured PCO₂ is 23 — appropriate." },
+        { text: "B. 18 ± 2 mmHg", correct: false, explanation: "18 would suggest over-compensation (primary respiratory alkalosis). The formula gives 23 ± 2." },
+        { text: "C. 30 ± 2 mmHg", correct: false, explanation: "30 would suggest under-compensation (primary respiratory acidosis). The formula gives 23 ± 2." }
+      ]
+    },
+    {
+      question: "Which two processes explain this patient's mixed acid-base disorder?",
+      options: [
+        { text: "A. Lactic acidosis + diarrhea", correct: true, explanation: "Septic shock causes <strong>lactic acidosis</strong> (HAGMA). Profuse diarrhea causes bicarbonate loss (<strong>NAGMA</strong>). The delta ratio of 0.57 confirms both are present." },
+        { text: "B. Vomiting + diuretics", correct: false, explanation: "Vomiting and diuretics cause metabolic <strong>alkalosis</strong>, which would give a delta ratio > 2.0. This patient has a ratio of 0.57." },
+        { text: "C. Ketoacidosis + renal failure", correct: false, explanation: "While these could cause a HAGMA, the clinical context (septic shock + diarrhea) and the delta ratio point to lactic acidosis + NAGMA." }
+      ]
+    },
+    {
+      question: "What is the appropriate management priority?",
+      options: [
+        { text: "A. Sodium bicarbonate infusion", correct: false, explanation: "Bicarbonate is generally reserved for severe acidemia (pH < 7.1). The priority is treating the underlying causes." },
+        { text: "B. Treat septic shock and replace diarrhea losses", correct: true, explanation: "The mixed disorder is driven by <strong>septic shock</strong> (source control, antibiotics, vasopressors) and <strong>diarrhea</strong> (volume and electrolyte replacement). Treating these corrects the acid-base derangement." },
+        { text: "C. Immediate hemodialysis", correct: false, explanation: "Dialysis is not first-line for this mixed disorder unless there is severe refractory acidemia, uremia, or toxic ingestion." }
+      ]
+    }
+  ],
+
+  footerCredit: "A Gift by Dr. Malik",
+  footerNote: "Educational use only · Not medical advice"
+};
+
+(function () {
+  "use strict";
+
+  document.title = CONFIG.title;
+  document.getElementById("pageTitle").textContent = CONFIG.title;
+  document.getElementById("pageSubtitle").textContent = CONFIG.subtitle;
+  document.getElementById("pageBadge").textContent = CONFIG.badge;
+
+  document.getElementById("caseTitle").textContent = CONFIG.caseTitle;
+  document.getElementById("caseDescription").innerHTML = CONFIG.caseDescription;
+
+  document.getElementById("labChips").innerHTML = CONFIG.labChips
+    .map(c => `<span class="lab-chip${c.abnormal ? " abn" : ""}">${c.text}</span>`)
+    .join("");
+
+  document.getElementById("tabs").innerHTML = CONFIG.tabs
+    .map(t => `<button class="tab ${t.id}" id="tab${t.id}" onclick="setMode('${t.id}')">${t.label}</button>`)
+    .join("");
+
+  document.getElementById("quizCount").textContent = CONFIG.quiz.length;
+  document.getElementById("footerCredit").textContent = CONFIG.footerCredit;
+  document.getElementById("footerNote").textContent = CONFIG.footerNote;
+
+  const quizGrid = document.getElementById("quizGrid");
+  quizGrid.innerHTML = CONFIG.quiz.map((q, qi) => `
+    <div class="q" data-q="${qi}">
+      <p>${qi + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map((o, oi) => `
+          <button class="opt" data-q="${qi}" data-o="${oi}">${o.text}</button>
+        `).join("")}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join("");
+
+  quizGrid.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const qi = parseInt(btn.dataset.q, 10);
+      const oi = parseInt(btn.dataset.o, 10);
+      const q = CONFIG.quiz[qi];
+      const opt = q.options[oi];
+      const box = btn.closest(".q");
+
+      box.querySelectorAll(".opt").forEach(b => b.classList.remove("correct", "wrong"));
+      btn.classList.add(opt.correct ? "correct" : "wrong");
+
+      const explain = box.querySelector(".explain");
+      if (opt.correct) {
+        explain.className = "explain show correct-explain";
+        explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+      } else {
+        explain.className = "explain show wrong-explain";
+        explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+      }
+    });
+  });
+
+  setMode("opt1");
+})();
+
+function setMode(mode) {
+  const d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(t => {
+    document.getElementById("tab" + t.id).classList.remove("active");
+  });
+  document.getElementById("tab" + mode).classList.add("active");
+
+  ["opt1", "opt2", "opt3", "opt4"].forEach(id => {
+    document.getElementById("diagram-" + id).style.display = "none";
+  });
+  document.getElementById("diagram-" + mode).style.display = "block";
+
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  document.getElementById("banner-bg").setAttribute("fill", d.bannerBg);
+  document.getElementById("banner-text-1").textContent = d.bannerText1;
+  document.getElementById("banner-text-2").textContent = d.bannerText2;
+
+  const panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass +
+    (panel.classList.contains("collapsed") ? " collapsed" : "");
+
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+  document.getElementById("infoBody").innerHTML = d.infoRows
+    .map(r => `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`)
+    .join("");
+
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  document.getElementById("panel1-list").innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join("");
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  document.getElementById("panel2-list").innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join("");
+
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById("infoPanel");
+  const btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+</script>
+</body>
+</html>

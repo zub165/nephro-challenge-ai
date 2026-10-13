@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question 345 — Renal Biopsy Diagnosis — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent:#7c3aed; --accent2:#2563eb; --accent3:#dc2626; --accent4:#ca8a04;
+    --good:#16a34a; --bad:#ef4444; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#f5f3ff; border-color:var(--accent); color:#5b21b6;}
+  .tab.opt2.active{background:#eff6ff; border-color:var(--accent2); color:#1e40af;}
+  .tab.opt3.active{background:#fef2f2; border-color:var(--accent3); color:#991b1b;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--accent);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#f5f3ff; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#eff6ff;}
+  .info-float.highlight-opt3 .info-header{background:#fee2e2;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,var(--accent),#a855f7); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(124,58,237,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fde68a;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:var(--good); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--bad); color:#991b1b;}
+
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:fade .25s ease;}
+  .explain.correct-explain{border-left-color:var(--good); background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:var(--bad); background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Question 345 — Renal Biopsy Diagnosis</h1>
+      <p>55-year-old female · progressive renal failure · monoclonal IgG κ · 25% plasma cells</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>55-year-old female with progressive renal failure and monoclonal gammopathy</h2>
+      <p>Nephrotic-range proteinuria, microhematuria. Bone marrow: 25% plasma cells. Kidney biopsy: <strong>nodular mesangial deposits</strong>, marked <strong>tubular basement membrane thickening</strong>. IF: <strong>monotypic κ light chain</strong> along GBM, mesangium, and TBM. EM: <strong>nonorganized granular electron-dense material</strong> along basement membranes.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">IgG κ</span>
+      <span class="lab-chip abn">25% plasma cells</span>
+      <span class="lab-chip">Nodular mesangium</span>
+      <span class="lab-chip">κ light chain deposits</span>
+      <span class="lab-chip">Granular EM deposits</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab opt1 active" id="tabOpt1" onclick="setMode('opt1')">🟣 Light Chain Deposition Disease ✓</button>
+    <button class="tab opt2" id="tabOpt2" onclick="setMode('opt2')">🔵 Amyloidosis</button>
+    <button class="tab opt3" id="tabOpt3" onclick="setMode('opt3')">🔴 Fibrillary GN</button>
+    <button class="tab opt4" id="tabOpt4" onclick="setMode('opt4')">🟡 Immunotactoid GN</button>
+  </div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="grad1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="grad2" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#2563eb"/>
+        </radialGradient>
+        <radialGradient id="grad3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="grad4" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrowYellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">
+        Light Chain Deposition Disease — Granular Deposits
+      </text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">
+        Monotypic κ light chain along GBM, mesangium, and TBM · Nonorganized granular EM deposits
+      </text>
+
+      <!-- DIAGRAM 1 — LCDD -->
+      <g id="diagram-opt1">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">PLASMA</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">CELL</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">IgG κ clone</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">25% marrow</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#grad1)" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">κ Light Chain</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#ede9fe">monoclonal</text>
+        </g>
+        <path d="M 490 380 L 570 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrowPurple)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="80" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">GLOMERULUS</text>
+          <circle cx="-30" cy="10" r="22" fill="#fecaca" stroke="#7c3aed" stroke-width="2"/>
+          <circle cx="30" cy="10" r="22" fill="#fecaca" stroke="#7c3aed" stroke-width="2"/>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Nodular mesangium</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-100" y="-60" width="200" height="120" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">TUBULAR BM</text>
+          <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Thickened</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">κ LC deposits</text>
+          <text x="0" y="36" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Granular EM</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 2 — Amyloidosis -->
+      <g id="diagram-opt2" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">PLASMA</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">CELL</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">Usually lambda</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#2563eb">κ/λ &lt; 0.26</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#grad2)" stroke="#1e40af" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">Lambda LC</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#dbeafe">misfolds</text>
+        </g>
+        <path d="M 490 380 L 570 380" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="80" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">AMYLOID FIBRILS</text>
+          <line x1="-60" y1="-10" x2="-60" y2="30" stroke="#1e40af" stroke-width="2"/>
+          <line x1="-40" y1="-10" x2="-40" y2="30" stroke="#1e40af" stroke-width="2"/>
+          <line x1="-20" y1="-10" x2="-20" y2="30" stroke="#1e40af" stroke-width="2"/>
+          <line x1="0" y1="-10" x2="0" y2="30" stroke="#1e40af" stroke-width="2"/>
+          <line x1="20" y1="-10" x2="20" y2="30" stroke="#1e40af" stroke-width="2"/>
+          <line x1="40" y1="-10" x2="40" y2="30" stroke="#1e40af" stroke-width="2"/>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#1e40af">Congo red POSITIVE</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-100" y="-60" width="200" height="120" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">β-PLEATED SHEET</text>
+          <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">8–10 nm fibrils</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">Apple-green</text>
+          <text x="0" y="36" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">birefringence</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 3 — Fibrillary GN -->
+      <g id="diagram-opt3" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">UNKNOWN</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">TRIGGER</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#grad3)" stroke="#991b1b" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">Fibrillary</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">GN</text>
+        </g>
+        <path d="M 490 380 L 570 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="80" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">RANDOM FIBRILS</text>
+          <line x1="-50" y1="-10" x2="-30" y2="20" stroke="#991b1b" stroke-width="2"/>
+          <line x1="-10" y1="-15" x2="10" y2="25" stroke="#991b1b" stroke-width="2"/>
+          <line x1="30" y1="-5" x2="50" y2="30" stroke="#991b1b" stroke-width="2"/>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">Congo red NEGATIVE</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-100" y="-60" width="200" height="120" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">20 nm fibrils</text>
+          <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">Polyclonal IgG</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">Not monoclonal</text>
+          <text x="0" y="36" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">No κ/λ restriction</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 4 — Immunotactoid GN -->
+      <g id="diagram-opt4" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">UNKNOWN</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">TRIGGER</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#grad4)" stroke="#854d0e" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">Immuno-</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">tactoid</text>
+        </g>
+        <path d="M 490 380 L 570 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrowYellow)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="80" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">MICROTUBULES</text>
+          <rect x="-50" y="-15" width="15" height="45" rx="4" fill="#ca8a04"/>
+          <rect x="-25" y="-15" width="15" height="45" rx="4" fill="#ca8a04"/>
+          <rect x="0" y="-15" width="15" height="45" rx="4" fill="#ca8a04"/>
+          <rect x="25" y="-15" width="15" height="45" rx="4" fill="#ca8a04"/>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Parallel arrays</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-100" y="-60" width="200" height="120" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">30–90 nm</text>
+          <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Microtubules</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Monoclonal IgG</text>
+          <text x="0" y="36" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Often κ</text>
+        </g>
+      </g>
+
+      <!-- DYNAMIC BANNER -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#7c3aed" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🟣 Light Chain Deposition Disease — Granular, Nonorganized Deposits
+        </text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">
+          Monotypic κ LC along GBM, mesangium, and TBM · Nonorganized granular EM deposits · Congo red NEGATIVE
+        </text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">🟣 Light Chain Deposition Disease</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">Clone</span><span class="v" id="iVal1">IgG κ (25% marrow plasma cells)</span></div>
+        <div class="row"><span class="k">IF deposits</span><span class="v" id="iVal2">Monotypic κ LC along GBM, mesangium, TBM</span></div>
+        <div class="row"><span class="k">EM deposits</span><span class="v" id="iVal3">Nonorganized granular electron-dense</span></div>
+        <div class="row"><span class="k">LM pattern</span><span class="v" id="iVal4">Nodular mesangial sclerosis + TBM thickening</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title">🟣 LCDD — Pathogenesis</h3>
+      <p class="tagline" id="panel1-tagline">Monoclonal light chain deposition → nodular glomerulosclerosis</p>
+      <ul id="panel1-list">
+        <li><strong>Underlying cause:</strong> Plasma cell dyscrasia (≈50% have multiple myeloma) producing an abnormal monoclonal light chain</li>
+        <li><strong>Deposition:</strong> Light chains deposit along glomerular basement membrane, tubular basement membrane, and mesangium</li>
+        <li><strong>IF:</strong> Monotypic κ or λ light chain — linear or granular staining along basement membranes</li>
+        <li><strong>EM:</strong> Nonorganized, granular, electron-dense material — "ground pepper-like" deposits</li>
+        <li><strong>Congo red:</strong> NEGATIVE (distinguishes from amyloidosis)</li>
+      </ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title">🟣 LCDD — Clinical Features</h3>
+      <p class="tagline" id="panel2-tagline">Nephrotic-range proteinuria + progressive renal failure</p>
+      <ul id="panel2-list">
+        <li><strong>Demographics:</strong> Adults, average age 55–60 years</li>
+        <li><strong>Presentation:</strong> Proteinuria (often nephrotic range), hematuria, hypertension, reduced GFR</li>
+        <li><strong>LM:</strong> Nodular mesangial sclerosis, tubular atrophy, interstitial fibrosis</li>
+        <li><strong>EM hallmark:</strong> Granular electron-dense deposits along basement membranes — identified in all renal biopsies</li>
+        <li><strong>Prognosis:</strong> Progressive CKD; median renal survival ~5.4 years from diagnosis</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon">🟣</div>
+    <div>
+      <h3 id="alertTitle">Board Pearl — Granular EM Deposits + Monotypic Light Chain = LCDD</h3>
+      <p id="alertText">The <strong>nonorganized granular electron-dense deposits</strong> on EM are the key discriminator from <strong>amyloidosis</strong> (which shows fibrillar deposits). Combined with <strong>monotypic κ light chain</strong> on IF and <strong>Congo red negative</strong> staining, this is classic <strong>light chain deposition disease</strong>. About half of patients have underlying multiple myeloma.</p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <!-- Q1 -->
+      <div class="q">
+        <p>1. What is the most likely diagnosis in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Light chain deposition disease (LCDD). Nonorganized granular electron-dense deposits on EM + monotypic κ light chain on IF + Congo red negative = LCDD.', '')">Light chain deposition disease</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Amyloidosis</strong> shows fibrillar (not granular) deposits on EM and is Congo red positive with apple-green birefringence. This patient has granular deposits and Congo red negative staining.')">Amyloidosis</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Fibrillary glomerulonephritis</strong> shows organized fibrils (~20 nm) on EM and is typically polyclonal, not monotypic κ light chain.')">Fibrillary glomerulonephritis</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q">
+        <p>2. What is the key ultrastructural finding that distinguishes LCDD from amyloidosis?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Fibrillar deposits</strong> are seen in amyloidosis, not LCDD. LCDD has granular, nonorganized deposits.')">Fibrillar deposits on EM</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Granular, nonorganized electron-dense deposits on EM distinguish LCDD from amyloidosis, which shows fibrillar deposits. LCDD deposits are often described as "ground pepper-like."', '')">Granular, nonorganized deposits on EM</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Microtubular structures</strong> are seen in immunotactoid glomerulopathy, not LCDD.')">Microtubular structures on EM</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q">
+        <p>3. Which light chain is most commonly associated with LCDD?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Kappa light chains account for ~80% of LCDD cases. This patient has a κ clone, consistent with the classic presentation.', '')">Kappa (κ)</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Lambda light chains</strong> are more commonly associated with AL amyloidosis (~70–80%), not LCDD.')">Lambda (λ)</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Both equally</strong> — no. Kappa predominates in LCDD (~81% of cases).')">Both equally</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q">
+        <p>4. What is the characteristic light microscopy finding in LCDD?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Crescent formation</strong> is not characteristic of LCDD. It may be seen in other glomerulonephritides.')">Crescents in Bowman's space</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Nodular mesangial sclerosis with marked thickening of tubular basement membranes is the classic LM pattern. This is often described as "diabetes-like" nodular glomerulosclerosis.', '')">Nodular mesangial sclerosis</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Diffuse membranous thickening</strong> without nodules is more characteristic of other conditions. LCDD classically shows nodular mesangial sclerosis.')">Diffuse membranous thickening</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q">
+        <p>5. What is the expected Congo red staining in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Positive with apple-green birefringence</strong> is seen in amyloidosis, not LCDD. LCDD is Congo red negative.')">Positive with apple-green birefringence</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Congo red is NEGATIVE in LCDD. The deposits are non-amyloid and do not show the characteristic apple-green birefringence under polarized light.', '')">Negative</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Weakly positive</strong> is not a recognized pattern in LCDD. Congo red is definitively negative.')">Weakly positive</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+const modes = {
+  opt1: {
+    panelClass: 'highlight-opt1',
+    title: '🟣 Light Chain Deposition Disease',
+    val1: 'IgG κ (25% marrow plasma cells)',
+    val2: 'Monotypic κ LC along GBM, mesangium, TBM',
+    val3: 'Nonorganized granular electron-dense',
+    val4: 'Nodular mesangial sclerosis + TBM thickening',
+    activeTab: 'tabOpt1',
+    diagramId: 'diagram-opt1',
+    svgTitle: 'Light Chain Deposition Disease — Granular Deposits',
+    svgSubtitle: 'Monotypic κ light chain along GBM, mesangium, and TBM · Nonorganized granular EM deposits',
+    bannerBg: '#7c3aed',
+    bannerText1: '🟣 Light Chain Deposition Disease — Granular, Nonorganized Deposits',
+    bannerText2: 'Monotypic κ LC along GBM, mesangium, and TBM · Nonorganized granular EM deposits · Congo red NEGATIVE',
+    panel1Title: '🟣 LCDD — Pathogenesis',
+    panel1Tagline: 'Monoclonal light chain deposition → nodular glomerulosclerosis',
+    panel1List: [
+      '<strong>Underlying cause:</strong> Plasma cell dyscrasia (≈50% have multiple myeloma) producing an abnormal monoclonal light chain',
+      '<strong>Deposition:</strong> Light chains deposit along glomerular basement membrane, tubular basement membrane, and mesangium',
+      '<strong>IF:</strong> Monotypic κ or λ light chain — linear or granular staining along basement membranes',
+      '<strong>EM:</strong> Nonorganized, granular, electron-dense material — "ground pepper-like" deposits',
+      '<strong>Congo red:</strong> NEGATIVE (distinguishes from amyloidosis)'
+    ],
+    panel2Title: '🟣 LCDD — Clinical Features',
+    panel2Tagline: 'Nephrotic-range proteinuria + progressive renal failure',
+    panel2List: [
+      '<strong>Demographics:</strong> Adults, average age 55–60 years',
+      '<strong>Presentation:</strong> Proteinuria (often nephrotic range), hematuria, hypertension, reduced GFR',
+      '<strong>LM:</strong> Nodular mesangial sclerosis, tubular atrophy, interstitial fibrosis',
+      '<strong>EM hallmark:</strong> Granular electron-dense deposits along basement membranes — identified in all renal biopsies',
+      '<strong>Prognosis:</strong> Progressive CKD; median renal survival ~5.4 years from diagnosis'
+    ],
+    alertIcon: '🟣',
+    alertTitle: 'Board Pearl — Granular EM Deposits + Monotypic Light Chain = LCDD',
+    alertText: 'The <strong>nonorganized granular electron-dense deposits</strong> on EM are the key discriminator from <strong>amyloidosis</strong> (which shows fibrillar deposits). Combined with <strong>monotypic κ light chain</strong> on IF and <strong>Congo red negative</strong> staining, this is classic <strong>light chain deposition disease</strong>. About half of patients have underlying multiple myeloma.'
+  },
+  opt2: {
+    panelClass: 'highlight-opt2',
+    title: '🔵 Amyloidosis',
+    val1: 'Usually lambda (κ/λ < 0.26)',
+    val2: 'Congo red POSITIVE → apple-green',
+    val3: 'Fibrillar deposits on EM',
+    val4: 'β-pleated sheet structure',
+    activeTab: 'tabOpt2',
+    diagramId: 'diagram-opt2',
+    svgTitle: 'Amyloidosis — Fibrillar Deposits',
+    svgSubtitle: 'Lambda LC misfolds → β-pleated sheets → Congo red positive · Apple-green birefringence',
+    bannerBg: '#2563eb',
+    bannerText1: '🔵 Amyloidosis — Fibrillar, Congo Red Positive',
+    bannerText2: 'Lambda-predominant · Fibrillar EM deposits · Apple-green birefringence · Does NOT fit this case',
+    panel1Title: '🔵 Amyloidosis — Why NOT This Case',
+    panel1Tagline: 'Fibrillar deposits + Congo red positive',
+    panel1List: [
+      '<strong>Light chain:</strong> Lambda causes ~70–80% of AL amyloidosis — this patient has a kappa clone',
+      '<strong>EM:</strong> Fibrillar deposits (8–10 nm) — NOT granular',
+      '<strong>Congo red:</strong> POSITIVE with apple-green birefringence — this patient is Congo red negative',
+      '<strong>IF:</strong> Monotypic light chain but with fibrillar, not granular, deposits',
+      '<strong>This case:</strong> Granular EM deposits + Congo red negative = LCDD'
+    ],
+    panel2Title: '🔵 Amyloidosis — Clinical Pattern',
+    panel2Tagline: 'Nephrotic syndrome + systemic features',
+    panel2List: [
+      '<strong>Kidney:</strong> Nephrotic-range albuminuria, bland sediment',
+      '<strong>Heart:</strong> Septal wall thickening, preserved EF',
+      '<strong>Nerves:</strong> Autonomic dysfunction → orthostatic hypotension',
+      '<strong>EM:</strong> Non-branching, randomly oriented fibrils',
+      '<strong>Diagnosis:</strong> Congo red positive with apple-green birefringence'
+    ],
+    alertIcon: '🔵',
+    alertTitle: 'Board Pearl — Amyloidosis = Fibrillar + Congo Red Positive',
+    alertText: 'Amyloidosis is characterized by <strong>fibrillar deposits</strong> on EM and <strong>Congo red positivity</strong>. This patient has <strong>granular deposits</strong> and is <strong>Congo red negative</strong> — ruling out amyloidosis.'
+  },
+  opt3: {
+    panelClass: 'highlight-opt3',
+    title: '🔴 Fibrillary GN',
+    val1: 'Polyclonal IgG (not monoclonal)',
+    val2: 'Congo red NEGATIVE',
+    val3: '~20 nm fibrils on EM',
+    val4: 'Randomly oriented fibrils',
+    activeTab: 'tabOpt3',
+    diagramId: 'diagram-opt3',
+    svgTitle: 'Fibrillary GN — Random Fibrils, Congo Red Negative',
+    svgSubtitle: '~20 nm fibrils · Polyclonal IgG · Not associated with monoclonal gammopathy',
+    bannerBg: '#dc2626',
+    bannerText1: '🔴 Fibrillary GN — Not Monoclonal',
+    bannerText2: 'Polyclonal IgG · ~20 nm fibrils · Congo red negative · Not related to myeloma',
+    panel1Title: '🔴 Fibrillary GN — Why NOT This Case',
+    panel1Tagline: 'Polyclonal, not monoclonal',
+    panel1List: [
+      '<strong>Fibril size:</strong> ~20 nm in diameter on EM',
+      '<strong>IF:</strong> Polyclonal IgG — NOT monotypic κ light chain',
+      '<strong>Congo red:</strong> NEGATIVE',
+      '<strong>Association:</strong> Not linked to multiple myeloma or monoclonal gammopathy',
+      '<strong>This case:</strong> Monotypic κ LC + 25% plasma cells → LCDD, not fibrillary GN'
+    ],
+    panel2Title: '🔴 Fibrillary GN — Clinical Pattern',
+    panel2Tagline: 'Nephrotic syndrome without monoclonal gammopathy',
+    panel2List: [
+      '<strong>Kidney:</strong> Proteinuria, hematuria, CKD',
+      '<strong>IF:</strong> Polyclonal IgG, complement',
+      '<strong>EM:</strong> Randomly organized fibrils ~20 nm',
+      '<strong>Prognosis:</strong> Variable; often progressive',
+      '<strong>Association:</strong> Not linked to myeloma'
+    ],
+    alertIcon: '🔴',
+    alertTitle: 'Board Pearl — Fibrillary GN Is Polyclonal',
+    alertText: 'Fibrillary GN has <strong>polyclonal IgG</strong> deposits and <strong>~20 nm fibrils</strong>. It is not associated with monoclonal gammopathy. This patient has a monoclonal κ clone → LCDD.'
+  },
+  opt4: {
+    panelClass: 'highlight-opt4',
+    title: '🟡 Immunotactoid GN',
+    val1: 'Monoclonal IgG (often κ)',
+    val2: 'Congo red NEGATIVE',
+    val3: 'Microtubular deposits 30–90 nm',
+    val4: 'Parallel arrays on EM',
+    activeTab: 'tabOpt4',
+    diagramId: 'diagram-opt4',
+    svgTitle: 'Immunotactoid GN — Microtubular Deposits',
+    svgSubtitle: '30–90 nm microtubules · Parallel arrays · Often monoclonal IgG',
+    bannerBg: '#ca8a04',
+    bannerText1: '🟡 Immunotactoid GN — Microtubular, Not Granular',
+    bannerText2: '30–90 nm microtubules · Parallel arrays · Often monoclonal IgG · EM pattern does NOT fit this case',
+    panel1Title: '🟡 Immunotactoid GN — Why NOT This Case',
+    panel1Tagline: 'Microtubules, not granular deposits',
+    panel1List: [
+      '<strong>EM:</strong> Microtubular structures (30–90 nm) in parallel arrays — NOT granular',
+      '<strong>IF:</strong> Often monoclonal IgG, but the deposits are organized microtubules',
+      '<strong>Congo red:</strong> NEGATIVE',
+      '<strong>Association:</strong> May be associated with monoclonal gammopathy',
+      '<strong>This case:</strong> Granular, nonorganized deposits = LCDD, not immunotactoid GN'
+    ],
+    panel2Title: '🟡 Immunotactoid GN — Clinical Pattern',
+    panel2Tagline: 'Nephrotic syndrome with microtubular deposits',
+    panel2List: [
+      '<strong>Kidney:</strong> Proteinuria, hematuria, CKD',
+      '<strong>EM:</strong> Microtubules 30–90 nm in parallel arrays',
+      '<strong>IF:</strong> Monoclonal IgG (often κ)',
+      '<strong>Prognosis:</strong> Variable; may progress to ESRD',
+      '<strong>Association:</strong> May be linked to monoclonal gammopathy'
+    ],
+    alertIcon: '🟡',
+    alertTitle: 'Board Pearl — Immunotactoid GN = Microtubules',
+    alertText: 'Immunotactoid GN shows <strong>microtubular deposits (30–90 nm)</strong> in parallel arrays on EM. This patient has <strong>granular, nonorganized deposits</strong> — classic for LCDD.'
+  }
+};
+
+function setMode(mode) {
+  const d = modes[mode];
+  ['tabOpt1','tabOpt2','tabOpt3','tabOpt4'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById(d.activeTab).classList.add('active');
+
+  ['diagram-opt1','diagram-opt2','diagram-opt3','diagram-opt4'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(d.diagramId).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panel.classList.contains('collapsed') ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('iVal1').textContent = d.val1;
+  document.getElementById('iVal2').textContent = d.val2;
+  document.getElementById('iVal3').textContent = d.val3;
+  document.getElementById('iVal4').textContent = d.val4;
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+  const box = btn.closest('.q');
+  
+  // Remove previous highlights from ALL options in this question
+  box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+  
+  // Highlight ONLY the clicked button
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  // Show explanation
+  const explain = box.querySelector('.explain');
+  if (isCorrect) {
+    explain.className = 'explain show correct-explain';
+    explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+  } else {
+    explain.className = 'explain show wrong-explain';
+    explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+  }
+}
+
+setMode('opt1');
+</script>
+</body>
+</html>

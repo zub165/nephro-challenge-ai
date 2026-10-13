@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[[CASE_TITLE]] — A Gift by Dr. Malik</title>
+<style>
+  /* ============================================================
+     REUSABLE STYLES — copy as-is to every new case file
+     ============================================================ */
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent:#7c3aed; --accent2:#2563eb; --accent3:#dc2626; --accent4:#ca8a04;
+    --good:#16a34a; --bad:#ef4444; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  /* HEADER */
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  /* CASE STRIP */
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  /* TABS */
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#f5f3ff; border-color:var(--accent); color:#5b21b6;}
+  .tab.opt2.active{background:#eff6ff; border-color:var(--accent2); color:#1e40af;}
+  .tab.opt3.active{background:#fef2f2; border-color:var(--accent3); color:#991b1b;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  /* DIAGRAM STAGE */
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  /* FLOATING INFO PANEL */
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--accent);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#f5f3ff; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#eff6ff;}
+  .info-float.highlight-opt3 .info-header{background:#fee2e2;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  /* TEACHING PANELS */
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  /* ALERT */
+  .alert{background:linear-gradient(135deg,var(--accent),#a855f7); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(124,58,237,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fde68a;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:var(--good); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--bad); color:#991b1b;}
+
+  /* EXPLANATION BOXES */
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:fade .25s ease;}
+  .explain.correct-explain{border-left-color:var(--good); background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:var(--bad); background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  /* FOOTER */
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  /* ANIMATIONS */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HEADER ============ -->
+  <header class="top">
+    <div>
+      <h1>[[CASE_TITLE]]</h1>
+      <p>[[CASE_SUBTITLE]]</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- ============ CASE STRIP ============ -->
+  <div class="case-strip">
+    <div>
+      <h2>[[PATIENT_ONE_LINER]]</h2>
+      <p>[[CASE_DETAILS]]</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">[[LAB_1]]</span>
+      <span class="lab-chip abn">[[LAB_2]]</span>
+      <span class="lab-chip">[[LAB_3]]</span>
+      <span class="lab-chip">[[LAB_4]]</span>
+    </div>
+  </div>
+
+  <!-- ============ TABS ============ -->
+  <div class="tabs">
+    <button class="tab opt1 active" id="tabOpt1" onclick="setMode('opt1')">[[TAB_1_LABEL]]</button>
+    <button class="tab opt2" id="tabOpt2" onclick="setMode('opt2')">[[TAB_2_LABEL]]</button>
+    <button class="tab opt3" id="tabOpt3" onclick="setMode('opt3')">[[TAB_3_LABEL]]</button>
+    <button class="tab opt4" id="tabOpt4" onclick="setMode('opt4')">[[TAB_4_LABEL]]</button>
+  </div>
+
+  <!-- ============ DIAGRAM ============ -->
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="grad1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="grad2" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#2563eb"/>
+        </radialGradient>
+        <radialGradient id="grad3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="grad4" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrowYellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <!-- DYNAMIC TITLE (updates per tab) -->
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">
+        [[DIAGRAM_TITLE_1]]
+      </text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">
+        [[DIAGRAM_SUBTITLE_1]]
+      </text>
+
+      <!-- DIAGRAM 1 -->
+      <g id="diagram-opt1">
+        <!-- TODO: paste diagram 1 SVG content here -->
+      </g>
+
+      <!-- DIAGRAM 2 -->
+      <g id="diagram-opt2" style="display:none">
+        <!-- TODO: paste diagram 2 SVG content here -->
+      </g>
+
+      <!-- DIAGRAM 3 -->
+      <g id="diagram-opt3" style="display:none">
+        <!-- TODO: paste diagram 3 SVG content here -->
+      </g>
+
+      <!-- DIAGRAM 4 -->
+      <g id="diagram-opt4" style="display:none">
+        <!-- TODO: paste diagram 4 SVG content here -->
+      </g>
+
+      <!-- DYNAMIC BANNER -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#7c3aed" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          [[BANNER_TEXT_1]]
+        </text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">
+          [[BANNER_TEXT_2]]
+        </text>
+      </g>
+    </svg>
+
+    <!-- FLOATING INFO PANEL -->
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">[[INFO_TITLE_1]]</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">[[KEY_1]]</span><span class="v" id="iVal1">[[VAL_1]]</span></div>
+        <div class="row"><span class="k">[[KEY_2]]</span><span class="v" id="iVal2">[[VAL_2]]</span></div>
+        <div class="row"><span class="k">[[KEY_3]]</span><span class="v" id="iVal3">[[VAL_3]]</span></div>
+        <div class="row"><span class="k">[[KEY_4]]</span><span class="v" id="iVal4">[[VAL_4]]</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEACHING PANELS ============ -->
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title">[[P1_TITLE]]</h3>
+      <p class="tagline" id="panel1-tagline">[[P1_TAGLINE]]</p>
+      <ul id="panel1-list">
+        <li>[[P1_LI_1]]</li>
+        <li>[[P1_LI_2]]</li>
+        <li>[[P1_LI_3]]</li>
+        <li>[[P1_LI_4]]</li>
+        <li>[[P1_LI_5]]</li>
+      </ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title">[[P2_TITLE]]</h3>
+      <p class="tagline" id="panel2-tagline">[[P2_TAGLINE]]</p>
+      <ul id="panel2-list">
+        <li>[[P2_LI_1]]</li>
+        <li>[[P2_LI_2]]</li>
+        <li>[[P2_LI_3]]</li>
+        <li>[[P2_LI_4]]</li>
+        <li>[[P2_LI_5]]</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ ALERT ============ -->
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon">[[ALERT_ICON]]</div>
+    <div>
+      <h3 id="alertTitle">[[ALERT_TITLE]]</h3>
+      <p id="alertText">[[ALERT_TEXT]]</p>
+    </div>
+  </div>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <!-- Q1 -->
+      <div class="q">
+        <p>1. [[Q1_PROMPT]]</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '[[Q1_CORRECT_EXPLANATION]]', '')">[[Q1_A]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q1_WRONG_B_EXPLANATION]]')">[[Q1_B]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q1_WRONG_C_EXPLANATION]]')">[[Q1_C]]</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q">
+        <p>2. [[Q2_PROMPT]]</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q2_WRONG_A_EXPLANATION]]')">[[Q2_A]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '[[Q2_CORRECT_EXPLANATION]]', '')">[[Q2_B]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q2_WRONG_C_EXPLANATION]]')">[[Q2_C]]</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q">
+        <p>3. [[Q3_PROMPT]]</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q3_WRONG_A_EXPLANATION]]')">[[Q3_A]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q3_WRONG_B_EXPLANATION]]')">[[Q3_B]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '[[Q3_CORRECT_EXPLANATION]]', '')">[[Q3_C]]</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q">
+        <p>4. [[Q4_PROMPT]]</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q4_WRONG_A_EXPLANATION]]')">[[Q4_A]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '[[Q4_CORRECT_EXPLANATION]]', '')">[[Q4_B]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q4_WRONG_C_EXPLANATION]]')">[[Q4_C]]</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q">
+        <p>5. [[Q5_PROMPT]]</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q5_WRONG_A_EXPLANATION]]')">[[Q5_A]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '[[Q5_CORRECT_EXPLANATION]]', '')">[[Q5_B]]</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '[[Q5_WRONG_C_EXPLANATION]]')">[[Q5_C]]</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   REUSABLE MODE DATA — replace values per case
+   ============================================================ */
+const modes = {
+  opt1: {
+    panelClass: 'highlight-opt1',
+    title: '[[INFO_TITLE_1]]',
+    val1: '[[VAL_1]]',
+    val2: '[[VAL_2]]',
+    val3: '[[VAL_3]]',
+    val4: '[[VAL_4]]',
+    activeTab: 'tabOpt1',
+    diagramId: 'diagram-opt1',
+    svgTitle: '[[DIAGRAM_TITLE_1]]',
+    svgSubtitle: '[[DIAGRAM_SUBTITLE_1]]',
+    bannerBg: '#7c3aed',
+    bannerText1: '[[BANNER_TEXT_1]]',
+    bannerText2: '[[BANNER_TEXT_2]]',
+    panel1Title: '[[P1_TITLE]]',
+    panel1Tagline: '[[P1_TAGLINE]]',
+    panel1List: ['[[P1_LI_1]]','[[P1_LI_2]]','[[P1_LI_3]]','[[P1_LI_4]]','[[P1_LI_5]]'],
+    panel2Title: '[[P2_TITLE]]',
+    panel2Tagline: '[[P2_TAGLINE]]',
+    panel2List: ['[[P2_LI_1]]','[[P2_LI_2]]','[[P2_LI_3]]','[[P2_LI_4]]','[[P2_LI_5]]'],
+    alertIcon: '[[ALERT_ICON]]',
+    alertTitle: '[[ALERT_TITLE]]',
+    alertText: '[[ALERT_TEXT]]'
+  },
+  opt2: {
+    panelClass: 'highlight-opt2',
+    title: '[[INFO_TITLE_2]]',
+    val1: '[[VAL_1_2]]',
+    val2: '[[VAL_2_2]]',
+    val3: '[[VAL_3_2]]',
+    val4: '[[VAL_4_2]]',
+    activeTab: 'tabOpt2',
+    diagramId: 'diagram-opt2',
+    svgTitle: '[[DIAGRAM_TITLE_2]]',
+    svgSubtitle: '[[DIAGRAM_SUBTITLE_2]]',
+    bannerBg: '#2563eb',
+    bannerText1: '[[BANNER_TEXT_1_2]]',
+    bannerText2: '[[BANNER_TEXT_2_2]]',
+    panel1Title: '[[P1_TITLE_2]]',
+    panel1Tagline: '[[P1_TAGLINE_2]]',
+    panel1List: ['[[P1_2_LI_1]]','[[P1_2_LI_2]]','[[P1_2_LI_3]]','[[P1_2_LI_4]]','[[P1_2_LI_5]]'],
+    panel2Title: '[[P2_TITLE_2]]',
+    panel2Tagline: '[[P2_TAGLINE_2]]',
+    panel2List: ['[[P2_2_LI_1]]','[[P2_2_LI_2]]','[[P2_2_LI_3]]','[[P2_2_LI_4]]','[[P2_2_LI_5]]'],
+    alertIcon: '[[ALERT_ICON_2]]',
+    alertTitle: '[[ALERT_TITLE_2]]',
+    alertText: '[[ALERT_TEXT_2]]'
+  },
+  opt3: {
+    panelClass: 'highlight-opt3',
+    title: '[[INFO_TITLE_3]]',
+    val1: '[[VAL_1_3]]',
+    val2: '[[VAL_2_3]]',
+    val3: '[[VAL_3_3]]',
+    val4: '[[VAL_4_3]]',
+    activeTab: 'tabOpt3',
+    diagramId: 'diagram-opt3',
+    svgTitle: '[[DIAGRAM_TITLE_3]]',
+    svgSubtitle: '[[DIAGRAM_SUBTITLE_3]]',
+    bannerBg: '#dc2626',
+    bannerText1: '[[BANNER_TEXT_1_3]]',
+    bannerText2: '[[BANNER_TEXT_2_3]]',
+    panel1Title: '[[P1_TITLE_3]]',
+    panel1Tagline: '[[P1_TAGLINE_3]]',
+    panel1List: ['[[P1_3_LI_1]]','[[P1_3_LI_2]]','[[P1_3_LI_3]]','[[P1_3_LI_4]]','[[P1_3_LI_5]]'],
+    panel2Title: '[[P2_TITLE_3]]',
+    panel2Tagline: '[[P2_TAGLINE_3]]',
+    panel2List: ['[[P2_3_LI_1]]','[[P2_3_LI_2]]','[[P2_3_LI_3]]','[[P2_3_LI_4]]','[[P2_3_LI_5]]'],
+    alertIcon: '[[ALERT_ICON_3]]',
+    alertTitle: '[[ALERT_TITLE_3]]',
+    alertText: '[[ALERT_TEXT_3]]'
+  },
+  opt4: {
+    panelClass: 'highlight-opt4',
+    title: '[[INFO_TITLE_4]]',
+    val1: '[[VAL_1_4]]',
+    val2: '[[VAL_2_4]]',
+    val3: '[[VAL_3_4]]',
+    val4: '[[VAL_4_4]]',
+    activeTab: 'tabOpt4',
+    diagramId: 'diagram-opt4',
+    svgTitle: '[[DIAGRAM_TITLE_4]]',
+    svgSubtitle: '[[DIAGRAM_SUBTITLE_4]]',
+    bannerBg: '#ca8a04',
+    bannerText1: '[[BANNER_TEXT_1_4]]',
+    bannerText2: '[[BANNER_TEXT_2_4]]',
+    panel1Title: '[[P1_TITLE_4]]',
+    panel1Tagline: '[[P1_TAGLINE_4]]',
+    panel1List: ['[[P1_4_LI_1]]','[[P1_4_LI_2]]','[[P1_4_LI_3]]','[[P1_4_LI_4]]','[[P1_4_LI_5]]'],
+    panel2Title: '[[P2_TITLE_4]]',
+    panel2Tagline: '[[P2_TAGLINE_4]]',
+    panel2List: ['[[P2_4_LI_1]]','[[P2_4_LI_2]]','[[P2_4_LI_3]]','[[P2_4_LI_4]]','[[P2_4_LI_5]]'],
+    alertIcon: '[[ALERT_ICON_4]]',
+    alertTitle: '[[ALERT_TITLE_4]]',
+    alertText: '[[ALERT_TEXT_4]]'
+  }
+};
+
+function setMode(mode) {
+  const d = modes[mode];
+
+  // Tabs
+  ['tabOpt1','tabOpt2','tabOpt3','tabOpt4'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById(d.activeTab).classList.add('active');
+
+  // Diagrams
+  ['diagram-opt1','diagram-opt2','diagram-opt3','diagram-opt4'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(d.diagramId).style.display = 'block';
+
+  // SVG title
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  // Banner
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  // Info panel
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panel.classList.contains('collapsed') ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('iVal1').textContent = d.val1;
+  document.getElementById('iVal2').textContent = d.val2;
+  document.getElementById('iVal3').textContent = d.val3;
+  document.getElementById('iVal4').textContent = d.val4;
+
+  // Teaching panels
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML =
+    d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML =
+    d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  // Alert
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+/**
+ * Reusable quiz handler:
+ *  - Correct → green box with "✔ Correct. <explanation>"
+ *  - Wrong → red box with "✘ Wrong. <which disease this actually is>"
+ */
+function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+  const box = btn.closest('.q');
+  box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  const explain = box.querySelector('.explain');
+  if (isCorrect) {
+    explain.className = 'explain show correct-explain';
+    explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+  } else {
+    explain.className = 'explain show wrong-explain';
+    explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+  }
+}
+
+setMode('opt1');
+</script>
+</body>
+</html>

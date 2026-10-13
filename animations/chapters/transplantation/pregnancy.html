@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question 348 — Pregnancy Risks in Diabetic Nephropathy — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent:#7c3aed; --accent2:#dc2626; --accent3:#2563eb; --accent4:#ca8a04;
+    --good:#16a34a; --bad:#ef4444; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#f5f3ff; border-color:var(--accent); color:#5b21b6;}
+  .tab.opt2.active{background:#fef2f2; border-color:var(--accent2); color:#991b1b;}
+  .tab.opt3.active{background:#eff6ff; border-color:var(--accent3); color:#1e40af;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--accent);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#f5f3ff; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#fee2e2;}
+  .info-float.highlight-opt3 .info-header{background:#eff6ff;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,var(--accent),#a855f7); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(124,58,237,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fde68a;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:var(--good); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--bad); color:#991b1b;}
+
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:fade .25s ease;}
+  .explain.correct-explain{border-left-color:var(--good); background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:var(--bad); background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Question 348 — Pregnancy Risks in Diabetic Nephropathy</h1>
+      <p>38-year-old woman · type 2 diabetes · diabetic nephropathy · prepregnancy counselling</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>38-year-old woman with diabetic nephropathy seeking prepregnancy counselling</h2>
+      <p>HbA1c 7.8%. BP 148/92 on amlodipine. Meds: insulin, atorvastatin. 24-h urine protein 2.8 g. Creatinine 2.6 mg/dL, eGFR 38. Adherent to medications and visits.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">HbA1c 7.8%</span>
+      <span class="lab-chip abn">BP 148/92</span>
+      <span class="lab-chip abn">Protein 2.8 g/24h</span>
+      <span class="lab-chip abn">Cr 2.6 / eGFR 38</span>
+      <span class="lab-chip">T2DM</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab opt1 active" id="tabOpt1" onclick="setMode('opt1')">🟣 Preeclampsia — Highest Risk ✓</button>
+    <button class="tab opt2" id="tabOpt2" onclick="setMode('opt2')">🔴 Progression to ESKD</button>
+    <button class="tab opt3" id="tabOpt3" onclick="setMode('opt3')">🔵 Preterm Delivery</button>
+    <button class="tab opt4" id="tabOpt4" onclick="setMode('opt4')">🟡 Congenital Malformations</button>
+  </div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="https://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="grad1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="grad2" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="grad3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#2563eb"/>
+        </radialGradient>
+        <radialGradient id="grad4" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrowYellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">
+        Preeclampsia — The Highest Risk in Diabetic Nephropathy
+      </text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">
+        Diabetic nephropathy → endothelial dysfunction + placental ischemia → preeclampsia (>50% incidence)
+      </text>
+
+      <!-- DIAGRAM 1 — Preeclampsia -->
+      <g id="diagram-opt1">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">DIABETIC</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">NEPHROPATHY</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#6d28d9">Protein 2.8 g</text>
+          <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">BP 148/92</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrowPurple)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad1)" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">ENDOTHELIAL</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">DYSFUNCTION</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#ede9fe">+ placental ischemia</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#7c3aed" stroke-width="3" fill="none" marker-end="url(#arrowPurple)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">PREECLAMPSIA</text>
+          <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="11" fill="#6d28d9">Hypertension + proteinuria</text>
+          <text x="0" y="2" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">OR 10.76</text>
+          <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">10-fold increased risk</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#dc2626">Incidence &gt;50%</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">★ HIGHEST RISK</text>
+          <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">Shared mechanism:</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">endothelial dysfunction</text>
+          <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">+ impaired placentation</text>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fde68a">→ B (Preeclampsia)</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 2 — ESKD progression -->
+      <g id="diagram-opt2" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">BASELINE CKD</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">Cr 2.6 mg/dL</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">eGFR 38</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad2)" stroke="#991b1b" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">PREGNANCY</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">HYPERFILTRATION</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">+ superimposed preeclampsia</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">ACCELERATED</text>
+          <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">DECLINE</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">&gt;40% progress</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">(if Cr ≥1.4 mg/dL)</text>
+          <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#991b1b">→ ESKD</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">HIGH RISK</text>
+          <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">But NOT the highest</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">relative risk compared</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#991b1b">with preeclampsia</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">→ D (NOT the answer)</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 3 — Preterm delivery -->
+      <g id="diagram-opt3" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">MATERNAL</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">DISEASE</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#1e40af">preeclampsia + CKD</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad3)" stroke="#1e40af" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">PLACENTAL</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">INSUFFICIENCY</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#dbeafe">fetal compromise</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e40af">PRETERM</text>
+          <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e40af">DELIVERY</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">&lt;34 wks: OR 6.90</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">&lt;37 wks: OR 4.48</text>
+          <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#1e40af">~70% rate</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e40af">VERY HIGH RISK</text>
+          <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">Often secondary to</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">preeclampsia itself</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">(iatrogenic delivery)</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#1e40af">→ C (NOT the answer)</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 4 — Congenital malformations -->
+      <g id="diagram-opt4" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="78" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">PERICONCEPTIONAL</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">HbA1c 7.8%</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">suboptimal control</text>
+        </g>
+        <path d="M 212 380 L 280 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrowYellow)"/>
+        <g transform="translate(400, 380)">
+          <circle r="82" fill="url(#grad4)" stroke="#854d0e" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">1st-TRIMESTER</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">HYPERGLYCEMIA</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="10" fill="#fef3c7">organogenesis</text>
+        </g>
+        <path d="M 492 380 L 570 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrowYellow)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="120" ry="85" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+          <text x="0" y="-48" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">CONGENITAL</text>
+          <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">MALFORMATIONS</text>
+          <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Neural tube defects</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Cardiac defects</text>
+          <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#713f12">OR 2.71 (~8%)</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-105" y="-70" width="210" height="140" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">IMPORTANT</text>
+          <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">But LOWER than</text>
+          <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">preeclampsia risk</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Tied to HbA1c control</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#713f12">→ A (NOT the answer)</text>
+        </g>
+      </g>
+
+      <!-- DYNAMIC BANNER -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#7c3aed" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🟣 Preeclampsia — Highest Risk in Diabetic Nephropathy
+        </text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">
+          OR 10.76 · Incidence &gt;50% · Shared endothelial dysfunction + impaired placentation
+        </text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">🟣 Preeclampsia — Highest Risk</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">Relative risk</span><span class="v" id="iVal1">OR 10.76 (10-fold ↑)</span></div>
+        <div class="row"><span class="k">Incidence</span><span class="v" id="iVal2">&gt;50% in diabetic nephropathy</span></div>
+        <div class="row"><span class="k">Mechanism</span><span class="v" id="iVal3">Endothelial dysfunction + placental ischemia</span></div>
+        <div class="row"><span class="k">Key modifiers</span><span class="v" id="iVal4">Pre-existing HTN, proteinuria, CKD</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title">🟣 Preeclampsia — Why Highest Risk</h3>
+      <p class="tagline" id="panel1-tagline">Shared pathophysiology amplifies risk</p>
+      <ul id="panel1-list">
+        <li><strong>Meta-analysis:</strong> Diabetic nephropathy is associated with a 10-fold increased risk of preeclampsia (OR 10.76)</li>
+        <li><strong>Absolute incidence:</strong> Clinical series report preeclampsia rates exceeding 50% in pregnant women with diabetic nephropathy</li>
+        <li><strong>Shared mechanism:</strong> Both preeclampsia and diabetic nephropathy involve endothelial dysfunction, impaired placentation, and angiogenic imbalance (sFlt-1/PlGF)</li>
+        <li><strong>Amplifying factors:</strong> Pre-existing hypertension (148/92), proteinuria (2.8 g), and reduced eGFR (38) all compound the risk</li>
+        <li><strong>Consequence:</strong> Preeclampsia then drives many of the other complications — preterm delivery, fetal growth restriction, and renal decline</li>
+      </ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title">📊 Comparative Risks</h3>
+      <p class="tagline" id="panel2-tagline">Relative risk for each complication</p>
+      <ul id="panel2-list">
+        <li><strong>Preeclampsia:</strong> OR 10.76 — <em>highest</em></li>
+        <li><strong>Preterm delivery &lt;34 wks:</strong> OR 6.90 (incidence ~70% &lt;37 wks)</li>
+        <li><strong>Progression to ESKD:</strong> &gt;40% if Cr ≥1.4 mg/dL — very high absolute risk, but relative risk is lower than preeclampsia</li>
+        <li><strong>Congenital malformations:</strong> OR 2.71, ~8% incidence — lowest relative risk of the four; tied to periconceptional HbA1c</li>
+        <li><strong>Take-home:</strong> Preeclampsia is both the highest relative risk <em>and</em> the driver of downstream complications</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon">🟣</div>
+    <div>
+      <h3 id="alertTitle">Board Pearl — Diabetic Nephropathy + Pregnancy = Preeclampsia is the #1 Risk</h3>
+      <p id="alertText">Preeclampsia is the <strong>highest risk</strong> in pregnant women with diabetic nephropathy — <strong>10-fold increased odds (OR 10.76)</strong> with an absolute incidence <strong>&gt;50%</strong>. Pre-existing hypertension and proteinuria compound the risk. While ESKD progression (&gt;40%) and preterm delivery (OR ~6.9) are also very high, preeclampsia carries the greatest relative risk and drives the others.</p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <div class="q">
+        <p>1. Which complication has the highest risk in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Congenital malformations</strong> carry a 2.7-fold increased risk (OR 2.71, ~8% incidence) — significant but the lowest of the four options.')">Congenital malformations</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Preeclampsia. Diabetic nephropathy is associated with a ~10-fold increased risk (OR 10.76) and an absolute incidence >50% — the highest of the listed risks.', '')">Preeclampsia</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Preterm delivery</strong> is very high risk (OR 6.90 for &lt;34 weeks), but still lower than the risk of preeclampsia. Also, preterm delivery is often a consequence of preeclampsia.')">Preterm delivery</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>2. What is the approximate incidence of preeclampsia in women with diabetic nephropathy?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>~10–15%</strong> underestimates the risk. This rate is closer to that of the general pregnant population, not women with diabetic nephropathy.')">10–15%</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '>50%. Clinical series report preeclampsia rates exceeding 50% in pregnant women with diabetic nephropathy — the highest-risk obstetric population.', '')">&gt;50%</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>~25–30%</strong> is closer to preeclampsia rates in uncomplicated diabetes (without nephropathy), not in established diabetic nephropathy.')">25–30%</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>3. What is the risk of accelerated progression to ESKD during pregnancy in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', '>40% if serum creatinine is ≥1.4 mg/dL. This patient has Cr 2.6 mg/dL — well above the threshold — so her risk of accelerated decline is >40%.', '')">&gt;40%</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>~5–10%</strong> underestimates the risk. With Cr ≥1.4 mg/dL, the risk of accelerated progression exceeds 40%.')">~5–10%</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Essentially zero</strong> is incorrect — pregnancy in moderate-to-severe renal insufficiency is associated with significant risk of accelerated progression.')">Essentially zero</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>4. Which medication should be stopped before conception?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Insulin</strong> is safe and essential in pregnancy — it is the preferred treatment for diabetes in pregnancy. It should NOT be stopped.')">Insulin</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Atorvastatin. Statins are contraindicated in pregnancy (teratogenic potential, Category X) and should be discontinued before conception. Amlodipine may also need to be switched to labetalol or nifedipine.', '')">Atorvastatin</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Amlodipine</strong> may be continued in some cases, though labetalol or nifedipine are often preferred. It is not the primary medication that must be stopped.')">Amlodipine</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>5. Which factor most strongly influences the risk of congenital malformations?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Maternal age</strong> affects aneuploidy risk but is not the primary driver of congenital malformations in diabetic pregnancy.')">Maternal age</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Proteinuria</strong> reflects nephropathy but does not directly determine teratogenic risk.')">Proteinuria</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Periconceptional glycemic control (HbA1c). The risk of congenital malformations is strongly correlated with first-trimester HbA1c — optimizing HbA1c to <6.5% before conception reduces the risk substantially.', '')">Periconceptional glycemic control (HbA1c)</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+const modes = {
+  opt1: {
+    panelClass: 'highlight-opt1',
+    title: '🟣 Preeclampsia — Highest Risk',
+    val1: 'OR 10.76 (10-fold ↑)',
+    val2: '>50% in diabetic nephropathy',
+    val3: 'Endothelial dysfunction + placental ischemia',
+    val4: 'Pre-existing HTN, proteinuria, CKD',
+    activeTab: 'tabOpt1',
+    diagramId: 'diagram-opt1',
+    svgTitle: 'Preeclampsia — The Highest Risk in Diabetic Nephropathy',
+    svgSubtitle: 'Diabetic nephropathy → endothelial dysfunction + placental ischemia → preeclampsia (>50% incidence)',
+    bannerBg: '#7c3aed',
+    bannerText1: '🟣 Preeclampsia — Highest Risk in Diabetic Nephropathy',
+    bannerText2: 'OR 10.76 · Incidence >50% · Shared endothelial dysfunction + impaired placentation',
+    panel1Title: '🟣 Preeclampsia — Why Highest Risk',
+    panel1Tagline: 'Shared pathophysiology amplifies risk',
+    panel1List: [
+      '<strong>Meta-analysis:</strong> Diabetic nephropathy is associated with a 10-fold increased risk of preeclampsia (OR 10.76)',
+      '<strong>Absolute incidence:</strong> Clinical series report preeclampsia rates exceeding 50% in pregnant women with diabetic nephropathy',
+      '<strong>Shared mechanism:</strong> Both preeclampsia and diabetic nephropathy involve endothelial dysfunction, impaired placentation, and angiogenic imbalance (sFlt-1/PlGF)',
+      '<strong>Amplifying factors:</strong> Pre-existing hypertension (148/92), proteinuria (2.8 g), and reduced eGFR (38) all compound the risk',
+      '<strong>Consequence:</strong> Preeclampsia then drives many of the other complications — preterm delivery, fetal growth restriction, and renal decline'
+    ],
+    panel2Title: '📊 Comparative Risks',
+    panel2Tagline: 'Relative risk for each complication',
+    panel2List: [
+      '<strong>Preeclampsia:</strong> OR 10.76 — <em>highest</em>',
+      '<strong>Preterm delivery &lt;34 wks:</strong> OR 6.90 (incidence ~70% &lt;37 wks)',
+      '<strong>Progression to ESKD:</strong> &gt;40% if Cr ≥1.4 mg/dL — very high absolute risk, but relative risk is lower than preeclampsia',
+      '<strong>Congenital malformations:</strong> OR 2.71, ~8% incidence — lowest relative risk of the four; tied to periconceptional HbA1c',
+      '<strong>Take-home:</strong> Preeclampsia is both the highest relative risk <em>and</em> the driver of downstream complications'
+    ],
+    alertIcon: '🟣',
+    alertTitle: 'Board Pearl — Diabetic Nephropathy + Pregnancy = Preeclampsia is the #1 Risk',
+    alertText: 'Preeclampsia is the <strong>highest risk</strong> in pregnant women with diabetic nephropathy — <strong>10-fold increased odds (OR 10.76)</strong> with an absolute incidence <strong>&gt;50%</strong>. Pre-existing hypertension and proteinuria compound the risk. While ESKD progression (&gt;40%) and preterm delivery (OR ~6.9) are also very high, preeclampsia carries the greatest relative risk and drives the others.'
+  },
+  opt2: {
+    panelClass: 'highlight-opt2',
+    title: '🔴 Progression to ESKD',
+    val1: '>40% if Cr ≥1.4 mg/dL',
+    val2: 'Accelerated decline in pregnancy',
+    val3: 'Hyperfiltration + superimposed preeclampsia',
+    val4: 'This patient: Cr 2.6 — well above threshold',
+    activeTab: 'tabOpt2',
+    diagramId: 'diagram-opt2',
+    svgTitle: 'Progression to ESKD — A Major but Not the Highest Risk',
+    svgSubtitle: 'Baseline CKD → pregnancy hyperfiltration → accelerated decline → ESKD',
+    bannerBg: '#dc2626',
+    bannerText1: '🔴 Progression to ESKD — Very High but Not #1',
+    bannerText2: '>40% with Cr ≥1.4 mg/dL · Second highest risk in this patient',
+    panel1Title: '🔴 ESKD Progression — Why NOT the Highest',
+    panel1Tagline: 'High absolute risk, but lower relative risk than preeclampsia',
+    panel1List: [
+      '<strong>Threshold:</strong> Serum creatinine ≥1.4 mg/dL identifies women at >40% risk of accelerated progression',
+      '<strong>This patient:</strong> Cr 2.6 mg/dL — well above threshold; her ESKD risk is very high',
+      '<strong>Mechanism:</strong> Pregnancy hyperfiltration + superimposed preeclampsia → glomerular injury',
+      '<strong>Why not #1:</strong> The relative risk is lower than the ~10-fold increase in preeclampsia',
+      '<strong>Counsel:</strong> Patients should be informed of both risks, and renal function should be optimized before conception'
+    ],
+    panel2Title: '🔴 ESKD Progression — Clinical Context',
+    panel2Tagline: 'Renal outcome in pregnancy with CKD',
+    panel2List: [
+      '<strong>Baseline CKD stage:</strong> The higher the stage, the greater the risk of decline',
+      '<strong>Proteinuria:</strong> >2 g/24h is an independent risk factor',
+      '<strong>Hypertension:</strong> Poorly controlled BP accelerates decline',
+      '<strong>Preeclampsia:</strong> Superimposed preeclampsia worsens renal prognosis',
+      '<strong>Postpartum:</strong> Some decline may be irreversible; long-term follow-up is essential'
+    ],
+    alertIcon: '🔴',
+    alertTitle: 'Board Pearl — ESKD Risk >40% with Cr ≥1.4 mg/dL',
+    alertText: 'Pregnancy in moderate-to-severe renal insufficiency carries a <strong>&gt;40% risk of accelerated progression to ESKD</strong>. This is very high but still lower than the 10-fold increased risk of preeclampsia.'
+  },
+  opt3: {
+    panelClass: 'highlight-opt3',
+    title: '🔵 Preterm Delivery',
+    val1: 'OR 6.90 (<34 wks), OR 4.48 (<37 wks)',
+    val2: '~70% incidence of preterm birth',
+    val3: 'Driven largely by preeclampsia',
+    val4: 'Iatrogenic delivery for fetal/maternal safety',
+    activeTab: 'tabOpt3',
+    diagramId: 'diagram-opt3',
+    svgTitle: 'Preterm Delivery — Very High Risk, Often Secondary to Preeclampsia',
+    svgSubtitle: 'Maternal disease → placental insufficiency → preterm delivery (often iatrogenic)',
+    bannerBg: '#2563eb',
+    bannerText1: '🔵 Preterm Delivery — High but Often Secondary to Preeclampsia',
+    bannerText2: 'OR 6.90 (<34 wks) · ~70% rate <37 wks · Often iatrogenic for preeclampsia',
+    panel1Title: '🔵 Preterm Delivery — Why NOT the Highest',
+    panel1Tagline: 'Frequently a consequence of preeclampsia',
+    panel1List: [
+      '<strong>Relative risk:</strong> OR 6.90 for delivery <34 weeks — very high but lower than preeclampsia',
+      '<strong>Incidence:</strong> ~70% of pregnancies in diabetic nephropathy deliver <37 weeks',
+      '<strong>Mechanism:</strong> Placental insufficiency + preeclampsia → iatrogenic preterm delivery',
+      '<strong>Key insight:</strong> Preterm delivery is often the <em>result</em> of preeclampsia, not an independent competing risk',
+      '<strong>Neonatal impact:</strong> Prematurity drives NICU admission, respiratory distress, and long-term neurodevelopmental risk'
+    ],
+    panel2Title: '🔵 Preterm Delivery — Clinical Context',
+    panel2Tagline: 'Neonatal outcomes in diabetic nephropathy',
+    panel2List: [
+      '<strong>Gestational age:</strong> Most deliveries occur between 34–37 weeks',
+      '<strong>Indication:</strong> Often for worsening preeclampsia or fetal growth restriction',
+      '<strong>Fetal growth restriction:</strong> Common due to placental insufficiency',
+      '<strong>Neonatal care:</strong> Antenatal corticosteroids if <34 weeks anticipated',
+      '<strong>Counseling:</strong> Patients should be prepared for possible NICU admission'
+    ],
+    alertIcon: '🔵',
+    alertTitle: 'Board Pearl — Preterm Delivery is Often a Consequence of Preeclampsia',
+    alertText: 'Preterm delivery in diabetic nephropathy is very common (~70% <37 weeks) but is often <strong>iatrogenic for preeclampsia</strong>. Its relative risk (OR 6.90) is lower than that of preeclampsia itself.'
+  },
+  opt4: {
+    panelClass: 'highlight-opt4',
+    title: '🟡 Congenital Malformations',
+    val1: 'OR 2.71 (~8% incidence)',
+    val2: 'Tied to periconceptional HbA1c',
+    val3: 'Neural tube & cardiac defects',
+    val4: 'Lowest relative risk of the four',
+    activeTab: 'tabOpt4',
+    diagramId: 'diagram-opt4',
+    svgTitle: 'Congenital Malformations — Lowest Relative Risk',
+    svgSubtitle: 'Periconceptional HbA1c → first-trimester hyperglycemia → organogenesis defects',
+    bannerBg: '#ca8a04',
+    bannerText1: '🟡 Congenital Malformations — Lowest Relative Risk',
+    bannerText2: 'OR 2.71 (~8% incidence) · Strongly tied to periconceptional HbA1c · Lowest of the four',
+    panel1Title: '🟡 Congenital Malformations — Why NOT the Highest',
+    panel1Tagline: 'Lowest relative risk of the four options',
+    panel1List: [
+      '<strong>Relative risk:</strong> OR 2.71 — the lowest of the four complications',
+      '<strong>Incidence:</strong> ~8% in diabetic nephropathy pregnancies',
+      '<strong>Mechanism:</strong> First-trimester hyperglycemia impairs organogenesis',
+      '<strong>Key modifier:</strong> Periconceptional HbA1c — optimizing to <6.5% substantially reduces risk',
+      '<strong>Types:</strong> Neural tube defects, cardiac defects, caudal regression, oral clefts'
+    ],
+    panel2Title: '🟡 Congenital Malformations — Prevention',
+    panel2Tagline: 'Preconception care is critical',
+    panel2List: [
+      '<strong>HbA1c target:</strong> <6.5% before conception (ideally <6.0% if achievable without hypoglycemia)',
+      '<strong>Folic acid:</strong> 5 mg daily starting ≥3 months before conception',
+      '<strong>Medication review:</strong> Stop statins (atorvastatin), switch to pregnancy-safe antihypertensives',
+      '<strong>Timing:</strong> Organogenesis occurs in the first 8 weeks — often before prenatal care begins',
+      '<strong>Counselling:</strong> Effective contraception until glycemic control is optimized'
+    ],
+    alertIcon: '🟡',
+    alertTitle: 'Board Pearl — HbA1c Drives Malformation Risk',
+    alertText: 'Congenital malformations carry the <strong>lowest relative risk (OR 2.71)</strong> of the four complications. The risk is tightly linked to <strong>periconceptional HbA1c</strong> — optimizing glycemic control before conception is the key preventive strategy.'
+  }
+};
+
+function setMode(mode) {
+  const d = modes[mode];
+  ['tabOpt1','tabOpt2','tabOpt3','tabOpt4'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById(d.activeTab).classList.add('active');
+
+  ['diagram-opt1','diagram-opt2','diagram-opt3','diagram-opt4'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(d.diagramId).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panel.classList.contains('collapsed') ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('iVal1').textContent = d.val1;
+  document.getElementById('iVal2').textContent = d.val2;
+  document.getElementById('iVal3').textContent = d.val3;
+  document.getElementById('iVal4').textContent = d.val4;
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+  const box = btn.closest('.q');
+  
+  // Remove previous highlights from ALL options in this question
+  box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+  
+  // Highlight ONLY the clicked button
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  // Show explanation
+  const explain = box.querySelector('.explain');
+  if (isCorrect) {
+    explain.className = 'explain show correct-explain';
+    explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+  } else {
+    explain.className = 'explain show wrong-explain';
+    explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+  }
+}
+
+setMode('opt1');
+</script>
+</body>
+</html>
