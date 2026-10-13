@@ -1,6 +1,8 @@
 {
-  "version": "1.3.2",
-  "base": "/nephro-challenge-ai/animations/images/",
+  "version": "1.3.3",
+  "warning": "Several PNGs from Downloads are truncated (missing IEND). Re-upload full originals to fix half-image display.",
+  "complete": 8,
+  "truncated": 16,
   "chapters": [
     {
       "slug": "acid-base-disorders",
@@ -8,36 +10,40 @@
       "count": 4,
       "images": [
         {
-          "slug": "alcohol",
-          "file": "images/chapters/acid-base-disorders/alcohol.png",
-          "flat": "images/alcohol.png",
-          "title": "Alcohol",
-          "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "slug": "alcohol-structure",
+          "file": "images/chapters/acid-base-disorders/alcohol-structure.png",
+          "name": "alcohol-structure.png",
+          "title": "alcohol structure",
+          "bytes": 786432,
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
           "slug": "alcohol-toxicity",
           "file": "images/chapters/acid-base-disorders/alcohol-toxicity.png",
-          "flat": "images/alcohol-toxicity.png",
-          "title": "Alcohol Toxicity",
+          "name": "alcohol-toxicity.png",
+          "title": "alcohol toxicity",
           "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
-          "slug": "alcohol-structure",
-          "file": "images/chapters/acid-base-disorders/alcohol-structure.png",
-          "flat": "images/alcohol-structure.png",
-          "title": "alcohol with structure",
-          "bytes": 786432,
-          "note": ""
+          "slug": "alcohol",
+          "file": "images/chapters/acid-base-disorders/alcohol.png",
+          "name": "alcohol.png",
+          "title": "alcohol",
+          "bytes": 1048576,
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
           "slug": "metabolic-alkalosis",
           "file": "images/chapters/acid-base-disorders/metabolic-alkalosis.png",
-          "flat": "images/metabolic-alkalosis.png",
-          "title": "metabolic Alkalosis",
+          "name": "metabolic-alkalosis.png",
+          "title": "metabolic alkalosis",
           "bytes": 786432,
-          "note": ""
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     },
@@ -49,10 +55,11 @@
         {
           "slug": "hyponatremia",
           "file": "images/chapters/electrolytes/hyponatremia.png",
-          "flat": "images/hyponatremia.png",
-          "title": "Hyponatremia",
+          "name": "hyponatremia.png",
+          "title": "hyponatremia",
           "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     },
@@ -64,50 +71,56 @@
         {
           "slug": "creatinine-timeline",
           "file": "images/chapters/aki/creatinine-timeline.png",
-          "flat": "images/creatinine-timeline.png",
-          "title": "Figure_Creatinine_Timeline",
+          "name": "creatinine-timeline.png",
+          "title": "creatinine timeline",
           "bytes": 125842,
-          "note": ""
-        },
-        {
-          "slug": "hrs-aki-flow",
-          "file": "images/chapters/aki/hrs-aki-flow.png",
-          "flat": "images/hrs-aki-flow.png",
-          "title": "Figure_HRS_AKI_Flow",
-          "bytes": 704058,
-          "note": ""
+          "ok": true,
+          "note": "2400\u00d71200"
         },
         {
           "slug": "hrs-aki-flow-upload",
           "file": "images/chapters/aki/hrs-aki-flow-upload.png",
-          "flat": "images/hrs-aki-flow-upload.png",
-          "title": "Figure_HRS_AKI_Flow_upload",
+          "name": "hrs-aki-flow-upload.png",
+          "title": "hrs aki flow upload",
           "bytes": 610634,
-          "note": ""
+          "ok": true,
+          "note": "4260\u00d72160"
         },
         {
           "slug": "hrs-aki-flow-v2",
           "file": "images/chapters/aki/hrs-aki-flow-v2.png",
-          "flat": "images/hrs-aki-flow-v2.png",
-          "title": "Figure_HRS_AKI_Flow_v2",
+          "name": "hrs-aki-flow-v2.png",
+          "title": "hrs aki flow v2",
           "bytes": 844488,
-          "note": ""
+          "ok": true,
+          "note": "5460\u00d73360"
+        },
+        {
+          "slug": "hrs-aki-flow",
+          "file": "images/chapters/aki/hrs-aki-flow.png",
+          "name": "hrs-aki-flow.png",
+          "title": "hrs aki flow",
+          "bytes": 704058,
+          "ok": true,
+          "note": "4260\u00d72460"
         },
         {
           "slug": "tls",
           "file": "images/chapters/aki/tls.png",
-          "flat": "images/tls.png",
-          "title": "TLS",
+          "name": "tls.png",
+          "title": "tls",
           "bytes": 786432,
-          "note": ""
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
           "slug": "urine-cast",
           "file": "images/chapters/aki/urine-cast.png",
-          "flat": "images/urine-cast.png",
-          "title": "Urine Cast",
+          "name": "urine-cast.png",
+          "title": "urine cast",
           "bytes": 786432,
-          "note": ""
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     },
@@ -119,10 +132,11 @@
         {
           "slug": "adpkd",
           "file": "images/chapters/ckd/adpkd.png",
-          "flat": "images/adpkd.png",
-          "title": "ADPKD",
+          "name": "adpkd.png",
+          "title": "adpkd",
           "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     },
@@ -132,36 +146,40 @@
       "count": 4,
       "images": [
         {
-          "slug": "granulomatous-disease",
-          "file": "images/chapters/glomerular-diseases/granulomatous-disease.png",
-          "flat": "images/granulomatous-disease.png",
-          "title": "Granalumatous disease",
-          "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
-        },
-        {
           "slug": "granuloma",
           "file": "images/chapters/glomerular-diseases/granuloma.png",
-          "flat": "images/granuloma.png",
-          "title": "Granuloma",
+          "name": "granuloma.png",
+          "title": "granuloma",
           "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "ok": false,
+          "note": "truncated (missing IEND)"
+        },
+        {
+          "slug": "granulomatous-disease",
+          "file": "images/chapters/glomerular-diseases/granulomatous-disease.png",
+          "name": "granulomatous-disease.png",
+          "title": "granulomatous disease",
+          "bytes": 1048576,
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
           "slug": "hivan",
           "file": "images/chapters/glomerular-diseases/hivan.png",
-          "flat": "images/hivan.png",
-          "title": "HIVAN",
+          "name": "hivan.png",
+          "title": "hivan",
           "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
           "slug": "light-chains-animation",
           "file": "images/chapters/glomerular-diseases/light-chains-animation.svg",
-          "flat": "images/light-chains-animation.svg",
-          "title": "light-chains-animation",
+          "name": "light-chains-animation.svg",
+          "title": "light chains animation",
           "bytes": 13905,
-          "note": ""
+          "ok": true,
+          "note": "svg"
         }
       ]
     },
@@ -173,18 +191,20 @@
         {
           "slug": "crrt-circuit-flow",
           "file": "images/chapters/dialysis/crrt-circuit-flow.gif",
-          "flat": "images/crrt-circuit-flow.gif",
-          "title": "CRRT Circuit Flow Guide Animated",
+          "name": "crrt-circuit-flow.gif",
+          "title": "crrt circuit flow",
           "bytes": 298187,
-          "note": ""
+          "ok": true,
+          "note": "gif"
         },
         {
           "slug": "hd-catheter-position",
           "file": "images/chapters/dialysis/hd-catheter-position.png",
-          "flat": "images/hd-catheter-position.png",
-          "title": "Position HD cath",
+          "name": "hd-catheter-position.png",
+          "title": "hd catheter position",
           "bytes": 786432,
-          "note": ""
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     },
@@ -196,10 +216,11 @@
         {
           "slug": "dsa",
           "file": "images/chapters/transplantation/dsa.png",
-          "flat": "images/dsa.png",
-          "title": "DSA",
+          "name": "dsa.png",
+          "title": "dsa",
           "bytes": 1048576,
-          "note": "possibly truncated at 1MB upload limit"
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     },
@@ -209,44 +230,49 @@
       "count": 5,
       "images": [
         {
-          "slug": "kidney",
-          "file": "images/chapters/other/kidney.png",
-          "flat": "images/kidney.png",
-          "title": "kidney2",
-          "bytes": 786432,
-          "note": ""
-        },
-        {
           "slug": "board-feature",
           "file": "images/chapters/other/board-feature.png",
-          "flat": "images/board-feature.png",
-          "title": "Nephrology board feature",
+          "name": "board-feature.png",
+          "title": "board feature",
           "bytes": 786432,
-          "note": ""
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
-          "slug": "logo",
-          "file": "images/chapters/other/logo.png",
-          "flat": "images/logo.png",
-          "title": "Nephrologylogo",
+          "slug": "kidney",
+          "file": "images/chapters/other/kidney.png",
+          "name": "kidney.png",
+          "title": "kidney",
           "bytes": 786432,
-          "note": ""
-        },
-        {
-          "slug": "logo-malik",
-          "file": "images/chapters/other/logo-malik.jpeg",
-          "flat": "images/logo-malik.jpeg",
-          "title": "NephrologyLogo_Malik",
-          "bytes": 295920,
-          "note": ""
+          "ok": false,
+          "note": "truncated (missing IEND)"
         },
         {
           "slug": "logo-malik-jpg",
           "file": "images/chapters/other/logo-malik-jpg.jpg",
-          "flat": "images/logo-malik-jpg.jpg",
-          "title": "NephrologyLogo_Malik",
+          "name": "logo-malik-jpg.jpg",
+          "title": "logo malik jpg",
           "bytes": 295920,
-          "note": ""
+          "ok": true,
+          "note": "ok"
+        },
+        {
+          "slug": "logo-malik",
+          "file": "images/chapters/other/logo-malik.jpeg",
+          "name": "logo-malik.jpeg",
+          "title": "logo malik",
+          "bytes": 295920,
+          "ok": true,
+          "note": "ok"
+        },
+        {
+          "slug": "logo",
+          "file": "images/chapters/other/logo.png",
+          "name": "logo.png",
+          "title": "logo",
+          "bytes": 786432,
+          "ok": false,
+          "note": "truncated (missing IEND)"
         }
       ]
     }
