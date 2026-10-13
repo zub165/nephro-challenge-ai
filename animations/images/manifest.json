@@ -1,0 +1,254 @@
+{
+  "version": "1.3.2",
+  "base": "/nephro-challenge-ai/animations/images/",
+  "chapters": [
+    {
+      "slug": "acid-base-disorders",
+      "title": "Acid-Base Disorders",
+      "count": 4,
+      "images": [
+        {
+          "slug": "alcohol",
+          "file": "images/chapters/acid-base-disorders/alcohol.png",
+          "flat": "images/alcohol.png",
+          "title": "Alcohol",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        },
+        {
+          "slug": "alcohol-toxicity",
+          "file": "images/chapters/acid-base-disorders/alcohol-toxicity.png",
+          "flat": "images/alcohol-toxicity.png",
+          "title": "Alcohol Toxicity",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        },
+        {
+          "slug": "alcohol-structure",
+          "file": "images/chapters/acid-base-disorders/alcohol-structure.png",
+          "flat": "images/alcohol-structure.png",
+          "title": "alcohol with structure",
+          "bytes": 786432,
+          "note": ""
+        },
+        {
+          "slug": "metabolic-alkalosis",
+          "file": "images/chapters/acid-base-disorders/metabolic-alkalosis.png",
+          "flat": "images/metabolic-alkalosis.png",
+          "title": "metabolic Alkalosis",
+          "bytes": 786432,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "slug": "electrolytes",
+      "title": "Electrolytes",
+      "count": 1,
+      "images": [
+        {
+          "slug": "hyponatremia",
+          "file": "images/chapters/electrolytes/hyponatremia.png",
+          "flat": "images/hyponatremia.png",
+          "title": "Hyponatremia",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        }
+      ]
+    },
+    {
+      "slug": "aki",
+      "title": "Acute Kidney Injury & ICU",
+      "count": 6,
+      "images": [
+        {
+          "slug": "creatinine-timeline",
+          "file": "images/chapters/aki/creatinine-timeline.png",
+          "flat": "images/creatinine-timeline.png",
+          "title": "Figure_Creatinine_Timeline",
+          "bytes": 125842,
+          "note": ""
+        },
+        {
+          "slug": "hrs-aki-flow",
+          "file": "images/chapters/aki/hrs-aki-flow.png",
+          "flat": "images/hrs-aki-flow.png",
+          "title": "Figure_HRS_AKI_Flow",
+          "bytes": 704058,
+          "note": ""
+        },
+        {
+          "slug": "hrs-aki-flow-upload",
+          "file": "images/chapters/aki/hrs-aki-flow-upload.png",
+          "flat": "images/hrs-aki-flow-upload.png",
+          "title": "Figure_HRS_AKI_Flow_upload",
+          "bytes": 610634,
+          "note": ""
+        },
+        {
+          "slug": "hrs-aki-flow-v2",
+          "file": "images/chapters/aki/hrs-aki-flow-v2.png",
+          "flat": "images/hrs-aki-flow-v2.png",
+          "title": "Figure_HRS_AKI_Flow_v2",
+          "bytes": 844488,
+          "note": ""
+        },
+        {
+          "slug": "tls",
+          "file": "images/chapters/aki/tls.png",
+          "flat": "images/tls.png",
+          "title": "TLS",
+          "bytes": 786432,
+          "note": ""
+        },
+        {
+          "slug": "urine-cast",
+          "file": "images/chapters/aki/urine-cast.png",
+          "flat": "images/urine-cast.png",
+          "title": "Urine Cast",
+          "bytes": 786432,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "slug": "ckd",
+      "title": "Chronic Kidney Disease",
+      "count": 1,
+      "images": [
+        {
+          "slug": "adpkd",
+          "file": "images/chapters/ckd/adpkd.png",
+          "flat": "images/adpkd.png",
+          "title": "ADPKD",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        }
+      ]
+    },
+    {
+      "slug": "glomerular-diseases",
+      "title": "Glomerular & Vascular Disorders",
+      "count": 4,
+      "images": [
+        {
+          "slug": "granulomatous-disease",
+          "file": "images/chapters/glomerular-diseases/granulomatous-disease.png",
+          "flat": "images/granulomatous-disease.png",
+          "title": "Granalumatous disease",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        },
+        {
+          "slug": "granuloma",
+          "file": "images/chapters/glomerular-diseases/granuloma.png",
+          "flat": "images/granuloma.png",
+          "title": "Granuloma",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        },
+        {
+          "slug": "hivan",
+          "file": "images/chapters/glomerular-diseases/hivan.png",
+          "flat": "images/hivan.png",
+          "title": "HIVAN",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        },
+        {
+          "slug": "light-chains-animation",
+          "file": "images/chapters/glomerular-diseases/light-chains-animation.svg",
+          "flat": "images/light-chains-animation.svg",
+          "title": "light-chains-animation",
+          "bytes": 13905,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "slug": "dialysis",
+      "title": "Dialysis",
+      "count": 2,
+      "images": [
+        {
+          "slug": "crrt-circuit-flow",
+          "file": "images/chapters/dialysis/crrt-circuit-flow.gif",
+          "flat": "images/crrt-circuit-flow.gif",
+          "title": "CRRT Circuit Flow Guide Animated",
+          "bytes": 298187,
+          "note": ""
+        },
+        {
+          "slug": "hd-catheter-position",
+          "file": "images/chapters/dialysis/hd-catheter-position.png",
+          "flat": "images/hd-catheter-position.png",
+          "title": "Position HD cath",
+          "bytes": 786432,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "slug": "transplantation",
+      "title": "Transplantation",
+      "count": 1,
+      "images": [
+        {
+          "slug": "dsa",
+          "file": "images/chapters/transplantation/dsa.png",
+          "flat": "images/dsa.png",
+          "title": "DSA",
+          "bytes": 1048576,
+          "note": "possibly truncated at 1MB upload limit"
+        }
+      ]
+    },
+    {
+      "slug": "other",
+      "title": "Other / Branding",
+      "count": 5,
+      "images": [
+        {
+          "slug": "kidney",
+          "file": "images/chapters/other/kidney.png",
+          "flat": "images/kidney.png",
+          "title": "kidney2",
+          "bytes": 786432,
+          "note": ""
+        },
+        {
+          "slug": "board-feature",
+          "file": "images/chapters/other/board-feature.png",
+          "flat": "images/board-feature.png",
+          "title": "Nephrology board feature",
+          "bytes": 786432,
+          "note": ""
+        },
+        {
+          "slug": "logo",
+          "file": "images/chapters/other/logo.png",
+          "flat": "images/logo.png",
+          "title": "Nephrologylogo",
+          "bytes": 786432,
+          "note": ""
+        },
+        {
+          "slug": "logo-malik",
+          "file": "images/chapters/other/logo-malik.jpeg",
+          "flat": "images/logo-malik.jpeg",
+          "title": "NephrologyLogo_Malik",
+          "bytes": 295920,
+          "note": ""
+        },
+        {
+          "slug": "logo-malik-jpg",
+          "file": "images/chapters/other/logo-malik-jpg.jpg",
+          "flat": "images/logo-malik-jpg.jpg",
+          "title": "NephrologyLogo_Malik",
+          "bytes": 295920,
+          "note": ""
+        }
+      ]
+    }
+  ]
+}
