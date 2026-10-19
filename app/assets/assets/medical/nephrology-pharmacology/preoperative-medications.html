@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preoperative Medications Before CABG — AKI Risk and Management</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">PREOPERATIVE MEDICATIONS BEFORE CABG</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">CKD stage 3 (eGFR 50) · UACR 150 mg/g · on ACEi, furosemide, atorvastatin</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Which medication should be stopped before surgery to reduce postoperative AKI?</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">KIDNEY STATUS</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">eGFR 50</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">CKD stage 3</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">UACR 150 mg/g</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#7f1d1d">Moderately increased albuminuria</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">At increased AKI risk</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#7c3aed"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">MEDICATIONS</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">ACEi</text>
+            <text x="0" y="5" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">Furosemide</text>
+            <text x="0" y="35" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">Atorvastatin</text>
+            <line x1="-160" y1="65" x2="160" y2="65" stroke="#ddd6fe" stroke-width="3"/>
+            <text x="0" y="100" text-anchor="middle" font-size="15" fill="#6d28d9">All potentially modifiable</text>
+            <text x="0" y="125" text-anchor="middle" font-size="15" fill="#6d28d9">before cardiac surgery</text>
+            <text x="0" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Which should be held?</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">GUIDELINE ANSWER</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="36" font-weight="800" fill="#16a34a">None</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">No changes needed</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#15803d">Continue all medications</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#15803d">through the perioperative period</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">KDIGO 2026</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 ROUTINE PREOPERATIVE DISCONTINUATION IS NOT INDICATED</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">KDIGO 2026: Do not routinely withhold RASi before cardiac surgery</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">No benefit from stopping furosemide or atorvastatin either</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">No preoperative medication changes are necessary</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — EVIDENCE PER MEDICATION
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">EVIDENCE FOR EACH MEDICATION</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">What the guidelines and trials say about perioperative management</text>
+          </g>
+
+          <!-- ACEi -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ACE INHIBITOR</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">CONTINUE</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-90" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">No</text>
+            <text x="0" y="-65" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">withdrawal</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• KDIGO 2026:</text>
+              <text x="-70" y="0" font-weight="800" fill="#166534">Do NOT withhold</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">  routinely</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Benefit:</text>
+              <text x="-70" y="56" font-weight="800" fill="#166534">BP control, HF</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Risk if</text>
+              <text x="-70" y="84" font-weight="800" fill="#166534">stopped:</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">  HTN, HF flare</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Continue through</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">surgery</text>
+          </g>
+
+          <!-- Furosemide -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">FUROSEMIDE</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">CONTINUE</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-90" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">No</text>
+            <text x="0" y="-65" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">withdrawal</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Meta-analysis:</text>
+              <text x="-30" y="0" font-weight="800" fill="#166534">No AKI benefit</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Intraoperative:</text>
+              <text x="-30" y="28" font-weight="800" fill="#166534">May be harmful</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">  (risk factor)</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Stopping:</text>
+              <text x="-30" y="84" font-weight="800" fill="#166534">No benefit</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Volume:</text>
+              <text x="-30" y="112" font-weight="800" fill="#166534">Maintain euvolemia</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Continue; volume</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">status is the focus</text>
+          </g>
+
+          <!-- Atorvastatin -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ATORVASTATIN</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">CONTINUE</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-90" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Class I</text>
+            <text x="0" y="-65" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">recommendation</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• ACCF/AHA:</text>
+              <text x="-30" y="0" font-weight="800" fill="#166534">Class I for CABG</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Benefit:</text>
+              <text x="-30" y="28" font-weight="800" fill="#166534">↓ AKI risk</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Mechanism:</text>
+              <text x="-30" y="56" font-weight="800" fill="#166534">Anti-inflammatory</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">  endothelial</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Stopping:</text>
+              <text x="-30" y="112" font-weight="800" fill="#166534">Loses benefit</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Continue — statins</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">reduce postoperative AKI</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Continue all three medications — no evidence supports stopping them preop</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — COMPARISON
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">WHY EACH MEDICATION IS CONTINUED</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Evidence-based reasoning for the perioperative period</text>
+          </g>
+
+          <!-- ACEi -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#0891b2"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ACE INHIBITOR</text>
+
+            <g font-size="15">
+              <text x="-180" y="-160" font-weight="800" fill="#155e75">Arguments for continuing</text>
+              <text x="-180" y="-125" font-weight="700" fill="#0e7490">• KDIGO 2026: no routine withdrawal</text>
+              <text x="-180" y="-90" font-weight="700" fill="#0e7490">• BP control maintained</text>
+              <text x="-180" y="-55" font-weight="700" fill="#0e7490">• HF protection preserved</text>
+              <text x="-180" y="-20" font-weight="700" fill="#0e7490">• Renoprotection maintained</text>
+              <text x="-180" y="15" font-weight="800" fill="#155e75">Arguments for stopping</text>
+              <text x="-180" y="50" font-weight="700" fill="#0e7490">• Theoretical ↑ intraop hypotension</text>
+              <text x="-180" y="85" font-weight="700" fill="#0e7490">• NOT linked to ↑ AKI</text>
+              <text x="-180" y="120" font-weight="800" fill="#991b1b">→ Continue</text>
+            </g>
+
+            <rect x="-180" y="160" width="360" height="80" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Perioperative hypotension</text>
+            <text x="0" y="212" text-anchor="middle" font-size="13" font-weight="800" fill="#155e75">managed by anesthesia</text>
+          </g>
+
+          <!-- Furosemide -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">FUROSEMIDE</text>
+
+            <g font-size="15">
+              <text x="-180" y="-160" font-weight="800" fill="#5b21b6">Arguments for continuing</text>
+              <text x="-180" y="-125" font-weight="700" fill="#6d28d9">• Volume control maintained</text>
+              <text x="-180" y="-90" font-weight="700" fill="#6d28d9">• No proven benefit from stopping</text>
+              <text x="-180" y="-55" font-weight="700" fill="#6d28d9">• Avoid pulmonary edema</text>
+              <text x="-180" y="-20" font-weight="800" fill="#5b21b6">Arguments for stopping</text>
+              <text x="-180" y="15" font-weight="700" fill="#6d28d9">• Meta-analysis: no AKI benefit</text>
+              <text x="-180" y="50" font-weight="700" fill="#6d28d9">• Intraop furosemide may ↑ AKI</text>
+              <text x="-180" y="85" font-weight="700" fill="#6d28d9">• Hypovolemia harmful</text>
+              <text x="-180" y="120" font-weight="800" fill="#991b1b">→ Continue, maintain euvolemia</text>
+            </g>
+
+            <rect x="-180" y="160" width="360" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">No evidence for</text>
+            <text x="0" y="212" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">preop withdrawal</text>
+          </g>
+
+          <!-- Atorvastatin -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ATORVASTATIN</text>
+
+            <g font-size="15">
+              <text x="-180" y="-160" font-weight="800" fill="#166534">Arguments for continuing</text>
+              <text x="-180" y="-125" font-weight="700" fill="#15803d">• ACCF/AHA Class I for CABG</text>
+              <text x="-180" y="-90" font-weight="700" fill="#15803d">• ↓ Postoperative AKI</text>
+              <text x="-180" y="-55" font-weight="700" fill="#15803d">• Pleiotropic anti-inflammatory</text>
+              <text x="-180" y="-20" font-weight="700" fill="#15803d">• Plaque stabilization</text>
+              <text x="-180" y="15" font-weight="800" fill="#166534">Arguments for stopping</text>
+              <text x="-180" y="50" font-weight="700" fill="#15803d">• None supported by evidence</text>
+              <text x="-180" y="85" font-weight="700" fill="#15803d">• Statin withdrawal</text>
+              <text x="-180" y="120" font-weight="800" fill="#991b1b">→ Continue — clear benefit</text>
+            </g>
+
+            <rect x="-180" y="160" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Reduces AKI risk</text>
+            <text x="0" y="212" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">in CABG patients</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Continue ACEi, furosemide, and atorvastatin — no preoperative changes indicated</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER D</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">No changes to his medications are necessary</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Continue ACEi, furosemide, and atorvastatin</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — No preoperative medication changes</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">KDIGO 2026: do not routinely withhold RASi; no benefit stopping others</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Stopping ACEi for 1 day</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">KDIGO 2026 explicitly suggests NOT withholding RASi preoperatively</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Stopping furosemide for 1 day</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">No proven AKI benefit; maintaining volume control is more important</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Stopping atorvastatin for 1 day</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Statins reduce AKI risk after CABG — Class I recommendation to continue</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: D — Continue all three medications preoperatively</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Preoperative Medications Before CABG — AKI Risk and Management",
+  subtitle: "KDIGO 2026: continue RASi; statins reduce AKI; no benefit from stopping furosemide",
+  badge: "NEPHROLOGY · CARDIAC SURGERY · PERIOPERATIVE MEDICINE",
+  caseTitle: "Case: Patient being evaluated for CABG with CKD stage 3 on ACEi, furosemide, atorvastatin",
+  caseDescription: "Medications: ACE inhibitor, furosemide, atorvastatin. CKD stage 3 with eGFR 50 mL/min/1.73 m² and urine albumin/creatinine ratio of 150 mg/g. Question: which medication should be stopped 1 day before surgery to reduce postoperative AKI?",
+  labChips: [
+    { text: "eGFR 50 mL/min/1.73m²", abnormal: true },
+    { text: "CKD stage 3", abnormal: true },
+    { text: "UACR 150 mg/g", abnormal: true },
+    { text: "On ACEi", abnormal: false },
+    { text: "On furosemide", abnormal: false },
+    { text: "On atorvastatin", abnormal: false },
+    { text: "CABG planned", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Evidence per Drug", className: "opt2" },
+    { id: "opt3", label: "🔵 Why Continue?", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Preoperative Medications Before CABG",
+      infoRows: [
+        { k: "eGFR", v: "50 mL/min/1.73m²" },
+        { k: "CKD stage", v: "3" },
+        { k: "UACR", v: "150 mg/g" },
+        { k: "Medications", v: "ACEi + furosemide + statin" },
+        { k: "Answer", v: "Continue all" }
+      ],
+      svgTitle: "Preoperative Medications Before CABG — AKI Risk",
+      svgSubtitle: "CKD stage 3 · UACR 150 mg/g · on ACEi, furosemide, atorvastatin",
+      bannerBg: "#dc2626",
+      bannerText1: "Which medication should be stopped 1 day before surgery?",
+      bannerText2: "Evidence-based answer: none — continue all three",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the findings tell you",
+      panel1List: [
+        "<strong>eGFR 50 mL/min/1.73m²</strong> — CKD stage 3",
+        "<strong>UACR 150 mg/g</strong> — moderately increased albuminuria",
+        "At increased risk of <strong>postoperative AKI</strong> after cardiac surgery",
+        "On three medications with plausible AKI relevance: <strong>ACEi, furosemide, atorvastatin</strong>",
+        "Question: should any be held preoperatively to reduce AKI risk?"
+      ],
+      panel2Title: "🧬 Why this question is tricky",
+      panel2Tagline: "Common misconceptions",
+      panel2List: [
+        "<strong>Misconception:</strong> Stopping ACEi prevents AKI — actually no proven benefit",
+        "<strong>Misconception:</strong> Stopping furosemide prevents AKI — actually no proven benefit",
+        "<strong>Misconception:</strong> Stopping statins is safe — actually increases AKI risk",
+        "<strong>Reality:</strong> Current guidelines recommend <strong>continuing</strong> all three medications",
+        "<strong>Focus instead:</strong> hemodynamic optimization, volume management, and monitoring"
+      ],
+      alertIcon: "🩺",
+      alertTitle: "Board Pearl — Do not routinely withhold medications",
+      alertText: "KDIGO 2026 explicitly suggests <strong>against routinely withholding RASi</strong> before cardiac surgery. No benefit exists for stopping furosemide or statins either — and statins may reduce AKI."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Evidence for Each Medication",
+      infoRows: [
+        { k: "ACEi", v: "Continue (KDIGO 2026)" },
+        { k: "Furosemide", v: "Continue (no AKI benefit)" },
+        { k: "Atorvastatin", v: "Continue (Class I)" },
+        { k: "AKI prevention", v: "Hemodynamic optimization" },
+        { k: "Monitoring", v: "Cr, UO, volume status" }
+      ],
+      svgTitle: "Evidence for Each Medication — Perioperative Management",
+      svgSubtitle: "What the guidelines and trials say about continuing vs stopping",
+      bannerBg: "#7c3aed",
+      bannerText1: "Continue all three — no evidence supports routine preoperative discontinuation",
+      bannerText2: "Atorvastatin may reduce AKI risk after CABG (Class I recommendation)",
+      panel1Title: "🧪 ACE inhibitor — continue",
+      panel1Tagline: "KDIGO 2026",
+      panel1List: [
+        "<strong>KDIGO 2026:</strong> do NOT routinely withhold RASi before elective major cardiac surgery",
+        "Benefit: <strong>BP control, HF protection, renoprotection</strong>",
+        "Risk if stopped: <strong>HTN, heart failure exacerbation</strong>",
+        "Theoretical concern: intraoperative hypotension — <strong>not linked to increased AKI</strong>",
+        "Decision: <strong>continue through the perioperative period</strong>"
+      ],
+      panel2Title: "🧪 Furosemide and atorvastatin — continue both",
+      panel2Tagline: "What the evidence says",
+      panel2List: [
+        "<strong>Furosemide:</strong> meta-analysis shows no AKI benefit; intraoperative use may itself be a risk factor",
+        "<strong>Stopping furosemide:</strong> no benefit, risks volume overload",
+        "<strong>Atorvastatin:</strong> ACCF/AHA Class I recommendation for CABG patients",
+        "<strong>Statins:</strong> associated with <strong>reduced postoperative AKI</strong> — pleiotropic effects",
+        "<strong>Stopping statins:</strong> loses this protective benefit; no reason to discontinue"
+      ],
+      alertIcon: "🧪",
+      alertTitle: "Pearl — Focus on hemodynamics, not medication withdrawal",
+      alertText: "AKI prevention in cardiac surgery centers on <strong>hemodynamic optimization, volume management, and monitoring</strong> — not on routinely holding medications."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why Continue Each Medication?",
+      infoRows: [
+        { k: "ACEi", v: "BP + HF + renal protection" },
+        { k: "Furosemide", v: "Volume control maintained" },
+        { k: "Statin", v: "↓ AKI + plaque stabilization" },
+        { k: "Risk of stopping", v: "HTN, HF, ↑ AKI" },
+        { k: "Guideline", v: "Continue all" }
+      ],
+      svgTitle: "Why Continue Each Medication?",
+      svgSubtitle: "Evidence-based reasoning for the perioperative period",
+      bannerBg: "#0891b2",
+      bannerText1: "Continue ACEi, furosemide, and atorvastatin — no preoperative changes indicated",
+      bannerText2: "Each has evidence for continuation or lacks evidence for benefit of stopping",
+      panel1Title: "🧪 ACEi — continue",
+      panel1Tagline: "The strongest guideline recommendation",
+      panel1List: [
+        "<strong>KDIGO 2026</strong> explicitly suggests against routinely withholding RASi",
+        "Theoretical intraoperative hypotension — <strong>not proven to increase AKI</strong>",
+        "Risk of stopping: <strong>rebound hypertension, HF decompensation</strong>",
+        "Anesthesiologist can manage intraoperative <strong>hypotension with vasopressors</strong>",
+        "Continue through the perioperative period unless specifically indicated"
+      ],
+      panel2Title: "🧪 Furosemide and statin — continue both",
+      panel2Tagline: "Why stopping is not beneficial",
+      panel2List: [
+        "<strong>Furosemide:</strong> stopping does not reduce AKI; may worsen volume status",
+        "<strong>Intraoperative furosemide:</strong> identified as an independent risk factor for AKI",
+        "<strong>Atorvastatin:</strong> Class I recommendation for CABG patients (ACCF/AHA)",
+        "Statins reduce postoperative AKI via <strong>pleiotropic anti-inflammatory effects</strong>",
+        "<strong>Statins also stabilize plaque</strong> — perioperative cardiac protection"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Continue chronic medications",
+      alertText: "Continue chronic cardiovascular medications through the perioperative period unless there is a <strong>specific contraindication</strong>. Focus on hemodynamic and volume optimization for AKI prevention."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "D — No changes necessary" },
+        { k: "ACEi", v: "Continue (KDIGO 2026)" },
+        { k: "Furosemide", v: "Continue" },
+        { k: "Atorvastatin", v: "Continue (Class I)" },
+        { k: "Focus", v: "Hemodynamics + volume" }
+      ],
+      svgTitle: "Answer Summary — Continue All Medications",
+      svgSubtitle: "No changes to his medications are necessary",
+      bannerBg: "#ca8a04",
+      bannerText1: "D — No changes to his medications are necessary",
+      bannerText2: "Continue ACEi, furosemide, and atorvastatin through the perioperative period",
+      panel1Title: "✅ The correct answer (D)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>ACEi:</strong> KDIGO 2026 suggests against routine withdrawal — no AKI benefit from stopping",
+        "<strong>Furosemide:</strong> meta-analysis shows no AKI benefit; intraop use may be harmful",
+        "<strong>Atorvastatin:</strong> Class I recommendation for CABG — associated with reduced AKI",
+        "<strong>No medication</strong> should be routinely stopped 1 day before CABG",
+        "<strong>Focus AKI prevention</strong> on hemodynamics, volume management, and monitoring"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each reflects a common misconception",
+      panel2List: [
+        "<strong>A (Stop ACEi):</strong> KDIGO 2026 explicitly suggests against routine RASi withdrawal",
+        "<strong>B (Stop furosemide):</strong> No AKI benefit from stopping; volume control is important",
+        "<strong>C (Stop atorvastatin):</strong> Statins reduce AKI risk after CABG — Class I recommendation",
+        "<strong>All three</strong> reflect outdated practice or theoretical concerns not supported by evidence"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>No changes to his medications are necessary.</strong> Continue the ACE inhibitor, furosemide, and atorvastatin through the perioperative period."
+    }
+  },
+  comparison: {
+    title: "📊 Preoperative Medications Before CABG — Evidence Summary",
+    sub: "What guidelines and trials recommend for each medication",
+    head: ["Medication", "Recommendation", "Key evidence", "Risk if stopped"],
+    rows: [
+      { cells: ["ACE inhibitor", "CONTINUE", "KDIGO 2026: no routine withdrawal", "HTN, HF exacerbation"], hero: true },
+      { cells: ["Furosemide", "CONTINUE", "Meta-analysis: no AKI benefit; intraop use may ↑ AKI", "Volume overload"], hero: false },
+      { cells: ["Atorvastatin", "CONTINUE (Class I)", "Associated with reduced postoperative AKI", "Loses protective benefit"], hero: false },
+      { cells: ["Beta-blocker", "CONTINUE", "Reduces perioperative cardiac events", "Rebound tachycardia, ischemia"], hero: false },
+      { cells: ["Clonidine / dexmedetomidine", "Consider adjunct", "May reduce AKI in some studies", "N/A"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A patient being evaluated for CABG has CKD stage 3 (eGFR 50) and UACR 150 mg/g. His medications are ACEi, furosemide, and atorvastatin. Which medication change should be made before surgery to reduce AKI?",
+      options: [
+        { text: "No changes to his medications are necessary.", correct: true,
+          explanation: "Current guidelines do not support routine preoperative discontinuation of any of these medications. KDIGO 2026 suggests against withholding RASi; furosemide discontinuation has no AKI benefit; and atorvastatin reduces AKI risk after CABG." },
+        { text: "His ACE inhibitor should be stopped for 1 day before surgery.", correct: false,
+          explanation: "KDIGO 2026 explicitly suggests against routinely withholding RASi before elective major cardiac surgery. Stopping does not reduce AKI." },
+        { text: "His furosemide should be stopped for 1 day before surgery.", correct: false,
+          explanation: "Meta-analysis shows furosemide does not reduce postoperative AKI. Stopping it has no benefit and may worsen volume status." }
+      ]
+    },
+    {
+      question: "What does the 2026 KDIGO AKI guideline recommend regarding RAS inhibitors before cardiac surgery?",
+      options: [
+        { text: "Do not routinely withhold RAS inhibitors before elective major cardiac surgery.", correct: true,
+          explanation: "KDIGO 2026 explicitly suggests against routine RASi withdrawal, based on evidence showing no significant increase in AKI or major perioperative complications." },
+        { text: "Withhold RAS inhibitors for 3 days before surgery.", correct: false,
+          explanation: "This is not the KDIGO recommendation. Routine withdrawal is not advised." },
+        { text: "Withhold RAS inhibitors only in patients with CKD.", correct: false,
+          explanation: "Even in CKD patients, the recommendation is not to routinely withhold RASi." }
+      ]
+    },
+    {
+      question: "What is the effect of preoperative statin therapy on postoperative AKI after CABG?",
+      options: [
+        { text: "It is associated with reduced risk of postoperative AKI.", correct: true,
+          explanation: "Preoperative statin therapy is associated with reduced postoperative AKI after CABG, thought to be mediated by pleiotropic anti-inflammatory and endothelial effects." },
+        { text: "It increases the risk of postoperative AKI.", correct: false,
+          explanation: "Statins reduce, not increase, AKI risk after CABG." },
+        { text: "It has no effect on postoperative AKI.", correct: false,
+          explanation: "Evidence suggests a protective effect of statins against postoperative AKI." }
+      ]
+    },
+    {
+      question: "What is the ACCF/AHA recommendation for statin therapy in patients undergoing CABG?",
+      options: [
+        { text: "Class I — all patients should receive statin therapy unless contraindicated.", correct: true,
+          explanation: "The ACCF/AHA guidelines give a Class I recommendation for all patients undergoing CABG to receive statin therapy unless contraindicated." },
+        { text: "Class IIb — statins may be considered.", correct: false,
+          explanation: "The recommendation is Class I, not IIb." },
+        { text: "Class III — statins are not recommended.", correct: false,
+          explanation: "Statins are Class I recommended for CABG patients." }
+      ]
+    },
+    {
+      question: "Which statement about intraoperative furosemide and AKI risk is correct?",
+      options: [
+        { text: "Intraoperative furosemide has been identified as an independent risk factor for AKI.", correct: true,
+          explanation: "Observational data have identified intraoperative furosemide administration as an independent risk factor for AKI, which is one reason stopping furosemide preoperatively is not recommended for kidney protection." },
+        { text: "Intraoperative furosemide protects against AKI.", correct: false,
+          explanation: "The evidence does not support a protective effect. It may even increase risk." },
+        { text: "Furosemide has no effect on AKI risk.", correct: false,
+          explanation: "Furosemide may increase AKI risk rather than protect against it." }
+      ]
+    },
+    {
+      question: "What is the most appropriate approach to AKI prevention in a CABG patient with CKD?",
+      options: [
+        { text: "Hemodynamic optimization, volume management, and monitoring — not routine medication withdrawal.", correct: true,
+          explanation: "AKI prevention in cardiac surgery centers on hemodynamic optimization, volume management, and monitoring. Routine preoperative medication withdrawal is not supported by evidence." },
+        { text: "Routine preoperative discontinuation of all nephrotoxic medications.", correct: false,
+          explanation: "Routine discontinuation of the medications discussed is not supported by evidence." },
+        { text: "Withholding fluids intraoperatively.", correct: false,
+          explanation: "Maintaining euvolemia is important — not withholding fluids." }
+      ]
+    },
+    {
+      question: "Why does stopping an ACE inhibitor before CABG NOT reduce the risk of AKI?",
+      options: [
+        { text: "Because stopping does not significantly reduce intraoperative hypotension and has no proven AKI benefit, while risking rebound hypertension and HF.", correct: true,
+          explanation: "Theoretical concerns about intraoperative hypotension from ACEi have not translated into increased AKI. Meanwhile, stopping them risks rebound hypertension and HF exacerbation." },
+        { text: "Because ACE inhibitors are not actually cleared by the kidney.", correct: false,
+          explanation: "The reason is not pharmacokinetic. The reason is lack of benefit and risk of harm from stopping." },
+        { text: "Because ACE inhibitors directly protect the kidney from AKI.", correct: false,
+          explanation: "The reason is not direct renal protection — it is the lack of proven harm from continuation and the risk of harm from stopping." }
+      ]
+    },
+    {
+      question: "A patient on chronic furosemide for heart failure is scheduled for CABG. What is the appropriate preoperative management?",
+      options: [
+        { text: "Continue furosemide and maintain euvolemia.", correct: true,
+          explanation: "Continue furosemide. Stopping it does not reduce AKI, and maintaining volume control helps prevent perioperative pulmonary edema and hemodynamic instability." },
+        { text: "Stop furosemide 1 day before surgery to reduce AKI.", correct: false,
+          explanation: "Stopping furosemide does not reduce AKI. Maintaining volume control is more important." },
+        { text: "Stop furosemide 3 days before surgery.", correct: false,
+          explanation: "This would risk volume overload and HF decompensation without AKI benefit." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Cardiac Surgery / Perioperative Medicine",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

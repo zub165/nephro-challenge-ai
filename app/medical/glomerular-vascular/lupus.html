@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APS Nephropathy Microscopy — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --lupus:#d97706; --aps:#2563eb; --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px;}
+
+  /* HEADER */
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  /* MICROSCOPY STAGE */
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+  
+  .toggle-bar{display:flex; justify-content:center; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:10px 20px; border-radius:999px;
+    font-size:.9rem; font-weight:700; cursor:pointer; transition:all .25s ease; color:var(--muted);}
+  .pill:hover{transform:translateY(-2px);}
+  .pill.lupus.active{background:#fef3c7; border-color:var(--lupus); color:#92400e;}
+  .pill.aps.active{background:#dbeafe; border-color:var(--aps); color:#1e40af;}
+
+  svg.microscopy{width:100%; max-width:800px; height:auto; border-radius:12px; box-shadow:inset 0 0 20px rgba(0,0,0,0.1);}
+  
+  /* Animations */
+  @keyframes pulse-thrombus { 0%,100%{opacity:0.8; transform:scale(1);} 50%{opacity:1; transform:scale(1.05);} }
+  @keyframes flow-rbc { 0%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-20;} }
+  .thrombus { animation: pulse-thrombus 2s infinite ease-in-out; transform-origin: center; }
+  .rbc-flow { stroke-dasharray: 4 6; animation: flow-rbc 1s linear infinite; }
+
+  /* DIFFERENTIAL TABLE */
+  .diff-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .diff-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.85rem; min-width:800px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-aps { background-color: #eff6ff; box-shadow: inset 4px 0 0 var(--aps); }
+  tr.highlight-aps td { font-weight: 600; color: #1e3a8a; }
+  tr:hover { background-color: #f8fafc; }
+  tr.highlight-aps:hover { background-color: #dbeafe; }
+  .badge-lupus { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-aps { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .badge-normal { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px; transition:border-color .25s ease;}
+  .q:hover{border-color:#cbd5e1;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.95rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px; font-size:.85rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px; border-radius:0 10px 10px 0; font-size:.85rem; color:#334155;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  /* FOOTER */
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px; padding:14px 18px; font-size:.82rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>SLE vs. APS Nephropathy</h1>
+      <p>Interactive Microscopy: Distinguishing Lupus Nephritis from Thrombotic Microangiopathy</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- MICROSCOPY STAGE -->
+  <section class="stage">
+    <h2>Renal Pathology Visualizer (H&E + IF)</h2>
+    <p class="sub">Toggle between the two differential diagnoses to compare the microscopic findings.</p>
+    
+    <div class="toggle-bar">
+      <button class="pill lupus active" id="btnLupus" onclick="setMode('lupus')">Lupus Nephritis (Immune Complex)</button>
+      <button class="pill aps" id="btnAps" onclick="setMode('aps')">APS Nephropathy / TMA (Fibrin Thrombi)</button>
+    </div>
+
+    <!-- Realistic Microscopy SVG -->
+    <svg class="microscopy" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Tissue Texture Filters -->
+        <filter id="hne-texture">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 0.8 0 0 0  0 0.8 0 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+          <feBlend in="SourceGraphic" in2="coloredNoise" mode="multiply" />
+        </filter>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="blur" />
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        
+        <!-- H&E Colors -->
+        <radialGradient id="bowmansCapsule" cx="50%" cy="50%" r="50%">
+          <stop offset="80%" stop-color="#fce7f3" stop-opacity="0.1"/>
+          <stop offset="100%" stop-color="#f9a8d4" stop-opacity="0.4"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Background Tissue (H&E pink/purple) -->
+      <rect width="800" height="450" fill="#fdf2f8" filter="url(#hne-texture)"/>
+      
+      <!-- Surrounding Tubules (Simplified) -->
+      <g stroke="#d8b4fe" stroke-width="2" fill="none" opacity="0.6">
+        <ellipse cx="100" cy="100" rx="60" ry="40" />
+        <ellipse cx="700" cy="350" rx="80" ry="50" />
+        <ellipse cx="150" cy="380" rx="70" ry="45" />
+        <ellipse cx="680" cy="80" rx="50" ry="30" />
+      </g>
+
+      <!-- Main Glomerulus (H&E) -->
+      <circle cx="400" cy="225" r="160" fill="url(#bowmansCapsule)" stroke="#db2777" stroke-width="4"/>
+      
+      <!-- Capillary Tuft Network (H&E) -->
+      <g id="capillaryTuft" fill="none" stroke="#e11d48" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 300 150 Q 400 80 500 150 Q 560 220 500 300 Q 400 370 300 300 Q 240 220 300 150 Z" />
+        <path d="M 330 180 Q 400 140 470 180 Q 510 225 470 270 Q 400 310 330 270 Q 290 225 330 180 Z" />
+        <path d="M 360 200 Q 400 180 440 200 Q 460 225 440 250 Q 400 270 360 250 Q 340 225 360 200 Z" />
+      </g>
+
+      <!-- Nuclei (Mesangial & Endothelial Cells) - H&E purple/blue -->
+      <g fill="#4c1d95" opacity="0.8">
+        <circle cx="350" cy="140" r="5"/><circle cx="370" cy="120" r="6"/><circle cx="450" cy="130" r="5"/>
+        <circle cx="480" cy="170" r="6"/><circle cx="520" cy="220" r="5"/><circle cx="490" cy="280" r="6"/>
+        <circle cx="430" cy="320" r="5"/><circle cx="350" cy="310" r="6"/><circle cx="290" cy="270" r="5"/>
+        <circle cx="270" cy="210" r="6"/><circle cx="300" cy="160" r="5"/><circle cx="400" cy="160" r="5"/>
+        <circle cx="420" cy="200" r="6"/><circle cx="380" cy="230" r="5"/><circle cx="430" cy="250" r="6"/>
+        <circle cx="380" cy="280" r="5"/><circle cx="340" cy="250" r="6"/>
+      </g>
+
+      <!-- ========================================== -->
+      <!-- LUPUS NEPHRITIS FEATURES (Hidden by default)-->
+      <!-- ========================================== -->
+      <g id="lupusFeatures" opacity="0" style="transition: opacity 0.5s ease;">
+        <!-- Wire Loops (Thickened GBM) -->
+        <g fill="none" stroke="#f59e0b" stroke-width="4" opacity="0.9">
+          <path d="M 330 180 Q 400 140 470 180 Q 510 225 470 270 Q 400 310 330 270 Q 290 225 330 180 Z" />
+          <path d="M 360 200 Q 400 180 440 200 Q 460 225 440 250 Q 400 270 360 250 Q 340 225 360 200 Z" />
+        </g>
+        <!-- Immune Complex Deposits (Subendothelial) -->
+        <g fill="#f59e0b" opacity="0.8">
+          <circle cx="350" cy="150" r="4"/><circle cx="420" cy="130" r="4"/><circle cx="490" cy="180" r="4"/>
+          <circle cx="500" cy="250" r="4"/><circle cx="450" cy="300" r="4"/><circle cx="360" cy="310" r="4"/>
+          <circle cx="290" cy="250" r="4"/><circle cx="290" cy="190" r="4"/>
+        </g>
+        <!-- Inflammatory Cells (Neutrophils/Macrophages) -->
+        <g fill="#1e3a8a" opacity="0.9">
+          <circle cx="380" cy="220" r="7"/><circle cx="420" cy="240" r="8"/><circle cx="340" cy="260" r="6"/>
+        </g>
+        
+        <!-- IF Inset Panel -->
+        <rect x="580" y="20" width="200" height="160" rx="10" fill="#0f172a" stroke="#334155" stroke-width="3"/>
+        <text x="680" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#94a3b8">IF: IgG / C3</text>
+        <!-- Granular IF Pattern -->
+        <g fill="none" stroke="#4ade80" stroke-width="3" opacity="0.9">
+          <path d="M 620 80 Q 680 60 740 80 Q 760 110 740 140 Q 680 160 620 140 Q 600 110 620 80 Z" />
+          <path d="M 640 100 Q 680 90 720 100 Q 730 115 720 130 Q 680 140 640 130 Q 630 115 640 100 Z" />
+        </g>
+        <g fill="#4ade80" opacity="0.8">
+          <circle cx="620" cy="80" r="3"/><circle cx="680" cy="60" r="3"/><circle cx="740" cy="80" r="3"/>
+          <circle cx="760" cy="110" r="3"/><circle cx="740" cy="140" r="3"/><circle cx="680" cy="160" r="3"/>
+          <circle cx="620" cy="140" r="3"/><circle cx="600" cy="110" r="3"/>
+        </g>
+        <text x="680" y="175" text-anchor="middle" font-family="Arial" font-size="10" fill="#4ade80">Granular (Full House)</text>
+      </g>
+
+      <!-- ========================================== -->
+      <!-- APS / TMA FEATURES (Hidden by default)     -->
+      <!-- ========================================== -->
+      <g id="apsFeatures" opacity="0" style="transition: opacity 0.5s ease;">
+        <!-- Fibrin Thrombi (Occluding capillaries) -->
+        <g fill="#2563eb" filter="url(#glow)">
+          <ellipse cx="380" cy="160" rx="18" ry="12" class="thrombus"/>
+          <ellipse cx="450" cy="200" rx="22" ry="14" class="thrombus"/>
+          <ellipse cx="480" cy="270" rx="16" ry="10" class="thrombus"/>
+          <ellipse cx="320" cy="280" rx="20" ry="15" class="thrombus"/>
+          <ellipse cx="300" cy="200" rx="15" ry="10" class="thrombus"/>
+          <ellipse cx="410" cy="300" rx="18" ry="12" class="thrombus"/>
+        </g>
+        <!-- Schistocytes (Fragmented RBCs) -->
+        <g fill="#ef4444" opacity="0.9">
+          <path d="M 420 170 L 430 175 L 425 180 Z"/>
+          <path d="M 340 190 L 350 185 L 345 195 Z"/>
+          <path d="M 460 240 L 470 235 L 465 245 Z"/>
+          <path d="M 360 260 L 370 255 L 365 265 Z"/>
+        </g>
+        <!-- Endothelial Swelling (Capillary wall thickening) -->
+        <g fill="none" stroke="#1e40af" stroke-width="3" opacity="0.6">
+          <path d="M 300 150 Q 400 80 500 150 Q 560 220 500 300 Q 400 370 300 300 Q 240 220 300 150 Z" stroke-dasharray="6 4"/>
+          <path d="M 330 180 Q 400 140 470 180 Q 510 225 470 270 Q 400 310 330 270 Q 290 225 330 180 Z" stroke-dasharray="6 4"/>
+        </g>
+        
+        <!-- IF Inset Panel -->
+        <rect x="580" y="20" width="200" height="160" rx="10" fill="#0f172a" stroke="#334155" stroke-width="3"/>
+        <text x="680" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#94a3b8">IF: Fibrinogen</text>
+        <!-- Bright Fibrinogen Deposition -->
+        <g fill="#f97316" opacity="0.9">
+          <ellipse cx="650" cy="100" rx="12" ry="8" class="thrombus"/>
+          <ellipse cx="700" cy="110" rx="14" ry="9" class="thrombus"/>
+          <ellipse cx="680" cy="130" rx="10" ry="7" class="thrombus"/>
+        </g>
+        <text x="680" y="175" text-anchor="middle" font-family="Arial" font-size="10" fill="#f97316">Bright Fibrinogen in Thrombi</text>
+      </g>
+      
+      <!-- Blood Flow Animation -->
+      <path d="M 280 225 Q 400 120 520 225 Q 400 330 280 225 Z" fill="none" stroke="#ef4444" stroke-width="2" class="rbc-flow" opacity="0.3"/>
+
+    </svg>
+  </section>
+
+  <!-- DIFFERENTIAL TABLE -->
+  <section class="diff-section">
+    <h2>Differential Diagnosis: Key Features</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>Typical Clinical Clues</th>
+          <th>Urine Sediment</th>
+          <th>Complement Levels</th>
+          <th>Kidney Biopsy Findings</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-aps">
+          <td><strong>APS Nephropathy</strong> <span class="badge-aps">Correct</span></td>
+          <td>Known SLE or primary APS; thrombosis, recurrent fetal loss, livedo reticularis</td>
+          <td><strong>Bland</strong> (isomorphic RBCs, trace protein/blood)</td>
+          <td>Low (if SLE) or Normal</td>
+          <td><strong>TMA</strong>: Intracapillary thrombi, capillary wall thickening, NO immune complexes</td>
+        </tr>
+        <tr>
+          <td><strong>Lupus Nephritis</strong> <span class="badge-lupus">Distractor</span></td>
+          <td>Malar rash, alopecia, joint pain, serositis</td>
+          <td><strong>Active</strong> (dysmorphic RBCs, RBC casts, heavy proteinuria)</td>
+          <td>Low C3 and C4</td>
+          <td>Immune complex deposition, "full house" on IF, wire loops, proliferative changes</td>
+        </tr>
+        <tr>
+          <td><strong>ANCA Vasculitis</strong></td>
+          <td>Sinusitis, hemoptysis, palpable purpura, mononeuritis multiplex</td>
+          <td><strong>Active</strong> (dysmorphic RBCs, RBC casts)</td>
+          <td><span class="badge-normal">Normal</span></td>
+          <td>Pauci-immune crescentic GN, granulomas (GPA), no immune complexes</td>
+        </tr>
+        <tr>
+          <td><strong>Cryoglobulinemia</strong></td>
+          <td>Palpable purpura, hepatitis C, neuropathy, Raynaud's</td>
+          <td><strong>Active</strong> (dysmorphic RBCs, RBC casts)</td>
+          <td>Low C4, Normal C3</td>
+          <td>MPGN pattern, intracapillary thrombi (cryoglobulins), immune complexes</td>
+        </tr>
+        <tr>
+          <td><strong>Atypical HUS</strong></td>
+          <td>No systemic autoimmune features; often triggered by infection, pregnancy, or drugs</td>
+          <td>Bland or active</td>
+          <td><span class="badge-normal">Normal</span></td>
+          <td>TMA without systemic features or immune complexes</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+    <div class="q">
+      <p>1. Which test is MOST useful to confirm the diagnosis in this patient?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. ANCA</button>
+        <button class="opt" onclick="answer(this,false)">B. Anti-double-stranded DNA antibody</button>
+        <button class="opt" onclick="answer(this,true)">C. Antiphospholipid antibodies</button>
+        <button class="opt" onclick="answer(this,false)">D. Genetic testing for alternative complement pathway defects</button>
+        <button class="opt" onclick="answer(this,false)">E. Serum cryoglobulins</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> The patient has SLE features but presents with a bland urinary sediment and TMA on biopsy. This points away from Lupus Nephritis (which causes active sediment and immune complex deposition) and toward secondary Antiphospholipid Syndrome (APS) causing renal TMA. Testing for antiphospholipid antibodies (Lupus anticoagulant, anticardiolipin, anti-β2GPI) is essential.</div>
+    </div>
+    <div class="q">
+      <p>2. Why is Anti-dsDNA (Choice B) less useful here?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">It supports SLE but does not explain the TMA or identify APS as the cause.</button>
+        <button class="opt" onclick="answer(this,false)">It is always negative in patients with SLE.</button>
+      </div>
+      <div class="explain"><strong>Correct: It supports SLE but does not explain the TMA.</strong> While Anti-dsDNA is a marker of SLE, it does not directly diagnose APS. The patient's kidney biopsy shows TMA, not the typical immune complex-mediated lupus nephritis. Therefore, you must specifically test for APS.</div>
+    </div>
+    <div class="q">
+      <p>3. What is the key urinary finding that points AWAY from classic Lupus Nephritis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">Nephrotic-range proteinuria</button>
+        <button class="opt" onclick="answer(this,true)">Bland urinary sediment (isomorphic RBCs, trace blood)</button>
+      </div>
+      <div class="explain"><strong>Correct: Bland urinary sediment.</strong> Classic Lupus Nephritis typically presents with active urinary sediment (dysmorphic RBCs, RBC casts, leukocytes). This patient has isomorphic RBCs and only trace blood, which is characteristic of a vascular/TMA process rather than active glomerulonephritis.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and animations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  function setMode(mode) {
+    const lup = document.getElementById('lupusFeatures');
+    const aps = document.getElementById('apsFeatures');
+    const btnLup = document.getElementById('btnLupus');
+    const btnAps = document.getElementById('btnAps');
+
+    if (mode === 'lupus') {
+      lup.style.opacity = '1';
+      aps.style.opacity = '0';
+      btnLup.classList.add('active');
+      btnAps.classList.remove('active');
+    } else {
+      lup.style.opacity = '0';
+      aps.style.opacity = '1';
+      btnAps.classList.add('active');
+      btnLup.classList.remove('active');
+    }
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  // Initialize with APS view
+  setMode('aps');
+</script>
+</body>
+</html>

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRRT — Effluent Rate vs Filtration Fraction</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bloodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#fecaca"/>
+            <stop offset="100%" stop-color="#fca5a5"/>
+          </linearGradient>
+          <linearGradient id="dialysateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">CRRT PRESCRIPTION — TWO DIFFERENT NUMBERS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">62M · septic shock · CVVHDF · 80 kg · Blood flow 200 mL/min</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">Dialysate 1500 · Pre 500 · Post 1000 · Net UF 100 (mL/h)</text>
+          </g>
+
+          <!-- Card 1: Effluent -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">EFFLUENT RATE</text>
+
+            <text x="0" y="-90" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">The "Dose" of CRRT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="-38">Dialysate</text>
+              <text x="50" y="-38" font-weight="800">1500 mL/h</text>
+              <text x="-170" y="-14">Pre-dilution</text>
+              <text x="50" y="-14" font-weight="800">500 mL/h</text>
+              <text x="-170" y="10">Post-dilution</text>
+              <text x="50" y="10" font-weight="800">1000 mL/h</text>
+              <text x="-170" y="34">Net UF</text>
+              <text x="50" y="34" font-weight="800">100 mL/h</text>
+            </g>
+
+            <line x1="-170" y1="58" x2="170" y2="58" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#dc2626">= 3100 mL/h</text>
+            <text x="0" y="112" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#334155">(~52 mL/min)</text>
+            <text x="0" y="138" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">38.75 mL/kg/h</text>
+            <text x="0" y="158" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">High dose for septic shock</text>
+          </g>
+
+          <!-- Card 2: FF -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">FILTRATION FRACTION</text>
+
+            <text x="0" y="-90" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">The "Stress" on Filter</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="-38">Blood flow</text>
+              <text x="50" y="-38" font-weight="800">200 mL/min</text>
+              <text x="-170" y="-14">Hematocrit (assume)</text>
+              <text x="50" y="-14" font-weight="800">30%</text>
+              <text x="-170" y="10">Plasma flow</text>
+              <text x="50" y="10" font-weight="800">140 mL/min</text>
+              <text x="-170" y="34">Conv. removal</text>
+              <text x="50" y="34" font-weight="800">1600 mL/h (26.7)</text>
+            </g>
+
+            <line x1="-170" y1="58" x2="170" y2="58" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">= 19%</text>
+            <text x="0" y="112" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#166534">Safe (&lt; 25%)</text>
+            <text x="0" y="138" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Dialysate NOT included</text>
+            <text x="0" y="158" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">Low risk of filter clotting</text>
+          </g>
+
+          <!-- Card 3: The Difference -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">KEY DIFFERENCE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">Effluent = Clearance</text>
+            <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Determines dose of dialysis</text>
+            <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Includes dialysate</text>
+
+            <line x1="-150" y1="-14" x2="150" y2="-14" stroke="#bbf7d0" stroke-width="2"/>
+
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">FF = Filter Safety</text>
+            <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Determines clotting risk</text>
+            <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Excludes dialysate</text>
+
+            <rect x="-170" y="88" width="340" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="112" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Increase dialysate → ↑ Effluent</text>
+            <text x="0" y="132" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Increase replacement → ↑ FF</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — EFFLUENT RATE
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#5b21b6">EFFLUENT RATE — THE "DOSE"</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">Total waste fluid leaving the filter per hour</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">Q_effluent = Q_dialysate + Q_replacement + Q_netUF</text>
+          </g>
+
+          <!-- Flow diagram -->
+          <g transform="translate(700, 460)">
+            
+            <g transform="translate(-500, -60)">
+              <rect x="-90" y="-50" width="180" height="100" rx="12" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-20" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Dialysate</text>
+              <text y="4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">1500</text>
+              <text y="24" text-anchor="middle" font-family="Arial" font-size="11" fill="#0e7490">mL/h</text>
+            </g>
+
+            <g transform="translate(-500, 80)">
+              <rect x="-90" y="-50" width="180" height="100" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text y="-20" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Replacement</text>
+              <text y="4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">500+1000</text>
+              <text y="24" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">mL/h</text>
+            </g>
+
+            <g transform="translate(-180, 80)">
+              <rect x="-90" y="-50" width="180" height="100" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text y="-20" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Net UF</text>
+              <text y="4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">100</text>
+              <text y="24" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">mL/h</text>
+            </g>
+
+            <!-- Filter -->
+            <g transform="translate(220, 10)">
+              <rect x="-80" y="-120" width="160" height="240" rx="14" fill="#f8fafc" stroke="#475569" stroke-width="4"/>
+              <text y="-90" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">HEMOFILTER</text>
+              <line x1="-60" y1="-60" x2="60" y2="-60" stroke="#475569" stroke-width="2"/>
+              <line x1="-60" y1="-40" x2="60" y2="-40" stroke="#475569" stroke-width="2"/>
+              <line x1="-60" y1="-20" x2="60" y2="-20" stroke="#475569" stroke-width="2"/>
+              <line x1="-60" y1="0" x2="60" y2="0" stroke="#475569" stroke-width="2"/>
+              <line x1="-60" y1="20" x2="60" y2="20" stroke="#475569" stroke-width="2"/>
+              <line x1="-60" y1="40" x2="60" y2="40" stroke="#475569" stroke-width="2"/>
+              <line x1="-60" y1="60" x2="60" y2="60" stroke="#475569" stroke-width="2"/>
+              <text y="110" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#64748b">dialysate on one side</text>
+            </g>
+
+            <!-- Effluent out -->
+            <path d="M 300,10 L 480,10" stroke="#dc2626" stroke-width="5" marker-end="url(#arrowRed)" class="flow-anim"/>
+            
+            <g transform="translate(560, 10)">
+              <rect x="-80" y="-55" width="160" height="110" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-22" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">EFFLUENT</text>
+              <text y="6" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#dc2626">3100</text>
+              <text y="28" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">mL/h</text>
+              <text y="46" text-anchor="middle" font-family="Arial" font-size="10" font-style="italic" fill="#b91c1c">= ~52 mL/min</text>
+            </g>
+
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 780)">
+            <rect x="-600" y="-70" width="1200" height="140" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">THE EFFLUENT RATE DETERMINES THE "DOSE"</text>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Guidelines recommend a minimum of <tspan font-weight="800" fill="#166534">20–25 mL/kg/h</tspan> for AKI</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Higher doses (30–40 mL/kg/h) may be used in septic shock to clear mediators</text>
+            <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">This patient: 3100 / 80 = <tspan font-weight="800" fill="#166534">38.75 mL/kg/h</tspan> — high dose</text>
+            <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Drug clearance also uses the effluent rate (as we calculated: ~45–52 mL/min)</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — FILTRATION FRACTION
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#155e75">FILTRATION FRACTION — THE "STRESS"</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">Percentage of plasma water convectively filtered</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">FF = (Q_replacement + Q_netUF) / Q_plasma flow</text>
+          </g>
+
+          <!-- Formula Box -->
+          <g transform="translate(700, 300)">
+            <rect x="-500" y="-55" width="1000" height="110" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+            <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">Plasma flow = Blood flow × (1 − Hct)</text>
+            <text x="0" y="4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">= 200 × (1 − 0.30) = 140 mL/min</text>
+            <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#0891b2">FF = (1500 + 100) mL/h / 140 mL/min × 60 = 19%</text>
+          </g>
+
+          <!-- Warning cards -->
+          <g transform="translate(350, 580)">
+            <rect x="-290" y="-130" width="580" height="260" rx="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">SAFE FF (&lt; 25%)</text>
+            <line x1="-260" y1="-74" x2="260" y2="-74" stroke="#bbf7d0" stroke-width="2"/>
+
+            <text x="0" y="-44" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">This patient: 19%</text>
+            <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Low risk of filter clotting</text>
+            <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Proteins remain diluted</text>
+            <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Membrane pores stay open</text>
+
+            <rect x="-250" y="58" width="500" height="46" rx="8" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="78" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Pre-dilution lowers FF</text>
+            <text x="0" y="96" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">(dilutes blood before filter)</text>
+          </g>
+
+          <g transform="translate(1050, 580)">
+            <rect x="-290" y="-130" width="580" height="260" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">HIGH FF (&gt; 25%)</text>
+            <line x1="-260" y1="-74" x2="260" y2="-74" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="-44" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">Risk of filter clotting</text>
+            <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Blood becomes too concentrated</text>
+            <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Proteins foul the membrane</text>
+            <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Filter lifespan shortened</text>
+
+            <rect x="-250" y="58" width="500" height="46" rx="8" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="78" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Reduce post-dilution replacement</text>
+            <text x="0" y="96" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">or increase blood flow</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — PRACTICAL DIFFERENCES
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#713f12">PRACTICAL IMPLICATIONS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">How to use effluent rate and FF at the bedside</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">Increase dialysate → ↑ effluent, no change in FF</text>
+          </g>
+
+          <!-- Card 1: Increase Clearance -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">INCREASE CLEARANCE</text>
+
+            <text x="0" y="-90" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">Increase Dialysate</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-38">• ↑ Dialysate → ↑ Effluent</text>
+              <text x="-170" y="-14">• ↑ Effluent → ↑ Clearance</text>
+              <text x="-170" y="10">• ↑ Clearance → ↑ Drug removal</text>
+              <text x="-170" y="34">• FF remains unchanged</text>
+            </g>
+
+            <rect x="-170" y="62" width="340" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="86" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Safe way to increase dose</text>
+            <text x="0" y="106" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">No impact on filter clotting</text>
+          </g>
+
+          <!-- Card 2: Increase FF -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">INCREASE FF</text>
+
+            <text x="0" y="-90" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">Increase Replacement</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-38">• ↑ Replacement → ↑ FF</text>
+              <text x="-170" y="-14">• ↑ FF → ↑ Clotting risk</text>
+              <text x="-170" y="10">• ↑ Replacement → ↑ Clearance</text>
+              <text x="-170" y="34">• But at cost of filter lifespan</text>
+            </g>
+
+            <rect x="-170" y="62" width="340" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="0" y="86" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Higher risk of clotting</text>
+            <text x="0" y="106" text-anchor="middle" font-family="Arial" font-size="12" fill="#6d28d9">Monitor FF closely</text>
+          </g>
+
+          <!-- Card 3: Pre-dilution -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">PRE-DILUTION</text>
+
+            <text x="0" y="-90" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Lowers FF</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-38">• Dilutes blood before filter</text>
+              <text x="-170" y="-14">• Reduces protein concentration</text>
+              <text x="-170" y="10">• Lowers FF</text>
+              <text x="-170" y="34">• Prolongs filter life</text>
+              <text x="-170" y="58">• Slightly reduces clearance efficiency</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="110" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Protects the filter</text>
+            <text x="0" y="128" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">But does not protect the patient</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE KEY DISTINCTION</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155"><tspan font-weight="800" fill="#dc2626">Effluent rate</tspan> = dose of therapy (clearance) — includes dialysate</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155"><tspan font-weight="800" fill="#5b21b6">Filtration fraction</tspan> = safety of filter — excludes dialysate</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Increase dialysate to raise clearance without raising clotting risk</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "CRRT — Effluent Rate vs Filtration Fraction",
+  subtitle: "Effluent rate determines dose; filtration fraction determines filter safety",
+  badge: "NEPHROLOGY · CRRT · DOSE VS SAFETY",
+  caseTitle: "Case: 62-year-old man with septic shock on CVVHDF",
+  caseDescription: "62M, 80 kg, septic shock, anuric AKI, on CVVHDF. Blood flow 200 mL/min. Dialysate 1500 mL/h, pre-dilution 500 mL/h, post-dilution 1000 mL/h, net UF 100 mL/h. Drug sieving coefficient 0.9. What is the extracorporeal clearance? And how does effluent rate differ from filtration fraction?",
+  labChips: [
+    { text: "Body weight 80 kg", abnormal: false },
+    { text: "Blood flow 200 mL/min", abnormal: false },
+    { text: "Dialysate 1500 mL/h", abnormal: false },
+    { text: "Pre 500 + Post 1000", abnormal: false },
+    { text: "Net UF 100 mL/h", abnormal: false },
+    { text: "Sieving coefficient 0.9", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",              className: "opt1" },
+    { id: "opt2", label: "🟣 Effluent Rate",         className: "opt2" },
+    { id: "opt3", label: "🔵 Filtration Fraction",   className: "opt3" },
+    { id: "opt4", label: "🟡 Practical Use",         className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Two Different Numbers",
+      infoRows: [
+        { k: "Effluent rate",       v: "3100 mL/h (38.75 mL/kg/h)" },
+        { k: "Effluent in mL/min",  v: "~52 mL/min" },
+        { k: "Filtration fraction",  v: "~19%" },
+        { k: "Plasma flow",         v: "140 mL/min" },
+        { k: "Drug clearance",      v: "~45 mL/min" },
+        { k: "Key concept",         v: "Dose vs filter safety" }
+      ],
+      svgTitle: "CRRT Prescription — Two Different Numbers",
+      svgSubtitle: "Effluent rate determines clearance; filtration fraction determines clotting risk",
+      bannerBg: "#dc2626",
+      bannerText1: "Effluent rate (3100 mL/h) determines the dose of dialysis",
+      bannerText2: "Filtration fraction (19%) determines the risk of filter clotting",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "Two distinct calculations",
+      panel1List: [
+        "<strong>Effluent rate</strong> = dialysate + replacement + net UF = 1500 + 1500 + 100 = <strong>3100 mL/h</strong>",
+        "<strong>Effluent in mL/min</strong> = 3100/60 = <strong>~52 mL/min</strong>",
+        "<strong>Filtration fraction</strong> = (replacement + net UF) / plasma flow = 1600/8400 = <strong>~19%</strong>",
+        "<strong>Drug clearance</strong> ≈ 0.9 × 52 = <strong>~45 mL/min</strong>",
+        "Both numbers matter, but they serve different purposes"
+      ],
+      panel2Title: "🧬 Why both matter",
+      panel2Tagline: "Dose vs safety",
+      panel2List: [
+        "<strong>Effluent rate</strong> — determines clearance (dose) and drug removal",
+        "<strong>Filtration fraction</strong> — determines risk of filter clotting",
+        "<strong>Increase dialysate</strong> → ↑ effluent, no change in FF",
+        "<strong>Increase replacement</strong> → ↑ FF, ↑ clotting risk",
+        "Both are essential for prescribing safe and effective CRRT"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Two numbers, two purposes",
+      alertText: "Effluent rate = <strong>dose</strong>. Filtration fraction = <strong>safety</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Effluent Rate — The Dose",
+      infoRows: [
+        { k: "Formula",       v: "Qd + Qrep + QnetUF" },
+        { k: "Total effluent", v: "3100 mL/h" },
+        { k: "In mL/min",     v: "~52 mL/min" },
+        { k: "In mL/kg/h",    v: "38.75" },
+        { k: "Guideline",     v: "≥ 20–25 mL/kg/h" },
+        { k: "Drug clearance", v: "~45 mL/min" }
+      ],
+      svgTitle: "Effluent Rate — The Dose of Therapy",
+      svgSubtitle: "Total waste fluid leaving the filter per hour",
+      bannerBg: "#7c3aed",
+      bannerText1: "Effluent rate = dialysate + replacement + net UF",
+      bannerText2: "It determines the clearance of solutes and drugs",
+      panel1Title: "🔬 The formula",
+      panel1Tagline: "What goes into it",
+      panel1List: [
+        "<strong>Q_effluent = Q_dialysate + Q_replacement + Q_netUF</strong>",
+        "Dialysate = <strong>1500 mL/h</strong>",
+        "Replacement (pre + post) = <strong>1500 mL/h</strong>",
+        "Net UF = <strong>100 mL/h</strong>",
+        "Total = <strong>3100 mL/h (~52 mL/min)</strong>"
+      ],
+      panel2Title: "🧬 Clinical application",
+      panel2Tagline: "Dose and drug clearance",
+      panel2List: [
+        "<strong>Guidelines</strong> — minimum 20–25 mL/kg/h for AKI",
+        "<strong>Septic shock</strong> — higher doses (30–40 mL/kg/h) may be used",
+        "This patient — <strong>38.75 mL/kg/h</strong> (high dose)",
+        "<strong>Drug clearance</strong> — uses the effluent rate × sieving coefficient",
+        "Increase dialysate → ↑ effluent → ↑ clearance (without ↑ FF)"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Effluent determines clearance",
+      alertText: "The <strong>effluent rate</strong> determines how much solute is removed. It is the key number for CRRT dose and drug clearance."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Filtration Fraction — The Stress",
+      infoRows: [
+        { k: "Formula",       v: "(Qrep + QnetUF) / Qplasma" },
+        { k: "Plasma flow",   v: "140 mL/min" },
+        { k: "Convection",    v: "26.7 mL/min" },
+        { k: "Filtration frac", v: "~19%" },
+        { k: "Safe limit",    v: "< 25%" },
+        { k: "Dialysate",     v: "Not included" }
+      ],
+      svgTitle: "Filtration Fraction — The Stress on the Filter",
+      svgSubtitle: "Percentage of plasma water convectively filtered",
+      bannerBg: "#0891b2",
+      bannerText1: "FF = (replacement + net UF) / plasma flow",
+      bannerText2: "High FF (> 25%) causes hemoconcentration and filter clotting",
+      panel1Title: "🔬 The formula",
+      panel1Tagline: "Why it matters",
+      panel1List: [
+        "<strong>FF = (Q_replacement + Q_netUF) / Q_plasma flow</strong>",
+        "Plasma flow = blood flow × (1 − Hct)",
+        "Example: 200 × 0.7 = <strong>140 mL/min</strong>",
+        "Convective removal = <strong>1600 mL/h = 26.7 mL/min</strong>",
+        "FF = 26.7 / 140 = <strong>~19%</strong>"
+      ],
+      panel2Title: "🧬 Why it matters",
+      panel2Tagline: "Filter safety",
+      panel2List: [
+        "<strong>FF > 25%</strong> — blood becomes too concentrated",
+        "Proteins foul the membrane",
+        "Filter clots prematurely",
+        "<strong>Dialysate is NOT included</strong> in FF",
+        "<strong>Pre-dilution</strong> lowers FF by diluting blood before the filter"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "FF determines filter survival",
+      alertText: "<strong>Filtration fraction > 25%</strong> increases the risk of filter clotting. It is the key safety parameter."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Practical Implications",
+      infoRows: [
+        { k: "Increase dialysate", v: "↑ Effluent, no Δ FF" },
+        { k: "Increase replacement", v: "↑ Effluent, ↑ FF" },
+        { k: "Increase blood flow", v: "↓ FF" },
+        { k: "Pre-dilution",      v: "↓ FF" },
+        { k: "Safe FF",           v: "< 25%" },
+        { k: "Safe effluent",     v: "≥ 20–25 mL/kg/h" }
+      ],
+      svgTitle: "Practical Implications",
+      svgSubtitle: "How to use both numbers at the bedside",
+      bannerBg: "#ca8a04",
+      bannerText1: "Increase dialysate to raise clearance without raising FF",
+      bannerText2: "Increase replacement raises both clearance and FF (clotting risk)",
+      panel1Title: "✅ What to do",
+      panel1Tagline: "Practical adjustments",
+      panel1List: [
+        "<strong>Need more clearance?</strong> Increase dialysate — no effect on FF",
+        "<strong>Filter clotting?</strong> Reduce post-dilution or increase blood flow",
+        "<strong>Pre-dilution</strong> lowers FF and protects the filter",
+        "<strong>Effluent target</strong> — ≥ 20–25 mL/kg/h",
+        "<strong>FF target</strong> — < 25%"
+      ],
+      panel2Title: "🧬 Summary",
+      panel2Tagline: "Two numbers, two purposes",
+      panel2List: [
+        "<strong>Effluent rate</strong> — total waste fluid leaving the filter",
+        "<strong>Filtration fraction</strong> — % of plasma water filtered",
+        "Effluent includes dialysate; FF does not",
+        "Use effluent for dose and drug clearance",
+        "Use FF to prevent filter clotting"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The key distinction",
+      alertText: "<strong>Effluent rate</strong> = dose. <strong>FF</strong> = safety. Both matter, but they measure different things."
+    }
+  },
+  comparison: {
+    title: "📊 Effluent Rate vs Filtration Fraction",
+    sub: "The two numbers you must know for CRRT",
+    head: ["Feature", "Effluent Rate", "Filtration Fraction", "Practical Use"],
+    rows: [
+      { cells: ["Formula", "Qd + Qrep + QnetUF", "(Qrep + QnetUF) / Qplasma", "Dose vs safety"], hero: false },
+      { cells: ["Includes dialysate?", "Yes", "No", "Key distinction"], hero: true },
+      { cells: ["Normal/target", "≥ 20–25 mL/kg/h", "< 25%", "Prescribe and monitor"], hero: true },
+      { cells: ["In this patient", "3100 mL/h (38.75 mL/kg/h)", "~19%", "High dose, safe FF"], hero: true },
+      { cells: ["Effect of ↑ dialysate", "↑ Effluent", "No change", "Safe way to ↑ clearance"], hero: false },
+      { cells: ["Effect of ↑ replacement", "↑ Effluent", "↑ FF", "Risk of clotting"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A patient on CVVHDF has dialysate 1500 mL/h, replacement 1500 mL/h, and net UF 100 mL/h. What is the effluent rate?",
+      options: [
+        { text: "3100 mL/h.", correct: true,
+          explanation: "Effluent = dialysate + replacement + net UF = 1500 + 1500 + 100 = 3100 mL/h." },
+        { text: "1500 mL/h.", correct: false,
+          explanation: "This is only the dialysate flow." },
+        { text: "1600 mL/h.", correct: false,
+          explanation: "This is the convective clearance only (replacement + net UF)." }
+      ]
+    },
+    {
+      question: "What is the approximate filtration fraction if plasma flow is 140 mL/min, replacement is 1500 mL/h, and net UF is 100 mL/h?",
+      options: [
+        { text: "19%.", correct: true,
+          explanation: "Convective removal = 1600 mL/h = 26.7 mL/min. FF = 26.7/140 = 19%." },
+        { text: "37%.", correct: false,
+          explanation: "This would be the FF if dialysate were included, which it should not be." },
+        { text: "5%.", correct: false,
+          explanation: "This is a miscalculation." }
+      ]
+    },
+    {
+      question: "Why is dialysate NOT included in the filtration fraction calculation?",
+      options: [
+        { text: "Dialysate does not cross the membrane; it acts as a sink on the other side.", correct: true,
+          explanation: "Dialysate does not pull water out of the blood, so it does not contribute to hemoconcentration." },
+        { text: "Dialysate is not used in CVVHDF.", correct: false,
+          explanation: "Dialysate is the defining feature of CVVHDF." },
+        { text: "Dialysate has no effect on clearance.", correct: false,
+          explanation: "Dialysate is critical for clearance (diffusion)." }
+      ]
+    },
+    {
+      question: "How can you increase CRRT clearance without increasing the risk of filter clotting?",
+      options: [
+        { text: "Increase dialysate flow.", correct: true,
+          explanation: "Increasing dialysate increases effluent flow and clearance without affecting the filtration fraction." },
+        { text: "Increase post-dilution replacement.", correct: false,
+          explanation: "This increases both effluent and FF, raising clotting risk." },
+        { text: "Increase net ultrafiltration.", correct: false,
+          explanation: "This increases FF and reduces patient's volume." }
+      ]
+    },
+    {
+      question: "What is the main risk of a high filtration fraction (> 25%)?",
+      options: [
+        { text: "Filter clotting due to hemoconcentration.", correct: true,
+          explanation: "High FF means too much plasma water is removed, causing proteins to foul the membrane." },
+        { text: "Inadequate clearance.", correct: false,
+          explanation: "Clearance may actually be higher with higher replacement." },
+        { text: "Hypotension.", correct: false,
+          explanation: "Hypotension is more related to net UF than FF." }
+      ]
+    },
+    {
+      question: "Which of the following correctly states the relationship between effluent rate and filtration fraction?",
+      options: [
+        { text: "Effluent rate determines clearance; filtration fraction determines filter safety.", correct: true,
+          explanation: "This is the key distinction — dose vs safety." },
+        { text: "Effluent rate determines filter safety; filtration fraction determines clearance.", correct: false,
+          explanation: "This is backwards." },
+        { text: "Both determine clearance but not filter safety.", correct: false,
+          explanation: "FF determines filter safety." }
+      ]
+    },
+    {
+      question: "A patient on CVVHDF has effluent of 2500 mL/h and weighs 70 kg. Is the dose adequate?",
+      options: [
+        { text: "Yes — 35.7 mL/kg/h meets the minimum 20–25 mL/kg/h.", correct: true,
+          explanation: "2500 / 70 = 35.7 mL/kg/h, which is above the recommended minimum." },
+        { text: "No — 35.7 mL/kg/h is too low.", correct: false,
+          explanation: "20–25 mL/kg/h is the minimum, so 35.7 is adequate." },
+        { text: "Cannot be determined without blood flow.", correct: false,
+          explanation: "Effluent per kg is the key dose parameter." }
+      ]
+    },
+    {
+      question: "What happens to filtration fraction if pre-dilution is increased?",
+      options: [
+        { text: "It decreases.", correct: true,
+          explanation: "Pre-dilution adds fluid before the filter, diluting the blood and reducing the FF." },
+        { text: "It increases.", correct: false,
+          explanation: "This would be true for post-dilution, not pre-dilution." },
+        { text: "It stays the same.", correct: false,
+          explanation: "Pre-dilution changes the plasma flow and thus the FF." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / CRRT / Dose vs Safety",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

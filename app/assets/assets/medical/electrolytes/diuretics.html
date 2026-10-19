@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sequential Nephron Blockade — Metolazone for Loop Diuretic Resistance</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55; max-width:640px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap:12px;
+    align-items:start;
+  }
+  @media(max-width:980px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:980px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:12px 14px 14px; max-height:600px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:20px 24px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.78rem; color:var(--muted); margin:0 0 14px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.78rem;}
+  .compare-table th{text-align:left; padding:10px 12px; font-weight:800;
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#ca8a04;}
+  .compare-table th:nth-child(4){background:#7c3aed;}
+  .compare-table th:nth-child(5){background:#0891b2;}
+  .compare-table td{padding:10px 12px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.5;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+        </defs>
+
+        <rect width="1200" height="780" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — LOOP DIURETIC RESISTANCE (TAL)
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- LUMEN -->
+          <rect x="60" y="130" width="310" height="420" rx="18" fill="#e0f2fe" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="215" y="165" text-anchor="middle" font-size="15" font-weight="800" fill="#0e7490">💧 LUMEN (urine)</text>
+          <text x="215" y="188" text-anchor="middle" font-size="12" fill="#155e75">Na⁺ · K⁺ · 2Cl⁻</text>
+
+          <!-- Ions in lumen -->
+          <circle cx="150" cy="290" r="22" fill="#2563eb"/>
+          <text x="150" y="296" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Na⁺</text>
+          <circle cx="230" cy="290" r="22" fill="#dc2626"/>
+          <text x="230" y="296" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">K⁺</text>
+          <circle cx="310" cy="290" r="22" fill="#16a34a"/>
+          <text x="310" y="296" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Cl⁻</text>
+
+          <!-- Blocked arrows -->
+          <line x1="195" y1="290" x2="365" y2="290" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 4"/>
+          <line x1="275" y1="290" x2="365" y2="290" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 4"/>
+          <line x1="355" y1="290" x2="365" y2="290" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 4"/>
+
+          <text x="215" y="360" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">⛔ Blocked by furosemide</text>
+          <text x="215" y="385" text-anchor="middle" font-size="12" fill="#991b1b">Na⁺ can't enter TAL cell</text>
+
+          <!-- Apical membrane -->
+          <line x1="400" y1="170" x2="400" y2="520" stroke="#334155" stroke-width="4"/>
+          <text x="400" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">APICAL</text>
+
+          <!-- NKCC2 -->
+          <rect x="383" y="300" width="34" height="80" rx="6" fill="#dc2626"/>
+          <text x="400" y="350" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">NKCC2</text>
+
+          <!-- Furosemide -->
+          <circle cx="400" cy="340" r="26" fill="#dc2626" class="pulse-block"/>
+          <text x="400" y="347" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">F</text>
+          <text x="400" y="395" text-anchor="middle" font-size="10" font-weight="700" fill="#991b1b">furosemide</text>
+
+          <!-- CELL -->
+          <rect x="430" y="130" width="340" height="420" rx="30" fill="url(#accent4Grad)" opacity="0.85"/>
+          <ellipse cx="600" cy="270" rx="45" ry="35" fill="#92400e" opacity="0.4"/>
+          <text x="600" y="400" text-anchor="middle" font-size="16" font-weight="800" fill="#713f12">TAL CELL</text>
+          <text x="600" y="425" text-anchor="middle" font-size="12" fill="#a16207">(thick ascending limb)</text>
+
+          <!-- Basolateral -->
+          <line x1="800" y1="170" x2="800" y2="520" stroke="#334155" stroke-width="4"/>
+          <text x="800" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">BASOLATERAL</text>
+
+          <!-- Na/K ATPase -->
+          <rect x="783" y="340" width="34" height="70" rx="6" fill="#7c3aed"/>
+          <text x="800" y="375" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">Na⁺/K⁺</text>
+          <text x="800" y="390" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">ATPase</text>
+
+          <!-- BLOOD -->
+          <rect x="830" y="130" width="310" height="420" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="985" y="165" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">🩸 BLOOD</text>
+          <text x="985" y="188" text-anchor="middle" font-size="12" fill="#7f1d1d">Na⁺ reabsorbed here</text>
+
+          <line x1="820" y1="375" x2="880" y2="375" stroke="#2563eb" stroke-width="4" class="flow-anim" marker-end="url(#arrowBlue)"/>
+          <text x="850" y="410" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">Na⁺</text>
+
+          <!-- Callout -->
+          <g transform="translate(600, 640)">
+            <rect x="-520" y="-40" width="1040" height="80" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">Furosemide blocks NKCC2 → TAL Na⁺ reabsorption falls</text>
+            <text x="0" y="16" text-anchor="middle" font-size="13" fill="#7f1d1d">→ More Na⁺ escapes to the DISTAL nephron → DCT compensates</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — DISTAL NEPHRON ADAPTATION (NCC)
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <!-- LUMEN -->
+          <rect x="60" y="130" width="310" height="420" rx="18" fill="#e0f2fe" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="215" y="165" text-anchor="middle" font-size="15" font-weight="800" fill="#0e7490">💧 LUMEN (urine)</text>
+          <text x="215" y="188" text-anchor="middle" font-size="12" fill="#155e75">↑ Na⁺ delivered from TAL</text>
+
+          <!-- Many Na+ arriving -->
+          <circle cx="100" cy="240" r="14" fill="#93c5fd"/>
+          <circle cx="140" cy="225" r="14" fill="#93c5fd"/>
+          <circle cx="190" cy="235" r="14" fill="#93c5fd"/>
+          <circle cx="240" cy="240" r="14" fill="#93c5fd"/>
+          <circle cx="290" cy="230" r="14" fill="#93c5fd"/>
+          <circle cx="330" cy="245" r="14" fill="#93c5fd"/>
+
+          <!-- Main ions -->
+          <circle cx="160" cy="310" r="24" fill="#2563eb"/>
+          <text x="160" y="316" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Na⁺</text>
+          <circle cx="270" cy="310" r="24" fill="#16a34a"/>
+          <text x="270" y="316" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Cl⁻</text>
+
+          <text x="215" y="380" text-anchor="middle" font-size="12" font-weight="700" fill="#0e7490">↑ Distal Na⁺ load</text>
+
+          <!-- Apical -->
+          <line x1="400" y1="170" x2="400" y2="520" stroke="#334155" stroke-width="4"/>
+          <text x="400" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">APICAL</text>
+
+          <!-- NCC — LARGE, upregulated -->
+          <rect x="373" y="270" width="54" height="110" rx="8" fill="#ca8a04" class="pulse-block"/>
+          <text x="400" y="315" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">NCC</text>
+          <text x="400" y="338" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">↑↑</text>
+          <text x="400" y="405" text-anchor="middle" font-size="10" font-weight="700" fill="#a16207">upregulated</text>
+
+          <!-- Arrows from lumen to NCC -->
+          <line x1="320" y1="310" x2="368" y2="300" stroke="#2563eb" stroke-width="4" class="flow-anim" marker-end="url(#arrowBlue)"/>
+          <line x1="320" y1="330" x2="368" y2="340" stroke="#16a34a" stroke-width="4" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+          <!-- Metolazone -->
+          <circle cx="400" cy="325" r="30" fill="#ca8a04" class="pulse-block" opacity="0.9"/>
+          <text x="400" y="333" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">M</text>
+          <text x="400" y="440" text-anchor="middle" font-size="11" font-weight="800" fill="#a16207">metolazone</text>
+
+          <!-- CELL -->
+          <rect x="430" y="130" width="340" height="420" rx="30" fill="url(#accent4Grad)" opacity="0.85"/>
+          <ellipse cx="600" cy="270" rx="45" ry="35" fill="#92400e" opacity="0.4"/>
+          <text x="600" y="390" text-anchor="middle" font-size="16" font-weight="800" fill="#713f12">DCT CELL</text>
+          <text x="600" y="415" text-anchor="middle" font-size="12" fill="#a16207">(distal convoluted tubule)</text>
+          <text x="600" y="445" text-anchor="middle" font-size="14" font-weight="800" fill="#ca8a04">HYPERTROPHIED</text>
+
+          <!-- Basolateral -->
+          <line x1="800" y1="170" x2="800" y2="520" stroke="#334155" stroke-width="4"/>
+
+          <rect x="783" y="340" width="34" height="70" rx="6" fill="#7c3aed"/>
+          <text x="800" y="375" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">Na⁺/K⁺</text>
+          <text x="800" y="390" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">ATPase</text>
+
+          <!-- BLOOD -->
+          <rect x="830" y="130" width="310" height="420" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="985" y="165" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">🩸 BLOOD</text>
+
+          <!-- Callout — THE ANSWER -->
+          <g transform="translate(600, 640)">
+            <rect x="-520" y="-40" width="1040" height="80" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">✅ ANSWER: NCC upregulation in DCT — the compensatory adaptation</text>
+            <text x="0" y="16" text-anchor="middle" font-size="13" fill="#15803d">Metolazone blocks NCC → reverses the distal reabsorption sink → natriuresis</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — SEQUENTIAL NEPHRON BLOCKADE
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <!-- Panel 1 — Furosemide at TAL -->
+          <g transform="translate(200, 350)">
+            <rect x="-165" y="-230" width="330" height="460" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="0" y="-195" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">SITE 1 — TAL</text>
+            <text x="0" y="-172" text-anchor="middle" font-size="12" fill="#7f1d1d">thick ascending limb</text>
+
+            <!-- TAL cell -->
+            <rect x="-110" y="-140" width="220" height="180" rx="16" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="-108" text-anchor="middle" font-size="13" font-weight="800" fill="#713f12">TAL CELL</text>
+
+            <!-- NKCC2 -->
+            <rect x="-135" y="-60" width="30" height="70" rx="6" fill="#dc2626"/>
+            <text x="-120" y="-20" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">NKCC2</text>
+
+            <!-- Furosemide -->
+            <circle cx="-120" cy="-25" r="24" fill="#dc2626" class="pulse-block"/>
+            <text x="-120" y="-18" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">F</text>
+
+            <!-- Blocked arrow -->
+            <text x="-155" y="-25" font-size="18" font-weight="800" fill="#2563eb">Na⁺</text>
+            <line x1="-145" y1="-25" x2="-133" y2="-25" stroke="#dc2626" stroke-width="3" stroke-dasharray="4 3"/>
+
+            <!-- Effect -->
+            <text x="0" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">↓ TAL Na⁺ reabsorption</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">↑ Distal Na⁺ delivery</text>
+
+            <text x="0" y="170" text-anchor="middle" font-size="15" font-weight="800" fill="#dc2626">FUROSEMIDE</text>
+            <text x="0" y="195" text-anchor="middle" font-size="12" fill="#7f1d1d">blocks NKCC2</text>
+          </g>
+
+          <!-- Plus sign -->
+          <text x="410" y="345" text-anchor="middle" font-size="32" font-weight="800" fill="#0f172a">+</text>
+
+          <!-- Panel 2 — Metolazone at DCT -->
+          <g transform="translate(600, 350)">
+            <rect x="-165" y="-230" width="330" height="460" rx="20" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+            <text x="0" y="-195" text-anchor="middle" font-size="16" font-weight="800" fill="#713f12">SITE 2 — DCT</text>
+            <text x="0" y="-172" text-anchor="middle" font-size="12" fill="#a16207">distal convoluted tubule</text>
+
+            <!-- DCT cell -->
+            <rect x="-110" y="-140" width="220" height="180" rx="16" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="-108" text-anchor="middle" font-size="13" font-weight="800" fill="#713f12">DCT CELL</text>
+
+            <!-- NCC (large) -->
+            <rect x="-135" y="-70" width="30" height="80" rx="6" fill="#ca8a04"/>
+            <text x="-120" y="-25" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">NCC↑↑</text>
+
+            <!-- Metolazone -->
+            <circle cx="-120" cy="-30" r="24" fill="#ca8a04" class="pulse-block"/>
+            <text x="-120" y="-23" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">M</text>
+
+            <!-- Blocked arrow -->
+            <text x="-155" y="-30" font-size="18" font-weight="800" fill="#2563eb">Na⁺</text>
+            <line x1="-145" y1="-30" x2="-133" y2="-30" stroke="#ca8a04" stroke-width="3" stroke-dasharray="4 3"/>
+
+            <!-- Effect -->
+            <text x="0" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#a16207">↓ NCC reabsorption</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#a16207">↑↑ Natriuresis</text>
+
+            <text x="0" y="170" text-anchor="middle" font-size="15" font-weight="800" fill="#ca8a04">METOLAZONE</text>
+            <text x="0" y="195" text-anchor="middle" font-size="12" fill="#a16207">blocks NCC</text>
+          </g>
+
+          <!-- Equals + Result -->
+          <text x="800" y="345" text-anchor="middle" font-size="32" font-weight="800" fill="#0f172a">=</text>
+
+          <g transform="translate(1000, 350)">
+            <rect x="-140" y="-230" width="280" height="460" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+            <text x="0" y="-195" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">RESULT</text>
+
+            <circle cx="0" cy="-70" r="65" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+            <text x="0" y="-80" text-anchor="middle" font-size="32" font-weight="800" fill="#166534">↑↑↑</text>
+            <text x="0" y="-45" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Na⁺</text>
+            <text x="0" y="-22" text-anchor="middle" font-size="12" fill="#15803d">excretion</text>
+
+            <text x="0" y="50" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">Synergistic</text>
+            <text x="0" y="75" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">Natriuresis</text>
+
+            <text x="0" y="140" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">Two different</text>
+            <text x="0" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">transporters</text>
+            <text x="0" y="180" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">blocked together</text>
+          </g>
+
+          <!-- Bottom callout -->
+          <g transform="translate(600, 700)">
+            <text x="0" y="0" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">The whole point: NCC is the specific target that metolazone adds</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER & WRONG OPTIONS
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Correct answer -->
+          <g transform="translate(600, 300)">
+            <rect x="-540" y="-130" width="1080" height="260" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-80" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">✅ B. Increased sodium reabsorption through NCC</text>
+            <text x="0" y="-50" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">in the distal convoluted tubule</text>
+
+            <line x1="-450" y1="-20" x2="450" y2="-20" stroke="#bbf7d0" stroke-width="2"/>
+
+            <text x="0" y="15" text-anchor="middle" font-size="14" fill="#15803d">Chronic loop diuretic → ↑ distal Na⁺ delivery</text>
+            <text x="0" y="42" text-anchor="middle" font-size="14" fill="#15803d">→ DCT hypertrophy + NCC upregulation</text>
+            <text x="0" y="69" text-anchor="middle" font-size="14" fill="#15803d">→ Metolazone blocks NCC → reverses the adaptation</text>
+            <text x="0" y="102" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">This is the SPECIFIC target of metolazone</text>
+          </g>
+
+          <!-- Wrong options summary -->
+          <g transform="translate(600, 590)">
+            <rect x="-540" y="-80" width="1080" height="160" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="-45" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">Why the other options are wrong</text>
+            <text x="-500" y="-10" font-size="12" fill="#7f1d1d">A: ENaC downregulation — wrong direction (aldosterone upregulates ENaC); ENaC is in collecting duct</text>
+            <text x="-500" y="15" font-size="12" fill="#7f1d1d">C: AQP2 in PCT — wrong location (AQP2 is in collecting duct); water channel, not sodium transporter</text>
+            <text x="-500" y="40" font-size="12" fill="#7f1d1d">D: NaPi-IIa — wrong ion (phosphate, not sodium); irrelevant to diuretic resistance</text>
+            <text x="-500" y="65" font-size="12" fill="#7f1d1d">E: ROMK — wrong target (loop diuretics block NKCC2, not ROMK); not an adaptive mechanism</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(600, 730)">
+          <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- INFO PANEL -->
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <!-- TEACHING PANELS -->
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  title: "Sequential Nephron Blockade — Metolazone for Loop Diuretic Resistance",
+  subtitle: "When furosemide fails, the DCT has adapted. Add a thiazide-type diuretic to plug the distal leak.",
+  badge: "NEPHROLOGY · CARDIOLOGY · CRITICAL CARE",
+  caseTitle: "Case: 68-year-old man, HF + CKD stage 4, volume overloaded, furosemide failing",
+  caseDescription: "Hospitalized with severe volume overload. Despite high-dose IV furosemide, urine output is inadequate (450 mL over 6 hours). Urine Na⁺ 2 hours after furosemide is only 28 mEq/L. The nephrology team considers adding metolazone for sequential nephron blockade.",
+  labChips: [
+    { text: "Creatinine 2.8 mg/dL", abnormal: true },
+    { text: "eGFR 23 mL/min/1.73m²", abnormal: true },
+    { text: "Na⁺ 135 mEq/L", abnormal: false },
+    { text: "K⁺ 3.8 mEq/L", abnormal: false },
+    { text: "HCO₃⁻ 29 mEq/L", abnormal: false },
+    { text: "Urine Na⁺ 28 mEq/L", abnormal: true },
+    { text: "UO 450 mL / 6 h", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Loop Resistance", className: "opt1" },
+    { id: "opt2", label: "🟣 NCC Adaptation", className: "opt2" },
+    { id: "opt3", label: "🔵 Sequential Blockade", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer & Compare", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Loop Diuretic Resistance — The Problem",
+      infoRows: [
+        { k: "Furosemide target", v: "NKCC2 in TAL" },
+        { k: "Effect", v: "Blocks ~25% Na⁺ reabsorption" },
+        { k: "Problem", v: "↑ Distal Na⁺ delivery" },
+        { k: "Compensatory response", v: "DCT NCC upregulation" },
+        { k: "Result", v: "Diuretic resistance" }
+      ],
+      svgTitle: "Loop Diuretic Resistance — TAL Block and Distal Escape",
+      svgSubtitle: "Furosemide blocks NKCC2 in the thick ascending limb. The sodium it wastes escapes to the distal nephron.",
+      bannerBg: "#dc2626",
+      bannerText1: "Furosemide blocks NKCC2 → TAL Na⁺ reabsorption falls → distal Na⁺ delivery rises",
+      bannerText2: "The distal nephron senses the extra sodium and adapts — that adaptation is the resistance",
+      panel1Title: "💊 Where furosemide acts",
+      panel1Tagline: "NKCC2 in the thick ascending limb",
+      panel1List: [
+        "Furosemide blocks <strong>NKCC2</strong> (Na⁺-K⁺-2Cl⁻ cotransporter) on the apical membrane of the TAL",
+        "The TAL normally reabsorbs <strong>~25% of filtered Na⁺</strong>",
+        "Acute blockade produces profound natriuresis — but the effect <strong>wanes with chronic use</strong>",
+        "The kidney compensates through multiple adaptive mechanisms"
+      ],
+      panel2Title: "🔄 Why chronic loop diuretics fail",
+      panel2Tagline: "Multiple adaptive mechanisms",
+      panel2List: [
+        "<strong>Distal nephron adaptation:</strong> ↑ Na⁺ delivery → DCT hypertrophy + NCC upregulation",
+        "<strong>RAAS activation:</strong> angiotensin II → ↑ proximal Na⁺ reabsorption",
+        "<strong>Sympathetic activation:</strong> → ↑ renin, ↑ Na⁺ reabsorption",
+        "<strong>Pharmacokinetic factors:</strong> ↓ tubular secretion of loop diuretic in CKD",
+        "The <strong>NCC upregulation</strong> is the specific adaptation metolazone targets"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Board Pearl — Ask where the sodium escapes",
+      alertText: "When a loop diuretic fails, ask <strong>\"where is the sodium going?\"</strong> The answer is usually the <strong>DCT</strong>. The drug that plugs that leak is a thiazide-type agent like metolazone."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Distal Nephron Adaptation — NCC Upregulation",
+      infoRows: [
+        { k: "Adapted segment", v: "Distal convoluted tubule" },
+        { k: "Transporter", v: "NCC (Na⁺-Cl⁻ cotransporter)" },
+        { k: "Change", v: "Upregulated / hypertrophied" },
+        { k: "Trigger", v: "↑ Distal Na⁺ delivery" },
+        { k: "Target of", v: "Metolazone (thiazide-type)" }
+      ],
+      svgTitle: "Distal Nephron Adaptation — NCC Upregulation in the DCT",
+      svgSubtitle: "Chronic loop diuretic → increased distal Na⁺ delivery → DCT hypertrophy → NCC upregulation → sodium reclaimed",
+      bannerBg: "#7c3aed",
+      bannerText1: "The DCT upregulates NCC to reclaim the sodium the TAL is now wasting",
+      bannerText2: "This is the specific adaptive mechanism targeted by metolazone",
+      panel1Title: "🔬 How the DCT adapts",
+      panel1Tagline: "Structural and functional changes",
+      panel1List: [
+        "Chronic loop diuretic → <strong>↑ Na⁺ delivery to the DCT</strong>",
+        "The DCT responds with <strong>cellular hypertrophy</strong> and <strong>↑ NCC expression</strong> on the apical membrane",
+        "NCC reabsorbs Na⁺ and Cl⁻ from the lumen into the DCT cell",
+        "This creates a <strong>\"distal reabsorption sink\"</strong> — the kidney reclaims the sodium the loop diuretic just wasted",
+        "Net effect: natriuresis is blunted → <strong>diuretic resistance</strong>"
+      ],
+      panel2Title: "🎯 Why this is the answer",
+      panel2Tagline: "The specific target of metolazone",
+      panel2List: [
+        "Metolazone is a <strong>thiazide-type diuretic</strong> that blocks <strong>NCC</strong> in the DCT",
+        "Blocking NCC reverses the compensatory distal reabsorption",
+        "Combined with loop diuretic → <strong>sequential nephron blockade</strong>",
+        "The two drugs act at <strong>two different transporters</strong> → synergistic natriuresis",
+        "This is why metolazone is the classic add-on for loop diuretic resistance"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Answer: B — NCC upregulation in DCT",
+      alertText: "Increased sodium reabsorption through <strong>NCC in the distal convoluted tubule</strong>, partly due to distal nephron adaptation, is the mechanism specifically targeted by metolazone."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Sequential Nephron Blockade — The Strategy",
+      infoRows: [
+        { k: "First agent", v: "Furosemide (TAL)" },
+        { k: "Second agent", v: "Metolazone (DCT)" },
+        { k: "Principle", v: "Block two segments" },
+        { k: "Result", v: "Synergistic natriuresis" },
+        { k: "Monitoring", v: "Electrolytes, renal function, volume" }
+      ],
+      svgTitle: "Sequential Nephron Blockade — Two Sites, One Goal",
+      svgSubtitle: "Block the TAL and the DCT simultaneously to overcome compensatory reabsorption",
+      bannerBg: "#0891b2",
+      bannerText1: "Furosemide blocks TAL → metolazone blocks DCT → synergistic natriuresis",
+      bannerText2: "This combination is the classic answer for loop diuretic resistance in HF and CKD",
+      panel1Title: "🧩 How sequential blockade works",
+      panel1Tagline: "Two transporters, two sites",
+      panel1List: [
+        "Furosemide blocks <strong>NKCC2</strong> in the TAL → ↓ Na⁺ reabsorption there",
+        "Metolazone blocks <strong>NCC</strong> in the DCT → ↓ Na⁺ reabsorption there too",
+        "The DCT can no longer reclaim the sodium the TAL is wasting",
+        "Result: <strong>synergistic natriuresis</strong> — far more than either drug alone",
+        "This is the pharmacologic answer to the distal nephron adaptation"
+      ],
+      panel2Title: "⚙️ Practical use in HF + CKD",
+      panel2Tagline: "Clinical pearls",
+      panel2List: [
+        "Metolazone is often given <strong>30 minutes before</strong> the loop diuretic for maximal effect",
+        "Synergy can produce <strong>profound diuresis</strong> — monitor volume status closely",
+        "Watch for <strong>hypokalemia, hyponatremia, hypomagnesemia, and AKI</strong>",
+        "In CKD, metolazone retains efficacy better than HCTZ because it is secreted by the <strong>proximal tubule</strong> and works from the luminal side",
+        "Use the lowest effective dose; discontinue once euvolemia is achieved"
+      ],
+      alertIcon: "🧩",
+      alertTitle: "Pearl — Sequential blockade is the answer to resistance",
+      alertText: "When a loop diuretic fails, <strong>do not just increase the dose</strong>. Add a thiazide-type agent to block the distal nephron adaptation. The synergy is the point."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer & Comparison",
+      infoRows: [
+        { k: "Correct answer", v: "B — NCC upregulation in DCT" },
+        { k: "Target", v: "NCC (Na⁺-Cl⁻ cotransporter)" },
+        { k: "Drug", v: "Metolazone" },
+        { k: "Expected urine Na⁺", v: ">50–100 mEq/L (vs 28)" },
+        { k: "Key", v: "Reverse the distal adaptation" }
+      ],
+      svgTitle: "The Answer — and Why the Others Fail",
+      svgSubtitle: "Only NCC upregulation in the DCT is the adaptive mechanism specifically targeted by metolazone",
+      bannerBg: "#ca8a04",
+      bannerText1: "B — Increased sodium reabsorption through NCC in the DCT, partly due to distal nephron adaptation",
+      bannerText2: "Metolazone blocks NCC → reverses the compensatory reabsorption → natriuresis",
+      panel1Title: "✅ The correct answer — and why",
+      panel1Tagline: "NCC is the target",
+      panel1List: [
+        "<strong>B: ↑ NCC in DCT</strong> — the compensatory adaptation to chronic loop diuretic exposure",
+        "The DCT hypertrophies and upregulates NCC in response to increased distal Na⁺ delivery",
+        "Metolazone specifically blocks NCC → reverses the adaptation",
+        "This is the physiologic basis of <strong>sequential nephron blockade</strong>"
+      ],
+      panel2Title: "❌ Why the others are wrong",
+      panel2Tagline: "Wrong direction, wrong location, wrong ion, wrong target",
+      panel2List: [
+        "<strong>A:</strong> ENaC downregulation — wrong direction (aldosterone <em>upregulates</em> ENaC); ENaC is in collecting duct",
+        "<strong>C:</strong> AQP2 in PCT — wrong location (AQP2 is in collecting duct); water channel, not Na⁺ transporter",
+        "<strong>D:</strong> NaPi-IIa — wrong ion (phosphate, not sodium); irrelevant to diuretic resistance",
+        "<strong>E:</strong> ROMK inhibition — wrong target (loop diuretics block NKCC2, not ROMK); not an adaptive mechanism"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: B",
+      alertText: "Increased sodium reabsorption through <strong>NCC in the distal convoluted tubule</strong> — partly due to <strong>distal nephron adaptation</strong> — is the mechanism specifically targeted by metolazone."
+    }
+  },
+  comparison: {
+    title: "📊 Diuretic Classes — Sites of Action and Sequential Blockade",
+    sub: "Why metolazone adds something no loop diuretic can: it blocks the distal nephron adaptation.",
+    head: ["Diuretic class", "Target", "Nephron site", "Effect on Na⁺", "Role in sequential blockade"],
+    rows: [
+      { cells: ["Loop (furosemide, bumetanide)", "NKCC2", "Thick ascending limb", "Blocks ~25% Na⁺ reabsorption", "First agent — foundation of therapy"], hero: false },
+      { cells: ["Thiazide-type (metolazone, HCTZ)", "NCC", "Distal convoluted tubule", "Blocks ~5–10% Na⁺ reabsorption", "Add-on — synergistic with loop"], hero: true },
+      { cells: ["K-sparing (spironolactone, eplerenone)", "MR → ENaC", "Collecting duct", "Blocks ~2–3% Na⁺ reabsorption", "Adjunct in HF; not for acute resistance"], hero: false },
+      { cells: ["CA inhibitor (acetazolamide)", "Carbonic anhydrase", "Proximal tubule", "Blocks ~5% Na⁺ reabsorption", "Rarely used for volume overload"], hero: false },
+      { cells: ["SGLT2 inhibitor (empagliflozin)", "SGLT2", "Proximal tubule", "Blocks Na⁺-glucose cotransport", "HF benefit; not a classic diuretic"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A patient with HF and CKD stage 4 has inadequate response to high-dose IV furosemide. Which adaptive mechanism contributes to loop diuretic resistance and is specifically targeted by metolazone?",
+      options: [
+        { text: "Increased sodium reabsorption through NCC in the distal convoluted tubule.", correct: true,
+          explanation: "Chronic loop diuretic → ↑ distal Na⁺ delivery → DCT hypertrophy + NCC upregulation. Metolazone blocks NCC, reversing the compensatory distal reabsorption." },
+        { text: "Downregulation of ENaC in the collecting duct.", correct: false,
+          explanation: "Wrong direction — aldosterone upregulates ENaC. ENaC is also in the collecting duct, not the DCT." },
+        { text: "Increased aquaporin-2 expression in the proximal convoluted tubule.", correct: false,
+          explanation: "AQP2 is in the collecting duct, not the PCT. It is a water channel, not a sodium transporter." }
+      ]
+    },
+    {
+      question: "Where does furosemide act in the nephron?",
+      options: [
+        { text: "NKCC2 in the thick ascending limb.", correct: true,
+          explanation: "Furosemide blocks the Na⁺-K⁺-2Cl⁻ cotransporter (NKCC2) on the apical membrane of the TAL, blocking ~25% of filtered Na⁺ reabsorption." },
+        { text: "NCC in the distal convoluted tubule.", correct: false,
+          explanation: "NCC is the target of thiazide-type diuretics like metolazone and HCTZ, not furosemide." },
+        { text: "ENaC in the collecting duct.", correct: false,
+          explanation: "ENaC is the target of potassium-sparing diuretics (spironolactone, amiloride), not loop diuretics." }
+      ]
+    },
+    {
+      question: "Where does metolazone act?",
+      options: [
+        { text: "NCC in the distal convoluted tubule.", correct: true,
+          explanation: "Metolazone is a thiazide-type diuretic that blocks the Na⁺-Cl⁻ cotransporter (NCC) on the apical membrane of the DCT." },
+        { text: "NKCC2 in the thick ascending limb.", correct: false,
+          explanation: "NKCC2 is the target of loop diuretics (furosemide, bumetanide, torsemide)." },
+        { text: "ROMK in the thick ascending limb.", correct: false,
+          explanation: "ROMK is a potassium channel; it is not the target of metolazone or loop diuretics." }
+      ]
+    },
+    {
+      question: "What is the principle of sequential nephron blockade?",
+      options: [
+        { text: "Blocking two different nephron segments to overcome compensatory reabsorption.", correct: true,
+          explanation: "By blocking the TAL (loop diuretic) and the DCT (thiazide-type), you prevent the distal nephron from reclaiming the sodium the loop diuretic wastes. The result is synergistic natriuresis." },
+        { text: "Blocking the same transporter with two different drugs.", correct: false,
+          explanation: "Sequential blockade uses two drugs at two different sites, not two drugs at the same site." },
+        { text: "Giving a diuretic twice daily instead of once daily.", correct: false,
+          explanation: "That is simply increased dosing frequency, not sequential nephron blockade." }
+      ]
+    },
+    {
+      question: "Why does NCC upregulate during chronic loop diuretic therapy?",
+      options: [
+        { text: "Increased distal Na⁺ delivery stimulates DCT hypertrophy and NCC expression.", correct: true,
+          explanation: "When the TAL is blocked, more Na⁺ reaches the DCT. The DCT adapts by hypertrophying and upregulating NCC to reclaim the extra sodium." },
+        { text: "Loop diuretics directly stimulate NCC gene transcription.", correct: false,
+          explanation: "Loop diuretics act on NKCC2 in the TAL, not directly on NCC in the DCT. The upregulation is a secondary adaptive response." },
+        { text: "Reduced aldosterone levels drive NCC upregulation.", correct: false,
+          explanation: "Aldosterone primarily regulates ENaC in the collecting duct. NCC is regulated by other factors, including distal Na⁺ delivery." }
+      ]
+    },
+    {
+      question: "Urine Na⁺ is 28 mEq/L 2 hours after IV furosemide. What does this suggest?",
+      options: [
+        { text: "Inadequate natriuresis / diuretic resistance.", correct: true,
+          explanation: "A patient with volume overload should have a urine Na⁺ >50–100 mEq/L after IV furosemide. A value of 28 suggests the kidney is not responding adequately — consistent with diuretic resistance." },
+        { text: "Adequate diuretic response.", correct: false,
+          explanation: "28 mEq/L is too low for an adequate response to IV furosemide in a volume-overloaded patient." },
+        { text: "Primary aldosteronism.", correct: false,
+          explanation: "The clinical picture is HF + CKD with volume overload, not primary aldosteronism." }
+      ]
+    },
+    {
+      question: "Which is NOT an adaptive mechanism contributing to loop diuretic resistance?",
+      options: [
+        { text: "AQP2 upregulation in the proximal tubule.", correct: true,
+          explanation: "AQP2 is in the collecting duct, not the PCT. It is a water channel, not a sodium transporter, and is not part of the classic distal nephron adaptation to loop diuretics." },
+        { text: "RAAS activation.", correct: false,
+          explanation: "RAAS activation is a real adaptive mechanism — angiotensin II increases proximal Na⁺ reabsorption." },
+        { text: "Distal nephron hypertrophy.", correct: false,
+          explanation: "DCT hypertrophy with NCC upregulation is a real adaptive mechanism and the target of metolazone." }
+      ]
+    },
+    {
+      question: "What should be monitored when adding metolazone to furosemide?",
+      options: [
+        { text: "Electrolytes, renal function, and volume status.", correct: true,
+          explanation: "Sequential blockade can cause profound diuresis, hypokalemia, hyponatremia, hypomagnesemia, and AKI. Close monitoring of electrolytes, renal function, and volume status is essential." },
+        { text: "Only blood pressure.", correct: false,
+          explanation: "Blood pressure is important, but electrolytes and renal function are equally critical." },
+        { text: "No monitoring needed — metolazone is safe.", correct: false,
+          explanation: "Metolazone combined with a loop diuretic can cause significant electrolyte disturbances and volume depletion. Monitoring is mandatory." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Cardiology / Critical Care",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : '') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = CONFIG.quiz.length;
+  document.getElementById('quizGrid').innerHTML = CONFIG.quiz.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   MODE SWITCH
+   ============================================================ */
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+/* ============================================================
+   COLLAPSE TOGGLE
+   ============================================================ */
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+/* ============================================================
+   QUIZ HANDLER
+   ============================================================ */
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = CONFIG.quiz[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

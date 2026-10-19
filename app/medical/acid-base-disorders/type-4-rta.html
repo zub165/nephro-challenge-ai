@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type 4 RTA — Hyporeninemic Hypoaldosteronism</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="podGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef9c3"/>
+            <stop offset="100%" stop-color="#fde047"/>
+          </radialGradient>
+          <linearGradient id="gbmGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fbcfe8"/>
+            <stop offset="100%" stop-color="#f9a8d4"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">TYPE 4 RTA IN DIABETIC NEPHROPATHY</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">64F · 26y T2DM · CKD 3b→4 (eGFR 33→22) · Volume overload · K 6.2 · HCO3 13</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">Anion gap = 8 (normal) · PCO2 31 (appropriate) · Low renin/aldosterone</text>
+          </g>
+
+          <!-- Card 1: Labs -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE LABS</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="700">Na⁺</text>
+              <text x="50" y="-92" font-weight="800" fill="#334155">138</text>
+              <text x="-170" y="-68" font-weight="700">K⁺</text>
+              <text x="50" y="-68" font-weight="800" fill="#dc2626">6.2</text>
+              <text x="-170" y="-44" font-weight="700">Cl⁻</text>
+              <text x="50" y="-44" font-weight="800" fill="#dc2626">115</text>
+              <text x="-170" y="-20" font-weight="700">HCO₃⁻</text>
+              <text x="50" y="-20" font-weight="800" fill="#dc2626">13</text>
+              <text x="-170" y="4" font-weight="700">Anion Gap</text>
+              <text x="50" y="4" font-weight="800" fill="#166534">8 (normal)</text>
+            </g>
+
+            <line x1="-170" y1="28" x2="170" y2="28" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Non–Anion Gap</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Metabolic Acidosis</text>
+
+            <rect x="-170" y="102" width="340" height="46" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="122" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Hyperkalemic (K 6.2)</text>
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Hyperchloremic (Cl 115)</text>
+          </g>
+
+          <!-- Card 2: Clinical -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">CLINICAL PICTURE</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="800" fill="#5b21b6">Volume Overload</text>
+              <text x="-170" y="-72">• Elevated JVP</text>
+              <text x="-170" y="-52">• Bilateral rales</text>
+              <text x="-170" y="-32">• 4+ pedal edema</text>
+              <text x="-170" y="-12">• Right pleural effusion</text>
+              <text x="-170" y="8">• Pulmonary vascular redistribution</text>
+            </g>
+
+            <line x1="-170" y1="30" x2="170" y2="30" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="56" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Medications</text>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="80" font-weight="800" fill="#991b1b">• Ramipril (ACEi)</text>
+              <text x="-150" y="100">Blocks Ang II → reduces aldosterone</text>
+              <text x="-170" y="124" font-weight="800" fill="#991b1b">• Spironolactone (MRA)</text>
+              <text x="-150" y="144">Blocks aldosterone receptor</text>
+            </g>
+          </g>
+
+          <!-- Card 3: Answer -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE DIAGNOSIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#166534">Type 4 RTA</text>
+            <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#166534">Hyporeninemic</text>
+            <text x="0" y="-44" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#166534">Hypoaldosteronism</text>
+            <line x1="-150" y1="-24" x2="150" y2="-24" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="6">• Low renin</text>
+              <text x="-170" y="26">• Low aldosterone</text>
+              <text x="-170" y="46">• Hyperkalemia</text>
+              <text x="-170" y="66">• Non–anion gap acidosis</text>
+              <text x="-170" y="86">• Volume overload</text>
+            </g>
+
+            <rect x="-170" y="106" width="340" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Answer: D</text>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Type 4 RTA</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — TYPE 4 RTA MECHANISM
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#5b21b6">MECHANISM OF TYPE 4 RTA</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">Hyporeninemic hypoaldosteronism</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">Diabetic nephropathy damages the juxtaglomerular apparatus → low renin → low aldosterone</text>
+          </g>
+
+          <!-- Flow diagram -->
+          <g transform="translate(700, 450)">
+            
+            <!-- Diabetic Nephropathy -->
+            <g transform="translate(-450, 0)">
+              <rect x="-110" y="-60" width="220" height="120" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Diabetic Nephropathy</text>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">CKD progression</text>
+              <text y="14" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Damage to JG cells</text>
+            </g>
+
+            <path d="M -340,0 L -280,0" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)" class="flow-anim"/>
+
+            <!-- Low Renin -->
+            <g transform="translate(-200, 0)">
+              <rect x="-110" y="-60" width="220" height="120" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">Low Renin</text>
+              <text y="-4" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">↓ Angiotensin II</text>
+              <text y="20" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">↓ Aldosterone</text>
+            </g>
+
+            <path d="M -90,0 L -30,0" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)" class="flow-anim"/>
+
+            <!-- Low Aldosterone -->
+            <g transform="translate(50, 0)">
+              <rect x="-110" y="-60" width="220" height="120" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">Low Aldosterone</text>
+              <text y="-4" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">↓ ENaC activity</text>
+              <text y="20" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">↓ Na/K ATPase</text>
+            </g>
+
+            <path d="M 160,0 L 220,0" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)" class="flow-anim"/>
+
+            <!-- Consequences -->
+            <g transform="translate(330, 0)">
+              <rect x="-110" y="-60" width="220" height="120" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+              <text y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Consequences</text>
+              <text y="-6" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Hyperkalemia</text>
+              <text y="16" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Non–anion gap acidosis</text>
+              <text y="38" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Volume overload</text>
+            </g>
+
+          </g>
+
+          <!-- Additional consequence cards -->
+          <g transform="translate(350, 720)">
+            <rect x="-290" y="-65" width="580" height="130" rx="16" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <text y="-35" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">HYPERKALEMIA WORSENS ACIDOSIS</text>
+            <line x1="-260" y1="-18" x2="260" y2="-18" stroke="#fecaca" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="8">• Hyperkalemia suppresses NH₄⁺ production</text>
+              <text x="-260" y="30">• Reduces NH₄⁺ excretion</text>
+              <text x="-260" y="52">• Compromises distal H⁺ secretion</text>
+            </g>
+          </g>
+
+          <g transform="translate(1050, 720)">
+            <rect x="-290" y="-65" width="580" height="130" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-35" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">MEDICATIONS AGGRAVATE IT</text>
+            <line x1="-260" y1="-18" x2="260" y2="-18" stroke="#ddd6fe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="8">• ACE inhibitor: ↓ Ang II → ↓ aldosterone</text>
+              <text x="-260" y="30">• Spironolactone: blocks aldosterone receptor</text>
+              <text x="-260" y="52">• Both promote K⁺ retention</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — WHY IT IS NOT THE OTHERS
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#155e75">WHY THE OTHER OPTIONS FAIL</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">Each option has a fatal flaw</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">The correct answer is D — Type 4 RTA</text>
+          </g>
+
+          <!-- Card A: DKA -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">A — DIABETIC KETOACIDOSIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Glucose is only 235</text>
+              <text x="-170" y="-10">• DKA has a HIGH anion gap</text>
+              <text x="-170" y="14">• Anion gap here is 8 (normal)</text>
+              <text x="-170" y="38">• DKA is a high-gap acidosis</text>
+              <text x="-170" y="62">• Not a non-gap acidosis</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Wrong anion gap</text>
+          </g>
+
+          <!-- Card B: Resp Alkalosis -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">B — RESPIRATORY ALKALOSIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• pH is 7.25 (acidemia)</text>
+              <text x="-170" y="-10">• Not alkalosis</text>
+              <text x="-170" y="14">• PCO2 31 is appropriate</text>
+              <text x="-150" y="34">compensation for HCO3 15</text>
+              <text x="-170" y="58">• Winter's formula confirms</text>
+              <text x="-170" y="78">  appropriate compensation</text>
+            </g>
+
+            <rect x="-170" y="100" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Wrong acid-base state</text>
+          </g>
+
+          <!-- Card C: Drug-Induced Hyperkalemia -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">C — DRUG-INDUCED HYPERKALEMIA</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Ramipril and spironolactone</text>
+              <text x="-150" y="-14">are contributing factors</text>
+              <text x="-170" y="10">• But they are not sufficient</text>
+              <text x="-150" y="30">to explain the whole picture</text>
+              <text x="-170" y="54">• Low renin and aldosterone</text>
+              <text x="-150" y="74">are the underlying cause</text>
+            </g>
+
+            <rect x="-170" y="100" width="340" height="42" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Incomplete explanation</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — MANAGEMENT (UPDATED WITH HCTZ VS LOOP)
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#713f12">MANAGEMENT OF TYPE 4 RTA</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">Stop offending agents, diurese, and lower potassium</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">Loop diuretics are preferred over HCTZ in advanced CKD (eGFR < 30)</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#ca8a04"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#ca8a04"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">1 — STOP AGENTS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#713f12">Remove the Aggravators</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Stop spironolactone</text>
+              <text x="-170" y="-10">• Consider reducing or stopping</text>
+              <text x="-150" y="10">  ramipril temporarily</text>
+              <text x="-170" y="38">• Monitor K⁺ closely</text>
+              <text x="-170" y="62">• Re-evaluate BP and fluid</text>
+              <text x="-150" y="82">  status</text>
+            </g>
+
+            <rect x="-170" y="106" width="340" height="46" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Stop the K-retaining drugs</text>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="12" fill="#854d0e">This is the first step</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">2 — DIURESIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">Treat Volume Overload</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#166534">Loop diuretics (preferred)</text>
+              <text x="-150" y="-14">Furosemide, torsemide</text>
+              <text x="-150" y="6">Work at eGFR < 30</text>
+              <text x="-150" y="26">Lowers K⁺</text>
+              
+              <line x1="-170" y1="40" x2="170" y2="40" stroke="#ddd6fe" stroke-width="1"/>
+              
+              <text x="-170" y="62" font-weight="800" fill="#991b1b">Thiazides (HCTZ)</text>
+              <text x="-150" y="82">Lose efficacy at eGFR < 30</text>
+              <text x="-150" y="102">Not preferred here</text>
+            </g>
+
+            <rect x="-170" y="120" width="340" height="40" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Loop diuretics for this patient</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">3 — POTASSIUM BINDERS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Lower Serum K⁺</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#166534">Patiromer</text>
+              <text x="-150" y="-14">Preferred in recent data</text>
+              <text x="-170" y="10" font-weight="800" fill="#166534">Sodium zirconium cyclosilicate</text>
+              <text x="-150" y="30">Alternative</text>
+              <text x="-170" y="54">• Avoid Kayexalate + sorbitol</text>
+              <text x="-150" y="74">(GI necrosis risk)</text>
+            </g>
+
+            <rect x="-170" y="98" width="340" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Bind K⁺ in the gut</text>
+            <text x="0" y="136" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Patiromer is preferred</text>
+          </g>
+
+          <!-- Bottom bar -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE DIURETIC CHOICE</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">HCTZ is a potassium-wasting diuretic, but it <tspan font-weight="800" fill="#dc2626">loses efficacy at eGFR < 30</tspan></text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">For this patient (eGFR 22), a <tspan font-weight="800" fill="#166534">loop diuretic</tspan> is preferred for volume and K⁺ control</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">If eGFR were 40–60, HCTZ could be an option to waste potassium</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Type 4 RTA — Hyporeninemic Hypoaldosteronism",
+  subtitle: "Hyperkalemic non–anion gap metabolic acidosis in diabetic nephropathy",
+  badge: "NEPHROLOGY · ACID-BASE · TYPE 4 RTA",
+  caseTitle: "Case: 64-year-old woman with T2DM, CKD, and progressive edema",
+  caseDescription: "64F with 26-year history of T2DM and CKD 3b (baseline eGFR 33, now 22). Progressive edema, SOB, JVD, bilateral rales, 4+ pedal edema. Labs: Na 138, K 6.2, Cl 115, HCO3 13, glucose 235, Cr 3.4. ABG: pH 7.25, PCO2 31. Chest x-ray: right pleural effusion and pulmonary edema. Medications include ramipril 2.5 mg and spironolactone 12.5 mg. Plasma renin and aldosterone are both low. What is the most likely etiology?",
+  labChips: [
+    { text: "K 6.2 mEq/L", abnormal: true },
+    { text: "Cl 115 mEq/L", abnormal: true },
+    { text: "HCO3 13 mEq/L", abnormal: true },
+    { text: "pH 7.25", abnormal: true },
+    { text: "PCO2 31 mm Hg", abnormal: false },
+    { text: "Anion Gap 8", abnormal: false },
+    { text: "eGFR 22", abnormal: true },
+    { text: "Low renin/aldosterone", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",             className: "opt1" },
+    { id: "opt2", label: "🟣 Mechanism",            className: "opt2" },
+    { id: "opt3", label: "🔵 Why Others Fail",      className: "opt3" },
+    { id: "opt4", label: "🟡 Management",           className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Type 4 RTA",
+      infoRows: [
+        { k: "Diagnosis",     v: "Type 4 RTA" },
+        { k: "Anion gap",     v: "8 (normal)" },
+        { k: "Potassium",     v: "6.2 (high)" },
+        { k: "Chloride",      v: "115 (high)" },
+        { k: "Renin",         v: "Low" },
+        { k: "Aldosterone",   v: "Low" }
+      ],
+      svgTitle: "The Case — Non–Anion Gap Metabolic Acidosis",
+      svgSubtitle: "Hyperkalemia, hyperchloremia, low renin, low aldosterone, and volume overload",
+      bannerBg: "#dc2626",
+      bannerText1: "Hyperkalemic non–anion gap metabolic acidosis with low renin and aldosterone = Type 4 RTA",
+      bannerText2: "Diabetic nephropathy is the most common cause",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "Why this is Type 4 RTA",
+      panel1List: [
+        "<strong>Anion gap 8</strong> — normal, so this is a non–anion gap acidosis",
+        "<strong>K 6.2</strong> — hyperkalemia, the hallmark of Type 4 RTA",
+        "<strong>Cl 115</strong> — hyperchloremic",
+        "<strong>Low renin and aldosterone</strong> — hyporeninemic hypoaldosteronism",
+        "<strong>Volume overload</strong> — consistent with low renin"
+      ],
+      panel2Title: "🧬 The medications",
+      panel2Tagline: "Contributing factors",
+      panel2List: [
+        "<strong>Ramipril (ACEi)</strong> — blocks Ang II → reduces aldosterone",
+        "<strong>Spironolactone (MRA)</strong> — blocks aldosterone receptor",
+        "Both promote <strong>potassium retention</strong>",
+        "But they alone do not explain the whole picture",
+        "The underlying <strong>diabetic nephropathy</strong> is the cause"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The correct answer is D",
+      alertText: "<strong>Hyporeninemic hypoaldosteronism and type 4 RTA</strong> — the combination of low renin, low aldosterone, hyperkalemia, and non–anion gap acidosis."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Mechanism of Type 4 RTA",
+      infoRows: [
+        { k: "Primary defect",    v: "Low renin" },
+        { k: "Secondary defect",  v: "Low aldosterone" },
+        { k: "Result",            v: "↓ ENaC, ↓ Na/K ATPase" },
+        { k: "Consequence",       v: "Hyperkalemia" },
+        { k: "Consequence",       v: "Non–gap acidosis" },
+        { k: "Most common cause", v: "Diabetic nephropathy" }
+      ],
+      svgTitle: "Mechanism of Type 4 RTA",
+      svgSubtitle: "Hyporeninemic hypoaldosteronism — low renin → low aldosterone",
+      bannerBg: "#7c3aed",
+      bannerText1: "Diabetic nephropathy damages the juxtaglomerular apparatus → low renin → low aldosterone",
+      bannerText2: "Low aldosterone decreases ENaC activity and Na/K ATPase, causing hyperkalemia and acidosis",
+      panel1Title: "🔬 The mechanism",
+      panel1Tagline: "From kidney damage to acidosis",
+      panel1List: [
+        "<strong>Diabetic nephropathy</strong> damages the juxtaglomerular cells",
+        "This leads to <strong>low renin</strong> production",
+        "Low renin → low angiotensin II → <strong>low aldosterone</strong>",
+        "Low aldosterone decreases <strong>ENaC activity</strong> and <strong>Na/K ATPase</strong> in the distal nephron",
+        "Result: <strong>hyperkalemia</strong> and <strong>non–anion gap acidosis</strong>"
+      ],
+      panel2Title: "🧬 The acidosis",
+      panel2Tagline: "Why is there acidosis?",
+      panel2List: [
+        "Low aldosterone → decreased H⁺ secretion",
+        "<strong>Hyperkalemia suppresses NH₄⁺ production</strong>",
+        "This reduces renal acid excretion",
+        "The result is a <strong>hyperchloremic metabolic acidosis</strong>",
+        "The acidosis worsens the hyperkalemia (vicious cycle)"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "The renin-aldosterone axis is the key",
+      alertText: "<strong>Low renin and low aldosterone</strong> are the defining features of Type 4 RTA."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why the Others Fail",
+      infoRows: [
+        { k: "A — DKA",          v: "High anion gap" },
+        { k: "B — Resp alkalosis", v: "pH is acidemic" },
+        { k: "C — Drug-induced",  v: "Incomplete explanation" },
+        { k: "D — Type 4 RTA",    v: "Best fit" },
+        { k: "Anion gap",         v: "8 (normal)" },
+        { k: "Answer",            v: "D" }
+      ],
+      svgTitle: "Why the Other Options Fail",
+      svgSubtitle: "Each has a fatal flaw",
+      bannerBg: "#0891b2",
+      bannerText1: "DKA has a high anion gap; this patient has a normal anion gap",
+      bannerText2: "The medications contribute but do not explain the low renin/aldosterone",
+      panel1Title: "❌ Why each fails",
+      panel1Tagline: "The fatal flaws",
+      panel1List: [
+        "<strong>A — DKA:</strong> has a <strong>high anion gap</strong>; this patient has a normal gap of 8",
+        "<strong>B — Respiratory alkalosis:</strong> pH is 7.25 (<strong>acidemic</strong>), not alkalotic",
+        "<strong>C — Drug-induced hyperkalemia:</strong> ACEi and spironolactone contribute but do not explain the <strong>low renin and aldosterone</strong>",
+        "<strong>D is correct:</strong> Type 4 RTA explains the entire picture"
+      ],
+      panel2Title: "🧬 The full picture",
+      panel2Tagline: "Why Type 4 RTA fits",
+      panel2List: [
+        "<strong>Low renin</strong> — from diabetic nephropathy",
+        "<strong>Low aldosterone</strong> — from low renin + medications",
+        "<strong>Hyperkalemia</strong> — from low aldosterone",
+        "<strong>Non–anion gap acidosis</strong> — from low aldosterone and hyperkalemia",
+        "<strong>Volume overload</strong> — from low renin (sodium retention)"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The whole picture matters",
+      alertText: "Drug-induced hyperkalemia alone does not explain the <strong>low renin and aldosterone</strong>. The underlying diabetic nephropathy is the cause."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management",
+      infoRows: [
+        { k: "Step 1",      v: "Stop offending agents" },
+        { k: "Step 2",      v: "Loop diuretic (preferred)" },
+        { k: "Thiazide",    v: "Loses efficacy at eGFR < 30" },
+        { k: "Step 3",      v: "K⁺ binders (patiromer)" },
+        { k: "Avoid",       v: "Kayexalate + sorbitol" },
+        { k: "Monitoring",  v: "K⁺, renal function" }
+      ],
+      svgTitle: "Management of Type 4 RTA",
+      svgSubtitle: "Stop offending agents, diurese, and lower potassium",
+      bannerBg: "#ca8a04",
+      bannerText1: "Stop spironolactone and consider reducing ramipril",
+      bannerText2: "Use a loop diuretic (not HCTZ) for volume overload at eGFR < 30",
+      panel1Title: "✅ The management steps",
+      panel1Tagline: "From stopping drugs to K⁺ binders",
+      panel1List: [
+        "<strong>1. Stop spironolactone</strong> and consider reducing ramipril",
+        "<strong>2. Loop diuretic</strong> (furosemide, torsemide) — preferred over HCTZ because it works at eGFR < 30",
+        "<strong>3. Potassium binders</strong> — patiromer (preferred) or sodium zirconium cyclosilicate",
+        "<strong>4. Avoid Kayexalate + sorbitol</strong> — risk of GI necrosis",
+        "<strong>5. Monitor K⁺ and renal function</strong>"
+      ],
+      panel2Title: "🧬 Why not HCTZ?",
+      panel2Tagline: "The diuretic choice",
+      panel2List: [
+        "<strong>HCTZ</strong> is a potassium-wasting diuretic",
+        "But it <strong>loses efficacy at eGFR < 30</strong>",
+        "This patient's eGFR is 22, so HCTZ will be ineffective",
+        "<strong>Loop diuretics</strong> work even at low eGFR and lower K⁺",
+        "If eGFR were 40–60, HCTZ could be a reasonable option"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>Hyporeninemic hypoaldosteronism and type 4 RTA</strong> — the most likely cause of this patient's findings."
+    }
+  },
+  comparison: {
+    title: "📊 RTA Types and Features",
+    sub: "Distinguishing the three types of renal tubular acidosis",
+    head: ["Feature", "Type 1 (Distal)", "Type 2 (Proximal)", "Type 4"],
+    rows: [
+      { cells: ["Primary defect", "Impaired H⁺ secretion", "Impaired HCO3 reabsorption", "Low renin/aldosterone"], hero: false },
+      { cells: ["Urine pH", "> 5.5", "< 5.5 during acidosis", "< 5.5"], hero: false },
+      { cells: ["Potassium", "Low", "Low", "High"], hero: true },
+      { cells: ["Anion gap", "Normal", "Normal", "Normal"], hero: false },
+      { cells: ["Common causes", "Sjögren, amphotericin", "Fanconi, acetazolamide", "Diabetic nephropathy, ACEi/MRA"], hero: true },
+      { cells: ["Diuretic choice", "Alkali + K⁺", "Alkali + K⁺", "Loop > HCTZ at eGFR < 30"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 64F with T2DM and CKD presents with K 6.2, HCO3 13, Cl 115, pH 7.25, and low renin/aldosterone. What is the most likely diagnosis?",
+      options: [
+        { text: "Type 4 RTA (hyporeninemic hypoaldosteronism).", correct: true,
+          explanation: "Low renin and aldosterone with hyperkalemia and non–anion gap acidosis is the hallmark of Type 4 RTA, most commonly due to diabetic nephropathy." },
+        { text: "Type 1 RTA (distal RTA).", correct: false,
+          explanation: "Type 1 RTA is associated with hypokalemia and a positive UAG, not hyperkalemia." },
+        { text: "Diabetic ketoacidosis.", correct: false,
+          explanation: "DKA causes a high anion gap acidosis, not a normal anion gap acidosis." }
+      ]
+    },
+    {
+      question: "What is the underlying mechanism of Type 4 RTA?",
+      options: [
+        { text: "Low renin and aldosterone leading to decreased K⁺ and H⁺ secretion.", correct: true,
+          explanation: "Hyporeninemic hypoaldosteronism reduces ENaC activity and Na/K ATPase, causing hyperkalemia and acidosis." },
+        { text: "Impaired distal H⁺-ATPase.", correct: false,
+          explanation: "This is Type 1 RTA." },
+        { text: "Impaired proximal HCO3 reabsorption.", correct: false,
+          explanation: "This is Type 2 RTA." }
+      ]
+    },
+    {
+      question: "This patient has an eGFR of 22 mL/min/1.73m² and hyperkalemia. Which diuretic is most appropriate?",
+      options: [
+        { text: "Loop diuretic (e.g., furosemide).", correct: true,
+          explanation: "Loop diuretics remain effective at eGFR < 30 and promote potassium excretion. Thiazides lose efficacy at this level of kidney function." },
+        { text: "Hydrochlorothiazide (HCTZ).", correct: false,
+          explanation: "HCTZ loses efficacy when eGFR is below 30. It is not the best choice here." },
+        { text: "Spironolactone.", correct: false,
+          explanation: "Spironolactone is a potassium-sparing diuretic and would worsen the hyperkalemia." }
+      ]
+    },
+    {
+      question: "Why is HCTZ not the best choice for this patient's hyperkalemia?",
+      options: [
+        { text: "It loses efficacy at eGFR < 30.", correct: true,
+          explanation: "Thiazide diuretics require adequate renal function to be effective. At eGFR 22, a loop diuretic is preferred." },
+        { text: "It raises potassium levels.", correct: false,
+          explanation: "HCTZ lowers potassium; it does not raise it." },
+        { text: "It causes hyperkalemia.", correct: false,
+          explanation: "HCTZ is potassium-wasting, not potassium-sparing." }
+      ]
+    },
+    {
+      question: "Which potassium binder is preferred in the management of Type 4 RTA?",
+      options: [
+        { text: "Patiromer.", correct: true,
+          explanation: "Patiromer is preferred over Kayexalate because it has fewer GI side effects (Kayexalate with sorbitol can cause GI necrosis)." },
+        { text: "Kayexalate with sorbitol.", correct: false,
+          explanation: "Kayexalate + sorbitol carries a risk of GI necrosis and is not preferred." },
+        { text: "Calcium polystyrene sulfonate.", correct: false,
+          explanation: "This is another form of Kayexalate, with the same risks." }
+      ]
+    },
+    {
+      question: "What is the expected urine pH in Type 4 RTA?",
+      options: [
+        { text: "< 5.5.", correct: true,
+          explanation: "In Type 4 RTA, the distal tubule can acidify the urine, so the urine pH is typically < 5.5." },
+        { text: "> 5.5.", correct: false,
+          explanation: "This is seen in Type 1 (distal) RTA." },
+        { text: "5.0 in all cases.", correct: false,
+          explanation: "The urine pH can vary, but it is typically < 5.5 in Type 4 RTA." }
+      ]
+    },
+    {
+      question: "Which of the following is a common cause of Type 4 RTA?",
+      options: [
+        { text: "Diabetic nephropathy.", correct: true,
+          explanation: "Diabetic nephropathy damages the juxtaglomerular apparatus, leading to low renin and low aldosterone." },
+        { text: "Sjögren syndrome.", correct: false,
+          explanation: "Sjögren syndrome causes Type 1 RTA." },
+        { text: "Fanconi syndrome.", correct: false,
+          explanation: "Fanconi syndrome causes Type 2 RTA." }
+      ]
+    },
+    {
+      question: "Which finding would be most consistent with a diagnosis of Type 4 RTA?",
+      options: [
+        { text: "Hyperkalemia, low renin, low aldosterone, and non–anion gap acidosis.", correct: true,
+          explanation: "This is the classic presentation of hyporeninemic hypoaldosteronism." },
+        { text: "Hypokalemia, high renin, high aldosterone, and non–anion gap acidosis.", correct: false,
+          explanation: "This would suggest a different disorder, such as Bartter or Gitelman syndrome." },
+        { text: "Hyperkalemia, high renin, high aldosterone, and high anion gap acidosis.", correct: false,
+          explanation: "This would suggest a different cause of hyperkalemia, such as adrenal insufficiency or Gordon syndrome." }
+      ]
+    },
+    {
+      question: "If this patient's eGFR were 45 instead of 22, which diuretic could be used to treat both volume overload and hyperkalemia?",
+      options: [
+        { text: "Hydrochlorothiazide (HCTZ).", correct: true,
+          explanation: "At eGFR 45, HCTZ is effective and promotes potassium excretion, making it a reasonable choice to treat both volume overload and hyperkalemia." },
+        { text: "Spironolactone.", correct: false,
+          explanation: "Spironolactone raises potassium and would worsen hyperkalemia." },
+        { text: "Acetazolamide.", correct: false,
+          explanation: "Acetazolamide is not first-line for hyperkalemia and has limited use in Type 4 RTA." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Acid-Base / Type 4 RTA",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRRT Filter Clotting — Inadequate Regional Citrate Anticoagulation</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">CRRT FILTER CLOTTING — INADEQUATE CITRATE</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">CVVHDF · postfilter replacement · multiple filter clots in 24 hours</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Postfilter iCa 0.51 mmol/L (target 0.25–0.35) · systemic iCa 1.1</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">POSTFILTER iCa</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">0.51</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mmol/L</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">TARGET: 0.25–0.35</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#7f1d1d">or at least &lt; 0.4</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">CITRATE UNDERDOSED</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#7c3aed"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">CIRCUIT</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="32" font-weight="800" fill="#5b21b6">Clotting</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">multiple times</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#ddd6fe" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#6d28d9">Filter life shortened</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#6d28d9">Efficiency reduced</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Poor clearance</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">SYSTEMIC iCa</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="44" font-weight="800" fill="#16a34a">1.1</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">mmol/L — normal</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#15803d">Safe to increase citrate</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#15803d">Calcium gluconate 60 mL/h</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">No systemic hypocalcemia</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 POSTFILTER iCa &gt; 0.4 = INADEQUATE CITRATE</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">The circuit needs iCa 0.25–0.35 to fully suppress coagulation</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ Increase citrate rate (and monitor iCa both sides)</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Postfilter iCa 0.51 → not enough citrate → filter clots</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — RCA PHYSIOLOGY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">REGIONAL CITRATE ANTICOAGULATION — PHYSIOLOGY</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Citrate chelates calcium in the circuit — calcium is restored systemically</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(700, 240)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#155e75">STEP 1 — Citrate infused into the arterial limb (pre-blood pump)</text>
+            <text x="-580" y="15" font-size="16" fill="#0e7490">Citrate binds ionized calcium in the circuit → ↓ circuit iCa</text>
+            <text x="-580" y="42" font-size="16" font-weight="700" fill="#155e75">Target circuit iCa: 0.25–0.35 mmol/L → coagulation suppressed</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 390)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#5b21b6">STEP 2 — Citrate is partially removed by the filter</text>
+            <text x="-580" y="15" font-size="16" fill="#6d28d9">The remaining citrate returns to the patient via the venous limb</text>
+            <text x="-580" y="42" font-size="16" font-weight="700" fill="#5b21b6">Citrate is metabolized in the liver and muscle (citric acid cycle)</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(700, 540)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#713f12">STEP 3 — Calcium gluconate infused via a SEPARATE central line</text>
+            <text x="-580" y="15" font-size="16" fill="#a16207">Restores systemic ionized calcium (target 1.0–1.2 mmol/L)</text>
+            <text x="-580" y="42" font-size="16" font-weight="700" fill="#713f12">Must use a separate line to avoid precipitation with citrate</text>
+          </g>
+
+          <!-- Step 4 -->
+          <g transform="translate(700, 690)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#991b1b">TARGETS — Monitor both sides</text>
+            <text x="-580" y="15" font-size="16" fill="#7f1d1d">Circuit (postfilter) iCa: 0.25–0.35 mmol/L · Systemic iCa: 1.0–1.2 mmol/L</text>
+            <text x="-580" y="42" font-size="16" font-weight="700" fill="#991b1b">Check every 6 hours and after any rate change</text>
+          </g>
+
+          <!-- Answer -->
+          <g transform="translate(700, 850)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ INCREASE THE CITRATE RATE</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" fill="#15803d">Circuit iCa &gt; 0.4 = underdosed citrate = inadequate anticoagulation</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" fill="#15803d">Increase citrate until circuit iCa is 0.25–0.35 mmol/L</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Citrate dosing is titrated to the circuit iCa — not to a fixed rate</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DIFFERENTIAL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DIFFERENTIAL — WHY THE FILTER CLOTS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Correct the driver, not the symptom</text>
+          </g>
+
+          <!-- Citrate (this case) -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">INADEQUATE CITRATE</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">iCa</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">0.51</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Circuit iCa:</text>
+              <text x="-70" y="0" font-weight="800" fill="#166534">&gt; 0.4</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Coagulation:</text>
+              <text x="-70" y="28" font-weight="800" fill="#166534">Not suppressed</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Filter:</text>
+              <text x="-70" y="56" font-weight="800" fill="#166534">Thrombosis</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Management:</text>
+              <text x="-70" y="84" font-weight="800" fill="#166534">↑ citrate rate</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Monitor:</text>
+              <text x="-70" y="112" font-weight="800" fill="#166534">iCa both sides</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Titrate to circuit iCa</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">0.25–0.35 mmol/L</text>
+          </g>
+
+          <!-- Mechanical -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">MECHANICAL CAUSES</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">Access / catheter</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">Arterial</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">pressure</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• Art press:</text>
+              <text x="-70" y="0" font-weight="800" fill="#5b21b6">–50 (mild)</text>
+              <text x="-180" y="28" font-weight="700" fill="#5b21b6">• Venous:</text>
+              <text x="-70" y="28" font-weight="800" fill="#5b21b6">60 (normal)</text>
+              <text x="-180" y="56" font-weight="700" fill="#5b21b6">• Catheter:</text>
+              <text x="-70" y="56" font-weight="800" fill="#5b21b6">No malfunction</text>
+              <text x="-180" y="84" font-weight="700" fill="#5b21b6">• Filter:</text>
+              <text x="-70" y="84" font-weight="800" fill="#5b21b6">Multiple clots</text>
+              <text x="-180" y="112" font-weight="700" fill="#5b21b6">• Consider:</text>
+              <text x="-70" y="112" font-weight="800" fill="#5b21b6">Only if RCA fails</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Second-line consideration</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">after optimizing citrate</text>
+          </g>
+
+          <!-- Other -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#0891b2"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">OTHER CAUSES</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">Consider when RCA optimal</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">Multifactorial</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#155e75">• High Hct:</text>
+              <text x="-60" y="0" font-weight="800" fill="#155e75">30% (not high)</text>
+              <text x="-180" y="28" font-weight="700" fill="#155e75">• High UF:</text>
+              <text x="-60" y="28" font-weight="800" fill="#155e75">Filtration fraction</text>
+              <text x="-180" y="56" font-weight="700" fill="#155e75">• Postfilter RF:</text>
+              <text x="-60" y="56" font-weight="800" fill="#155e75">Hemoconcentration</text>
+              <text x="-180" y="84" font-weight="700" fill="#155e75">• Access:</text>
+              <text x="-60" y="84" font-weight="800" fill="#155e75">Recirculation</text>
+              <text x="-180" y="112" font-weight="700" fill="#155e75">• Filtration:</text>
+              <text x="-60" y="112" font-weight="800" fill="#155e75">Fraction &gt; 20%</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Assess after citrate</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#155e75">optimization</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Correct the circuit iCa first — that is the primary driver of clotting here</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER D</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Increase the citrate rate</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Postfilter iCa 0.51 → target 0.25–0.35</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Increase the citrate rate</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Postfilter iCa 0.51 = underdosed citrate → ↑ citrate to 0.25–0.35</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Increase the postfilter replacement fluid rate</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Dilutes blood AFTER the filter; doesn't fix circuit anticoagulation</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Increase the blood flow rate</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Does not address inadequate anticoagulation; may stress access</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Switch to CVVH</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Modality change doesn't fix the anticoagulation problem</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Replace the dialysis access</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">No evidence of access dysfunction; pressures are not alarming</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: D — Increase the citrate rate</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "CRRT Filter Clotting — Inadequate Regional Citrate Anticoagulation",
+  subtitle: "Postfilter iCa > 0.4 = underdosed citrate → increase the citrate rate",
+  badge: "CRITICAL CARE NEPHROLOGY · CRRT · ANTICOAGULATION",
+  caseTitle: "Case: 65-year-old critically ill man on CVVHDF with recurrent filter clotting",
+  caseDescription: "AKI on CVVHDF with postfilter replacement fluid. Hct 30%, weight 85 kg. Multiple filter clots in 24 hours. Qb 200 mL/min, postfilter RF 1000 mL/h, dialysate 1000 mL/h, fluid removal 300 mL/h. Anticoagulation: 2.2% ACD-A pre-blood pump. Calcium gluconate 60 mL/h (separate line). Postfilter iCa 0.51 mmol/L (target 0.25–0.35); systemic iCa 1.1 mmol/L. Arterial pressure –50 mmHg, venous pressure 60 mmHg.",
+  labChips: [
+    { text: "Postfilter iCa 0.51 mmol/L", abnormal: true },
+    { text: "Systemic iCa 1.1 mmol/L", abnormal: false },
+    { text: "Target circuit iCa 0.25–0.35", abnormal: false },
+    { text: "Hct 30%", abnormal: false },
+    { text: "Weight 85 kg", abnormal: false },
+    { text: "Qb 200 mL/min", abnormal: false },
+    { text: "Arterial pressure −50 mmHg", abnormal: false },
+    { text: "Venous pressure 60 mmHg", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 RCA Physiology", className: "opt2" },
+    { id: "opt3", label: "🔵 Differential", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 CRRT Filter Clotting — The Case",
+      infoRows: [
+        { k: "Circuit iCa", v: "0.51 mmol/L (high)" },
+        { k: "Target circuit iCa", v: "0.25–0.35 mmol/L" },
+        { k: "Systemic iCa", v: "1.1 mmol/L (normal)" },
+        { k: "Filter clots", v: "Multiple in 24 h" },
+        { k: "Action", v: "↑ citrate rate" }
+      ],
+      svgTitle: "CRRT Filter Clotting — Inadequate Citrate Anticoagulation",
+      svgSubtitle: "Postfilter iCa 0.51 · target 0.25–0.35 · systemic iCa 1.1 (normal)",
+      bannerBg: "#dc2626",
+      bannerText1: "Postfilter iCa > 0.4 = underdosed citrate = inadequate anticoagulation",
+      bannerText2: "Increase citrate rate until circuit iCa is 0.25–0.35",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the numbers tell you",
+      panel1List: [
+        "<strong>Postfilter iCa 0.51</strong> — above the target range (0.25–0.35); coagulation is NOT suppressed",
+        "<strong>Systemic iCa 1.1</strong> — normal; safe to increase citrate and monitor",
+        "<strong>Multiple filter clots in 24 hours</strong> — direct evidence of inadequate circuit anticoagulation",
+        "<strong>Arterial pressure –50 mmHg</strong> — mild; not alarming for access malfunction",
+        "<strong>Venous pressure 60 mmHg</strong> — normal; no evidence of access or catheter problem"
+      ],
+      panel2Title: "🧬 Why citrate underdosing causes clotting",
+      panel2Tagline: "The mechanism",
+      panel2List: [
+        "Citrate <strong>chelates ionized calcium</strong> in the circuit → ↓ circuit iCa",
+        "<strong>Coagulation requires iCa</strong> — without it, the cascade is suppressed",
+        "The target circuit iCa is <strong>0.25–0.35 mmol/L</strong> (or at least &lt; 0.4)",
+        "At <strong>iCa 0.51</strong>, the cascade continues → filter thrombosis",
+        "The fix is <strong>titrating citrate up</strong> to reach the target"
+      ],
+      alertIcon: "🩸",
+      alertTitle: "Board Pearl — Titrate citrate to iCa",
+      alertText: "Citrate dosing is titrated to the <strong>postfilter ionized calcium</strong>, not to a fixed rate. If iCa &gt; 0.4, increase citrate. If iCa &lt; 0.25, decrease citrate (to avoid citrate toxicity)."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Regional Citrate Anticoagulation — Physiology",
+      infoRows: [
+        { k: "Step 1", v: "Citrate → ↓ circuit iCa" },
+        { k: "Step 2", v: "Filter removes some citrate" },
+        { k: "Step 3", v: "Ca gluconate restores systemic iCa" },
+        { k: "Target circuit iCa", v: "0.25–0.35 mmol/L" },
+        { k: "Target systemic iCa", v: "1.0–1.2 mmol/L" }
+      ],
+      svgTitle: "Regional Citrate Anticoagulation — Physiology",
+      svgSubtitle: "Citrate chelates calcium in the circuit; calcium is restored systemically",
+      bannerBg: "#7c3aed",
+      bannerText1: "Citrate dosing is titrated to the circuit iCa — not to a fixed rate",
+      bannerText2: "Monitor both circuit and systemic iCa at least every 6 hours",
+      panel1Title: "🔬 How RCA works",
+      panel1Tagline: "Step by step",
+      panel1List: [
+        "<strong>Citrate</strong> is infused into the arterial limb (pre-blood pump)",
+        "Citrate binds <strong>ionized calcium in the circuit</strong> → ↓ circuit iCa → coagulation suppressed",
+        "<strong>Target circuit iCa: 0.25–0.35 mmol/L</strong>",
+        "Some citrate is <strong>removed by the filter</strong>; the rest returns to the patient",
+        "<strong>Calcium gluconate</strong> infused via a <strong>separate central line</strong> to restore systemic iCa",
+        "<strong>Target systemic iCa: 1.0–1.2 mmol/L</strong>"
+      ],
+      panel2Title: "⚠️ Why a separate line for calcium?",
+      panel2Tagline: "Avoid precipitation",
+      panel2List: [
+        "<strong>Citrate + calcium</strong> can precipitate if mixed in the same line",
+        "Calcium gluconate must be delivered through a <strong>separate central venous line</strong>",
+        "This is standard practice and is correctly done in this patient",
+        "<strong>Monitor</strong> for hypocalcemia (systemic) and citrate toxicity",
+        "Citrate accumulates if the liver cannot metabolize it (liver failure, shock)"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Titrate to the circuit iCa",
+      alertText: "Always <strong>adjust citrate based on the circuit iCa</strong>. Do not use fixed-rate protocols without monitoring — the patient's citrate metabolism and clearance vary."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Differential — Why the Filter Clots",
+      infoRows: [
+        { k: "This patient", v: "Inadequate citrate" },
+        { k: "Mechanical", v: "Access malfunction" },
+        { k: "Hemoconcentration", v: "Filtration fraction" },
+        { k: "Catheter", v: "Position, recirculation" },
+        { k: "Priority", v: "Fix citrate first" }
+      ],
+      svgTitle: "Differential — Why the Filter Clots",
+      svgSubtitle: "Correct the driver, not the symptom",
+      bannerBg: "#0891b2",
+      bannerText1: "Correct the circuit iCa first — that is the primary driver of clotting here",
+      bannerText2: "Mechanical causes come second, after RCA is optimized",
+      panel1Title: "🔬 Inadequate citrate — the primary cause",
+      panel1Tagline: "The obvious driver",
+      panel1List: [
+        "<strong>Circuit iCa 0.51 mmol/L</strong> — above the target range",
+        "Coagulation cascade not suppressed → filter thrombosis",
+        "<strong>Fix:</strong> increase citrate rate until circuit iCa is 0.25–0.35",
+        "<strong>Monitor:</strong> circuit iCa q6h (and after changes); systemic iCa to avoid hypocalcemia",
+        "If citrate toxicity develops, consider ↓ citrate or switch to alternative anticoagulation"
+      ],
+      panel2Title: "🔬 Mechanical causes — second-line",
+      panel2Tagline: "Consider when RCA is optimized",
+      panel2List: [
+        "<strong>Access dysfunction:</strong> arterial pressure more negative than –100 to –150 mmHg suggests catheter malfunction",
+        "<strong>Catheter position:</strong> malposition can cause recirculation and poor flow",
+        "<strong>Filtration fraction:</strong> postfilter Hct rise > 20% increases clotting risk",
+        "<strong>Postfilter replacement:</strong> concentrates blood within the filter",
+        "<strong>Access replacement:</strong> consider only if RCA is optimized and mechanical cause is clear"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Fix anticoagulation first",
+      alertText: "Before attributing filter clotting to mechanical causes, ensure the <strong>circuit iCa is in target range</strong>. Inadequate anticoagulation is the most common and most easily correctable cause."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "D — Increase citrate rate" },
+        { k: "Circuit iCa", v: "0.51 → target 0.25–0.35" },
+        { k: "Systemic iCa", v: "1.1 — safe to increase" },
+        { k: "Monitor", v: "Both iCa q6h" },
+        { k: "Avoid", v: "Modality switches, access changes" }
+      ],
+      svgTitle: "Answer Summary — Increase the Citrate Rate",
+      svgSubtitle: "Postfilter iCa 0.51 = underdosed citrate; target 0.25–0.35",
+      bannerBg: "#ca8a04",
+      bannerText1: "D — Increase the citrate rate; monitor circuit and systemic iCa",
+      bannerText2: "Do not switch modality or exchange the access for inadequate anticoagulation",
+      panel1Title: "✅ The correct answer (D)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>Circuit iCa 0.51</strong> — above target; the coagulation cascade is NOT suppressed",
+        "<strong>Systemic iCa 1.1</strong> — normal; safe to increase citrate",
+        "<strong>Filter clots repeatedly</strong> — direct consequence of inadequate anticoagulation",
+        "<strong>Action: increase citrate rate</strong> until circuit iCa is 0.25–0.35 mmol/L",
+        "<strong>Monitor both</strong> circuit and systemic iCa at least every 6 hours"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (↑ postfilter RF):</strong> Dilutes blood AFTER the filter; doesn't fix circuit anticoagulation",
+        "<strong>B (↑ blood flow):</strong> Does not address inadequate anticoagulation; may stress access",
+        "<strong>C (Switch to CVVH):</strong> Modality change doesn't fix the underlying problem",
+        "<strong>E (Replace access):</strong> No evidence of access dysfunction; arterial pressure –50 mmHg is not alarming"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>Increase the citrate rate.</strong> The postfilter iCa of 0.51 mmol/L indicates underdosed citrate. Titrate up until the circuit iCa reaches 0.25–0.35 mmol/L, monitoring both circuit and systemic iCa."
+    }
+  },
+  comparison: {
+    title: "📊 Circuit iCa Targets in Regional Citrate Anticoagulation",
+    sub: "Interpretation and management based on postfilter ionized calcium",
+    head: ["Postfilter iCa", "Interpretation", "Management"],
+    rows: [
+      { cells: ["< 0.25 mmol/L", "Over-anticoagulation (citrate excess)", "↓ citrate rate; check systemic iCa for hypocalcemia"], hero: false },
+      { cells: ["0.25–0.35 mmol/L", "Target range — adequate anticoagulation", "Maintain current rate; continue monitoring"], hero: false },
+      { cells: ["0.36–0.40 mmol/L", "Borderline — may need slight increase", "Consider ↑ citrate; monitor closely"], hero: false },
+      { cells: ["0.41–0.50 mmol/L", "Underdosed citrate", "↑ citrate; monitor for filter clotting"], hero: false },
+      { cells: ["> 0.50 mmol/L (this patient: 0.51)", "Significantly underdosed", "↑↑ citrate rate; expect filter clotting"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A patient on CVVHDF with regional citrate anticoagulation has a postfilter ionized calcium of 0.51 mmol/L and has clotted multiple filters in 24 hours. What is the best management?",
+      options: [
+        { text: "Increase the citrate rate.", correct: true,
+          explanation: "The postfilter iCa of 0.51 mmol/L is above the target range (0.25–0.35), indicating inadequate citrate. Increasing the citrate rate will lower circuit iCa into target range and reduce filter clotting." },
+        { text: "Increase the postfilter replacement fluid rate.", correct: false,
+          explanation: "This dilutes blood after the filter and does not fix the underlying anticoagulation problem within the filter." },
+        { text: "Switch to continuous venovenous hemofiltration (CVVH).", correct: false,
+          explanation: "Modality change does not address inadequate circuit anticoagulation." }
+      ]
+    },
+    {
+      question: "What is the target postfilter (circuit) ionized calcium during regional citrate anticoagulation for CRRT?",
+      options: [
+        { text: "0.25–0.35 mmol/L.", correct: true,
+          explanation: "Target circuit iCa is 0.25–0.35 mmol/L (at least < 0.4). This range effectively suppresses coagulation within the circuit while allowing the calcium infusion to restore systemic iCa." },
+        { text: "0.5–0.7 mmol/L.", correct: false,
+          explanation: "This range is too high — it indicates inadequate citrate and would allow filter clotting." },
+        { text: "1.0–1.2 mmol/L.", correct: false,
+          explanation: "1.0–1.2 mmol/L is the target for SYSTEMIC iCa, not circuit iCa." }
+      ]
+    },
+    {
+      question: "Why must calcium gluconate be infused through a SEPARATE central line during RCA?",
+      options: [
+        { text: "To avoid precipitation of calcium with citrate in the same line.", correct: true,
+          explanation: "Calcium and citrate can precipitate if mixed in the same line. A separate central line prevents this." },
+        { text: "Because calcium is incompatible with all IV medications.", correct: false,
+          explanation: "Calcium has many compatibilities; the issue is specifically with citrate." },
+        { text: "Because calcium must be delivered at a higher concentration.", correct: false,
+          explanation: "The concern is precipitation, not concentration." }
+      ]
+    },
+    {
+      question: "What is the target SYSTEMIC ionized calcium during RCA for CRRT?",
+      options: [
+        { text: "1.0–1.2 mmol/L.", correct: true,
+          explanation: "Systemic iCa should be maintained at 1.0–1.2 mmol/L via calcium gluconate infusion. This is the normal physiologic range for ionized calcium." },
+        { text: "0.25–0.35 mmol/L.", correct: false,
+          explanation: "0.25–0.35 is the target for CIRCUIT iCa, not systemic." },
+        { text: "0.5–0.7 mmol/L.", correct: false,
+          explanation: "Systemic iCa must be normal (1.0–1.2 mmol/L); lower values indicate systemic hypocalcemia." }
+      ]
+    },
+    {
+      question: "A patient on CVVHDF has a postfilter iCa of 0.20 mmol/L and a systemic iCa of 0.95 mmol/L. What is the appropriate management?",
+      options: [
+        { text: "Decrease the citrate rate and increase the calcium gluconate infusion.", correct: true,
+          explanation: "A circuit iCa of 0.20 is BELOW target (over-anticoagulation), and systemic iCa 0.95 is low. Reduce citrate to raise circuit iCa; increase calcium to correct systemic hypocalcemia." },
+        { text: "Increase the citrate rate to lower circuit iCa further.", correct: false,
+          explanation: "This would worsen the over-anticoagulation and hypocalcemia." },
+        { text: "Switch to heparin anticoagulation.", correct: false,
+          explanation: "Heparin is not the answer for citrate over-anticoagulation — adjust the citrate and calcium rates." }
+      ]
+    },
+    {
+      question: "Which mechanical cause of filter clotting should be considered AFTER optimizing citrate dosing?",
+      options: [
+        { text: "Access malfunction with arterial pressure more negative than –150 mmHg.", correct: true,
+          explanation: "Very negative arterial pressure suggests access dysfunction (catheter malposition, thrombosis, or poor flow). Consider access evaluation after ensuring adequate anticoagulation." },
+        { text: "Venous pressure of 60 mmHg.", correct: false,
+          explanation: "Venous pressure of 60 mmHg is normal and does not indicate a problem." },
+        { text: "Hematocrit of 30%.", correct: false,
+          explanation: "Hct 30% is not elevated and does not significantly increase clotting risk." }
+      ]
+    },
+    {
+      question: "What is a concern of OVER-anticoagulation with citrate during RCA?",
+      options: [
+        { text: "Systemic hypocalcemia and citrate accumulation.", correct: true,
+          explanation: "Excess citrate chelates systemic calcium, causing hypocalcemia. In liver dysfunction, citrate accumulation can occur (metabolic acidosis, ↑ anion gap). Monitor both circuit and systemic iCa." },
+        { text: "Filter clotting.", correct: false,
+          explanation: "Over-anticoagulation causes bleeding tendency, not filter clotting." },
+        { text: "Hemolysis.", correct: false,
+          explanation: "Hemolysis is not a typical concern of citrate over-anticoagulation." }
+      ]
+    },
+    {
+      question: "Which of the following measures is LEAST appropriate for a patient with recurrent CRRT filter clotting and postfilter iCa of 0.51?",
+      options: [
+        { text: "Replace the dialysis access immediately.", correct: true,
+          explanation: "The primary problem is inadequate citrate (circuit iCa 0.51 above target). Access replacement should only be considered after RCA is optimized and mechanical causes are demonstrated." },
+        { text: "Increase the citrate rate.", correct: false,
+          explanation: "This is the appropriate first step." },
+        { text: "Monitor circuit and systemic iCa closely.", correct: false,
+          explanation: "Close monitoring is essential when adjusting citrate." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Critical Care Nephrology / CRRT / Anticoagulation",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chloramine-Induced Hemolysis — Dialysis Water Safety Emergency</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <linearGradient id="bloodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#fecaca"/>
+            <stop offset="100%" stop-color="#fca5a5"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+          <marker id="arrowGold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#991b1b">CHLORAMINE-INDUCED HEMOLYSIS — A WATER SAFETY EMERGENCY</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">59M · ESKD · back pain, chest tightness, dyspnea 40 min into dialysis · 2 other patients affected within minutes</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">BP 92/54 · Hb 10.4 → 7.1 · K 6.4 · LDH 1850 · haptoglobin undetectable · pink-red plasma · DAT negative</text>
+          </g>
+
+          <!-- Card 1: Cluster -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">A CLUSTER, NOT A CASE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">3 PATIENTS</text>
+            <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#334155">same unit · within minutes</text>
+            <line x1="-150" y1="-42" x2="150" y2="-42" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#334155">Symptoms in common:</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">back pain · chest tightness · dyspnea</text>
+
+            <line x1="-150" y1="38" x2="150" y2="38" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="68" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Shared exposure =</text>
+            <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">water supply problem</text>
+            <text x="0" y="128" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">not a patient-specific reaction</text>
+          </g>
+
+          <!-- Card 2: Hemolysis labs -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">ACUTE INTRAVASCULAR HEMOLYSIS</text>
+
+            <g font-family="Arial" font-size="14" fill="#334155">
+              <text x="-170" y="-92" font-weight="700">Hb</text>
+              <text x="60" y="-92" font-weight="800" fill="#dc2626">10.4 → 7.1</text>
+              <text x="-170" y="-66" font-weight="700">LDH</text>
+              <text x="60" y="-66" font-weight="800" fill="#dc2626">1,850 U/L</text>
+              <text x="-170" y="-40" font-weight="700">Haptoglobin</text>
+              <text x="60" y="-40" font-weight="800" fill="#dc2626">Undetectable</text>
+              <text x="-170" y="-14" font-weight="700">Plasma</text>
+              <text x="60" y="-14" font-weight="800" fill="#dc2626">Pink-red</text>
+              <text x="-170" y="12" font-weight="700">DAT</text>
+              <text x="60" y="12" font-weight="800" fill="#166534">Negative</text>
+            </g>
+
+            <line x1="-170" y1="34" x2="170" y2="34" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Intravascular · non-immune</text>
+            <text x="0" y="90" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">DAT negative excludes immune hemolysis</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">K 6.4 — from lysed red cells</text>
+            <text x="0" y="146" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">hyperkalemia is a direct consequence</text>
+          </g>
+
+          <!-- Card 3: Water source -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE SOURCE</text>
+
+            <text x="0" y="-86" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">Total chlorine /</text>
+            <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">chloramine ELEVATED</text>
+            <line x1="-150" y1="-42" x2="150" y2="-42" stroke="#cffafe" stroke-width="2"/>
+
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#334155">Activated carbon filter</text>
+            <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">FAILED</text>
+
+            <line x1="-150" y1="34" x2="150" y2="34" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Carbon removes chloramine by</text>
+            <text x="0" y="84" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">reduction — exhausted carbon</text>
+            <text x="0" y="104" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">lets chloramine pass through</text>
+
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">dialysate temperature 36.5 °C — normal</text>
+          </g>
+
+          <!-- Bottom: chain of reasoning -->
+          <g transform="translate(700, 705)">
+            <rect x="-580" y="-58" width="1160" height="116" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#334155">THE CHAIN OF REASONING</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="15" fill="#334155">Cluster of patients + acute intravascular hemolysis + DAT negative + elevated chloramine = <tspan font-weight="800" fill="#991b1b">dialysate contamination</tspan></text>
+            <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="15" fill="#334155">Chloramine crossed the dialyzer membrane and oxidised the red cells <tspan font-weight="800" fill="#991b1b">during treatment</tspan></text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#94a3b8">The offending agent is still in the extracorporeal circuit</text>
+          </g>
+
+          <g transform="translate(700, 850)">
+            <rect x="-580" y="-45" width="1160" height="90" rx="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="19" font-weight="800" fill="#166534">✅ E — STOP · DO NOT RETURN BLOOD · TREAT · SUSPEND THE UNIT</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">Stop dialysis immediately, discard the extracorporeal blood, treat hemolysis and hyperkalemia</text>
+            <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">Suspend affected treatments until water safety is verified and the carbon system is restored</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — CHLORAMINE AND CARBON
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#5b21b6">HOW CHLORAMINE ENTERS THE PATIENT</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#6d28d9">Municipal water → carbon filter (removes chloramine) → RO → dialysate → dialyzer membrane → blood</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#8b5cf6">When carbon is exhausted, chloramine passes straight through — nothing else in the chain removes it</text>
+          </g>
+
+          <!-- Chain row -->
+          <g transform="translate(700, 290)">
+
+            <g transform="translate(-580, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">MUNICIPAL</text>
+              <text y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">WATER</text>
+              <text y="28" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">Cl₂ · NH₂Cl</text>
+            </g>
+            <path d="M -505,0 L -455,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(-380, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-12" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">CARBON</text>
+              <text y="6" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#b91c1c">FAILED</text>
+              <text y="28" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">no removal</text>
+            </g>
+            <path d="M -305,0 L -255,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(-180, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">RO</text>
+              <text y="8" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">does NOT remove</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">chloramine</text>
+            </g>
+            <path d="M -105,0 L -55,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(20, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">DIALYSATE</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">chloramine</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">still present</text>
+            </g>
+            <path d="M 95,0 L 145,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(220, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">DIALYZER</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">membrane does</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">not block it</text>
+            </g>
+            <path d="M 295,0 L 345,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(420, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">BLOOD</text>
+              <text y="8" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">RBC oxidised</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">hemolysis</text>
+            </g>
+            <path d="M 495,0 L 545,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(620, 0)">
+              <rect x="-75" y="-42" width="150" height="84" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">PATIENT</text>
+              <text y="8" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">Hb ↓ · K ↑</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">pink plasma</text>
+            </g>
+
+          </g>
+
+          <!-- Chemistry card -->
+          <g transform="translate(280, 620)">
+            <rect x="-210" y="-140" width="420" height="280" rx="16" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <text y="-108" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE CHEMISTRY</text>
+            <line x1="-180" y1="-92" x2="180" y2="-92" stroke="#fecaca" stroke-width="2"/>
+
+            <text y="-62" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">Chloramine (NH₂Cl)</text>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">is a strong oxidant</text>
+
+            <text y="-8" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">It attacks the red cell</text>
+            <text y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">membrane and haemoglobin</text>
+
+            <text y="46" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">Oxidative hemolysis</text>
+
+            <line x1="-180" y1="72" x2="180" y2="72" stroke="#fecaca" stroke-width="2"/>
+            <text y="100" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Small enough to cross the dialyzer</text>
+            <text y="122" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">membrane into the blood</text>
+          </g>
+
+          <!-- Carbon mechanism card -->
+          <g transform="translate(700, 620)">
+            <rect x="-210" y="-140" width="420" height="280" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-108" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">WHY CARBON IS ESSENTIAL</text>
+            <line x1="-180" y1="-92" x2="180" y2="-92" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text y="-62" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">Carbon removes chloramine</text>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">by reduction to chloride and ammonia</text>
+
+            <text y="-8" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">Other stages do NOT remove it</text>
+            <text y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">RO: no · softener: no · UV: no</text>
+
+            <line x1="-180" y1="42" x2="180" y2="42" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text y="72" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Exhausted carbon =</text>
+            <text y="94" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">no barrier at all</text>
+            <text y="122" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">&lt; 0.1 mg/L total chlorine downstream</text>
+          </g>
+
+          <!-- Prevention card -->
+          <g transform="translate(1120, 620)">
+            <rect x="-210" y="-140" width="420" height="280" rx="16" fill="#fff" stroke="#16a34a" stroke-width="4"/>
+            <text y="-108" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">THE DAILY SAFETY CHECK</text>
+            <line x1="-180" y1="-92" x2="180" y2="-92" stroke="#bbf7d0" stroke-width="2"/>
+
+            <text y="-62" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">Total chlorine test</text>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#15803d">downstream of carbon</text>
+
+            <text y="-6" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">Every single day</text>
+
+            <text y="26" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">&lt; 0.1 mg/L = safe</text>
+            <text y="50" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">Higher = stop the unit</text>
+
+            <line x1="-180" y1="76" x2="180" y2="76" stroke="#bbf7d0" stroke-width="2"/>
+            <text y="106" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#64748b">the single most important routine</text>
+            <text y="124" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#64748b">safety check in dialysis</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — HEMOLYSIS AND LABS
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#155e75">READING THE HEMOLYSIS LABS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#0e7490">Every finding confirms intravascular hemolysis and excludes an immune cause</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#0e7490">This is the pattern you must recognise instantly</text>
+          </g>
+
+          <!-- Lab cards -->
+          <g transform="translate(250, 450)">
+            <rect x="-190" y="-160" width="380" height="320" rx="18" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-190" y="-160" width="380" height="55" rx="18" fill="#dc2626"/>
+            <rect x="-190" y="-125" width="380" height="20" fill="#dc2626"/>
+            <text x="0" y="-127" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">RED CELL DESTRUCTION</text>
+
+            <g font-family="Arial" font-size="14" fill="#334155">
+              <text x="-165" y="-80" font-weight="800" fill="#dc2626">Hb 7.1</text>
+              <text x="-40" y="-80">(from 10.4)</text>
+              <text x="-165" y="-56">Massive drop in minutes</text>
+
+              <text x="-165" y="-20" font-weight="800" fill="#dc2626">LDH 1850</text>
+              <text x="-165" y="4">Released from lysed cells</text>
+
+              <text x="-165" y="40" font-weight="800" fill="#dc2626">Haptoglobin undetectable</text>
+              <text x="-165" y="64">Consumed binding free Hb</text>
+
+              <text x="-165" y="100" font-weight="800" fill="#dc2626">Pink-red plasma</text>
+              <text x="-165" y="124">Free haemoglobin visible</text>
+            </g>
+
+            <text x="0" y="150" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">the classic intravascular triad</text>
+          </g>
+
+          <g transform="translate(700, 450)">
+            <rect x="-190" y="-160" width="380" height="320" rx="18" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-190" y="-160" width="380" height="55" rx="18" fill="#7c3aed"/>
+            <rect x="-190" y="-125" width="380" height="20" fill="#7c3aed"/>
+            <text x="0" y="-127" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">NOT AN IMMUNE CAUSE</text>
+
+            <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#166534">DAT NEGATIVE</text>
+
+            <line x1="-160" y1="-52" x2="160" y2="-52" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">What this excludes:</text>
+            <text x="-160" y="6" font-family="Arial" font-size="13" fill="#334155">• Autoimmune hemolysis</text>
+            <text x="-160" y="30" font-family="Arial" font-size="13" fill="#334155">• Drug-induced immune hemolysis</text>
+            <text x="-160" y="54" font-family="Arial" font-size="13" fill="#334155">• Transfusion reaction</text>
+            <text x="-160" y="78" font-family="Arial" font-size="13" fill="#334155">• Alloantibody-mediated lysis</text>
+
+            <line x1="-160" y1="104" x2="160" y2="104" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="130" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Antibody-negative</text>
+            <text x="0" y="150" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">→ non-immune, oxidative mechanism</text>
+          </g>
+
+          <g transform="translate(1150, 450)">
+            <rect x="-190" y="-160" width="380" height="320" rx="18" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-190" y="-160" width="380" height="55" rx="18" fill="#ca8a04"/>
+            <rect x="-190" y="-125" width="380" height="20" fill="#ca8a04"/>
+            <text x="0" y="-127" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE LIFE-THREATENING ONE</text>
+
+            <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#dc2626">K⁺ 6.4</text>
+
+            <line x1="-160" y1="-52" x2="160" y2="-52" stroke="#fde68a" stroke-width="2"/>
+
+            <text x="0" y="-22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">Where it comes from:</text>
+            <text x="-160" y="6" font-family="Arial" font-size="13" fill="#334155">• Each red cell contains K⁺</text>
+            <text x="-160" y="30" font-family="Arial" font-size="13" fill="#334155">• Lysis releases it into plasma</text>
+            <text x="-160" y="54" font-family="Arial" font-size="13" fill="#334155">• Patient already has ESKD</text>
+            <text x="-160" y="78" font-family="Arial" font-size="13" fill="#334155">• No renal K⁺ excretion</text>
+
+            <line x1="-160" y1="104" x2="160" y2="104" stroke="#fde68a" stroke-width="2"/>
+
+            <text x="0" y="130" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">This is what kills first</text>
+            <text x="0" y="150" text-anchor="middle" font-family="Arial" font-size="13" fill="#b91c1c">treat it before anything else</text>
+          </g>
+
+          <!-- Bottom: DAT explanation -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">WHY DAT IS NEGATIVE — AND WHY THAT MATTERS</text>
+            <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">DAT detects antibody or complement on the red cell surface — it is positive in <tspan font-weight="800" fill="#5b21b6">immune</tspan> hemolysis</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Chloramine damages the red cell <tspan font-weight="800" fill="#dc2626">chemically</tspan> — no antibody involved — so the DAT is negative</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">A negative DAT with severe hemolysis is a strong pointer toward a chemical or mechanical cause</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — ANSWER AND MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#713f12">THE ANSWER AND WHY THE OTHERS FAIL</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#854d0e">E — Stop dialysis · do not return blood · treat hemolysis and hyperkalemia · suspend the unit</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#713f12">Each distractor fails because it keeps the patient connected to, or returns, contaminated blood</text>
+          </g>
+
+          <!-- 6-step chain -->
+          <g transform="translate(700, 260)">
+
+            <g transform="translate(-540, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">1</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">STOP</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">halt dialysis now</text>
+            </g>
+            <path d="M -440,0 L -390,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(-330, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">2</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">DO NOT RETURN</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">discard the blood</text>
+            </g>
+            <path d="M -230,0 L -180,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(-120, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">3</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">TREAT</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">hemolysis · K⁺ 6.4</text>
+            </g>
+            <path d="M -20,0 L 30,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(90, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">4</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">SUSPEND</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">verify water safety</text>
+            </g>
+            <path d="M 190,0 L 240,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(300, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#16a34a"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">5</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">RESTORE</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#15803d">carbon · retest</text>
+            </g>
+            <path d="M 400,0 L 450,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(540, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#16a34a"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">6</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">RESUME</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#15803d">only when verified</text>
+            </g>
+          </g>
+
+          <!-- Why no blood return -->
+          <g transform="translate(350, 500)">
+            <rect x="-290" y="-115" width="580" height="230" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text y="-85" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">WHY NOT RETURN THE BLOOD?</text>
+            <line x1="-260" y1="-70" x2="260" y2="-70" stroke="#fecaca" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-42" font-weight="800" fill="#991b1b">• Already hemolyzed</text>
+              <text x="-240" y="-22">Returning it delivers free Hb and K⁺</text>
+              <text x="-260" y="4" font-weight="800" fill="#991b1b">• Still contains chloramine</text>
+              <text x="-240" y="24">More oxidant delivered to the patient</text>
+              <text x="-260" y="50" font-weight="800" fill="#991b1b">• K⁺ is already 6.4</text>
+              <text x="-240" y="70">Adding more risks a fatal arrhythmia</text>
+              <text x="-260" y="96" font-weight="800" fill="#991b1b">• Blood loss is smaller than the risk</text>
+              <text x="-240" y="116">~200–250 mL discarded · replaceable</text>
+            </g>
+          </g>
+
+          <!-- Treatment -->
+          <g transform="translate(1050, 500)">
+            <rect x="-290" y="-115" width="580" height="230" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-85" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">TREAT WHAT IS LIFE-THREATENING</text>
+            <line x1="-260" y1="-70" x2="260" y2="-70" stroke="#ddd6fe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-42" font-weight="800" fill="#5b21b6">Hyperkalemia (K 6.4)</text>
+              <text x="-240" y="-22">Calcium gluconate for cardiac protection</text>
+              <text x="-240" y="-2">Insulin + glucose · β-agonist · dialysis</text>
+
+              <text x="-260" y="28" font-weight="800" fill="#5b21b6">Hemolysis</text>
+              <text x="-240" y="48">Supportive · monitor Hb · transfuse if needed</text>
+
+              <text x="-260" y="76" font-weight="800" fill="#5b21b6">Hypotension</text>
+              <text x="-240" y="96">IV fluids · reassess before further treatment</text>
+            </g>
+          </g>
+
+          <!-- Distractor strip -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">WHY THE OTHER FOUR FAIL</text>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-580" y="-2" font-weight="800" fill="#991b1b">A · Reduce flow</text>
+              <text x="-370" y="-2">hemolysis is not proportional only to duration</text>
+              <text x="-580" y="22" font-weight="800" fill="#991b1b">B · Steroids</text>
+              <text x="-370" y="22">chloramine is an oxidant, not an allergen</text>
+              <text x="-580" y="46" font-weight="800" fill="#991b1b">C · Return blood</text>
+              <text x="-370" y="46">delivers Hb, K⁺, and chloramine back</text>
+              <text x="180" y="-2" font-weight="800" fill="#991b1b">D · IV iron</text>
+              <text x="290" y="-2">anemia is hemolysis, not iron deficiency</text>
+            </g>
+          </g>
+
+          <!-- Final -->
+          <g transform="translate(700, 870)">
+            <rect x="-600" y="-42" width="1200" height="84" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#166534">✅ FINAL ANSWER — E</text>
+            <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">Stop dialysis, do not return the contaminated blood, treat hemolysis and hyperkalemia</text>
+            <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">Suspend affected treatments until water safety is verified and the carbon system is restored</text>
+          </g>
+
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Chloramine-Induced Hemolysis — Dialysis Water Safety Emergency",
+  subtitle: "A cluster of patients + acute hemolysis + elevated chloramine = stop, do not return blood, treat, suspend",
+  badge: "NEPHROLOGY · HEMODIALYSIS · WATER SAFETY",
+  caseTitle: "Case: 59-year-old man with ESKD develops sudden symptoms 40 minutes into dialysis",
+  caseDescription: "59M with ESKD develops back pain, chest tightness, and dyspnea 40 min into hemodialysis. Two other patients on the same unit develop similar symptoms within minutes. BP 92/54, Hb falls 10.4 → 7.1, K 6.4, LDH 1850, haptoglobin undetectable, plasma pink-red, DAT negative. Dialysate temperature 36.5 °C. Dialysis water testing shows elevated total chlorine/chloramine, and the activated carbon filter has failed. Which immediate management action is most appropriate?",
+  labChips: [
+    { text: "BP 92/54", abnormal: true },
+    { text: "Hb 10.4 → 7.1", abnormal: true },
+    { text: "K 6.4 mEq/L", abnormal: true },
+    { text: "LDH 1,850 U/L", abnormal: true },
+    { text: "Haptoglobin undetectable", abnormal: true },
+    { text: "Pink-red plasma", abnormal: true },
+    { text: "DAT negative", abnormal: false },
+    { text: "Dialysate 36.5 °C", abnormal: false },
+    { text: "Chloramine elevated", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",             className: "opt1" },
+    { id: "opt2", label: "🟣 Chloramine & Carbon",  className: "opt2" },
+    { id: "opt3", label: "🔵 Hemolysis & Labs",     className: "opt3" },
+    { id: "opt4", label: "🟡 Answer & Management",  className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Chloramine Hemolysis",
+      infoRows: [
+        { k: "Diagnosis",   v: "Chloramine-induced hemolysis" },
+        { k: "Cause",       v: "Activated carbon filter failure" },
+        { k: "Key clue",    v: "Cluster of 3 patients" },
+        { k: "Hemolysis",   v: "Intravascular · DAT negative" },
+        { k: "Dialysate",   v: "36.5 °C — normal" },
+        { k: "Answer",      v: "E" }
+      ],
+      svgTitle: "The Case — A Cluster of Patients with Acute Hemolysis",
+      svgSubtitle: "Cluster + hemolysis labs + elevated chloramine + carbon failure = chloramine-induced hemolysis",
+      bannerBg: "#dc2626",
+      bannerText1: "Cluster of 3 patients + acute intravascular hemolysis + elevated chloramine = water supply problem",
+      bannerText2: "The dialysate temperature is normal — not the cause",
+      panel1Title: "🧪 The four signals",
+      panel1Tagline: "Why this is water, not the patient",
+      panel1List: [
+        "<strong>Cluster of 3 patients</strong> in the same unit within minutes — shared exposure",
+        "<strong>Acute intravascular hemolysis</strong> — Hb 10.4 → 7.1, LDH 1850, haptoglobin undetectable, pink-red plasma",
+        "<strong>DAT negative</strong> — hemolysis is not immune-mediated",
+        "<strong>Elevated total chlorine/chloramine + carbon filter failure</strong> — the source",
+        "<strong>Dialysate 36.5 °C</strong> — normal, rules out thermal hemolysis"
+      ],
+      panel2Title: "🧬 The reasoning",
+      panel2Tagline: "From cluster to cause",
+      panel2List: [
+        "A cluster means the problem is <strong>shared</strong>, not patient-specific",
+        "Acute intravascular hemolysis <strong>during</strong> dialysis points to the circuit or dialysate",
+        "The <strong>only</strong> route for chloramine to reach blood is through the dialysate",
+        "Elevated total chlorine confirms <strong>carbon failure</strong>",
+        "The offending agent is <strong>still in the extracorporeal circuit</strong>"
+      ],
+      alertIcon: "🚨",
+      alertTitle: "Cluster = water",
+      alertText: "A cluster of patients with the same symptom at the same time is the fastest path to the right answer. <strong>The water is the shared variable.</strong>"
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Chloramine and the Carbon Filter",
+      infoRows: [
+        { k: "Chloramine",   v: "NH₂Cl · strong oxidant" },
+        { k: "Removed by",   v: "Activated carbon only" },
+        { k: "Not removed by", v: "RO · softener · UV" },
+        { k: "Crosses",      v: "Dialyzer membrane" },
+        { k: "Effect",       v: "Oxidative hemolysis" },
+        { k: "Safety check", v: "Total Cl &lt; 0.1 mg/L daily" }
+      ],
+      svgTitle: "How Chloramine Enters the Patient",
+      svgSubtitle: "Municipal water → carbon → RO → dialysate → membrane → blood",
+      bannerBg: "#7c3aed",
+      bannerText1: "Activated carbon removes chloramine by reduction — exhausted carbon removes nothing",
+      bannerText2: "RO, softener, and UV do not remove chloramine — carbon is the only barrier",
+      panel1Title: "🔬 The chemistry",
+      panel1Tagline: "Why chloramine harms red cells",
+      panel1List: [
+        "<strong>Chloramine (NH₂Cl)</strong> is a strong oxidant",
+        "It attacks the red cell membrane and haemoglobin",
+        "Causes <strong>oxidative hemolysis</strong>",
+        "It is small enough to <strong>cross the dialyzer membrane</strong> into blood",
+        "There is no other barrier between water and patient"
+      ],
+      panel2Title: "🛡️ Why carbon is essential",
+      panel2Tagline: "And what happens when it fails",
+      panel2List: [
+        "<strong>Activated carbon</strong> removes chloramine by reduction to chloride and ammonia",
+        "<strong>RO does not remove chloramine</strong> — it removes ions and bacteria",
+        "<strong>Softener and UV do not remove it</strong> either",
+        "Exhausted carbon = <strong>no barrier at all</strong>",
+        "Daily total chlorine test downstream of carbon must be <strong>&lt; 0.1 mg/L</strong>"
+      ],
+      alertIcon: "💧",
+      alertTitle: "The single most important safety check",
+      alertText: "Total chlorine <strong>&lt; 0.1 mg/L downstream of the carbon filter</strong>, tested daily, is the single most important routine safety check in dialysis."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Hemolysis and the Labs",
+      infoRows: [
+        { k: "Hb",          v: "10.4 → 7.1 (acute)" },
+        { k: "LDH",         v: "1,850 U/L" },
+        { k: "Haptoglobin", v: "Undetectable" },
+        { k: "Plasma",      v: "Pink-red" },
+        { k: "DAT",         v: "Negative" },
+        { k: "K⁺",          v: "6.4 mEq/L" }
+      ],
+      svgTitle: "Reading the Hemolysis Labs",
+      svgSubtitle: "Every finding confirms intravascular hemolysis and excludes an immune cause",
+      bannerBg: "#0891b2",
+      bannerText1: "Low Hb + high LDH + undetectable haptoglobin + pink plasma = intravascular hemolysis",
+      bannerText2: "DAT negative excludes immune hemolysis — the mechanism is chemical (oxidative)",
+      panel1Title: "🔬 The red cell destruction",
+      panel1Tagline: "The classic intravascular triad",
+      panel1List: [
+        "<strong>Hb 10.4 → 7.1</strong> — massive drop in minutes",
+        "<strong>LDH 1,850</strong> — released from lysed red cells",
+        "<strong>Haptoglobin undetectable</strong> — consumed binding free haemoglobin",
+        "<strong>Pink-red plasma</strong> — free haemoglobin visible",
+        "This is <strong>intravascular</strong>, not extravascular hemolysis"
+      ],
+      panel2Title: "🩸 DAT negative and hyperkalemia",
+      panel2Tagline: "Why the DAT is negative and why K⁺ is dangerous",
+      panel2List: [
+        "<strong>DAT negative</strong> — excludes autoimmune, drug-induced, and transfusion-related immune hemolysis",
+        "Chloramine damages the red cell <strong>chemically</strong>, no antibody involved",
+        "<strong>K⁺ 6.4</strong> — each lysed red cell releases potassium",
+        "Patient has <strong>ESKD</strong> — no renal potassium excretion",
+        "<strong>Hyperkalemia is the first thing that kills</strong> — treat it immediately"
+      ],
+      alertIcon: "⚡",
+      alertTitle: "Hyperkalemia is the immediate threat",
+      alertText: "The acute hemolysis releases potassium that the failing kidneys cannot excrete. <strong>Treat K⁺ 6.4 before anything else.</strong>"
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer and Management",
+      infoRows: [
+        { k: "Correct answer", v: "E" },
+        { k: "Step 1",         v: "Stop dialysis" },
+        { k: "Step 2",         v: "Do not return blood" },
+        { k: "Step 3",         v: "Treat hemolysis and K⁺" },
+        { k: "Step 4",         v: "Suspend the unit" },
+        { k: "Restore",        v: "Carbon · retest · resume" }
+      ],
+      svgTitle: "Answer and Management — Six Steps",
+      svgSubtitle: "Stop · do not return blood · treat · suspend · restore · resume",
+      bannerBg: "#ca8a04",
+      bannerText1: "E — Stop dialysis, do not return the blood, treat hemolysis and hyperkalemia, suspend the unit",
+      bannerText2: "Each other option either continues the exposure or returns contaminated blood",
+      panel1Title: "✅ The correct answer (E)",
+      panel1Tagline: "Why it is right on all four counts",
+      panel1List: [
+        "<strong>Stop dialysis</strong> — halts further chloramine exposure",
+        "<strong>Do not return blood</strong> — it is hemolyzed, still contains chloramine, and adds more K⁺",
+        "<strong>Treat hemolysis and hyperkalemia</strong> — calcium gluconate, insulin/glucose, β-agonist",
+        "<strong>Suspend affected treatments</strong> — until water safety is verified",
+        "<strong>Restore carbon and retest</strong> — resume only when total Cl &lt; 0.1 mg/L"
+      ],
+      panel2Title: "❌ Why the others fail",
+      panel2Tagline: "Each has a fatal error",
+      panel2List: [
+        "<strong>A — Reduce dialysate flow:</strong> chloramine toxicity is not proportional only to duration; hemolysis continues",
+        "<strong>B — Steroids:</strong> chloramine is an oxidant, not an allergen; steroids do nothing",
+        "<strong>C — Return blood:</strong> delivers free Hb, potassium, and residual chloramine back to the patient",
+        "<strong>D — IV iron:</strong> the anemia is hemolysis, not iron deficiency; iron does not help acutely",
+        "<strong>E — Stop, discard, treat, suspend:</strong> correct on all four counts"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: E",
+      alertText: "<strong>Stop dialysis immediately, do not return the contaminated blood, treat hemolysis and hyperkalemia, and suspend affected treatments until water safety is restored.</strong>"
+    }
+  },
+  comparison: {
+    title: "📊 Differential of Acute Hemolysis During Dialysis",
+    sub: "Three causes — distinguished by pattern and labs",
+    head: ["Cause", "Cluster?", "Key clue", "Action"],
+    rows: [
+      { cells: ["Chloramine (water)",    "Yes — whole unit", "Elevated total chlorine · pink plasma · DAT negative", "Stop · do not return · treat K⁺"], hero: true },
+      { cells: ["Overheated dialysate",  "Machine-specific", "Dialysate temp > 42 °C",                              "Stop · cool dialysate"], hero: false },
+      { cells: ["Immune hemolysis",      "No — patient-specific", "DAT positive · antibody-mediated",              "Steroids · stop offending agent"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "59M with ESKD develops back pain, chest tightness, and dyspnea 40 min into dialysis. Two other patients on the same unit have similar symptoms within minutes. Hb fell 10.4 → 7.1, LDH 1850, haptoglobin undetectable, plasma pink-red, DAT negative, total chlorine elevated, carbon filter failed. What is the most appropriate immediate action?",
+      options: [
+        { text: "Stop dialysis, do not return blood, treat hemolysis and hyperkalemia, and suspend affected treatments until water safety is restored.", correct: true,
+          explanation: "This is chloramine-induced hemolysis. Returning blood would deliver hemolyzed cells, potassium, and residual chloramine. Stop, discard, treat, and suspend the unit." },
+        { text: "Reduce dialysate flow rate and continue treatment.", correct: false,
+          explanation: "Chloramine exposure is not proportional only to duration — continuing any exposure prolongs hemolysis." },
+        { text: "Return the extracorporeal blood immediately to prevent blood loss, then resume dialysis on the same machine.", correct: false,
+          explanation: "The blood is hemolyzed, still contains chloramine, and carries a high K⁺ load. Returning it harms the patient. Resuming on the same machine re-exposes the patient." }
+      ]
+    },
+    {
+      question: "Which component of the water treatment system is responsible for removing chloramine?",
+      options: [
+        { text: "Activated carbon filter.", correct: true,
+          explanation: "Carbon removes chloramine by reduction. Exhausted carbon removes nothing, and no other stage in the standard chain removes chloramine effectively." },
+        { text: "Reverse osmosis membrane.", correct: false,
+          explanation: "RO removes ions, bacteria, and endotoxin but not chloramine — carbon is the barrier." },
+        { text: "Ultraviolet lamp.", correct: false,
+          explanation: "UV kills bacteria; it does not remove chemical contaminants." }
+      ]
+    },
+    {
+      question: "Why is the direct antiglobulin test (DAT) negative in chloramine-induced hemolysis?",
+      options: [
+        { text: "Chloramine damages red cells chemically (oxidative hemolysis), with no antibody or complement on the red cell surface.", correct: true,
+          explanation: "DAT detects antibody or complement bound to red cells. Chloramine causes oxidative damage directly, so the DAT is negative." },
+        { text: "DAT cannot detect hemolysis that occurs during dialysis.", correct: false,
+          explanation: "DAT is a general test for immune hemolysis and is not affected by the setting." },
+        { text: "DAT is negative because the patient has ESKD.", correct: false,
+          explanation: "ESKD does not make the DAT negative. It is negative because the mechanism is not immune." }
+      ]
+    },
+    {
+      question: "Why is hyperkalemia (K 6.4) present in this patient?",
+      options: [
+        { text: "Lysed red cells release intracellular potassium, and the failing kidneys cannot excrete it.", correct: true,
+          explanation: "Potassium is predominantly intracellular. Massive hemolysis releases it into plasma, and in ESKD there is no renal excretion to compensate." },
+        { text: "Chloramine directly raises serum potassium.", correct: false,
+          explanation: "Chloramine does not directly affect potassium. The rise is from red cell lysis." },
+        { text: "The dialysate potassium concentration was too high.", correct: false,
+          explanation: "No data support this, and it would not explain the acute hemolysis or the cluster." }
+      ]
+    },
+    {
+      question: "Why should the extracorporeal blood NOT be returned to the patient in chloramine-induced hemolysis?",
+      options: [
+        { text: "The blood is already hemolyzed, still contains chloramine, and adds a significant potassium load.", correct: true,
+          explanation: "Returning it delivers free haemoglobin, potassium, and residual oxidant back to the patient. Discarding 200–250 mL is safer and replaceable." },
+        { text: "The blood is clotted and cannot be safely returned.", correct: false,
+          explanation: "Clotting is not the issue in this scenario." },
+        { text: "Returning blood causes pyrogenic reactions.", correct: false,
+          explanation: "The risk here is hemolyzed cells, potassium, and chloramine — not pyrogens." }
+      ]
+    },
+    {
+      question: "What is the single most important daily safety check to prevent chloramine hemolysis?",
+      options: [
+        { text: "Total chlorine level downstream of the carbon filter (< 0.1 mg/L).", correct: true,
+          explanation: "This is the definitive daily check. Exhausted carbon removes nothing, so the downstream total chlorine must be verified every day." },
+        { text: "Dialysate conductivity.", correct: false,
+          explanation: "Conductivity detects electrolyte mix errors, not chloramine." },
+        { text: "Dialysate temperature.", correct: false,
+          explanation: "Temperature is important but does not detect chloramine." }
+      ]
+    },
+    {
+      question: "Which distractor is most tempting but wrong because chloramine toxicity is not proportional only to duration?",
+      options: [
+        { text: "Reducing the dialysate flow rate and continuing treatment.", correct: true,
+          explanation: "Reducing flow does not stop exposure — chloramine continues to cross the membrane. The only safe action is to stop the treatment entirely." },
+        { text: "Administering corticosteroids and continuing dialysis.", correct: false,
+          explanation: "Steroids are wrong because chloramine is not an allergen — this distractor fails on mechanism, not on dose-response." },
+        { text: "Administering IV iron.", correct: false,
+          explanation: "IV iron is wrong because the anemia is not iron deficiency — this distractor fails on mechanism." }
+      ]
+    },
+    {
+      question: "What is the correct step after stopping dialysis and treating the patient?",
+      options: [
+        { text: "Suspend affected dialysis treatments until water safety is verified and the carbon system is restored.", correct: true,
+          explanation: "Other patients on the unit remain at risk. The unit must be suspended until total chlorine downstream of carbon is below 0.1 mg/L." },
+        { text: "Resume on the same machine after replacing the dialyzer.", correct: false,
+          explanation: "The problem is the water supply, not the dialyzer. Resuming re-exposes the patient." },
+        { text: "Continue on a different machine in the same unit.", correct: false,
+          explanation: "If the water is contaminated, all machines in the unit share the same risk." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Hemodialysis / Water Safety",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

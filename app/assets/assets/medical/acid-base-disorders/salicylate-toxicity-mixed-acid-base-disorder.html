@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salicylate Toxicity: Mixed Acid-Base Disorder and Treatment</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ SHARED AXES (always visible) ============ -->
+      <g id="axes">
+        <!-- Left chart: PaCO2 -->
+        <text x="270" y="110" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#334155">PaCO₂ (mmHg)</text>
+        <rect x="120" y="150" width="330" height="450" fill="#ffffff" stroke="#e2e8f0"/>
+        <line x1="120" y1="487.5" x2="450" y2="487.5" stroke="#e2e8f0"/>
+        <line x1="120" y1="375" x2="450" y2="375" stroke="#e2e8f0"/>
+        <line x1="120" y1="262.5" x2="450" y2="262.5" stroke="#e2e8f0"/>
+        <line x1="120" y1="150" x2="450" y2="150" stroke="#e2e8f0"/>
+        <line x1="120" y1="600" x2="450" y2="600" stroke="#334155" stroke-width="2"/>
+        <line x1="120" y1="150" x2="120" y2="600" stroke="#334155" stroke-width="2"/>
+        <text x="108" y="604" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">0</text>
+        <text x="108" y="492" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">10</text>
+        <text x="108" y="379" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">20</text>
+        <text x="108" y="267" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">30</text>
+        <text x="108" y="154" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">40</text>
+
+        <!-- Right chart: anion gap -->
+        <text x="650" y="110" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#334155">Anion gap (mEq/L)</text>
+        <rect x="520" y="150" width="260" height="450" fill="#ffffff" stroke="#e2e8f0"/>
+        <line x1="520" y1="600" x2="780" y2="600" stroke="#334155" stroke-width="2"/>
+        <line x1="520" y1="150" x2="520" y2="600" stroke="#334155" stroke-width="2"/>
+        <line x1="520" y1="300" x2="780" y2="300" stroke="#e2e8f0"/>
+        <line x1="520" y1="450" x2="780" y2="450" stroke="#e2e8f0"/>
+        <line x1="520" y1="150" x2="780" y2="150" stroke="#e2e8f0"/>
+        <text x="508" y="604" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">0</text>
+        <text x="508" y="454" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">10</text>
+        <text x="508" y="304" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">20</text>
+        <text x="508" y="154" text-anchor="end" font-family="Arial" font-size="12" fill="#475569">30</text>
+      </g>
+
+      <!-- ============ DIAGRAM 1: Mixed RA + HAGMA (CORRECT) ============ -->
+      <g id="diagram-opt1" style="display:none">
+        <!-- expected PaCO2 band (Winter's 26 ± 2) -->
+        <rect x="300" y="285" width="110" height="45" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="355" y="312" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Expected</text>
+        <text x="355" y="326" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">24–28</text>
+        <!-- measured PaCO2 -->
+        <rect x="160" y="397.5" width="100" height="202.5" fill="#dc2626" opacity="0.9" class="pulse-node"/>
+        <text x="210" y="385" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Measured 18</text>
+        <text x="210" y="620" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Lower than expected</text>
+        <!-- anion gap bar -->
+        <rect x="580" y="195" width="140" height="405" fill="#7c3aed" opacity="0.85"/>
+        <line x1="520" y1="420" x2="780" y2="420" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="650" y="412" text-anchor="middle" font-family="Arial" font-size="11" fill="#475569">Normal 12</text>
+        <text x="650" y="182" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Gap 27</text>
+        <!-- annotation -->
+        <rect x="820" y="420" width="0" height="0" fill="none"/>
+        <text x="650" y="640" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">High gap, so a metabolic acidosis is present</text>
+      </g>
+
+      <!-- ============ DIAGRAM 2: Pure respiratory alkalosis (WRONG) ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <rect x="160" y="397.5" width="100" height="202.5" fill="#7c3aed" opacity="0.9" class="pulse-node"/>
+        <text x="210" y="385" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Measured 18</text>
+        <rect x="300" y="285" width="110" height="45" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="355" y="312" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">Expected</text>
+        <text x="355" y="326" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">24–28</text>
+        <rect x="580" y="195" width="140" height="405" fill="#e2e8f0" stroke="#94a3b8" stroke-dasharray="6 4"/>
+        <text x="650" y="182" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#64748b">Gap 27 ignored</text>
+        <rect x="200" y="470" width="0" height="0" fill="none"/>
+        <text x="650" y="640" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Ignores the gap of 27 entirely</text>
+      </g>
+
+      <!-- ============ DIAGRAM 3: Pure HAGMA with appropriate compensation (WRONG) ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <rect x="300" y="285" width="110" height="45" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+        <text x="355" y="312" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">Expected</text>
+        <text x="355" y="326" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">24–28</text>
+        <rect x="160" y="397.5" width="100" height="202.5" fill="#0891b2" opacity="0.9" class="pulse-node"/>
+        <text x="210" y="385" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">Measured 18</text>
+        <rect x="580" y="195" width="140" height="405" fill="#0891b2" opacity="0.85"/>
+        <text x="650" y="182" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">Gap 27</text>
+        <text x="650" y="640" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Gap is right, but PaCO₂ is too low</text>
+      </g>
+
+      <!-- ============ DIAGRAM 4: Respiratory acidosis claim (WRONG) ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <rect x="160" y="397.5" width="100" height="202.5" fill="#e2e8f0" stroke="#94a3b8" stroke-dasharray="6 4"/>
+        <text x="210" y="385" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#64748b">Measured 18</text>
+        <path d="M 210 560 L 210 430" stroke="#ca8a04" stroke-width="5" marker-end="url(#arrowUp)" class="flow-anim"/>
+        <text x="260" y="500" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">Claimed high,</text>
+        <text x="260" y="516" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">but it is low</text>
+        <rect x="580" y="195" width="140" height="405" fill="#ca8a04" opacity="0.85"/>
+        <text x="650" y="182" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">Gap 27</text>
+        <text x="650" y="640" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">A PaCO₂ of 18 cannot be respiratory acidosis</text>
+      </g>
+
+      <defs>
+        <marker id="arrowUp" viewBox="0 0 10 10" refX="5" refY="0" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 10 L 5 0 L 10 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <!-- ============ DYNAMIC BANNER ============ -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <!-- INFO PANEL -->
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <!-- TEACHING PANELS -->
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  title: "Salicylate Toxicity: Mixed Acid-Base Disorder and Treatment",
+  subtitle: "Why the pH can look normal, and why the gap, PaCO₂, and Winter formula all matter",
+  badge: "TOXICOLOGY · ACID-BASE",
+  caseTitle: "Case: 35-year-old woman after a large aspirin ingestion",
+  caseDescription: "Tinnitus, nausea, vomiting, and rapid breathing. Arterial pH is 7.46, but the anion gap is high and the PaCO₂ is much lower than expected. Serum salicylate is 68 mg/dL.",
+  labChips: [
+    { text: "pH 7.46", abnormal: false },
+    { text: "PaCO₂ 18", abnormal: true },
+    { text: "HCO₃ 12", abnormal: true },
+    { text: "Na 140 / Cl 101", abnormal: false },
+    { text: "Gap 27", abnormal: true },
+    { text: "Albumin 4.0", abnormal: false },
+    { text: "Lactate 2.1", abnormal: false },
+    { text: "Salicylate 68 mg/dL", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 D: Mixed RA + HAGMA", className: "opt1" },
+    { id: "opt2", label: "🟣 A: Pure resp alkalosis", className: "opt2" },
+    { id: "opt3", label: "🔵 B: Pure HAGMA", className: "opt3" },
+    { id: "opt4", label: "🟡 C: Resp acidosis added", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Mixed disorder: RA + HAGMA",
+      infoRows: [
+        { k: "Anion gap", v: "140 − (101 + 12) = 27 (high)" },
+        { k: "Delta ratio", v: "(27 − 12) / (24 − 12) ≈ 1.25" },
+        { k: "Expected PaCO₂", v: "1.5 × 12 + 8 = 26 ± 2" },
+        { k: "Measured PaCO₂", v: "18, so primary respiratory alkalosis" }
+      ],
+      svgTitle: "Two primary disorders on one set of labs",
+      svgSubtitle: "Measured PaCO₂ falls below the expected band, and the anion gap is high",
+      bannerBg: "#dc2626",
+      bannerText1: "✔ Correct: mixed disorder",
+      bannerText2: "Primary respiratory alkalosis plus high-gap metabolic acidosis",
+      panel1Title: "Reading the labs",
+      panel1Tagline: "Gap first, then compensation",
+      panel1List: [
+        "<strong>Anion gap 27</strong> is high, with albumin normal, so no correction is needed",
+        "<strong>Lactate 2.1</strong> does not explain the gap, which points to salicylate",
+        "<strong>Winter formula</strong> predicts PaCO₂ of 26 ± 2; measured 18 is too low"
+      ],
+      panel2Title: "Why the pH is misleading",
+      panel2Tagline: "Two processes push in different directions",
+      panel2List: [
+        "<strong>Salicylate stimulates the medullary respiratory center</strong>, causing hyperventilation",
+        "The metabolic acid load lowers bicarbonate; together the two disorders leave pH near 7.46",
+        "A normal or alkaline pH does not exclude a metabolic acidosis"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Always calculate the gap and the expected PaCO₂",
+      alertText: "A pH of 7.46 looks reassuring, but <strong>a high gap with PaCO₂ below the Winter range is a mixed disorder</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Pure respiratory alkalosis",
+      infoRows: [
+        { k: "Proposed diagnosis", v: "Respiratory alkalosis only" },
+        { k: "Anion gap", v: "27, ignored" },
+        { k: "Why it fails", v: "The gap is clearly high" },
+        { k: "Verdict", v: "Wrong" }
+      ],
+      svgTitle: "Missing the metabolic acidosis",
+      svgSubtitle: "The high anion gap is ignored",
+      bannerBg: "#7c3aed",
+      bannerText1: "✘ Wrong: gap ignored",
+      bannerText2: "An alkaline pH does not rule out a metabolic acidosis",
+      panel1Title: "What goes wrong",
+      panel1Tagline: "Single-disorder reasoning",
+      panel1List: [
+        "<strong>Respiratory alkalosis is real</strong>, but it is only half of the picture",
+        "<strong>A gap of 27</strong> cannot be explained by respiratory alkalosis"
+      ],
+      panel2Title: "Why it is tempting",
+      panel2Tagline: "The pH and the tachypnea look like one disorder",
+      panel2List: [
+        "Rapid breathing and alkalemia point toward respiratory alkalosis",
+        "The gap is easy to miss when you do not calculate it"
+      ],
+      alertIcon: "🟣",
+      alertTitle: "Calculate the gap every time",
+      alertText: "Option A stops after the pH. <strong>The gap of 27 is the metabolic clue</strong> that must not be missed."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Pure high-gap acidosis",
+      infoRows: [
+        { k: "Proposed diagnosis", v: "HAGMA with appropriate compensation" },
+        { k: "Anion gap", v: "27, correctly identified" },
+        { k: "Expected PaCO₂", v: "26 ± 2" },
+        { k: "Measured PaCO₂", v: "18, too low" }
+      ],
+      svgTitle: "Gap is right, but compensation is not",
+      svgSubtitle: "The measured PaCO₂ is below the expected range",
+      bannerBg: "#0891b2",
+      bannerText1: "✘ Wrong: compensation is excessive",
+      bannerText2: "PaCO₂ of 18 exceeds what Winter formula predicts",
+      panel1Title: "What goes wrong",
+      panel1Tagline: "The respiratory picture does not fit",
+      panel1List: [
+        "<strong>Winter formula</strong> predicts 26 ± 2, but the PaCO₂ is 18",
+        "<strong>Extra hyperventilation</strong> means a second primary process is present"
+      ],
+      panel2Title: "What to remember",
+      panel2Tagline: "Compensation must follow the formula",
+      panel2List: [
+        "Appropriate compensation stays within the Winter range",
+        "A PaCO₂ outside the range suggests a separate primary disorder"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Check the compensation range",
+      alertText: "Option B gets the gap right but misses the <strong>respiratory alkalosis hidden in the PaCO₂</strong>."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Respiratory acidosis added",
+      infoRows: [
+        { k: "Proposed diagnosis", v: "HAGMA plus respiratory acidosis" },
+        { k: "Direction of PaCO₂", v: "Claimed high; measured 18 (low)" },
+        { k: "Bicarbonate", v: "Claimed contraindicated" },
+        { k: "Verdict", v: "Wrong" }
+      ],
+      svgTitle: "Wrong direction for the respiratory component",
+      svgSubtitle: "A PaCO₂ of 18 cannot be respiratory acidosis",
+      bannerBg: "#ca8a04",
+      bannerText1: "✘ Wrong: direction misread",
+      bannerText2: "Respiratory acidosis needs a PaCO₂ above 40 mmHg",
+      panel1Title: "What goes wrong",
+      panel1Tagline: "Misreading the PaCO₂",
+      panel1List: [
+        "<strong>A PaCO₂ of 18</strong> is low, which means alkalosis, not acidosis",
+        "<strong>Sodium bicarbonate is not contraindicated</strong> here and is often used"
+      ],
+      panel2Title: "What is actually true",
+      panel2Tagline: "Bicarbonate is part of the treatment",
+      panel2List: [
+        "Alkalinization with sodium bicarbonate traps salicylate in the urine",
+        "Monitor potassium and pH while giving bicarbonate"
+      ],
+      alertIcon: "🟡",
+      alertTitle: "Check the direction before the label",
+      alertText: "Option C mislabels the respiratory component. <strong>A low PaCO₂ does not support respiratory acidosis.</strong>"
+    }
+  },
+  quiz: [
+    {
+      question: "What is the anion gap for these labs?",
+      options: [
+        { text: "27 mEq/L", correct: true, explanation: "Anion gap = Na minus (Cl plus HCO3) = 140 minus (101 plus 12) = 27. Albumin is normal, so no correction is needed." },
+        { text: "15 mEq/L", correct: false, explanation: "This would need a bicarbonate of about 24 or a chloride of 113. Recheck the arithmetic using Na 140, Cl 101, and HCO3 12." },
+        { text: "12 mEq/L", correct: false, explanation: "12 is the upper limit of normal. This gap of 27 is clearly high." }
+      ]
+    },
+    {
+      question: "What PaCO₂ does Winter formula predict for a bicarbonate of 12?",
+      options: [
+        { text: "26 ± 2 mmHg", correct: true, explanation: "Expected PaCO₂ = 1.5 × 12 + 8 = 26, with a range of 24 to 28 mmHg." },
+        { text: "40 mmHg", correct: false, explanation: "40 is normal and does not account for compensation of a metabolic acidosis." },
+        { text: "18 mmHg", correct: false, explanation: "18 is the measured value. It is below the expected range, which is why it signals a second disorder." }
+      ]
+    },
+    {
+      question: "What does a measured PaCO₂ of 18 mmHg indicate?",
+      options: [
+        { text: "A primary respiratory alkalosis added to the metabolic acidosis", correct: true, explanation: "The PaCO₂ is lower than the Winter range, so the respiratory system is over-compensating or a separate primary alkalosis is present." },
+        { text: "Respiratory acidosis", correct: false, explanation: "Respiratory acidosis causes a high PaCO₂. A value of 18 is low." },
+        { text: "Normal compensation for the anion gap", correct: false, explanation: "Compensation should land within the Winter range, and 18 falls below it." }
+      ]
+    },
+    {
+      question: "Why does salicylate toxicity typically cause respiratory alkalosis early on?",
+      options: [
+        { text: "It directly stimulates the medullary respiratory center, increasing ventilation", correct: true, explanation: "Salicylate stimulates the respiratory center, producing hyperventilation and a low PaCO₂ early in toxicity." },
+        { text: "It reduces carbon dioxide production", correct: false, explanation: "Salicylate increases metabolic activity and CO₂ production is not reduced in this way." },
+        { text: "It binds bicarbonate directly in the blood", correct: false, explanation: "Bicarbonate is consumed by the metabolic acid load, but salicylate does not bind it directly as the cause of the alkalosis." }
+      ]
+    },
+    {
+      question: "Why is IV sodium bicarbonate used in salicylate toxicity?",
+      options: [
+        { text: "It alkalinizes plasma and urine, trapping ionized salicylate for urinary elimination", correct: true, explanation: "Ionized salicylate is trapped in alkaline urine and moves out of the CNS, which enhances its elimination. Monitor potassium and pH." },
+        { text: "It corrects the respiratory alkalosis directly", correct: false, explanation: "Bicarbonate does not correct the respiratory component. Ventilation is controlled by the respiratory center." },
+        { text: "It acidifies the urine to speed elimination", correct: false, explanation: "Acidifying urine traps salicylate in the tubule and reduces elimination, which is the opposite of the goal." }
+      ]
+    },
+    {
+      question: "Which finding is a reasonable indication for hemodialysis in salicylate toxicity?",
+      options: [
+        { text: "Altered mental status, pulmonary edema, or failure of alkalinization", correct: true, explanation: "These are established indications. Severe toxicity, renal impairment, or worsening acidemia also support dialysis, based on clinical severity." },
+        { text: "Any salicylate level above 20 mg/dL, regardless of symptoms", correct: false, explanation: "Asymptomatic levels alone do not require dialysis. Decisions are based on clinical status and the trajectory of the patient." },
+        { text: "Tinnitus alone with a normal mental status", correct: false, explanation: "Tinnitus is an early symptom. Without other severe features, close monitoring and alkalinization are usually enough." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation",
+  footerNote: "Educational content based on standard toxicology and acid-base principles. Verify against current guidelines and your institution's protocols."
+};
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(c =>
+    `<span class="lab-chip${c.abnormal ? ' abn' : ''}">${c.text}</span>`
+  ).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(t =>
+    `<button class="tab ${t.className}" id="tab${t.id}" onclick="setMode('${t.id}')">${t.label}</button>`
+  ).join('');
+
+  document.getElementById('quizCount').textContent = CONFIG.quiz.length;
+
+  document.getElementById('quizGrid').innerHTML = CONFIG.quiz.map((q, qi) => `
+    <div class="q">
+      <p>${qi + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map(o => `
+          <button class="opt" onclick="answerWithFeedback(this, ${o.correct}, '${o.correct ? 'Correct' : 'Wrong'}', '${o.explanation.replace(/'/g, "\\'")}', '${o.explanation.replace(/'/g, "\\'")}')">${o.text}</button>
+        `).join('')}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join('');
+}
+
+function setMode(mode) {
+  const d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(t => document.getElementById('tab' + t.id).classList.remove('active'));
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(id => {
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panel.classList.contains('collapsed') ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(r =>
+    `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`
+  ).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  document.getElementById('infoPanel').classList.toggle('collapsed', panelCollapsed);
+  document.getElementById('toggleBtn').textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+  const box = btn.closest('.q');
+  box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  const explain = box.querySelector('.explain');
+  if (isCorrect) {
+    explain.className = 'explain show correct-explain';
+    explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+  } else {
+    explain.className = 'explain show wrong-explain';
+    explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+  }
+}
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

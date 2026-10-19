@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRRT Deep Dive — Citrate, Effluent, FF & Acidosis</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; --opt5:#16a34a; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; border-left:4px solid var(--opt1);}
+  .stat-card:nth-child(1){border-left-color:#dc2626;}
+  .stat-card:nth-child(2){border-left-color:#7c3aed;}
+  .stat-card:nth-child(3){border-left-color:#0891b2;}
+  .stat-card:nth-child(4){border-left-color:#16a34a;}
+  .stat-card .k{font-size:.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat-card .v{font-size:1rem; font-weight:800; color:var(--ink);}
+  .stat-card .sub{font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+  .tab.opt5.active{background:#ecfdf5; border-color:var(--opt5); color:#065f46;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:290px;
+    max-width:calc(100% - 40px); transition:all .3s ease;
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-float.highlight-opt5{border-color:var(--opt5);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-float.highlight-opt5 .info-header{background:#ecfdf5;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800; color:#0f172a;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulseNode{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.65; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulseNode 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>CRRT Deep Dive — Citrate, Effluent, FF & Acidosis</h1>
+      <p>Regional citrate · Effluent dose · Filtration fraction by modality · Bicarbonate vs dialysate</p>
+    </div>
+    <div class="badge">Critical Care Nephrology</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>75-kg patient with septic shock on CVVHDF — filter keeps clotting</h2>
+      <p>Qb 180 mL/min · Hct 35% · Q_pre 1,000 mL/h · Q_post 1,500 mL/h · Dialysate 2,000 mL/h · Net UF 150 mL/h. FF ≈ 33% (target &lt; 25%). Now discussing anticoagulation strategy, effluent dosing, and acidosis management.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">FF 33%</span>
+      <span class="lab-chip">CVVHDF</span>
+      <span class="lab-chip abn">Filter clotting</span>
+      <span class="lab-chip abn">Metabolic acidosis</span>
+      <span class="lab-chip">Lactate high</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="k">RCA Benefit</div>
+      <div class="v">Circuit-only</div>
+      <div class="sub">Less bleeding than heparin</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Effluent Target</div>
+      <div class="v">20–25 mL/kg/h</div>
+      <div class="sub">KDIGO 2012 recommendation</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">FF by Modality</div>
+      <div class="v">CVVHD lowest</div>
+      <div class="sub">1–4% vs 15–35% (CVVH)</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Acidosis Fix</div>
+      <div class="v">↑ Dialysate rate</div>
+      <div class="sub">Not prefilter bicarbonate</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ DIAGRAM 1 — RCA ============ -->
+      <g id="diagram-opt1">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">REGIONAL CITRATE ANTICOAGULATION — CIRCUIT ONLY</text>
+
+        <!-- Patient -->
+        <g transform="translate(100, 260)">
+          <circle r="45" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">PATIENT</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">Blood</text>
+        </g>
+
+        <!-- Blood out to circuit -->
+        <path d="M 150 260 L 320 260" stroke="#dc2626" stroke-width="12" fill="none" class="flow-anim" stroke-linecap="round"/>
+        <text x="235" y="245" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#7f1d1d">Blood out</text>
+
+        <!-- Citrate infusion at arterial limb -->
+        <g transform="translate(320, 180)">
+          <circle r="34" fill="#fef9c3" stroke="#ca8a04" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#713f12">CITRATE</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="9" fill="#713f12">Infusion</text>
+        </g>
+        <path d="M 320 214 L 320 250" stroke="#ca8a04" stroke-width="4" fill="none" stroke-dasharray="4 3"/>
+        <text x="380" y="200" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#713f12">iCa drops to &lt;0.5</text>
+
+        <!-- Filter -->
+        <g transform="translate(320, 200)">
+          <rect x="0" y="0" width="180" height="220" rx="14" fill="#f1f5f9" stroke="#334155" stroke-width="2.5"/>
+          <text x="90" y="-10" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#0f172a">FILTER</text>
+          <rect x="12" y="12" width="156" height="90" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+          <text x="90" y="60" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#7f1d1d">Blood compartment</text>
+          <rect x="12" y="110" width="156" height="16" rx="4" fill="#64748b"/>
+          <text x="90" y="122" text-anchor="middle" font-family="Arial" font-size="8" font-weight="800" fill="#fff">MEMBRANE</text>
+          <rect x="12" y="134" width="156" height="74" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+          <text x="90" y="175" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#1e3a8a">Dialysate / Effluent</text>
+        </g>
+
+        <!-- Calcium re-infusion at venous limb -->
+        <path d="M 500 260 L 680 260" stroke="#dc2626" stroke-width="12" fill="none" class="flow-anim" stroke-linecap="round"/>
+
+        <g transform="translate(680, 180)">
+          <circle r="34" fill="#dbeafe" stroke="#2563eb" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#1e3a8a">CALCIUM</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="9" fill="#1e3a8a">Re-infusion</text>
+        </g>
+        <path d="M 680 214 L 680 250" stroke="#2563eb" stroke-width="4" fill="none" stroke-dasharray="4 3"/>
+        <text x="770" y="200" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#1e3a8a">iCa normalizes</text>
+
+        <!-- Return to patient -->
+        <path d="M 720 260 L 950 260" stroke="#dc2626" stroke-width="12" fill="none" class="flow-anim" stroke-linecap="round"/>
+        <text x="835" y="245" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#7f1d1d">Blood returns</text>
+
+        <!-- Key concept box -->
+        <g transform="translate(600, 480)">
+          <rect x="-450" y="-75" width="900" height="150" rx="16" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY "REGIONAL"</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">Citrate chelates ionized calcium → clotting cascade blocked ONLY inside circuit</text>
+          <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">Calcium re-infused before blood returns → systemic coagulation PRESERVED</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fef3c7">Benefit: longer filter life + minimal bleeding risk → 1st line for CRRT</text>
+        </g>
+
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Monitor: circuit iCa (0.25–0.35) · systemic iCa (1.1–1.3) · Ca/iCa ratio (&gt;2.5 = citrate accumulation)</text>
+      </g>
+
+      <!-- ============ DIAGRAM 2 — EFFLUENT RATE ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">EFFLUENT RATE — THE CRRT "DOSE"</text>
+
+        <!-- Effluent formula -->
+        <g transform="translate(600, 200)">
+          <rect x="-480" y="-55" width="960" height="110" rx="14" fill="#0f172a" stroke="#0f172a" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fef3c7">Q_EFF = Q_R (replacement) + Q_D (dialysate) + Q_UF_NET</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="12" fill="#fff">Target dose: 20–25 mL/kg/h · Higher doses showed NO mortality benefit (ATN, RENAL trials)</text>
+        </g>
+
+        <!-- Three modality boxes -->
+        <g transform="translate(180, 400)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">CVVH</text>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Convection only</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Q_eff = Q_R + Q_UF</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">No dialysate</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#7c3aed">Example: 25 mL/kg/h</text>
+          <text x="0" y="78" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">= 1,875 mL/h for 75 kg</text>
+        </g>
+
+        <g transform="translate(600, 400)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">CVVHD</text>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Diffusion only</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Q_eff = Q_D + Q_UF</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">No replacement fluid</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#0891b2">Dialysate 1–2 L/h</text>
+          <text x="0" y="78" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Typical of standard CRRT</text>
+        </g>
+
+        <g transform="translate(1020, 400)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">CVVHDF</text>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Both</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Q_eff = Q_R + Q_D + Q_UF</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Replacement + dialysate</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#ca8a04">Most common in ICU</text>
+          <text x="0" y="78" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">This patient: CVVHDF</text>
+        </g>
+
+        <text x="600" y="620" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#5b21b6">Effluent = dose · Deliver 20–25 mL/kg/h · More is not better</text>
+        <text x="600" y="645" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">KDIGO 2012: use 20–25 mL/kg/h · ATN/RENAL: 35–40 mL/kg/h showed no benefit</text>
+      </g>
+
+      <!-- ============ DIAGRAM 3 — FF BY MODALITY ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">FILTRATION FRACTION BY CRRT MODALITY</text>
+
+        <!-- CVVHD -->
+        <g transform="translate(180, 260)">
+          <rect x="-150" y="-110" width="300" height="220" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">CVVHD</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Diffusion only</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#0891b2">FF = 1–4%</text>
+          <rect x="-100" y="10" width="200" height="18" rx="9" fill="#e2e8f0"/>
+          <rect x="-100" y="10" width="20" height="18" rx="9" fill="#0891b2"/>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Almost NO ultrafiltration</text>
+          <text x="0" y="72" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Highest filter life</text>
+          <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">Lowest clotting risk ✓</text>
+        </g>
+
+        <!-- CVVH -->
+        <g transform="translate(600, 260)">
+          <rect x="-150" y="-110" width="300" height="220" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">CVVH</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Convection only</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7c3aed">FF = 15–35%</text>
+          <rect x="-100" y="10" width="200" height="18" rx="9" fill="#e2e8f0"/>
+          <rect x="-100" y="10" width="180" height="18" rx="9" fill="#7c3aed"/>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Every mL of effluent = plasma water</text>
+          <text x="0" y="72" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Postdilution → high FF</text>
+          <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">Highest clotting risk ✗</text>
+        </g>
+
+        <!-- CVVHDF -->
+        <g transform="translate(1020, 260)">
+          <rect x="-150" y="-110" width="300" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">CVVHDF</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Both mechanisms</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#ca8a04">FF = 16–20%</text>
+          <rect x="-100" y="10" width="200" height="18" rx="9" fill="#e2e8f0"/>
+          <rect x="-100" y="10" width="110" height="18" rx="9" fill="#ca8a04"/>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Dialysate clears some solute</text>
+          <text x="0" y="72" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Less convective burden</text>
+          <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">Intermediate balance ✓</text>
+        </g>
+
+        <!-- Key takeaway -->
+        <g transform="translate(600, 500)">
+          <rect x="-450" y="-65" width="900" height="130" rx="16" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY FF DIFFERS BY MODALITY</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">CVVHD: dialysate clears solute without removing plasma water → FF nearly zero</text>
+          <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">CVVH: all clearance requires ultrafiltration → FF directly proportional to dose</text>
+        </g>
+
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#155e75">Target FF &lt; 25% in all modalities · CVVHD has lowest FF and longest filter life</text>
+      </g>
+
+      <!-- ============ DIAGRAM 4 — ACIDOSIS / BICARBONATE ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">TREATING METABOLIC ACIDOSIS DURING CRRT</text>
+
+        <!-- Wrong way -->
+        <g transform="translate(300, 260)">
+          <rect x="-180" y="-110" width="360" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">Prefilter Bicarbonate Bolus</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Rapid IV push of NaHCO₃</text>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Generates CO₂</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Hypernatremia</text>
+          <text x="0" y="35" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Volume overload</text>
+          <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Worsens intracellular acidosis</text>
+          <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">Not first-line ✗</text>
+        </g>
+
+        <text x="510" y="265" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#16a34a">vs</text>
+
+        <!-- Right way -->
+        <g transform="translate(820, 260)">
+          <rect x="-190" y="-110" width="380" height="220" rx="14" fill="#ecfdf5" stroke="#16a34a" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#065f46">↑ Dialysate Rate / Bicarbonate Buffer</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Increases solute clearance</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Directly removes H⁺ and acids</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Use bicarbonate-based fluid (32–35 mEq/L)</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Safe, sustained correction</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Faster than prefilter bolus</text>
+          <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#16a34a">Preferred first step ✓</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-450" y="-75" width="900" height="150" rx="16" fill="#16a34a" stroke="#065f46" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">PRACTICAL APPROACH</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">1. Optimize effluent dose (20–25 mL/kg/h) · 2. Use bicarbonate-based buffer (not lactate-based)</text>
+          <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">3. Only bolus bicarbonate if pH &lt; 7.1 or life-threatening acidemia</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fef3c7">Do NOT use 6–10 L/h dialysate as first-line — exceeds standard CRRT range</text>
+        </g>
+
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#713f12">Optimize dose and buffer BEFORE reaching for a bicarbonate bolus</text>
+      </g>
+
+      <!-- ============ DIAGRAM 5 — LACTATE / HIGH-VOLUME ============ -->
+      <g id="diagram-opt5" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#065f46">LACTATE REMOVAL & HIGH-VOLUME DIALYSATE</text>
+
+        <!-- Lactate clearance -->
+        <g transform="translate(300, 260)">
+          <rect x="-180" y="-110" width="360" height="220" rx="14" fill="#ecfdf5" stroke="#16a34a" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#065f46">How to Clear Lactate</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Restore tissue perfusion (fluids, vasopressors)</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Treat underlying cause (sepsis, ischemia)</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">✓ Support liver (lactate metabolism site)</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">CRRT clears SOME lactate by convection</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="11" fill="#065f46">but it is NOT the primary treatment</text>
+          <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#16a34a">Treat the shock ✓</text>
+        </g>
+
+        <text x="510" y="265" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#991b1b">vs</text>
+
+        <!-- 6-10 L/h dialysate -->
+        <g transform="translate(820, 260)">
+          <rect x="-190" y="-110" width="380" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">6–10 L/h Dialysate</text>
+          <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ NOT standard CRRT range</text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Effluent dose = 80–133 mL/kg/h</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Severe hypophosphatemia</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Hypokalemia, hypomagnesemia</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">⚠ Machine limits may apply</text>
+          <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">Not for routine acidosis ✗</text>
+        </g>
+
+        <!-- When high-volume IS used -->
+        <g transform="translate(600, 500)">
+          <rect x="-450" y="-90" width="900" height="180" rx="16" fill="#16a34a" stroke="#065f46" stroke-width="3"/>
+          <text x="0" y="-55" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHEN HIGH-VOLUME IS ACTUALLY USED</text>
+          <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">• SLED (sustained low-efficiency dialysis) — dialysate 100–200 mL/min = 6–12 L/h</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">• Severe hyperammonemia, tumor lysis syndrome, refractory hyperkalemia</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">• Requires aggressive electrolyte replacement and continuous monitoring</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fef3c7">For routine acidosis: stick to 20–25 mL/kg/h + bicarbonate buffer</text>
+        </g>
+
+        <text x="600" y="650" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#065f46">Lactate follows perfusion, not dialysis · High-volume dialysate is niche, not routine</text>
+      </g>
+
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-540" y="-30" width="1080" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount">0</span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+var TABS = [
+  { id: "opt1", label: "🔴 Regional Citrate" },
+  { id: "opt2", label: "🟣 Effluent Rate" },
+  { id: "opt3", label: "🔵 FF by Modality" },
+  { id: "opt4", label: "🟡 Acidosis Fix" },
+  { id: "opt5", label: "🟢 Lactate / High-Volume" }
+];
+
+var MODES = {
+  opt1: {
+    panelClass: "highlight-opt1",
+    infoTitle: "🔴 Regional Citrate Anticoagulation",
+    infoRows: [
+      { k: "Target", v: "Circuit only" },
+      { k: "Mechanism", v: "Ca chelation" },
+      { k: "Circuit iCa", v: "0.25–0.35 mmol/L" },
+      { k: "Systemic iCa", v: "1.1–1.3 mmol/L" }
+    ],
+    svgTitle: "Regional Citrate Anticoagulation — Circuit Only",
+    svgSubtitle: "Citrate chelates calcium in circuit → blocks clotting → calcium re-infused before return",
+    bannerBg: "#dc2626",
+    bannerText1: "🔴 Regional Citrate — Anticoagulates Circuit Only, Not Patient",
+    bannerText2: "Citrate at arterial limb → iCa drops < 0.5 → clotting blocked · Calcium at return → systemic iCa preserved",
+    panel1Title: "🔴 RCA — How It Works",
+    panel1Tagline: "Circuit-only anticoagulation",
+    panel1List: [
+      "<strong>Citrate infusion:</strong> Added at the arterial (pre-filter) limb — chelates ionized calcium",
+      "<strong>Effect:</strong> Circuit iCa drops to < 0.25–0.35 mmol/L → clotting cascade blocked inside filter",
+      "<strong>Calcium re-infusion:</strong> Given at the venous (return) limb — restores systemic iCa to 1.1–1.3 mmol/L",
+      "<strong>Benefit:</strong> No systemic anticoagulation → minimal bleeding risk",
+      "<strong>Preferred:</strong> First-line anticoagulation for CRRT per KDIGO"
+    ],
+    panel2Title: "🔴 Monitoring & Complications",
+    panel2Tagline: "What to check daily",
+    panel2List: [
+      "<strong>Circuit iCa:</strong> Target 0.25–0.35 mmol/L — increase citrate if higher",
+      "<strong>Systemic iCa:</strong> Target 1.1–1.3 mmol/L — adjust calcium infusion to maintain",
+      "<strong>Ca/iCa ratio:</strong> Total Ca ÷ ionized Ca — if > 2.5, suspect citrate accumulation",
+      "<strong>Citrate accumulation:</strong> Occurs in liver failure (citrate metabolized in liver)",
+      "<strong>Metabolic alkalosis:</strong> Citrate → bicarbonate → watch for overshoot"
+    ],
+    alertIcon: "🔴",
+    alertTitle: "Board Pearl — RCA Is First-Line for CRRT",
+    alertText: "Regional citrate anticoagulation (RCA) is <strong>first-line</strong> for CRRT. It <strong>anticoagulates the circuit only</strong> by chelating calcium, then calcium is re-infused before the blood returns. Monitor circuit iCa (0.25–0.35), systemic iCa (1.1–1.3), and Ca/iCa ratio (>2.5 = citrate accumulation)."
+  },
+  opt2: {
+    panelClass: "highlight-opt2",
+    infoTitle: "🟣 Effluent Rate — The CRRT Dose",
+    infoRows: [
+      { k: "Formula", v: "Q_R + Q_D + Q_UF" },
+      { k: "Target", v: "20–25 mL/kg/h" },
+      { k: "CVVH", v: "Q_R + Q_UF" },
+      { k: "CVVHD", v: "Q_D + Q_UF" },
+      { k: "CVVHDF", v: "Q_R + Q_D + Q_UF" }
+    ],
+    svgTitle: "Effluent Rate — The CRRT Dose",
+    svgSubtitle: "Q_eff = replacement + dialysate + net UF · Target 20–25 mL/kg/h · Higher doses show no benefit",
+    bannerBg: "#7c3aed",
+    bannerText1: "🟣 Effluent Rate = CRRT Dose",
+    bannerText2: "Target 20–25 mL/kg/h · ATN and RENAL trials showed no mortality benefit with 35–40 mL/kg/h",
+    panel1Title: "🟣 Effluent Formula by Modality",
+    panel1Tagline: "What counts as dose",
+    panel1List: [
+      "<strong>CVVH:</strong> Q_eff = Q_replacement (pre + post) + Q_net UF · No dialysate",
+      "<strong>CVVHD:</strong> Q_eff = Q_dialysate + Q_net UF · No replacement fluid",
+      "<strong>CVVHDF:</strong> Q_eff = Q_replacement + Q_dialysate + Q_net UF · Both",
+      "<strong>Target:</strong> 20–25 mL/kg/h (KDIGO 2012)",
+      "<strong>This patient (75 kg):</strong> Target 1,500–1,875 mL/h effluent"
+    ],
+    panel2Title: "🟣 Why More Is Not Better",
+    panel2Tagline: "Trial evidence",
+    panel2List: [
+      "<strong>ATN trial (2008):</strong> 20 vs 35 mL/kg/h — no difference in mortality or dialysis dependence",
+      "<strong>RENAL trial (2009):</strong> 25 vs 40 mL/kg/h — no mortality benefit, more hypophosphatemia",
+      "<strong>KDIGO 2012:</strong> Recommends 20–25 mL/kg/h",
+      "<strong>Trade-off:</strong> Higher doses → more electrolyte depletion (phosphate, potassium, magnesium)",
+      "<strong>Bottom line:</strong> Stick to target range; escalate only for specific indications"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Board Pearl — Effluent 20–25 mL/kg/h",
+    alertText: "The effluent rate is the <strong>dose of CRRT</strong>. Target <strong>20–25 mL/kg/h</strong>. Higher doses (35–40 mL/kg/h) showed <strong>no mortality benefit</strong> in ATN and RENAL trials and cause more electrolyte wasting."
+  },
+  opt3: {
+    panelClass: "highlight-opt3",
+    infoTitle: "🔵 FF by Modality",
+    infoRows: [
+      { k: "CVVHD", v: "FF 1–4%" },
+      { k: "CVVH", v: "FF 15–35%" },
+      { k: "CVVHDF", v: "FF 16–20%" },
+      { k: "Target", v: "< 25%" }
+    ],
+    svgTitle: "Filtration Fraction by CRRT Modality",
+    svgSubtitle: "CVVHD has lowest FF (1–4%) · CVVH highest (15–35%) · CVVHDF intermediate (16–20%)",
+    bannerBg: "#0891b2",
+    bannerText1: "🔵 FF Depends on Modality — CVVHD Has Lowest FF",
+    bannerText2: "CVVHD: diffusion without ultrafiltration · CVVH: convection requires ultrafiltration · CVVHDF: combined",
+    panel1Title: "🔵 Why FF Differs",
+    panel1Tagline: "Mechanism determines FF",
+    panel1List: [
+      "<strong>CVVHD (FF 1–4%):</strong> Solute removal by diffusion — dialysate on the other side of membrane, no plasma water removed → FF nearly zero → longest filter life",
+      "<strong>CVVH (FF 15–35%):</strong> Solute removal by convection — every mL of effluent is plasma water that crossed the membrane → FF directly proportional to dose → shortest filter life",
+      "<strong>CVVHDF (FF 16–20%):</strong> Combined — dialysate clears some solute (no FF impact), replacement fluid clears more (FF impact) → intermediate",
+      "<strong>Postdilution raises FF:</strong> Fluid added after filter doesn't dilute blood inside → higher hemoconcentration",
+      "<strong>Predilution lowers FF:</strong> Fluid added before filter dilutes blood → protects filter"
+    ],
+    panel2Title: "🔵 Clinical Implications",
+    panel2Tagline: "Match modality to patient",
+    panel2List: [
+      "<strong>Long filter life needed:</strong> CVVHD (low FF) or CVVHDF with predilution",
+      "<strong>Middle molecule clearance needed (sepsis):</strong> CVVH or CVVHDF (convection needed)",
+      "<strong>Small solute clearance (hyperkalemia, hyperammonemia):</strong> CVVHD works well",
+      "<strong>Coagulopathy / high bleeding risk:</strong> CVVHD with RCA",
+      "<strong>Recurrent filter clotting:</strong> Switch from CVVH to CVVHD or add predilution"
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Board Pearl — CVVHD Has the Lowest FF",
+    alertText: "In CVVHD, clearance occurs by <strong>diffusion</strong> without significant ultrafiltration → <strong>FF is only 1–4%</strong> → filters last longest. In CVVH, clearance is entirely by <strong>convection</strong> → <strong>FF is 15–35%</strong> → higher clotting risk. CVVHDF is intermediate (16–20%)."
+  },
+  opt4: {
+    panelClass: "highlight-opt4",
+    infoTitle: "🟡 Acidosis — What to Do",
+    infoRows: [
+      { k: "First step", v: "↑ Dialysate rate" },
+      { k: "Buffer", v: "Bicarbonate-based" },
+      { k: "Avoid", v: "Rapid prefilter bolus" },
+      { k: "Reserve bolus for", v: "pH < 7.1" }
+    ],
+    svgTitle: "Treating Metabolic Acidosis During CRRT",
+    svgSubtitle: "Optimize dialysate rate and bicarbonate buffer — avoid rapid prefilter bicarbonate bolus",
+    bannerBg: "#ca8a04",
+    bannerText1: "🟡 Acidosis — Increase Dialysate Rate, Use Bicarbonate Buffer",
+    bannerText2: "Optimize effluent dose first · Bicarbonate buffer 32–35 mEq/L · Bolus only for pH < 7.1",
+    panel1Title: "🟡 Preferred Approach",
+    panel1Tagline: "Controlled correction",
+    panel1List: [
+      "<strong>Step 1:</strong> Ensure effluent dose is 20–25 mL/kg/h — underdosing is the most common cause of persistent acidosis",
+      "<strong>Step 2:</strong> Use <strong>bicarbonate-based</strong> buffer (32–35 mEq/L) in dialysate/replacement — preferred over lactate-based in shock or liver failure",
+      "<strong>Step 3:</strong> If still acidemic, increase dialysate flow rate (within reason) — this directly removes more H⁺",
+      "<strong>Step 4:</strong> Only bolus bicarbonate if pH < 7.1 or life-threatening acidemia",
+      "<strong>Goal:</strong> Gradual correction — rapid shifts can cause paradoxical intracellular acidosis"
+    ],
+    panel2Title: "🟡 Why NOT Prefilter Bicarbonate Bolus",
+    panel2Tagline: "Risk of harm",
+    panel2List: [
+      "<strong>CO₂ generation:</strong> HCO₃⁻ + H⁺ → CO₂ + H₂O → can worsen intracellular acidosis if ventilation inadequate",
+      "<strong>Hypernatremia:</strong> Sodium bicarbonate adds sodium load",
+      "<strong>Volume overload:</strong> Large volumes required for significant correction",
+      "<strong>Overshoot alkalosis:</strong> Post-corrective metabolic alkalosis",
+      "<strong>Exception:</strong> Use when pH < 7.1, severe hyperkalemia, or life-threatening acidemia"
+    ],
+    alertIcon: "🟡",
+    alertTitle: "Board Pearl — Fix Acidosis with Effluent, Not Bolus",
+    alertText: "For metabolic acidosis during CRRT, the first step is to <strong>optimize the effluent dose</strong> (20–25 mL/kg/h) and use a <strong>bicarbonate-based buffer</strong>. Reserve bicarbonate bolus for <strong>pH < 7.1</strong> or life-threatening acidemia. Avoid rapid prefilter infusion."
+  },
+  opt5: {
+    panelClass: "highlight-opt5",
+    infoTitle: "🟢 Lactate & High-Volume Dialysate",
+    infoRows: [
+      { k: "Lactate clearance", v: "Restore perfusion" },
+      { k: "CRRT role", v: "Supportive only" },
+      { k: "6–10 L/h", v: "NOT standard CRRT" },
+      { k: "Used for", v: "SLED, special cases" }
+    ],
+    svgTitle: "Lactate Removal & High-Volume Dialysate",
+    svgSubtitle: "Lactate follows perfusion · High-volume dialysate is SLED territory, not routine CRRT",
+    bannerBg: "#16a34a",
+    bannerText1: "🟢 Lactate & High-Volume — Treat Shock, Not Numbers",
+    bannerText2: "Lactate clearance depends on perfusion · 6–10 L/h is SLED range, not standard CRRT",
+    panel1Title: "🟢 Lactate Clearance",
+    panel1Tagline: "Perfusion > dialysis",
+    panel1List: [
+      "<strong>Primary clearance:</strong> Liver (Cori cycle) and kidneys — NOT the dialysis machine",
+      "<strong>CRRT's role:</strong> Supportive — corrects acidemia while shock is treated",
+      "<strong>Convection removes some lactate:</strong> CVVH/CVVHDF can clear lactate directly, but the amount is modest",
+      "<strong>Best strategy:</strong> Restore tissue perfusion (fluids, vasopressors, source control for sepsis)",
+      "<strong>Monitor:</strong> Follow lactate clearance as a marker of shock resolution"
+    ],
+    panel2Title: "🟢 High-Volume Dialysate (6–10 L/h)",
+    panel2Tagline: "Not routine CRRT",
+    panel2List: [
+      "<strong>Standard CRRT:</strong> Dialysate 1–2 L/h (20–30 mL/kg/h effluent dose)",
+      "<strong>6–10 L/h:</strong> Effluent dose 80–133 mL/kg/h for 75-kg patient — far above target",
+      "<strong>Where used:</strong> SLED (dialysate 100–200 mL/min), severe hyperammonemia, tumor lysis",
+      "<strong>Risks:</strong> Severe hypophosphatemia, hypokalemia, hypomagnesemia, machine limits",
+      "<strong>Evidence:</strong> ATN and RENAL showed no benefit from high-dose CRRT for routine AKI"
+    ],
+    alertIcon: "🟢",
+    alertTitle: "Board Pearl — Lactate Follows Perfusion",
+    alertText: "Lactate clearance depends on <strong>restoring tissue perfusion</strong>, not dialysis. CRRT provides <strong>supportive acid-base management</strong> while shock is treated. <strong>6–10 L/h dialysate is not standard CRRT</strong> — it belongs to SLED or niche indications."
+  }
+};
+
+var QUIZ = [
+  {
+    question: "How does regional citrate anticoagulation work?",
+    options: [
+      { text: "A. It systemically anticoagulates the patient", correct: false, explanation: "RCA is circuit-only — it does NOT systemically anticoagulate. The citrate is metabolized or reversed by calcium re-infusion before blood returns." },
+      { text: "B. It chelates calcium in the circuit, blocking clotting only in the filter", correct: true, explanation: "Citrate chelates ionized calcium in the circuit (iCa drops < 0.5 mmol/L), blocking the clotting cascade. Calcium is re-infused at the venous limb to restore systemic coagulation." },
+      { text: "C. It activates antithrombin III", correct: false, explanation: "That describes heparin. Citrate works by calcium chelation." }
+    ]
+  },
+  {
+    question: "What is the target effluent dose in CRRT?",
+    options: [
+      { text: "A. 10–15 mL/kg/h", correct: false, explanation: "Too low — this is below the standard target and may result in inadequate clearance." },
+      { text: "B. 20–25 mL/kg/h", correct: true, explanation: "KDIGO 2012 recommends <strong>20–25 mL/kg/h</strong>. ATN and RENAL trials showed no mortality benefit with higher doses." },
+      { text: "C. 35–40 mL/kg/h", correct: false, explanation: "Higher doses showed no benefit in ATN and RENAL trials and cause more electrolyte wasting." }
+    ]
+  },
+  {
+    question: "Which CRRT modality has the LOWEST filtration fraction and longest filter life?",
+    options: [
+      { text: "A. CVVH", correct: false, explanation: "CVVH has the <strong>highest</strong> FF (15–35%) because all clearance requires ultrafiltration." },
+      { text: "B. CVVHD", correct: true, explanation: "<strong>CVVHD</strong> uses diffusion without significant ultrafiltration → FF 1–4% → lowest clotting risk and longest filter life." },
+      { text: "C. CVVHDF", correct: false, explanation: "CVVHDF has intermediate FF (16–20%). CVVHD has the lowest." }
+    ]
+  },
+  {
+    question: "You want to treat metabolic acidosis during CVVHDF. What is the FIRST step?",
+    options: [
+      { text: "A. Give a rapid IV bolus of sodium bicarbonate", correct: false, explanation: "Rapid bicarbonate bolus generates CO₂, causes hypernatremia, and risks paradoxical intracellular acidosis. Reserve for pH < 7.1." },
+      { text: "B. Increase the dialysate flow rate and use a bicarbonate-based buffer", correct: true, explanation: "The preferred approach is to <strong>optimize the effluent dose</strong> (20–25 mL/kg/h) and use a <strong>bicarbonate-based buffer</strong> (32–35 mEq/L). This provides controlled, sustained correction." },
+      { text: "C. Increase the predilution rate to 6–10 L/h", correct: false, explanation: "6–10 L/h is far beyond standard CRRT range. This is SLED territory and causes severe electrolyte depletion." }
+    ]
+  },
+  {
+    question: "What is the primary mechanism for lactate clearance in a patient with septic shock?",
+    options: [
+      { text: "A. Removal by the CRRT circuit", correct: false, explanation: "CRRT removes only a modest amount of lactate. It is not the primary mechanism." },
+      { text: "B. Restoration of tissue perfusion and hepatic metabolism", correct: true, explanation: "Lactate is primarily cleared by the <strong>liver</strong> (Cori cycle) and kidneys. The key is to <strong>restore tissue perfusion</strong> — treat the shock, not just the number." },
+      { text: "C. Increased renal excretion", correct: false, explanation: "The kidney handles some lactate, but the liver is the main site. Perfusion restoration is the key." }
+    ]
+  },
+  {
+    question: "Which of the following best describes the role of CRRT in lactic acidosis?",
+    options: [
+      { text: "A. Definitive treatment of the acidosis", correct: false, explanation: "CRRT is supportive — it manages the acidemia but does not treat the underlying cause." },
+      { text: "B. Supportive management of acidemia while the underlying cause is treated", correct: true, explanation: "CRRT with bicarbonate-based fluid provides <strong>supportive acid-base management</strong> while the shock/sepsis is treated. The underlying cause must be addressed." },
+      { text: "C. Direct removal of lactate as the primary therapy", correct: false, explanation: "CRRT removes some lactate by convection, but this is not the primary mechanism. The liver handles most lactate, and perfusion restoration is key." }
+    ]
+  },
+  {
+    question: "A colleague suggests increasing dialysate to 8 L/h for a patient with lactic acidosis. What is the best response?",
+    options: [
+      { text: "A. Agree — this will rapidly clear lactate", correct: false, explanation: "Lactate clearance is perfusion-dependent, not dialysate-rate dependent. 8 L/h is far above standard CRRT." },
+      { text: "B. Disagree — 8 L/h is SLED territory, not standard CRRT, and won't fix the lactate", correct: true, explanation: "Standard CRRT dialysate is 1–2 L/h. 8 L/h is SLED range (100–200 mL/min). It causes severe electrolyte wasting and doesn't fix the underlying shock. Treat the cause instead." },
+      { text: "C. Agree — high-volume dialysis is standard of care for lactic acidosis", correct: false, explanation: "High-volume dialysis for lactic acidosis is NOT standard. ATN and RENAL trials showed no benefit. Treat the cause." }
+    ]
+  },
+  {
+    question: "Which CRRT modality provides the BEST middle-molecule clearance (e.g., for sepsis cytokine removal)?",
+    options: [
+      { text: "A. CVVHD", correct: false, explanation: "CVVHD relies on diffusion, which is poor for middle molecules. It excels at small solute clearance." },
+      { text: "B. CVVH or CVVHDF", correct: true, explanation: "<strong>CVVH and CVVHDF</strong> provide convective clearance, which is superior for middle molecules. This is why they are often chosen for sepsis-associated AKI." },
+      { text: "C. Neither — CRRT does not clear middle molecules", correct: false, explanation: "Convection (CVVH, CVVHDF) effectively clears middle molecules, which is one reason these modalities are preferred in sepsis." }
+    ]
+  }
+];
+
+function buildTabs() {
+  var html = "";
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    html += '<button class="tab ' + t.id + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }
+  document.getElementById("tabs").innerHTML = html;
+}
+
+function buildQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  var grid = document.getElementById("quizGrid");
+  var html = "";
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="q" data-q="' + i + '">';
+    html += '<p>' + (i + 1) + '. ' + q.question + '</p>';
+    html += '<div class="opts">';
+    for (var j = 0; j < q.options.length; j++) {
+      var o = q.options[j];
+      html += '<button class="opt" data-q="' + i + '" data-o="' + j + '">' + o.text + '</button>';
+    }
+    html += '</div>';
+    html += '<div class="explain"></div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+
+  var buttons = grid.querySelectorAll(".opt");
+  for (var k = 0; k < buttons.length; k++) {
+    buttons[k].addEventListener("click", handleAnswer);
+  }
+}
+
+function handleAnswer(e) {
+  var btn = e.currentTarget;
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-o"), 10);
+  var q = QUIZ[qi];
+  var opt = q.options[oi];
+  var box = btn.closest(".q");
+
+  var allOpts = box.querySelectorAll(".opt");
+  for (var i = 0; i < allOpts.length; i++) {
+    allOpts[i].classList.remove("correct", "wrong");
+  }
+  btn.classList.add(opt.correct ? "correct" : "wrong");
+
+  var explain = box.querySelector(".explain");
+  if (opt.correct) {
+    explain.className = "explain show correct-explain";
+    explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+  } else {
+    explain.className = "explain show wrong-explain";
+    explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+  }
+}
+
+function setMode(mode) {
+  var d = MODES[mode];
+  if (!d) return;
+
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    var el = document.getElementById("tab" + t.id);
+    if (el) el.classList.remove("active");
+  }
+  var activeEl = document.getElementById("tab" + mode);
+  if (activeEl) activeEl.classList.add("active");
+
+  var optIds = ["opt1", "opt2", "opt3", "opt4", "opt5"];
+  for (var j = 0; j < optIds.length; j++) {
+    var dg = document.getElementById("diagram-" + optIds[j]);
+    if (dg) dg.style.display = "none";
+  }
+  var target = document.getElementById("diagram-" + mode);
+  if (target) target.style.display = "block";
+
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  document.getElementById("banner-bg").setAttribute("fill", d.bannerBg);
+  document.getElementById("banner-text-1").textContent = d.bannerText1;
+  document.getElementById("banner-text-2").textContent = d.bannerText2;
+
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass + (panel.classList.contains("collapsed") ? " collapsed" : "");
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+
+  var infoHtml = "";
+  for (var m = 0; m < d.infoRows.length; m++) {
+    var r = d.infoRows[m];
+    infoHtml += '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }
+  document.getElementById("infoBody").innerHTML = infoHtml;
+
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  var p1 = "";
+  for (var n = 0; n < d.panel1List.length; n++) {
+    p1 += "<li>" + d.panel1List[n] + "</li>";
+  }
+  document.getElementById("panel1-list").innerHTML = p1;
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  var p2 = "";
+  for (var p = 0; p < d.panel2List.length; p++) {
+    p2 += "<li>" + d.panel2List[p] + "</li>";
+  }
+  document.getElementById("panel2-list").innerHTML = p2;
+
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById("infoPanel");
+  var btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildTabs();
+  buildQuiz();
+  setMode("opt1");
+});
+</script>
+</body>
+</html>

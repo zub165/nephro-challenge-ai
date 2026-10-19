@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toxic Alcohols — The Complete Clinical Guide</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE BIG 4
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#991b1b">THE "BIG 4" TOXIC ALCOHOLS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Ethanol · Methanol · Isopropyl · Ethylene Glycol</text>
+          </g>
+
+          <!-- Ethanol -->
+          <g transform="translate(250, 380)">
+            <rect x="-200" y="-150" width="400" height="300" rx="18" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-150" width="400" height="50" rx="18" fill="#0891b2"/>
+            <rect x="-200" y="-118" width="400" height="18" fill="#0891b2"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">ETHANOL</text>
+
+            <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Beverages</text>
+            <line x1="-150" y1="-58" x2="150" y2="-58" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#0891b2">Metabolite:</text>
+              <text x="-30" y="-34">Acetaldehyde</text>
+              <text x="-170" y="-10" font-weight="800" fill="#0891b2">Osmolar Gap:</text>
+              <text x="-30" y="-10" fill="#166534">↑ Elevated</text>
+              <text x="-170" y="14" font-weight="800" fill="#0891b2">Anion Gap:</text>
+              <text x="-30" y="14" fill="#166534">Normal</text>
+            </g>
+
+            <line x1="-150" y1="36" x2="150" y2="36" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Intoxication, hypoglycemia,</text>
+            <text x="0" y="82" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Wernicke's encephalopathy</text>
+            <rect x="-170" y="100" width="340" height="32" rx="6" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">No severe acidosis</text>
+          </g>
+
+          <!-- Methanol -->
+          <g transform="translate(700, 380)">
+            <rect x="-200" y="-150" width="400" height="300" rx="18" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-150" width="400" height="50" rx="18" fill="#ca8a04"/>
+            <rect x="-200" y="-118" width="400" height="18" fill="#ca8a04"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">METHANOL</text>
+
+            <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Windshield Washer, Solvents</text>
+            <line x1="-150" y1="-58" x2="150" y2="-58" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#ca8a04">Metabolite:</text>
+              <text x="-30" y="-34">Formic acid (Formate)</text>
+              <text x="-170" y="-10" font-weight="800" fill="#ca8a04">Osmolar Gap:</text>
+              <text x="-30" y="-10" fill="#166534">↑ Elevated</text>
+              <text x="-170" y="14" font-weight="800" fill="#ca8a04">Anion Gap:</text>
+              <text x="-30" y="14" fill="#dc2626">↑ High</text>
+            </g>
+
+            <line x1="-150" y1="36" x2="150" y2="36" stroke="#fde68a" stroke-width="2"/>
+            <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Visual disturbances</text>
+            <text x="0" y="82" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">"Snowfield vision", blindness</text>
+            <rect x="-170" y="100" width="340" height="32" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">Putaminal necrosis</text>
+          </g>
+
+          <!-- Isopropyl -->
+          <g transform="translate(250, 740)">
+            <rect x="-200" y="-150" width="400" height="300" rx="18" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-150" width="400" height="50" rx="18" fill="#7c3aed"/>
+            <rect x="-200" y="-118" width="400" height="18" fill="#7c3aed"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">ISOPROPYL ALCOHOL</text>
+
+            <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Rubbing Alcohol, Hand Sanitizer</text>
+            <line x1="-150" y1="-58" x2="150" y2="-58" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#7c3aed">Metabolite:</text>
+              <text x="-30" y="-34">Acetone</text>
+              <text x="-170" y="-10" font-weight="800" fill="#7c3aed">Osmolar Gap:</text>
+              <text x="-30" y="-10" fill="#166534">↑ Elevated</text>
+              <text x="-170" y="14" font-weight="800" fill="#7c3aed">Anion Gap:</text>
+              <text x="-30" y="14" fill="#166534">Normal</text>
+            </g>
+
+            <line x1="-150" y1="36" x2="150" y2="36" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Ketosis WITHOUT Acidosis</text>
+            <text x="0" y="82" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Hemorrhagic gastritis</text>
+            <rect x="-170" y="100" width="340" height="32" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">Pseudo-renal failure (↑ Cr)</text>
+          </g>
+
+          <!-- Ethylene Glycol -->
+          <g transform="translate(700, 740)">
+            <rect x="-200" y="-150" width="400" height="300" rx="18" fill="#fff" stroke="#dc2626" stroke-width="5"/>
+            <rect x="-200" y="-150" width="400" height="50" rx="18" fill="#dc2626"/>
+            <rect x="-200" y="-118" width="400" height="18" fill="#dc2626"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">ETHYLENE GLYCOL</text>
+
+            <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Antifreeze, De-icers</text>
+            <line x1="-150" y1="-58" x2="150" y2="-58" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#dc2626">Metabolite:</text>
+              <text x="-30" y="-34">Glycolate, Oxalate</text>
+              <text x="-170" y="-10" font-weight="800" fill="#dc2626">Osmolar Gap:</text>
+              <text x="-30" y="-10" fill="#166534">↑ Elevated</text>
+              <text x="-170" y="14" font-weight="800" fill="#dc2626">Anion Gap:</text>
+              <text x="-30" y="14" fill="#dc2626">↑ High</text>
+            </g>
+
+            <line x1="-150" y1="36" x2="150" y2="36" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Calcium oxalate crystals</text>
+            <text x="0" y="82" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">AKI, hypocalcemia</text>
+            <rect x="-170" y="100" width="340" height="32" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">False ↑ lactate (glycolate)</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — THE HIDDEN ALCOHOLS
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#5b21b6">THE "HIDDEN" ALCOHOLS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#6d28d9">Iatrogenic and Contaminant-Related</text>
+          </g>
+
+          <!-- Propylene Glycol -->
+          <g transform="translate(350, 430)">
+            <rect x="-290" y="-175" width="580" height="350" rx="18" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-290" y="-175" width="580" height="58" rx="18" fill="#7c3aed"/>
+            <rect x="-290" y="-137" width="580" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">PROPYLENE GLYCOL</text>
+
+            <text x="0" y="-98" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Solvent in IV Medications</text>
+            <line x1="-260" y1="-74" x2="260" y2="-74" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-40" font-weight="800" fill="#5b21b6">Source:</text>
+              <text x="-120" y="-40">Lorazepam, phenytoin, etomidate drips</text>
+              <text x="-260" y="-12" font-weight="800" fill="#5b21b6">Metabolite:</text>
+              <text x="-120" y="-12">Lactic acid, pyruvic acid</text>
+              <text x="-260" y="16" font-weight="800" fill="#5b21b6">Osmolar Gap:</text>
+              <text x="-120" y="16" fill="#166534">↑ Elevated</text>
+              <text x="-260" y="44" font-weight="800" fill="#5b21b6">Anion Gap:</text>
+              <text x="-120" y="44" fill="#dc2626">↑ High</text>
+              <text x="-260" y="72" font-weight="800" fill="#5b21b6">Clinical:</text>
+              <text x="-120" y="72">Unexplained lactic acidosis in ICU</text>
+            </g>
+
+            <rect x="-260" y="100" width="520" height="46" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Look for high-dose IV drips</text>
+            <text x="0" y="138" text-anchor="middle" font-family="Arial" font-size="12" fill="#6d28d9">Especially in ICU patients with acidosis</text>
+          </g>
+
+          <!-- Diethylene Glycol -->
+          <g transform="translate(1050, 430)">
+            <rect x="-290" y="-175" width="580" height="350" rx="18" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-175" width="580" height="58" rx="18" fill="#dc2626"/>
+            <rect x="-290" y="-137" width="580" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">DIETHYLENE GLYCOL</text>
+
+            <text x="0" y="-98" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Industrial Contaminant</text>
+            <line x1="-260" y1="-74" x2="260" y2="-74" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-40" font-weight="800" fill="#991b1b">Source:</text>
+              <text x="-120" y="-40">Contaminated cough syrup, wine</text>
+              <text x="-260" y="-12" font-weight="800" fill="#991b1b">Metabolite:</text>
+              <text x="-120" y="-12">Hydroxyethoxyacetic acid (HEAA)</text>
+              <text x="-260" y="16" font-weight="800" fill="#991b1b">Osmolar Gap:</text>
+              <text x="-120" y="16" fill="#166534">↑ Elevated</text>
+              <text x="-260" y="44" font-weight="800" fill="#991b1b">Anion Gap:</text>
+              <text x="-120" y="44" fill="#dc2626">↑ High</text>
+              <text x="-260" y="72" font-weight="800" fill="#991b1b">Clinical:</text>
+              <text x="-120" y="72">Mass poisoning, severe AKI, hepatotoxicity</text>
+            </g>
+
+            <rect x="-260" y="100" width="520" height="46" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Historically caused mass casualties</text>
+            <text x="0" y="138" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">Look for contaminated medications</text>
+          </g>
+
+          <!-- Benzyl Alcohol -->
+          <g transform="translate(700, 780)">
+            <rect x="-400" y="-65" width="800" height="130" rx="16" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <text y="-35" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">BENZYL ALCOHOL</text>
+            <line x1="-370" y1="-18" x2="370" y2="-18" stroke="#cffafe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-370" y="8">• Preservative in IV flushes, bacteriostatic saline</text>
+              <text x="-370" y="30">• "Gasping syndrome" in neonates (metabolic acidosis, respiratory depression, seizures)</text>
+              <text x="-370" y="52" font-weight="800" fill="#991b1b">Avoid in neonates! Use preservative-free products.</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — THE BENIGN ALCOHOLS
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#155e75">THE "BENIGN" / PHYSIOLOGIC ALCOHOLS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#0e7490">Naturally occurring or dietary; rarely toxic</text>
+          </g>
+
+          <!-- Sugar Alcohols -->
+          <g transform="translate(350, 430)">
+            <rect x="-290" y="-175" width="580" height="350" rx="18" fill="#fff" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-175" width="580" height="58" rx="18" fill="#16a34a"/>
+            <rect x="-290" y="-137" width="580" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">SUGAR ALCOHOLS</text>
+
+            <text x="0" y="-98" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Sorbitol · Xylitol · Mannitol · Erythritol</text>
+            <line x1="-260" y1="-74" x2="260" y2="-74" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-40" font-weight="800" fill="#166534">Source:</text>
+              <text x="-120" y="-40">Sugar-free foods, candies, gums</text>
+              <text x="-260" y="-12" font-weight="800" fill="#166534">Metabolism:</text>
+              <text x="-120" y="-12">Poorly absorbed; fermented by gut bacteria</text>
+              <text x="-260" y="16" font-weight="800" fill="#166534">Effect:</text>
+              <text x="-120" y="16">Osmotic diarrhea, bloating, gas</text>
+              <text x="-260" y="44" font-weight="800" fill="#991b1b">Exception:</text>
+              <text x="-120" y="44">Xylitol → hypoglycemia + liver failure in dogs</text>
+            </g>
+
+            <rect x="-260" y="80" width="520" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">GI side effects are the main issue</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Usually benign in humans</text>
+          </g>
+
+          <!-- Glycerol & Others -->
+          <g transform="translate(1050, 430)">
+            <rect x="-290" y="-175" width="580" height="350" rx="18" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-290" y="-175" width="580" height="58" rx="18" fill="#0891b2"/>
+            <rect x="-290" y="-137" width="580" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">OTHER BENIGN ALCOHOLS</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-98" font-weight="800" fill="#155e75">Glycerol (Glycerin):</text>
+              <text x="-120" y="-98">Osmotic diuretic, food additive</text>
+              <text x="-120" y="-78">Massive ingestion → osmotic diarrhea</text>
+              
+              <text x="-260" y="-40" font-weight="800" fill="#155e75">Menthol:</text>
+              <text x="-120" y="-40">Cyclic alcohol from mint oils</text>
+              <text x="-120" y="-20">Cooling sensation; massive ingestion → ataxia</text>
+
+              <text x="-260" y="20" font-weight="800" fill="#155e75">Cholesterol:</text>
+              <text x="-120" y="20">A structural sterol alcohol</text>
+              <text x="-120" y="40">Vital molecule, not a toxin</text>
+            </g>
+
+            <rect x="-260" y="80" width="520" height="46" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Generally safe</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#0e7490">Not typically clinically significant</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — THE 2x2 MATRIX
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#713f12">THE 2x2 DIFFERENTIAL MATRIX</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#854d0e">Use Osmolar Gap and Anion Gap to narrow the differential</text>
+          </g>
+
+          <!-- Top Left: High OG + High AG -->
+          <g transform="translate(350, 380)">
+            <rect x="-290" y="-160" width="580" height="320" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-125" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">HIGH OG + HIGH AG</text>
+            <line x1="-260" y1="-100" x2="260" y2="-100" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">Methanol</text>
+            <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">Ethylene Glycol</text>
+            <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">Propylene Glycol</text>
+
+            <line x1="-260" y1="10" x2="260" y2="10" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">The classic "double gap" of</text>
+            <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">toxic alcohol poisoning</text>
+            <text x="0" y="88" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Check for crystals, visual symptoms</text>
+            <text x="0" y="110" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Look for IV drips (propylene glycol)</text>
+          </g>
+
+          <!-- Top Right: High OG + Normal AG -->
+          <g transform="translate(1050, 380)">
+            <rect x="-290" y="-160" width="580" height="320" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-125" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">HIGH OG + NORMAL AG</text>
+            <line x1="-260" y1="-100" x2="260" y2="-100" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">Ethanol</text>
+            <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">Isopropyl Alcohol</text>
+
+            <line x1="-260" y1="-10" x2="260" y2="-10" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">No severe acidosis</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Ketosis without acidosis (Isopropyl)</text>
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Intoxication (Ethanol)</text>
+            <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Check for acetone/ketones</text>
+            <text x="0" y="114" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Ethanol level</text>
+          </g>
+
+          <!-- Bottom Left: Normal OG + High AG -->
+          <g transform="translate(350, 740)">
+            <rect x="-290" y="-160" width="580" height="320" rx="16" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-125" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">NORMAL OG + HIGH AG</text>
+            <line x1="-260" y1="-100" x2="260" y2="-100" stroke="#cffafe" stroke-width="2"/>
+
+            <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">Late Methanol</text>
+            <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">Late Ethylene Glycol</text>
+
+            <line x1="-260" y1="-10" x2="260" y2="-10" stroke="#cffafe" stroke-width="2"/>
+
+            <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Parent alcohol is gone</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Metabolites dominate</text>
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">No osmolar gap because</text>
+            <text x="0" y="84" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">metabolites are not osmotically active</text>
+            <text x="0" y="112" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">This is why late presentations</text>
+            <text x="0" y="132" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">may have a normal osmolar gap</text>
+          </g>
+
+          <!-- Bottom Right: Normal OG + Normal AG -->
+          <g transform="translate(1050, 740)">
+            <rect x="-290" y="-160" width="580" height="320" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="4"/>
+            <text x="0" y="-125" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#475569">NORMAL OG + NORMAL AG</text>
+            <line x1="-260" y1="-100" x2="260" y2="-100" stroke="#cbd5e1" stroke-width="2"/>
+
+            <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#475569">Sugar Alcohols</text>
+            <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#475569">Benign Alcohols</text>
+
+            <line x1="-260" y1="-10" x2="260" y2="-10" stroke="#cbd5e1" stroke-width="2"/>
+
+            <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">No significant systemic toxicity</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#475569">Mainly GI side effects</text>
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Osmotic diarrhea (sorbitol)</text>
+            <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Do not cause metabolic acidosis</text>
+            <text x="0" y="114" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">or significant osmolar gap</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Toxic Alcohols — The Complete Clinical Guide",
+  subtitle: "Differentiating the classic, hidden, and benign alcohols",
+  badge: "TOXICOLOGY · NEPHROLOGY · EMERGENCY MEDICINE",
+  caseTitle: "Comprehensive guide: all the alcohols you need to know",
+  caseDescription: "This module categorizes the major alcohols into three groups: the classic 'Big 4' toxic alcohols (ethanol, methanol, isopropyl, ethylene glycol), the 'hidden' iatrogenic/contaminant alcohols (propylene glycol, diethylene glycol, benzyl alcohol), and the benign/physiologic alcohols (sugar alcohols, glycerol, menthol). It includes a high-yield 2x2 matrix to differentiate them using the osmolar gap and anion gap.",
+  labChips: [
+    { text: "Big 4: Ethanol, Methanol, Isopropyl, EG", abnormal: true },
+    { text: "Hidden: Propylene, Diethylene, Benzyl", abnormal: true },
+    { text: "Benign: Sugar alcohols, Glycerol", abnormal: false },
+    { text: "High OG + High AG = Methanol/EG", abnormal: true },
+    { text: "High OG + Normal AG = Isopropyl/Ethanol", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Big 4",              className: "opt1" },
+    { id: "opt2", label: "🟣 Hidden Alcohols",        className: "opt2" },
+    { id: "opt3", label: "🔵 Benign Alcohols",        className: "opt3" },
+    { id: "opt4", label: "🟡 The 2x2 Matrix",         className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Big 4 Toxic Alcohols",
+      infoRows: [
+        { k: "Ethanol",    v: "Intoxication, normal AG" },
+        { k: "Methanol",   v: "Blindness, high AG" },
+        { k: "Isopropyl",  v: "Ketosis, normal AG" },
+        { k: "Ethylene Glycol", v: "Crystals, high AG" },
+        { k: "Common",     v: "All ↑ osmolar gap" },
+        { k: "Key",        v: "AG distinguishes severity" }
+      ],
+      svgTitle: "The 'Big 4' Toxic Alcohols",
+      svgSubtitle: "Ethanol, Methanol, Isopropyl, Ethylene Glycol",
+      bannerBg: "#dc2626",
+      bannerText1: "All four raise the osmolar gap early after ingestion",
+      bannerText2: "The anion gap distinguishes the acids (methanol, ethylene glycol) from the non-acids (ethanol, isopropyl)",
+      panel1Title: "🧪 The classic four",
+      panel1Tagline: "What you must know cold",
+      panel1List: [
+        "<strong>Ethanol</strong> — intoxication, hypoglycemia, Wernicke's, high OG, normal AG",
+        "<strong>Methanol</strong> — visual disturbances, snowfield vision, high OG, high AG",
+        "<strong>Isopropyl</strong> — ketosis without acidosis, hemorrhagic gastritis, high OG, normal AG",
+        "<strong>Ethylene Glycol</strong> — calcium oxalate crystals, AKI, high OG, high AG",
+        "All four cause an elevated osmolar gap early after ingestion"
+      ],
+      panel2Title: "🧬 Why the anion gap matters",
+      panel2Tagline: "The key discriminator",
+      panel2List: [
+        "<strong>High AG</strong> — the alcohol is metabolized to an acid (formic acid, glycolic acid)",
+        "<strong>Normal AG</strong> — the alcohol is not metabolized to an acid (acetone, acetaldehyde)",
+        "Late presentations of methanol/EG may have a <strong>normal OG</strong> but high AG",
+        "The AG reflects the toxic metabolites",
+        "The OG reflects the parent alcohol"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The Big 4 are the highest-yield",
+      alertText: "Ethanol, methanol, isopropyl, and ethylene glycol are the most commonly tested alcohols. Know their OG and AG profiles."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Hidden Alcohols",
+      infoRows: [
+        { k: "Propylene glycol", v: "IV meds → lactic acidosis" },
+        { k: "Diethylene glycol", v: "Contaminated meds → AKI" },
+        { k: "Benzyl alcohol",   v: "Neonates → gasping syndrome" },
+        { k: "Source",           v: "Hospital / contaminated" },
+        { k: "High OG",          v: "All of them" },
+        { k: "High AG",          v: "Propylene, diethylene" }
+      ],
+      svgTitle: "The 'Hidden' Alcohols",
+      svgSubtitle: "Iatrogenic and contaminant-related",
+      bannerBg: "#7c3aed",
+      bannerText1: "These are not intentional ingestions but can cause severe toxicity",
+      bannerText2: "Look for them in the ICU or in mass casualty events",
+      panel1Title: "🔬 The hidden three",
+      panel1Tagline: "When to suspect them",
+      panel1List: [
+        "<strong>Propylene glycol</strong> — solvent in IV lorazepam, phenytoin, etomidate → lactic acidosis, high OG, high AG",
+        "<strong>Diethylene glycol</strong> — contaminated cough syrup or wine → severe AKI, hepatotoxicity, high OG, high AG",
+        "<strong>Benzyl alcohol</strong> — preservative in IV flushes → neonatal gasping syndrome",
+        "All cause an elevated osmolar gap",
+        "Propylene and diethylene cause high anion gap acidosis"
+      ],
+      panel2Title: "🧬 Clinical scenarios",
+      panel2Tagline: "When to think of these",
+      panel2List: [
+        "<strong>ICU patient on high-dose lorazepam drip</strong> with unexplained lactic acidosis",
+        "<strong>Mass poisoning</strong> from contaminated medication or beverage",
+        "<strong>Neonate</strong> with metabolic acidosis, respiratory depression, and seizures after IV flushes",
+        "Always check the medication list for hidden alcohols",
+        "Use preservative-free products in neonates"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Hidden but deadly",
+      alertText: "Propylene glycol is a common cause of <strong>unexplained lactic acidosis</strong> in ICU patients on IV drips."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Benign Alcohols",
+      infoRows: [
+        { k: "Sorbitol",   v: "Osmotic diarrhea" },
+        { k: "Xylitol",    v: "Hypoglycemia in dogs" },
+        { k: "Mannitol",   v: "Osmotic diuretic" },
+        { k: "Glycerol",   v: "Osmotic diarrhea" },
+        { k: "Menthol",    v: "Cooling sensation" },
+        { k: "Cholesterol", v: "Vital molecule" }
+      ],
+      svgTitle: "The 'Benign' / Physiologic Alcohols",
+      svgSubtitle: "Naturally occurring or dietary; rarely toxic",
+      bannerBg: "#0891b2",
+      bannerText1: "Sugar alcohols mainly cause GI side effects",
+      bannerText2: "They do not cause metabolic acidosis or significant osmolar gap",
+      panel1Title: "🔬 The sugar alcohols",
+      panel1Tagline: "Mostly benign",
+      panel1List: [
+        "<strong>Sorbitol, xylitol, mannitol, erythritol</strong> — sugar-free foods",
+        "Poorly absorbed → <strong>osmotic diarrhea</strong>",
+        "Do not cause significant systemic toxicity",
+        "<strong>Exception:</strong> Xylitol causes hypoglycemia and liver failure in dogs",
+        "<strong>Mannitol</strong> is used medically as an osmotic diuretic"
+      ],
+      panel2Title: "🔬 Other benign alcohols",
+      panel2Tagline: "Rarely clinically significant",
+      panel2List: [
+        "<strong>Glycerol</strong> — food additive, osmotic diuretic; massive ingestion → diarrhea",
+        "<strong>Menthol</strong> — cyclic alcohol from mint; cooling sensation",
+        "<strong>Cholesterol</strong> — a structural sterol alcohol; vital molecule",
+        "These are generally safe",
+        "Not typically causes of metabolic acidosis or elevated OG"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Benign but worth knowing",
+      alertText: "Sugar alcohols mainly cause <strong>GI upset</strong>. They do not cause severe acidosis or significant osmolar gaps."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 The 2x2 Differential Matrix",
+      infoRows: [
+        { k: "High OG + High AG",  v: "Methanol, EG, propylene" },
+        { k: "High OG + Normal AG", v: "Ethanol, isopropyl" },
+        { k: "Normal OG + High AG", v: "Late presentation" },
+        { k: "Normal OG + Normal AG", v: "Sugar alcohols" },
+        { k: "Key",                 v: "OG reflects parent alcohol" },
+        { k: "Key",                 v: "AG reflects metabolites" }
+      ],
+      svgTitle: "The 2x2 Differential Matrix",
+      svgSubtitle: "Use Osmolar Gap and Anion Gap to narrow the differential",
+      bannerBg: "#ca8a04",
+      bannerText1: "High OG + High AG = methanol, ethylene glycol, propylene glycol",
+      bannerText2: "High OG + Normal AG = ethanol, isopropyl alcohol",
+      panel1Title: "🧬 Using the matrix",
+      panel1Tagline: "A systematic approach",
+      panel1List: [
+        "<strong>Calculate OG and AG</strong> — the two key numbers",
+        "<strong>High OG + High AG</strong> — classic toxic alcohol poisoning (methanol, EG, propylene)",
+        "<strong>High OG + Normal AG</strong> — ethanol, isopropyl",
+        "<strong>Normal OG + High AG</strong> — late presentation (parent alcohol gone, metabolites dominate)",
+        "<strong>Normal OG + Normal AG</strong> — sugar alcohols (benign)"
+      ],
+      panel2Title: "🧬 The clinical pearls",
+      panel2Tagline: "What the gaps mean",
+      panel2List: [
+        "<strong>Osmolar gap</strong> — reflects the parent alcohol (early after ingestion)",
+        "<strong>Anion gap</strong> — reflects the toxic metabolites (acids)",
+        "Late presentation of methanol/EG may have a <strong>normal OG</strong> but a high AG",
+        "The OG can be <strong>falsely normal</strong> if the ingestion is late",
+        "Always use both gaps together"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The 2x2 matrix is the key",
+      alertText: "Use <strong>OG and AG together</strong> to narrow the differential and guide treatment."
+    }
+  },
+  comparison: {
+    title: "📊 The Complete Alcohol Differential",
+    sub: "Categorizing by OG, AG, and clinical effect",
+    head: ["Alcohol", "OG", "AG", "Key Feature"],
+    rows: [
+      { cells: ["Ethanol",          "↑", "Normal", "Intoxication, hypoglycemia"], hero: false },
+      { cells: ["Methanol",         "↑", "↑",      "Visual disturbances, blindness"], hero: false },
+      { cells: ["Isopropyl",        "↑", "Normal", "Ketosis without acidosis"], hero: false },
+      { cells: ["Ethylene Glycol",  "↑", "↑",      "Calcium oxalate crystals, AKI"], hero: true },
+      { cells: ["Propylene Glycol", "↑", "↑",      "Lactic acidosis (IV drips)"], hero: false },
+      { cells: ["Diethylene Glycol","↑", "↑",      "AKI, hepatotoxicity (contaminated meds)"], hero: false },
+      { cells: ["Benzyl Alcohol",   "↑", "Normal", "Neonatal gasping syndrome"], hero: false },
+      { cells: ["Sugar Alcohols",   "Normal", "Normal", "GI symptoms only"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A patient presents with visual disturbances, severe metabolic acidosis, and an elevated osmolar gap. What is the most likely alcohol ingested?",
+      options: [
+        { text: "Methanol.", correct: true,
+          explanation: "Methanol is classically associated with visual disturbances (blindness) and a high anion gap metabolic acidosis with an elevated osmolar gap." },
+        { text: "Ethanol.", correct: false,
+          explanation: "Ethanol causes intoxication but typically a normal anion gap." },
+        { text: "Isopropyl alcohol.", correct: false,
+          explanation: "Isopropyl causes ketosis without acidosis." }
+      ]
+    },
+    {
+      question: "A patient presents with ketosis, a normal anion gap, and an elevated osmolar gap. What is the most likely alcohol?",
+      options: [
+        { text: "Isopropyl alcohol.", correct: true,
+          explanation: "Isopropyl alcohol is metabolized to acetone, causing ketosis without acidosis. The anion gap is normal, but the osmolar gap is elevated." },
+        { text: "Methanol.", correct: false,
+          explanation: "Methanol causes a high anion gap acidosis." },
+        { text: "Ethylene glycol.", correct: false,
+          explanation: "Ethylene glycol causes a high anion gap acidosis and crystals." }
+      ]
+    },
+    {
+      question: "Which alcohol is associated with calcium oxalate monohydrate crystals on urinalysis?",
+      options: [
+        { text: "Ethylene glycol.", correct: true,
+          explanation: "Ethylene glycol is metabolized to oxalic acid, which binds calcium to form calcium oxalate monohydrate crystals in the urine." },
+        { text: "Methanol.", correct: false,
+          explanation: "Methanol is metabolized to formic acid." },
+        { text: "Isopropyl alcohol.", correct: false,
+          explanation: "Isopropyl is metabolized to acetone." }
+      ]
+    },
+    {
+      question: "Why might a patient with late presentation of methanol or ethylene glycol have a normal osmolar gap?",
+      options: [
+        { text: "The parent alcohol has been metabolized to toxic acids, which do not contribute to the osmolar gap.", correct: true,
+          explanation: "The osmolar gap reflects the parent alcohol. Late after ingestion, the parent alcohol is largely gone, and the metabolites (acids) dominate, increasing the anion gap but not the osmolar gap." },
+        { text: "The kidneys have cleared all the alcohol.", correct: false,
+          explanation: "The kidneys clear both the alcohol and its metabolites." },
+        { text: "The osmolar gap is always normal in methanol poisoning.", correct: false,
+          explanation: "The osmolar gap is elevated early after ingestion." }
+      ]
+    },
+    {
+      question: "Which hidden alcohol is a common solvent in IV medications and can cause lactic acidosis?",
+      options: [
+        { text: "Propylene glycol.", correct: true,
+          explanation: "Propylene glycol is a solvent in IV lorazepam, phenytoin, and etomidate. It is metabolized to lactic acid, causing a high anion gap acidosis." },
+        { text: "Ethanol.", correct: false,
+          explanation: "Ethanol is not used as a solvent in IV medications." },
+        { text: "Methanol.", correct: false,
+          explanation: "Methanol is not used in IV medications." }
+      ]
+    },
+    {
+      question: "Which sugar alcohol can cause hypoglycemia and liver failure in dogs?",
+      options: [
+        { text: "Xylitol.", correct: true,
+          explanation: "Xylitol is safe in humans but causes severe hypoglycemia and liver failure in dogs." },
+        { text: "Sorbitol.", correct: false,
+          explanation: "Sorbitol causes osmotic diarrhea but not hypoglycemia in dogs." },
+        { text: "Mannitol.", correct: false,
+          explanation: "Mannitol is used as an osmotic diuretic." }
+      ]
+    },
+    {
+      question: "A neonate develops metabolic acidosis, respiratory depression, and seizures after receiving IV flushes. What is the most likely cause?",
+      options: [
+        { text: "Benzyl alcohol toxicity.", correct: true,
+          explanation: "Benzyl alcohol is a preservative in some IV flushes. In neonates, it can cause 'gasping syndrome' with metabolic acidosis and respiratory depression." },
+        { text: "Propylene glycol toxicity.", correct: false,
+          explanation: "Propylene glycol is more common in older patients on IV drips." },
+        { text: "Ethylene glycol toxicity.", correct: false,
+          explanation: "This is not a common neonatal exposure." }
+      ]
+    },
+    {
+      question: "Which combination of osmolar gap and anion gap is seen in early ethylene glycol poisoning?",
+      options: [
+        { text: "High osmolar gap and high anion gap.", correct: true,
+          explanation: "Early ethylene glycol poisoning causes an elevated osmolar gap (parent alcohol) and an elevated anion gap (glycolic acid)." },
+        { text: "Normal osmolar gap and high anion gap.", correct: false,
+          explanation: "This is seen in late presentation." },
+        { text: "High osmolar gap and normal anion gap.", correct: false,
+          explanation: "This is seen with ethanol or isopropyl." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Toxicology / Alcohols / Differential",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tumor-Induced Osteomalacia — FGF23-Mediated Hypophosphatemia</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 150)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">TUMOR-INDUCED OSTEOMALACIA (TIO)</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">Adult-onset, severe hypophosphatemia + osteomalacia + renal phosphate wasting</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#991b1b">Previously marathon runner → progressive weakness → wheelchair in 1 year</text>
+          </g>
+
+          <!-- Clinical card -->
+          <g transform="translate(250, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">CLINICAL PICTURE</text>
+            <text x="0" y="-50" text-anchor="middle" font-size="24" font-weight="800" fill="#dc2626">Osteomalacia</text>
+            <line x1="-160" y1="-20" x2="160" y2="-20" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="10" text-anchor="middle" font-size="15" fill="#7f1d1d">Bone pain</text>
+            <text x="0" y="35" text-anchor="middle" font-size="15" fill="#7f1d1d">Muscle weakness (proximal)</text>
+            <text x="0" y="60" text-anchor="middle" font-size="15" fill="#7f1d1d">Progressive → wheelchair</text>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">Normal neuro exam</text>
+            <text x="0" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Adult-onset, severe</text>
+          </g>
+
+          <!-- Lab card -->
+          <g transform="translate(700, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">KEY LABS</text>
+            <line x1="-160" y1="-70" x2="160" y2="-70" stroke="#fecaca" stroke-width="2"/>
+            <text x="-140" y="-40" font-size="14" font-weight="700" fill="#7f1d1d">Phosphate</text>
+            <text x="140" y="-40" text-anchor="end" font-size="16" font-weight="800" fill="#dc2626">1.1 mg/dL</text>
+            <text x="-140" y="-10" font-size="14" font-weight="700" fill="#7f1d1d">Calcium</text>
+            <text x="140" y="-10" text-anchor="end" font-size="16" font-weight="800" fill="#16a34a">9.3 (normal)</text>
+            <text x="-140" y="20" font-size="14" font-weight="700" fill="#7f1d1d">PTH</text>
+            <text x="140" y="20" text-anchor="end" font-size="16" font-weight="800" fill="#16a34a">49 (normal)</text>
+            <text x="-140" y="50" font-size="14" font-weight="700" fill="#7f1d1d">1,25(OH)₂D</text>
+            <text x="140" y="50" text-anchor="end" font-size="16" font-weight="800" fill="#dc2626">12 (low)</text>
+            <text x="-140" y="80" font-size="14" font-weight="700" fill="#7f1d1d">FE phosphate</text>
+            <text x="140" y="80" text-anchor="end" font-size="16" font-weight="800" fill="#dc2626">30%</text>
+            <text x="0" y="115" text-anchor="middle" font-size="13" font-style="italic" fill="#64748b">Normal FE Pi: 10–15%</text>
+          </g>
+
+          <!-- Signature card -->
+          <g transform="translate(1150, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">BIOCHEMICAL SIGNATURE</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">FGF23 excess</text>
+            <line x1="-160" y1="-15" x2="160" y2="-15" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="15" text-anchor="middle" font-size="14" fill="#15803d">↓ Phosphate reabsorption</text>
+            <text x="0" y="40" text-anchor="middle" font-size="14" fill="#15803d">↓ 1-alpha-hydroxylase</text>
+            <text x="0" y="65" text-anchor="middle" font-size="14" fill="#15803d">Normal Ca, normal PTH</text>
+            <text x="0" y="90" text-anchor="middle" font-size="14" fill="#15803d">No proteinuria, no glycosuria</text>
+            <text x="0" y="118" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">≠ Fanconi syndrome</text>
+          </g>
+
+          <!-- Bottom teaching -->
+          <g transform="translate(700, 700)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">🔑 ADULT-ONSET + RENAL Pi WASTING + LOW CALCITRIOL + NORMAL CALCIUM</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#6d28d9">This combination is the signature of primary FGF23 excess</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">In an adult, most likely tumor-induced osteomalacia (TIO)</text>
+          </g>
+
+          <g transform="translate(700, 850)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ ANSWER: A — Measure FGF23</text>
+            <text x="0" y="18" text-anchor="middle" font-size="16" fill="#15803d">Confirms FGF23-mediated hypophosphatemia → then localize the tumor</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — FGF23 PHYSIOLOGY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">FGF23 PHYSIOLOGY — THE THREE TARGETS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">FGF23 is a phosphate-regulating hormone produced by osteocytes</text>
+          </g>
+
+          <!-- FGF23 source -->
+          <g transform="translate(700, 280)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">① SOURCE — Osteocytes</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#0e7490">FGF23 is produced by osteocytes in bone — normally in response to ↑ phosphate and ↑ 1,25(OH)₂D</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#155e75">In TIO: a mesenchymal tumor produces excess FGF23</text>
+          </g>
+
+          <!-- Targets -->
+          <g transform="translate(250, 580)">
+            <rect x="-210" y="-160" width="420" height="320" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-160" width="420" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-210" y="-125" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">② PROXIMAL TUBULE</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">↓ NaPi-IIa</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="20" text-anchor="middle" font-size="14" fill="#6d28d9">FGF23 internalizes NaPi-IIa</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#6d28d9">on the apical membrane</text>
+            <text x="0" y="75" text-anchor="middle" font-size="15" font-weight="800" fill="#dc2626">↓ Phosphate reabsorption</text>
+            <text x="0" y="105" text-anchor="middle" font-size="15" font-weight="800" fill="#dc2626">→ Hypophosphatemia</text>
+            <text x="0" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">↑ FE phosphate (30%)</text>
+          </g>
+
+          <g transform="translate(700, 580)">
+            <rect x="-210" y="-160" width="420" height="320" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-210" y="-160" width="420" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-210" y="-125" width="420" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">③ 1-ALPHA-HYDROXYLASE</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="24" font-weight="800" fill="#991b1b">↓ CYP27B1</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="20" text-anchor="middle" font-size="14" fill="#7f1d1d">FGF23 suppresses the enzyme</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#7f1d1d">that converts 25(OH)D to 1,25(OH)₂D</text>
+            <text x="0" y="75" text-anchor="middle" font-size="15" font-weight="800" fill="#dc2626">↓ 1,25(OH)₂D (12 pg/mL)</text>
+            <text x="0" y="105" text-anchor="middle" font-size="15" font-weight="800" fill="#dc2626">→ ↓ Intestinal Pi and Ca</text>
+            <text x="0" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Inappropriately low calcitriol</text>
+          </g>
+
+          <g transform="translate(1150, 580)">
+            <rect x="-210" y="-160" width="420" height="320" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <rect x="-210" y="-160" width="420" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-210" y="-125" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">NET EFFECT</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">Biochemical pattern</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="20" text-anchor="middle" font-size="14" fill="#15803d">Phosphate: LOW</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#15803d">Calcium: NORMAL</text>
+            <text x="0" y="70" text-anchor="middle" font-size="14" fill="#15803d">PTH: NORMAL</text>
+            <text x="0" y="95" text-anchor="middle" font-size="14" fill="#15803d">1,25(OH)₂D: LOW</text>
+            <text x="0" y="120" text-anchor="middle" font-size="14" fill="#15803d">FE Pi: HIGH</text>
+            <text x="0" y="145" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">= FGF23 excess</text>
+          </g>
+
+          <g transform="translate(700, 920)">
+            <rect x="-620" y="-30" width="1240" height="60" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">FGF23 → ↓ Pi reabsorption + ↓ calcitriol = the complete biochemical signature</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DIFFERENTIAL DIAGNOSIS
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DIFFERENTIAL DIAGNOSIS OF HYPOPHOSPHATEMIA</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">The biochemical signature distinguishes these entities</text>
+          </g>
+
+          <!-- TIO -->
+          <g transform="translate(200, 520)">
+            <rect x="-180" y="-300" width="360" height="600" rx="22" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-180" y="-300" width="360" height="80" rx="22" fill="#16a34a"/>
+            <rect x="-180" y="-245" width="360" height="25" fill="#16a34a"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">TIO</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-100" r="55" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">FGF23↑</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">adult</text>
+
+            <g font-size="13">
+              <text x="-160" y="-20" font-weight="700" fill="#166534">• Onset:</text>
+              <text x="-60" y="-20" font-weight="800" fill="#166534">Adult</text>
+              <text x="-160" y="5" font-weight="700" fill="#166534">• Phosphate:</text>
+              <text x="-60" y="5" font-weight="800" fill="#166534">LOW</text>
+              <text x="-160" y="30" font-weight="700" fill="#166534">• Calcium:</text>
+              <text x="-60" y="30" font-weight="800" fill="#166534">Normal</text>
+              <text x="-160" y="55" font-weight="700" fill="#166534">• Calcitriol:</text>
+              <text x="-60" y="55" font-weight="800" fill="#166534">LOW</text>
+              <text x="-160" y="80" font-weight="700" fill="#166534">• FE Pi:</text>
+              <text x="-60" y="80" font-weight="800" fill="#166534">HIGH</text>
+              <text x="-160" y="105" font-weight="700" fill="#166534">• Proteinuria:</text>
+              <text x="-60" y="105" font-weight="800" fill="#166534">Absent</text>
+              <text x="-160" y="130" font-weight="700" fill="#166534">• Glycosuria:</text>
+              <text x="-60" y="130" font-weight="800" fill="#166534">Absent</text>
+            </g>
+
+            <rect x="-160" y="170" width="320" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Diagnosis:</text>
+            <text x="0" y="222" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">Measure FGF23</text>
+          </g>
+
+          <!-- XLH -->
+          <g transform="translate(560, 520)">
+            <rect x="-180" y="-300" width="360" height="600" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-180" y="-300" width="360" height="80" rx="22" fill="#7c3aed"/>
+            <rect x="-180" y="-245" width="360" height="25" fill="#7c3aed"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">XLH</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">Genetic (PHEX)</text>
+
+            <circle cx="0" cy="-100" r="55" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">FGF23↑</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">child</text>
+
+            <g font-size="13">
+              <text x="-160" y="-20" font-weight="700" fill="#5b21b6">• Onset:</text>
+              <text x="-60" y="-20" font-weight="800" fill="#5b21b6">Childhood</text>
+              <text x="-160" y="5" font-weight="700" fill="#5b21b6">• Phosphate:</text>
+              <text x="-60" y="5" font-weight="800" fill="#5b21b6">LOW</text>
+              <text x="-160" y="30" font-weight="700" fill="#5b21b6">• Calcium:</text>
+              <text x="-60" y="30" font-weight="800" fill="#5b21b6">Normal</text>
+              <text x="-160" y="55" font-weight="700" fill="#5b21b6">• Calcitriol:</text>
+              <text x="-60" y="55" font-weight="800" fill="#5b21b6">Normal/LOW</text>
+              <text x="-160" y="80" font-weight="700" fill="#5b21b6">• FE Pi:</text>
+              <text x="-60" y="80" font-weight="800" fill="#5b21b6">HIGH</text>
+              <text x="-160" y="105" font-weight="700" fill="#5b21b6">• Hypercalciuria:</text>
+              <text x="-60" y="105" font-weight="800" fill="#5b21b6">Often present</text>
+              <text x="-160" y="130" font-weight="700" fill="#5b21b6">• Family:</text>
+              <text x="-60" y="130" font-weight="800" fill="#5b21b6">X-linked</text>
+            </g>
+
+            <rect x="-160" y="170" width="320" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Ruled out:</text>
+            <text x="0" y="222" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">Adult onset</text>
+          </g>
+
+          <!-- Fanconi -->
+          <g transform="translate(920, 520)">
+            <rect x="-180" y="-300" width="360" height="600" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-180" y="-300" width="360" height="80" rx="22" fill="#0891b2"/>
+            <rect x="-180" y="-245" width="360" height="25" fill="#0891b2"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">FANCONI</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Generalized PT dysfunction</text>
+
+            <circle cx="0" cy="-100" r="55" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">Multiple</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">wasting</text>
+
+            <g font-size="13">
+              <text x="-160" y="-20" font-weight="700" fill="#155e75">• Onset:</text>
+              <text x="-60" y="-20" font-weight="800" fill="#155e75">Variable</text>
+              <text x="-160" y="5" font-weight="700" fill="#155e75">• Phosphate:</text>
+              <text x="-60" y="5" font-weight="800" fill="#155e75">LOW</text>
+              <text x="-160" y="30" font-weight="700" fill="#155e75">• Calcitriol:</text>
+              <text x="-60" y="30" font-weight="800" fill="#155e75">Normal/HIGH</text>
+              <text x="-160" y="55" font-weight="700" fill="#155e75">• Proteinuria:</text>
+              <text x="-60" y="55" font-weight="800" fill="#155e75">YES</text>
+              <text x="-160" y="80" font-weight="700" fill="#155e75">• Glycosuria:</text>
+              <text x="-60" y="80" font-weight="800" fill="#155e75">YES</text>
+              <text x="-160" y="105" font-weight="700" fill="#155e75">• Aminoaciduria:</text>
+              <text x="-60" y="105" font-weight="800" fill="#155e75">YES</text>
+              <text x="-160" y="130" font-weight="700" fill="#155e75">• Causes:</text>
+              <text x="-60" y="130" font-weight="800" fill="#155e75">Myeloma, drugs</text>
+            </g>
+
+            <rect x="-160" y="170" width="320" height="80" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Ruled out:</text>
+            <text x="0" y="222" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">Normal UA</text>
+          </g>
+
+          <!-- Vit D deficiency -->
+          <g transform="translate(1280, 520)">
+            <rect x="-180" y="-300" width="360" height="600" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <rect x="-180" y="-300" width="360" height="80" rx="22" fill="#ca8a04"/>
+            <rect x="-180" y="-245" width="360" height="25" fill="#ca8a04"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">VIT D DEF</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="700" fill="#713f12">Nutritional</text>
+
+            <circle cx="0" cy="-100" r="55" fill="#fef3c7" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#713f12">25(OH)D</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="14" font-weight="700" fill="#713f12">low</text>
+
+            <g font-size="13">
+              <text x="-160" y="-20" font-weight="700" fill="#713f12">• Onset:</text>
+              <text x="-60" y="-20" font-weight="800" fill="#713f12">Variable</text>
+              <text x="-160" y="5" font-weight="700" fill="#713f12">• Phosphate:</text>
+              <text x="-60" y="5" font-weight="800" fill="#713f12">Normal/LOW</text>
+              <text x="-160" y="30" font-weight="700" fill="#713f12">• Calcium:</text>
+              <text x="-60" y="30" font-weight="800" fill="#713f12">LOW</text>
+              <text x="-160" y="55" font-weight="700" fill="#713f12">• PTH:</text>
+              <text x="-60" y="55" font-weight="800" fill="#713f12">HIGH</text>
+              <text x="-160" y="80" font-weight="700" fill="#713f12">• Calcitriol:</text>
+              <text x="-60" y="80" font-weight="800" fill="#713f12">LOW</text>
+              <text x="-160" y="105" font-weight="700" fill="#713f12">• FE Pi:</text>
+              <text x="-60" y="105" font-weight="800" fill="#713f12">Low/Normal</text>
+              <text x="-160" y="130" font-weight="700" fill="#713f12">• Cause:</text>
+              <text x="-60" y="130" font-weight="800" fill="#713f12">Nutritional</text>
+            </g>
+
+            <rect x="-160" y="170" width="320" height="80" rx="12" fill="#fff" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#713f12">Ruled out:</text>
+            <text x="0" y="222" text-anchor="middle" font-size="14" font-weight="800" fill="#713f12">High FE Pi</text>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">TIO: adult + low Pi + low calcitriol + high FE Pi + no Fanconi features</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — DIAGNOSIS & MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DIAGNOSIS AND MANAGEMENT OF TIO</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Measure FGF23 → localize the tumor → resect</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(700, 250)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="-560" y="-15" font-size="20" font-weight="800" fill="#166534">① CONFIRM — Measure FGF23</text>
+            <text x="-560" y="15" font-size="16" fill="#15803d">Elevated FGF23 confirms FGF23-mediated hypophosphatemia</text>
+            <text x="-560" y="40" font-size="15" font-weight="700" fill="#166534">This is the answer to the question</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 390)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-560" y="-15" font-size="20" font-weight="800" fill="#155e75">② LOCALIZE — Imaging for the tumor</text>
+            <text x="-560" y="15" font-size="16" fill="#0e7490">Advanced imaging: CT/MRI of head, neck, chest; ⁶⁸Ga-DOTATATE PET/CT most sensitive</text>
+            <text x="-560" y="40" font-size="15" font-weight="700" fill="#155e75">Tumors are small, slow-growing mesenchymal tumors — hard to find</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(700, 530)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="-560" y="-15" font-size="20" font-weight="800" fill="#5b21b6">③ EMERGING — Selective venous sampling</text>
+            <text x="-560" y="15" font-size="16" fill="#6d28d9">Identify the FGF23 "step-up" in venous drainage</text>
+            <text x="-560" y="40" font-size="15" font-weight="700" fill="#5b21b6">Then target imaging at that specific drainage site</text>
+          </g>
+
+          <!-- Step 4 -->
+          <g transform="translate(700, 670)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="-560" y="-15" font-size="20" font-weight="800" fill="#713f12">④ TREAT — Surgical resection (curative)</text>
+            <text x="-560" y="15" font-size="16" fill="#a16207">Complete resection is curative</text>
+            <text x="-560" y="40" font-size="15" font-weight="700" fill="#713f12">If unresectable: phosphate + calcitriol supplementation, burosumab (anti-FGF23)</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 820)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ ANSWER: A — Measure FGF23</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#15803d">Confirm FGF23 excess before searching for the tumor</text>
+            <text x="0" y="45" text-anchor="middle" font-size="15" font-style="italic" fill="#15803d">Imaging without biochemical confirmation risks false positives and unnecessary surgery</text>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">FGF23 → tumor localization → resection = curative</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Tumor-Induced Osteomalacia — FGF23-Mediated Hypophosphatemia",
+  subtitle: "Adult-onset renal phosphate wasting with low calcitriol = primary FGF23 excess",
+  badge: "NEPHROLOGY · ENDOCRINOLOGY · BONE & MINERAL",
+  caseTitle: "Case: 49-year-old man with progressive weakness, bone pain, and severe hypophosphatemia",
+  caseDescription: "Previously healthy marathon runner. Over 2 years develops myalgia, progressive proximal weakness, wheelchair dependence. Labs: severe hypophosphatemia (1.1 mg/dL), normal calcium (9.3), normal PTH (49), low 1,25-dihydroxyvitamin D (12 pg/mL), FE phosphate 30%. Normal urinalysis (no proteinuria, no glycosuria). 25-hydroxyvitamin D 14 ng/mL.",
+  labChips: [
+    { text: "Phosphate 1.1 mg/dL", abnormal: true },
+    { text: "Calcium 9.3 mg/dL", abnormal: false },
+    { text: "PTH 49 pg/mL", abnormal: false },
+    { text: "1,25(OH)₂D 12 pg/mL", abnormal: true },
+    { text: "25(OH)D 14 ng/mL", abnormal: true },
+    { text: "FE phosphate 30%", abnormal: true },
+    { text: "Urine protein 33 mg", abnormal: false },
+    { text: "Urinalysis normal", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 FGF23 Physiology", className: "opt2" },
+    { id: "opt3", label: "🔵 Differential", className: "opt3" },
+    { id: "opt4", label: "🟡 Diagnosis & Rx", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Tumor-Induced Osteomalacia — The Case",
+      infoRows: [
+        { k: "Phosphate", v: "1.1 mg/dL (low)" },
+        { k: "FE phosphate", v: "30% (high)" },
+        { k: "1,25(OH)₂D", v: "12 pg/mL (low)" },
+        { k: "Calcium / PTH", v: "Normal" },
+        { k: "Diagnosis", v: "FGF23 excess → TIO" }
+      ],
+      svgTitle: "Tumor-Induced Osteomalacia — The Case",
+      svgSubtitle: "Adult-onset severe hypophosphatemia + osteomalacia + renal phosphate wasting",
+      bannerBg: "#dc2626",
+      bannerText1: "Adult + low Pi + low calcitriol + high FE Pi + no Fanconi features = TIO",
+      bannerText2: "Measure FGF23 to confirm",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "The clinical picture",
+      panel1List: [
+        "<strong>Previously healthy, active marathon runner</strong> — dramatic decline over 2 years",
+        "<strong>Myalgia → progressive proximal weakness → wheelchair</strong> — classic osteomalacic myopathy",
+        "<strong>Bone pain and diffuse weakness</strong> — features of osteomalacia",
+        "<strong>Normal neurological exam</strong> — not a primary myopathy or neuropathy",
+        "<strong>Severe hypophosphatemia (1.1 mg/dL)</strong> — the biochemical driver"
+      ],
+      panel2Title: "🧪 The biochemical signature",
+      panel2Tagline: "What the labs tell you",
+      panel2List: [
+        "<strong>FE phosphate 30%</strong> — renal phosphate wasting (normal 10–15%; should be much lower in hypophosphatemia)",
+        "<strong>1,25-dihydroxyvitamin D 12 pg/mL</strong> — inappropriately low (should rise in hypophosphatemia)",
+        "<strong>Calcium 9.3 and PTH 49</strong> — normal; rules out hyperparathyroidism",
+        "<strong>Normal urinalysis, no proteinuria, no glycosuria</strong> — rules out Fanconi syndrome",
+        "<strong>25-hydroxyvitamin D 14</strong> — mildly low but not the cause"
+      ],
+      alertIcon: "🩺",
+      alertTitle: "Board Pearl — Adult-onset + renal Pi wasting",
+      alertText: "Adult-onset hypophosphatemia with renal phosphate wasting and <strong>inappropriately low calcitriol</strong> is the signature of <strong>primary FGF23 excess</strong>. In adults, this is most often <strong>tumor-induced osteomalacia (TIO)</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 FGF23 Physiology — The Three Targets",
+      infoRows: [
+        { k: "Source", v: "Osteocytes" },
+        { k: "Target 1", v: "↓ NaPi-IIa → ↓ Pi reabsorption" },
+        { k: "Target 2", v: "↓ 1-alpha-hydroxylase" },
+        { k: "Target 3", v: "↓ Intestinal Pi absorption" },
+        { k: "Net effect", v: "↓ Pi, ↓ calcitriol, normal Ca" }
+      ],
+      svgTitle: "FGF23 Physiology — The Three Targets",
+      svgSubtitle: "FGF23 is a phosphate-regulating hormone produced by osteocytes",
+      bannerBg: "#7c3aed",
+      bannerText1: "FGF23 → ↓ Pi reabsorption + ↓ calcitriol = the complete biochemical signature",
+      bannerText2: "In TIO, a mesenchymal tumor produces excess FGF23",
+      panel1Title: "🔬 What FGF23 does",
+      panel1Tagline: "The three targets",
+      panel1List: [
+        "<strong>Source:</strong> produced by osteocytes in bone",
+        "<strong>Target 1 — proximal tubule:</strong> FGF23 internalizes NaPi-IIa on the apical membrane → ↓ phosphate reabsorption → hypophosphatemia + high FE phosphate",
+        "<strong>Target 2 — 1-alpha-hydroxylase:</strong> FGF23 suppresses CYP27B1 → ↓ 1,25(OH)₂D → ↓ intestinal calcium and phosphate absorption",
+        "<strong>Net effect:</strong> low phosphate, low calcitriol, normal calcium, normal PTH",
+        "<strong>Clinical consequence:</strong> osteomalacia — bone pain, muscle weakness, fractures"
+      ],
+      panel2Title: "🔬 Why calcitriol is inappropriately low",
+      panel2Tagline: "The key to the diagnosis",
+      panel2List: [
+        "In <strong>simple hypophosphatemia</strong> (e.g., poor intake), calcitriol should be <strong>high</strong> — the body tries to absorb more phosphate",
+        "In <strong>FGF23 excess</strong>, calcitriol is <strong>low</strong> despite hypophosphatemia — FGF23 suppresses the enzyme",
+        "This <strong>inappropriately low calcitriol</strong> is the key clue to FGF23 excess",
+        "<strong>Normal calcium and PTH</strong> rule out hyperparathyroidism as a cause",
+        "Normal <strong>proteinuria and glycosuria</strong> rule out Fanconi syndrome"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Low calcitriol + low phosphate",
+      alertText: "When phosphate is low and calcitriol is <strong>also low</strong>, think <strong>FGF23 excess</strong>. When phosphate is low and calcitriol is <strong>appropriately high</strong>, think simple deficiency or renal wasting without FGF23."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Differential Diagnosis of Hypophosphatemia",
+      infoRows: [
+        { k: "TIO", v: "Adult, FGF23↑, low calcitriol" },
+        { k: "XLH", v: "Childhood, PHEX, hypercalciuria" },
+        { k: "Fanconi", v: "Proteinuria + glycosuria" },
+        { k: "Vit D deficiency", v: "Low 25(OH)D, high PTH" },
+        { k: "Hyperparathyroidism", v: "High PTH, low Pi" }
+      ],
+      svgTitle: "Differential Diagnosis of Hypophosphatemia",
+      svgSubtitle: "The biochemical signature distinguishes these entities",
+      bannerBg: "#0891b2",
+      bannerText1: "Adult + low Pi + low calcitriol + high FE Pi + no Fanconi features = TIO",
+      bannerText2: "Genetic causes typically present in childhood with hypercalciuria",
+      panel1Title: "🔬 Why the alternatives don't fit",
+      panel1Tagline: "Each has distinguishing features",
+      panel1List: [
+        "<strong>Genetic (XLH, ADHR):</strong> NaPi-IIa/2c mutations cause hypophosphatemia but present in <strong>childhood</strong>; also lead to <strong>↑ calcitriol → hypercalciuria</strong> (not seen here)",
+        "<strong>Fanconi syndrome:</strong> generalized proximal tubular dysfunction → <strong>proteinuria, glycosuria, aminoaciduria</strong> — all absent here; normal urinalysis rules this out",
+        "<strong>Tumor-induced Fanconi</strong> (e.g., myeloma): ruled out by normal urinalysis and absence of proteinuria",
+        "<strong>Vitamin D deficiency:</strong> would have <strong>high PTH</strong>, <strong>low calcium</strong>, and <strong>low FE Pi</strong> (not high)",
+        "<strong>Hyperparathyroidism:</strong> would have <strong>high PTH</strong> and <strong>low calcium</strong> or high-normal calcium, not normal PTH"
+      ],
+      panel2Title: "🔬 The signature of primary FGF23 excess",
+      panel2Tagline: "What makes TIO the answer",
+      panel2List: [
+        "<strong>Hypophosphatemia</strong> with <strong>high FE phosphate</strong> — renal phosphate wasting",
+        "<strong>Inappropriately low calcitriol</strong> — the FGF23 effect",
+        "<strong>Normal calcium and PTH</strong> — not hyperparathyroidism",
+        "<strong>Normal urinalysis</strong> — not Fanconi syndrome",
+        "<strong>Adult onset</strong> — not genetic",
+        "In an adult, this combination is <strong>tumor-induced osteomalacia (TIO)</strong> until proven otherwise"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Adult-onset + FGF23 signature = TIO",
+      alertText: "TIO is the diagnosis until proven otherwise in an adult with <strong>renal phosphate wasting, low calcitriol, normal calcium, and no Fanconi features</strong>. The next step is to <strong>measure FGF23</strong>."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Diagnosis & Management",
+      infoRows: [
+        { k: "Correct answer", v: "A — Measure FGF23" },
+        { k: "Confirm", v: "Elevated FGF23" },
+        { k: "Localize", v: "CT/MRI or DOTATATE PET" },
+        { k: "Emerging", v: "Selective venous sampling" },
+        { k: "Treatment", v: "Surgical resection (curative)" }
+      ],
+      svgTitle: "Diagnosis and Management of TIO",
+      svgSubtitle: "Measure FGF23 → localize the tumor → resect",
+      bannerBg: "#ca8a04",
+      bannerText1: "A — Measure FGF23 to confirm FGF23-mediated hypophosphatemia",
+      bannerText2: "Then localize the tumor with advanced imaging — and resect for cure",
+      panel1Title: "✅ The correct answer (A)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>FGF23</strong> is the hormone that drives renal phosphate wasting and suppresses calcitriol",
+        "Measuring FGF23 <strong>confirms the diagnosis</strong> of FGF23-mediated hypophosphatemia",
+        "In an adult, elevated FGF23 with this clinical picture is <strong>tumor-induced osteomalacia (TIO)</strong>",
+        "FGF23 measurement should come <strong>before</strong> an extensive tumor hunt",
+        "Once FGF23 is elevated, proceed to <strong>tumor localization</strong>"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>B (Kidney biopsy):</strong> Kidneys are the target, not the source. Biopsy would show nonspecific tubular changes — the tumor is the culprit",
+        "<strong>C (CT/MRI of head, neck, chest):</strong> This is for <strong>tumor localization</strong>, done <strong>after</strong> FGF23 confirms the diagnosis — not before",
+        "<strong>D (Serum immunoelectrophoresis):</strong> For myeloma/monoclonal gammopathy, which can cause Fanconi syndrome — but the normal urinalysis rules this out"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: A",
+      alertText: "<strong>Measure FGF23.</strong> It confirms the diagnosis of FGF23-mediated hypophosphatemia and identifies TIO as the likely cause in this adult patient. Then proceed to tumor localization and resection."
+    }
+  },
+  comparison: {
+    title: "📊 Differential Diagnosis of Hypophosphatemia",
+    sub: "The biochemical signature distinguishes these entities",
+    head: ["Diagnosis", "Onset", "Calcitriol", "FE Pi", "Distinguishing feature"],
+    rows: [
+      { cells: ["TIO (this patient)", "Adult", "LOW", "HIGH", "No Fanconi features; FGF23↑"], hero: true },
+      { cells: ["XLH / genetic", "Childhood", "Normal/HIGH", "HIGH", "Hypercalciuria, PHEX mutation"], hero: false },
+      { cells: ["Fanconi syndrome", "Variable", "Normal/HIGH", "HIGH", "Proteinuria + glycosuria + aminoaciduria"], hero: false },
+      { cells: ["Vitamin D deficiency", "Variable", "LOW", "Low/Normal", "Low calcium, high PTH, low 25(OH)D"], hero: false },
+      { cells: ["Hyperparathyroidism", "Variable", "HIGH", "HIGH", "High PTH, low/high-normal calcium"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 49-year-old previously healthy man develops progressive proximal weakness, bone pain, and wheelchair dependence over 2 years. Labs: phosphate 1.1 mg/dL, calcium 9.3 mg/dL, PTH 49 pg/mL, 1,25(OH)₂D 12 pg/mL, FE phosphate 30%. Normal urinalysis. Which test would be most helpful?",
+      options: [
+        { text: "Measure fibroblast growth factor 23 (FGF23).", correct: true,
+          explanation: "The combination of adult-onset hypophosphatemia, renal phosphate wasting, inappropriately low calcitriol, normal calcium, and normal PTH is the signature of primary FGF23 excess — most likely TIO. Measuring FGF23 confirms the diagnosis." },
+        { text: "Kidney biopsy.", correct: false,
+          explanation: "The kidneys are the target of FGF23, not the source. Biopsy would show nonspecific changes and not identify the underlying tumor." },
+        { text: "CT or MRI of head, neck, and chest.", correct: false,
+          explanation: "This is for tumor localization, which should be done AFTER FGF23 confirms the diagnosis. Imaging without biochemical confirmation risks false positives and unnecessary surgery." }
+      ]
+    },
+    {
+      question: "Which biochemical pattern is characteristic of FGF23 excess?",
+      options: [
+        { text: "Low phosphate, low 1,25(OH)₂D, normal calcium, high FE phosphate.", correct: true,
+          explanation: "FGF23 causes renal phosphate wasting (low phosphate, high FE phosphate) and suppresses 1-alpha-hydroxylase (low calcitriol). Calcium and PTH are typically normal." },
+        { text: "Low phosphate, high 1,25(OH)₂D, low calcium.", correct: false,
+          explanation: "High calcitriol with low phosphate is more consistent with vitamin D deficiency or genetic causes, not FGF23 excess." },
+        { text: "High phosphate, high PTH, low calcium.", correct: false,
+          explanation: "This is consistent with CKD-related hyperparathyroidism, not FGF23 excess." }
+      ]
+    },
+    {
+      question: "What is the function of FGF23?",
+      options: [
+        { text: "It decreases renal phosphate reabsorption and suppresses 1-alpha-hydroxylase.", correct: true,
+          explanation: "FGF23 internalizes NaPi-IIa in the proximal tubule (↓ phosphate reabsorption) and suppresses CYP27B1 (↓ calcitriol). This leads to hypophosphatemia and low calcitriol." },
+        { text: "It increases renal phosphate reabsorption.", correct: false,
+          explanation: "FGF23 decreases phosphate reabsorption, not increases it." },
+        { text: "It stimulates 1-alpha-hydroxylase to increase calcitriol.", correct: false,
+          explanation: "FGF23 suppresses 1-alpha-hydroxylase — it does not stimulate it." }
+      ]
+    },
+    {
+      question: "What is tumor-induced osteomalacia (TIO)?",
+      options: [
+        { text: "A paraneoplastic syndrome in which a small mesenchymal tumor produces excess FGF23, causing hypophosphatemia and osteomalacia.", correct: true,
+          explanation: "TIO is caused by small, slow-growing mesenchymal tumors that produce excess FGF23. This leads to renal phosphate wasting, hypophosphatemia, low calcitriol, and osteomalacia. Resection is curative." },
+        { text: "A malignant bone tumor that directly invades bone.", correct: false,
+          explanation: "TIO is caused by small mesenchymal tumors (often benign), not bone invasion. The tumor itself is usually small and slow-growing." },
+        { text: "A tumor that produces parathyroid hormone.", correct: false,
+          explanation: "TIO is caused by FGF23 production, not PTH. PTH is normal in TIO." }
+      ]
+    },
+    {
+      question: "Why does the genetic form of hypophosphatemic rickets (XLH) present in childhood and not adulthood?",
+      options: [
+        { text: "PHEX mutations are inherited and manifest from birth, causing childhood rickets.", correct: true,
+          explanation: "XLH is caused by PHEX mutations, which are inherited and manifest from childhood. The adult-onset form is more suggestive of TIO." },
+        { text: "PHEX mutations only become active after puberty.", correct: false,
+          explanation: "PHEX mutations are active from birth. XLH presents in childhood." },
+        { text: "XLH only affects adults.", correct: false,
+          explanation: "XLH is a childhood-onset disease. Adult-onset suggests an acquired cause like TIO." }
+      ]
+    },
+    {
+      question: "Which feature helps distinguish TIO from Fanconi syndrome?",
+      options: [
+        { text: "Normal urinalysis without proteinuria or glycosuria.", correct: true,
+          explanation: "Fanconi syndrome causes generalized proximal tubular dysfunction with proteinuria, glycosuria, and aminoaciduria. TIO causes isolated phosphate wasting without these features. Normal urinalysis helps distinguish the two." },
+        { text: "Presence of hypophosphatemia.", correct: false,
+          explanation: "Both TIO and Fanconi syndrome cause hypophosphatemia, so this does not distinguish them." },
+        { text: "Presence of renal phosphate wasting.", correct: false,
+          explanation: "Both conditions cause renal phosphate wasting, so this does not distinguish them." }
+      ]
+    },
+    {
+      question: "What is the treatment for tumor-induced osteomalacia?",
+      options: [
+        { text: "Surgical resection of the tumor (curative).", correct: true,
+          explanation: "Complete resection of the responsible mesenchymal tumor is curative. If the tumor cannot be found or resected, medical therapy with phosphate and calcitriol (or burosumab, an anti-FGF23 antibody) is used." },
+        { text: "Phosphate supplementation alone.", correct: false,
+          explanation: "Phosphate alone may worsen calcitriol suppression and is not curative. Surgical resection is the definitive treatment." },
+        { text: "Chemotherapy.", correct: false,
+          explanation: "Most tumors causing TIO are benign mesenchymal tumors. Surgical resection is the treatment of choice." }
+      ]
+    },
+    {
+      question: "What is an emerging technique to localize tumors causing TIO?",
+      options: [
+        { text: "Selective venous sampling to identify the FGF23 step-up.", correct: true,
+          explanation: "Selective venous sampling can identify the FGF23 step-up in the venous drainage, guiding targeted imaging to the specific drainage site. This is especially useful when standard imaging is negative." },
+        { text: "Bone marrow biopsy.", correct: false,
+          explanation: "Bone marrow biopsy is not used to localize TIO tumors." },
+        { text: "Lumbar puncture.", correct: false,
+          explanation: "Lumbar puncture is not used to localize TIO tumors." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Endocrinology / Bone & Mineral",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

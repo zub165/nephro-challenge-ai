@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heparin-Induced Thrombocytopenia — Diagnosis and Management</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">HEPARIN-INDUCED THROMBOCYTOPENIA (HIT)</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">68M · ESKD on HD · PE treated with UFH · Day 7: platelets 224k → 72k</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">Dialysis circuit clotting · 4Ts = 7 · PF4 strongly positive · No bleeding</text>
+          </g>
+
+          <!-- Card 1: Clinical -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE PRESENTATION</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="800" fill="#991b1b">Platelets</text>
+              <text x="50" y="-92" font-weight="800" fill="#dc2626">224k → 72k</text>
+              <text x="-170" y="-68" font-weight="800" fill="#991b1b">Timing</text>
+              <text x="50" y="-68" font-weight="800" fill="#dc2626">Day 7</text>
+              <text x="-170" y="-44" font-weight="800" fill="#991b1b">Complication</text>
+              <text x="50" y="-44" font-weight="800" fill="#dc2626">Circuit clotting</text>
+              <text x="-170" y="-20" font-weight="800" fill="#991b1b">Bleeding</text>
+              <text x="50" y="-20" font-weight="800" fill="#166534">None</text>
+              <text x="-170" y="4" font-weight="800" fill="#991b1b">4Ts Score</text>
+              <text x="50" y="4" font-weight="800" fill="#dc2626">7 (High)</text>
+            </g>
+
+            <line x1="-170" y1="28" x2="170" y2="28" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Prothrombotic State</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">HIT causes thrombosis, not bleeding</text>
+            <text x="0" y="104" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Dialysis circuit is a site of clot</text>
+            <text x="0" y="128" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#94a3b8">Catheter locks are a hidden source</text>
+          </g>
+
+          <!-- Card 2: Labs -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">LABORATORY DATA</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="700">Hemoglobin</text>
+              <text x="50" y="-92" font-weight="800" fill="#334155">10.2 g/dL</text>
+              <text x="-170" y="-68" font-weight="700">INR</text>
+              <text x="50" y="-68" font-weight="800" fill="#166534">1.1</text>
+              <text x="-170" y="-44" font-weight="700">Liver function</text>
+              <text x="50" y="-44" font-weight="800" fill="#166534">Normal</text>
+              <text x="-170" y="-20" font-weight="700">PF4 immunoassay</text>
+              <text x="50" y="-20" font-weight="800" fill="#dc2626">Strongly +</text>
+              <text x="-170" y="4" font-weight="700">SRA</text>
+              <text x="50" y="4" font-weight="800" fill="#334155">Pending</text>
+            </g>
+
+            <line x1="-170" y1="28" x2="170" y2="28" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">4Ts Score</text>
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-170" y="82">T: Thrombocytopenia (50% drop) = 2</text>
+              <text x="-170" y="102">T: Timing (Day 7) = 2</text>
+              <text x="-170" y="122">T: Thrombosis (circuit clots) = 2</text>
+              <text x="-170" y="142">T: oTher causes (none) = 1</text>
+            </g>
+            <text x="0" y="164" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Total = 7 (High Probability)</text>
+          </g>
+
+          <!-- Card 3: Answer -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE ANSWER</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Stop Heparin</text>
+            <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Start Argatroban</text>
+            <line x1="-150" y1="-44" x2="150" y2="-44" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-14" font-weight="800" fill="#991b1b">Stop ALL heparin:</text>
+              <text x="-140" y="6">• IV UFH</text>
+              <text x="-140" y="26">• Catheter locks</text>
+              <text x="-140" y="46">• Flushes</text>
+              <text x="-170" y="72" font-weight="800" fill="#166534">Start Argatroban:</text>
+              <text x="-140" y="92">• Direct thrombin inhibitor</text>
+              <text x="-140" y="112">• Hepatic clearance</text>
+              <text x="-140" y="132">• Ideal for ESKD</text>
+            </g>
+
+            <rect x="-170" y="146" width="340" height="26" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="164" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Answer: A</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — PATHOPHYSIOLOGY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#5b21b6">PATHOPHYSIOLOGY OF HIT</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">An immune-mediated, prothrombotic disorder</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">PF4/heparin complexes → IgG antibodies → platelet activation → thrombin generation</text>
+          </g>
+
+          <!-- Flow diagram -->
+          <g transform="translate(700, 460)">
+            
+            <!-- Heparin + PF4 -->
+            <g transform="translate(-450, 0)">
+              <rect x="-110" y="-80" width="220" height="160" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Heparin + PF4</text>
+              <text y="-28" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Heparin binds to</text>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">platelet factor 4</text>
+              <text y="14" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Forms a complex</text>
+            </g>
+
+            <path d="M -340,0 L -280,0" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)" class="flow-anim"/>
+
+            <!-- IgG -->
+            <g transform="translate(-200, 0)">
+              <rect x="-110" y="-80" width="220" height="160" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">IgG Antibody</text>
+              <text y="-28" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Binds to the</text>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">PF4/heparin complex</text>
+              <text y="14" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Forms immune complexes</text>
+            </g>
+
+            <path d="M -90,0 L -30,0" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)" class="flow-anim"/>
+
+            <!-- Platelet Activation -->
+            <g transform="translate(50, 0)">
+              <rect x="-110" y="-80" width="220" height="160" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text y="-50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Platelet Activation</text>
+              <text y="-28" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">FcγRIIa receptor</text>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Cross-links platelets</text>
+              <text y="14" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Release of granules</text>
+            </g>
+
+            <path d="M 160,0 L 220,0" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)" class="flow-anim"/>
+
+            <!-- Consequences -->
+            <g transform="translate(330, 0)">
+              <rect x="-110" y="-80" width="220" height="160" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+              <text y="-50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Consequences</text>
+              <text y="-26" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Thrombin generation</text>
+              <text y="-6" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Thrombocytopenia</text>
+              <text y="14" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Thrombosis (venous/arterial)</text>
+            </g>
+
+          </g>
+
+          <!-- Bottom info -->
+          <g transform="translate(350, 750)">
+            <rect x="-290" y="-75" width="580" height="150" rx="16" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <text y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">HIT IS PROTHROMBOTIC, NOT HEMORRHAGIC</text>
+            <line x1="-260" y1="-28" x2="260" y2="-28" stroke="#fecaca" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-2">• Platelets are consumed in thrombus formation</text>
+              <text x="-260" y="20">• Bleeding is rare (unless severe thrombocytopenia)</text>
+              <text x="-260" y="42">• Thrombosis can be venous (DVT/PE) or arterial (limb ischemia)</text>
+              <text x="-260" y="64" font-weight="800" fill="#166534">The main danger is clotting, not bleeding</text>
+            </g>
+          </g>
+
+          <g transform="translate(1050, 750)">
+            <rect x="-290" y="-75" width="580" height="150" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">DIAGNOSIS</text>
+            <line x1="-260" y1="-28" x2="260" y2="-28" stroke="#ddd6fe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-2">• 4Ts score: evaluates clinical probability</text>
+              <text x="-260" y="20">• PF4 immunoassay: highly sensitive</text>
+              <text x="-260" y="42">• Serotonin release assay (SRA): gold standard</text>
+              <text x="-260" y="64">  but takes days to result</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — WHY OTHERS FAIL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#155e75">WHY THE OTHER OPTIONS FAIL</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">Each option has a critical flaw</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">The correct answer is A — Stop heparin and start argatroban</text>
+          </g>
+
+          <!-- Card B: Continue Heparin -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">B — CONTINUE HEPARIN</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Do NOT wait for SRA</text>
+              <text x="-170" y="-10">• SRA takes days</text>
+              <text x="-170" y="14">• High 4Ts + positive PF4</text>
+              <text x="-150" y="34">is enough to act</text>
+              <text x="-170" y="58">• Continuing heparin worsens</text>
+              <text x="-150" y="78">the prothrombotic state</text>
+            </g>
+
+            <rect x="-170" y="100" width="340" height="42" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Never delay treatment</text>
+          </g>
+
+          <!-- Card C: LMWH -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">C — SWITCH TO LMWH</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• LMWH is CONTRAINDICATED</text>
+              <text x="-150" y="-14">in HIT</text>
+              <text x="-170" y="14">• HIT antibodies cross-react</text>
+              <text x="-150" y="34">with LMWH</text>
+              <text x="-170" y="58">• Perpetuates the thrombotic</text>
+              <text x="-150" y="78">state</text>
+            </g>
+
+            <rect x="-170" y="100" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">LMWH is not safe in HIT</text>
+          </g>
+
+          <!-- Card D: Warfarin -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">D — START WARFARIN</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Do NOT start warfarin</text>
+              <text x="-150" y="-14">until platelets &gt; 150k</text>
+              <text x="-170" y="14">• Rapid drop in Protein C</text>
+              <text x="-150" y="34">causes venous limb gangrene</text>
+              <text x="-170" y="58">• Skin necrosis</text>
+              <text x="-170" y="78">• Must overlap with DTI</text>
+            </g>
+
+            <rect x="-170" y="100" width="340" height="42" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Warfarin is contraindicated acutely</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#713f12">MANAGEMENT OF HIT</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">Stop all heparin, start a DTI, and avoid warfarin until platelets recover</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">Argatroban is the DTI of choice in renal failure</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#ca8a04"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#ca8a04"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">1 — STOP ALL HEPARIN</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#713f12">Remove All Sources</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• IV unfractionated heparin</text>
+              <text x="-170" y="-10">• Catheter locks (often missed!)</text>
+              <text x="-170" y="14">• Heparin flushes</text>
+              <text x="-170" y="38">• Heparin-coated catheters</text>
+              <text x="-170" y="62">• LMWH (cross-reacts)</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Do not forget catheter locks</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">2 — START ARGATROBAN</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">Direct Thrombin Inhibitor</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Hepatic clearance</text>
+              <text x="-170" y="-10">• <tspan font-weight="800" fill="#166534">Ideal for ESKD</tspan></text>
+              <text x="-170" y="14">• Does not require renal dosing</text>
+              <text x="-170" y="38">• Monitor aPTT</text>
+              <text x="-170" y="62">• Can be used during dialysis</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Argatroban is the DTI of choice</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">3 — LATER: WARFARIN</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Wait for Platelet Recovery</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Do NOT start warfarin until</text>
+              <text x="-150" y="-14">platelets &gt; 150k</text>
+              <text x="-170" y="14">• Overlap with a DTI</text>
+              <text x="-170" y="38">• Warfarin alone causes</text>
+              <text x="-150" y="58">venous limb gangrene</text>
+              <text x="-170" y="82">• Skin necrosis</text>
+            </g>
+
+            <rect x="-170" y="106" width="340" height="42" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="132" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Warfarin rule</text>
+          </g>
+
+          <!-- Bottom bar -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE KEY PEARL</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">HIT is a <tspan font-weight="800" fill="#dc2626">prothrombotic</tspan> disorder — not a bleeding disorder</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Stop all heparin (including locks), start a DTI, and avoid warfarin until platelets recover</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">In renal failure, argatroban is the DTI of choice</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Heparin-Induced Thrombocytopenia — Diagnosis and Management",
+  subtitle: "Stop all heparin, start argatroban, and avoid warfarin until platelets recover",
+  badge: "NEPHROLOGY · HEMATOLOGY · HIT",
+  caseTitle: "Case: 68-year-old man on hemodialysis develops HIT after PE treatment",
+  caseDescription: "68M with ESKD on HD, acute PE treated with IV UFH. Day 7: platelets drop 224k → 72k, dialysis circuit clots. 4Ts = 7, PF4 strongly positive, SRA pending. No bleeding. Cr elevated, LFTs normal. Tunneled catheter in place. What is the next step?",
+  labChips: [
+    { text: "Plt 224k → 72k", abnormal: true },
+    { text: "4Ts = 7 (High)", abnormal: true },
+    { text: "PF4 strongly +", abnormal: true },
+    { text: "Circuit clotting", abnormal: true },
+    { text: "No bleeding", abnormal: false },
+    { text: "INR 1.1", abnormal: false },
+    { text: "LFTs normal", abnormal: false },
+    { text: "ESKD on HD", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",             className: "opt1" },
+    { id: "opt2", label: "🟣 Pathophysiology",      className: "opt2" },
+    { id: "opt3", label: "🔵 Why Others Fail",      className: "opt3" },
+    { id: "opt4", label: "🟡 Management",           className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — HIT",
+      infoRows: [
+        { k: "Diagnosis",    v: "Heparin-induced thrombocytopenia" },
+        { k: "4Ts",          v: "7 (high probability)" },
+        { k: "PF4",          v: "Strongly positive" },
+        { k: "SRA",          v: "Pending" },
+        { k: "Key concern",  v: "Thrombosis, not bleeding" },
+        { k: "Answer",       v: "A" }
+      ],
+      svgTitle: "The Case — HIT with Circuit Clotting",
+      svgSubtitle: "Platelet drop >50%, timing at day 7, thrombosis, and no other cause",
+      bannerBg: "#dc2626",
+      bannerText1: "HIT is a prothrombotic disorder — the main danger is clotting, not bleeding",
+      bannerText2: "4Ts = 7 and strongly positive PF4 warrant immediate action",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "Why this is HIT",
+      panel1List: [
+        "<strong>Platelet drop >50%</strong> (224k → 72k)",
+        "<strong>Timing at day 7</strong> (classic 5–10 days after heparin)",
+        "<strong>Thrombosis</strong> — repeated dialysis circuit clotting",
+        "<strong>4Ts = 7</strong> — high probability",
+        "<strong>PF4 strongly positive</strong> — supports the diagnosis"
+      ],
+      panel2Title: "🧬 The HIT rule",
+      panel2Tagline: "What to remember",
+      panel2List: [
+        "HIT is <strong>prothrombotic</strong> — not a bleeding disorder",
+        "<strong>Do not wait for SRA</strong> — it takes days",
+        "High 4Ts + positive PF4 is enough to act",
+        "<strong>Stop all heparin</strong> — including catheter locks",
+        "Start a <strong>direct thrombin inhibitor</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The correct answer is A",
+      alertText: "<strong>Stop all heparin exposure, including catheter locks, and start argatroban</strong>. Do not wait for the SRA."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Pathophysiology of HIT",
+      infoRows: [
+        { k: "Trigger",       v: "Heparin + PF4" },
+        { k: "Antibody",      v: "IgG against PF4/heparin" },
+        { k: "Receptor",      v: "FcγRIIa on platelets" },
+        { k: "Effect",        v: "Platelet activation" },
+        { k: "Result",        v: "Thrombin generation" },
+        { k: "Clinical",      v: "Thrombosis > bleeding" }
+      ],
+      svgTitle: "Pathophysiology of HIT",
+      svgSubtitle: "PF4/heparin complexes → IgG antibodies → platelet activation → thrombin generation",
+      bannerBg: "#7c3aed",
+      bannerText1: "HIT is an immune-mediated, prothrombotic disorder",
+      bannerText2: "Platelets are consumed in thrombus formation, causing thrombocytopenia",
+      panel1Title: "🔬 The mechanism",
+      panel1Tagline: "From heparin to thrombosis",
+      panel1List: [
+        "<strong>Heparin</strong> binds to <strong>platelet factor 4 (PF4)</strong>",
+        "This forms a <strong>PF4/heparin complex</strong>",
+        "IgG antibodies recognize the complex",
+        "The immune complexes bind to <strong>FcγRIIa</strong> on platelets",
+        "This activates platelets and generates <strong>thrombin</strong>"
+      ],
+      panel2Title: "🧬 The clinical picture",
+      panel2Tagline: "Why thrombosis matters",
+      panel2List: [
+        "<strong>HIT is prothrombotic</strong> — not hemorrhagic",
+        "Platelets are consumed in clots",
+        "Thrombosis can be <strong>venous</strong> (DVT, PE) or <strong>arterial</strong> (limb ischemia)",
+        "<strong>Bleeding is rare</strong> unless platelets are extremely low",
+        "The main danger is <strong>clotting</strong>"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "HIT is a clotting disorder",
+      alertText: "HIT causes <strong>thrombosis</strong>, not bleeding. The goal is to prevent clots, not stop them from bleeding."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why Others Fail",
+      infoRows: [
+        { k: "B — Continue heparin", v: "Delays treatment" },
+        { k: "C — LMWH",            v: "Cross-reacts with HIT" },
+        { k: "D — Warfarin",        v: "Causes limb gangrene" },
+        { k: "E — Stop all",        v: "Thrombosis risk" },
+        { k: "Answer",              v: "A" },
+        { k: "Key",                 v: "Act immediately" }
+      ],
+      svgTitle: "Why the Other Options Fail",
+      svgSubtitle: "Each option has a critical flaw",
+      bannerBg: "#0891b2",
+      bannerText1: "Do not wait for the SRA — act on clinical probability",
+      bannerText2: "LMWH and warfarin are contraindicated in acute HIT",
+      panel1Title: "❌ Why each fails",
+      panel1Tagline: "The fatal flaws",
+      panel1List: [
+        "<strong>B — Continue heparin:</strong> SRA takes days; delay worsens thrombosis",
+        "<strong>C — Switch to LMWH:</strong> LMWH cross-reacts with HIT antibodies and is contraindicated",
+        "<strong>D — Warfarin immediately:</strong> causes venous limb gangrene and skin necrosis",
+        "<strong>E — Stop anticoagulation entirely:</strong> HIT is prothrombotic; stopping anticoagulation risks limb ischemia"
+      ],
+      panel2Title: "🧬 The HIT rules",
+      panel2Tagline: "What to remember",
+      panel2List: [
+        "<strong>Do not wait for SRA</strong> — clinical diagnosis is enough",
+        "<strong>Never use LMWH</strong> in HIT",
+        "<strong>Warfarin rule</strong> — wait for platelets > 150k",
+        "<strong>Never stop anticoagulation</strong> — switch to a DTI",
+        "The main danger is <strong>thrombosis</strong>, not bleeding"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The correct answer is A",
+      alertText: "<strong>Stop all heparin and start argatroban</strong>. Do not wait for the SRA."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management",
+      infoRows: [
+        { k: "Step 1",        v: "Stop all heparin" },
+        { k: "Step 2",        v: "Start argatroban" },
+        { k: "Step 3",        v: "Warfarin after platelets > 150k" },
+        { k: "Argatroban",    v: "Hepatic clearance" },
+        { k: "LMWH",          v: "Contraindicated" },
+        { k: "Catheter locks", v: "Must be stopped" }
+      ],
+      svgTitle: "Management of HIT",
+      svgSubtitle: "Stop all heparin, start a DTI, and avoid warfarin until platelets recover",
+      bannerBg: "#ca8a04",
+      bannerText1: "Stop all heparin (including catheter locks) and start argatroban",
+      bannerText2: "Do not start warfarin until platelets > 150k",
+      panel1Title: "✅ The management steps",
+      panel1Tagline: "From stopping heparin to warfarin",
+      panel1List: [
+        "<strong>1. Stop ALL heparin</strong> — IV, catheter locks, flushes, coated catheters",
+        "<strong>2. Start a DTI</strong> — argatroban (hepatic clearance, ideal for ESKD)",
+        "<strong>3. Monitor aPTT</strong> — titrate argatroban",
+        "<strong>4. Wait for platelets > 150k</strong> before starting warfarin",
+        "<strong>5. Overlap warfarin with DTI</strong> for at least 5 days"
+      ],
+      panel2Title: "🧬 The DTI choice",
+      panel2Tagline: "Why argatroban",
+      panel2List: [
+        "<strong>Argatroban</strong> — hepatic clearance, ideal for renal failure",
+        "<strong>Bivalirudin</strong> — partially renal, so less ideal in ESKD",
+        "<strong>Fondaparinux</strong> — contraindicated in ESKD",
+        "<strong>DOACs</strong> — not first-line for acute HIT, but emerging data",
+        "Argatroban is the DTI of choice in <strong>renal failure</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: A",
+      alertText: "<strong>Stop all heparin, including catheter locks, and initiate argatroban</strong> while awaiting the SRA."
+    }
+  },
+  comparison: {
+    title: "📊 Anticoagulation in HIT",
+    sub: "What to use, what to avoid, and when",
+    head: ["Agent", "Use in HIT", "Renal Clearance", "Comments"],
+    rows: [
+      { cells: ["Argatroban", "First-line", "Hepatic", "Ideal for ESKD"], hero: true },
+      { cells: ["Bivalirudin", "Alternative", "Partial renal", "Dose-adjust in CKD"], hero: false },
+      { cells: ["LMWH", "Contraindicated", "Renal", "Cross-reacts with HIT antibodies"], hero: false },
+      { cells: ["Warfarin", "Only after platelets > 150k", "Hepatic", "Causes limb gangrene acutely"], hero: false },
+      { cells: ["DOACs", "Emerging", "Renal", "Not first-line for acute HIT"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 68M on HD develops HIT (4Ts = 7, PF4 +). He has a PE and needs anticoagulation. What is the next best step?",
+      options: [
+        { text: "Stop all heparin (including catheter locks) and start argatroban.", correct: true,
+          explanation: "In HIT with renal failure, argatroban is the DTI of choice because it is hepatically cleared. Stop all heparin sources, including catheter locks." },
+        { text: "Continue heparin until the SRA confirms HIT.", correct: false,
+          explanation: "Do not wait for the SRA. The 4Ts and PF4 positivity warrant immediate treatment." },
+        { text: "Switch to LMWH.", correct: false,
+          explanation: "LMWH is contraindicated in HIT because of cross-reactivity." }
+      ]
+    },
+    {
+      question: "Why is warfarin contraindicated in acute HIT?",
+      options: [
+        { text: "It causes a rapid drop in Protein C, leading to venous limb gangrene.", correct: true,
+          explanation: "Warfarin should not be started until platelets recover. It can cause skin necrosis and limb gangrene in acute HIT." },
+        { text: "It causes bleeding.", correct: false,
+          explanation: "HIT is prothrombotic; warfarin is avoided because of the risk of gangrene, not bleeding." },
+        { text: "It does not work.", correct: false,
+          explanation: "Warfarin works, but it is unsafe during acute HIT." }
+      ]
+    },
+    {
+      question: "What is the mechanism of HIT?",
+      options: [
+        { text: "IgG antibodies against PF4/heparin complexes activate platelets via FcγRIIa.", correct: true,
+          explanation: "This immune-mediated process leads to platelet activation and thrombin generation." },
+        { text: "Heparin directly destroys platelets.", correct: false,
+          explanation: "HIT is immune-mediated, not a direct toxic effect." },
+        { text: "Heparin causes bone marrow suppression.", correct: false,
+          explanation: "HIT is a peripheral consumption disorder, not marrow suppression." }
+      ]
+    },
+    {
+      question: "What is the main danger in HIT?",
+      options: [
+        { text: "Thrombosis.", correct: true,
+          explanation: "HIT is a prothrombotic disorder. The main risk is clotting (venous or arterial), not bleeding." },
+        { text: "Bleeding.", correct: false,
+          explanation: "Bleeding is uncommon in HIT." },
+        { text: "Infection.", correct: false,
+          explanation: "Infection is not the primary risk." }
+      ]
+    },
+    {
+      question: "Why is argatroban preferred in a patient with ESKD and HIT?",
+      options: [
+        { text: "It is hepatically cleared.", correct: true,
+          explanation: "Argatroban does not require renal dose adjustment, making it ideal for patients with renal failure." },
+        { text: "It is renally cleared.", correct: false,
+          explanation: "Bivalirudin is partially renally cleared, not argatroban." },
+        { text: "It is cheaper.", correct: false,
+          explanation: "Cost is not the primary reason." }
+      ]
+    },
+    {
+      question: "Why must heparin catheter locks be stopped in a patient with HIT?",
+      options: [
+        { text: "They provide a continuous antigenic stimulus for HIT antibodies.", correct: true,
+          explanation: "Even small amounts of heparin in catheter locks can perpetuate HIT. All heparin sources must be stopped." },
+        { text: "They cause bleeding.", correct: false,
+          explanation: "The issue is thrombosis, not bleeding." },
+        { text: "They cause infection.", correct: false,
+          explanation: "Infection is not the reason to stop them in HIT." }
+      ]
+    },
+    {
+      question: "A patient with HIT has a platelet count of 90,000/µL. What is the next step regarding warfarin?",
+      options: [
+        { text: "Do not start warfarin yet; wait until platelets > 150,000/µL.", correct: true,
+          explanation: "Warfarin should be avoided until platelets recover (> 150k) to prevent limb gangrene." },
+        { text: "Start warfarin now.", correct: false,
+          explanation: "Starting warfarin in acute HIT is dangerous." },
+        { text: "Stop all anticoagulation.", correct: false,
+          explanation: "Do not stop anticoagulation; the patient needs a DTI." }
+      ]
+    },
+    {
+      question: "Which agent is contraindicated in acute HIT?",
+      options: [
+        { text: "LMWH.", correct: true,
+          explanation: "LMWH cross-reacts with HIT antibodies and is contraindicated." },
+        { text: "Argatroban.", correct: false,
+          explanation: "Argatroban is the treatment of choice." },
+        { text: "Bivalirudin.", correct: false,
+          explanation: "Bivalirudin is an alternative DTI." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Hematology / HIT",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

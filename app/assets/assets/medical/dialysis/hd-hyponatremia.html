@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dialysate Sodium & Hyponatremia — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --low:#dc2626; --target:#16a34a; --high:#2563eb; --plasma:#b45309;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .case-box{background:#fff; border-radius:18px; padding:20px 24px; margin-top:22px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border-left:6px solid var(--plasma);}
+  .case-box h2{margin:0 0 10px; font-size:1.05rem; color:#92400e;}
+  .case-box p{margin:0 0 8px; font-size:.9rem; color:#334155;}
+  .case-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; margin-top:12px;}
+  .case-stat{background:#f1f5f9; border-radius:10px; padding:10px 14px; border:1px solid #cbd5e1;}
+  .case-stat .cs-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#475569;}
+  .case-stat .cs-value{font-size:1rem; font-weight:800; color:#0f172a; margin-top:2px;}
+  .case-stat.warn{background:#fee2e2; border-color:#fca5a5;}
+  .case-stat.warn .cs-label{color:#991b1b;}
+  .case-stat.warn .cs-value{color:#7f1d1d;}
+  .case-stat.ok{background:#dcfce7; border-color:#86efac;}
+  .case-stat.ok .cs-label{color:#166534;}
+  .case-stat.ok .cs-value{color:#14532d;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.low.active{background:#fee2e2; border-color:var(--low); color:#7f1d1d;}
+  .pill.target.active{background:#dcfce7; border-color:var(--target); color:#065f46;}
+  .pill.high.active{background:#dbeafe; border-color:var(--high); color:#1e3a8a;}
+  .pill.same.active{background:#fef9c3; border-color:#ca8a04; color:#713f12;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:600px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-target { background-color:#dcfce7; box-shadow: inset 4px 0 0 var(--target); }
+  tr.highlight-target td { font-weight:600; color:#065f46; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-tgt{background:#dcfce7; color:#065f46;}
+  .tag-low{background:#fee2e2; color:#7f1d1d;}
+  .tag-high{background:#dbeafe; color:#1e3a8a;}
+  .tag-tab{background:#fef9c3; color:#713f12;}
+  .tag-urea{background:#ede9fe; color:#4c1d95;}
+
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Dialysate Sodium &amp; Chronic Hyponatremia</h1>
+      <p>Interactive sodium gradient · Dialysate prescription simulator</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE SUMMARY -->
+  <section class="case-box">
+    <h2>Case Vignette — 52-year-old man with ESRD on hemodialysis</h2>
+    <p>Nonadherent with fluid restriction. Consistently gains <strong>&gt; 4 kg</strong> between MWF sessions. Predialysis serum sodium is repeatedly <strong>128–132 mEq/L</strong>.</p>
+    <div class="case-grid">
+      <div class="case-stat"><div class="cs-label">Age</div><div class="cs-value">52 years</div></div>
+      <div class="case-stat"><div class="cs-label">Access</div><div class="cs-value">Hemodialysis</div></div>
+      <div class="case-stat warn"><div class="cs-label">Interdialytic Weight Gain</div><div class="cs-value">&gt; 4 kg</div></div>
+      <div class="case-stat warn"><div class="cs-label">Predialysis Na⁺</div><div class="cs-value">128–132 mEq/L</div></div>
+      <div class="case-stat"><div class="cs-label">Schedule</div><div class="cs-value">Mon / Wed / Fri</div></div>
+      <div class="case-stat"><div class="cs-label">Compliance</div><div class="cs-value">Poor fluid restriction</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section class="stage">
+    <h2>Interactive Dialysate Sodium Diagram</h2>
+    <p class="sub">Toggle between dialysate sodium concentrations to see how the sodium gradient affects the patient's serum sodium.</p>
+
+    <div class="toggle-bar">
+      <button class="pill low" id="btnLow" onclick="setMode('low')">Dialysate Na⁺ 130 (Too Low)</button>
+      <button class="pill target active" id="btnTarget" onclick="setMode('target')">Dialysate Na⁺ 135 ★</button>
+      <button class="pill high" id="btnHigh" onclick="setMode('high')">Dialysate Na⁺ 145 (High)</button>
+      <button class="pill same" id="btnSame" onclick="setMode('same')">Dialysate Na⁺ = Serum</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="dialysateGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#93c5fd"/>
+          </linearGradient>
+          <linearGradient id="bloodGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#fca5a5"/>
+          </linearGradient>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+        </defs>
+
+        <rect width="1200" height="620" fill="#fdfdfd"/>
+        <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Hemodialyzer — Sodium Gradients</text>
+
+        <!-- ============================================ -->
+        <!-- DIALYZER SCHEMATIC                            -->
+        <!-- ============================================ -->
+
+        <!-- Blood compartment (top) -->
+        <g transform="translate(200, 100)">
+          <rect x="0" y="0" width="800" height="150" rx="14" fill="url(#bloodGrad)" stroke="#991b1b" stroke-width="2"/>
+          <text x="400" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">BLOOD COMPARTMENT</text>
+
+          <!-- Blood cells -->
+          <g fill="#dc2626" opacity="0.85">
+            <ellipse cx="100" cy="70" rx="16" ry="11"/><ellipse cx="160" cy="90" rx="15" ry="10"/>
+            <ellipse cx="220" cy="70" rx="16" ry="11"/><ellipse cx="280" cy="90" rx="15" ry="10"/>
+            <ellipse cx="340" cy="70" rx="16" ry="11"/><ellipse cx="400" cy="90" rx="15" ry="10"/>
+            <ellipse cx="460" cy="70" rx="16" ry="11"/><ellipse cx="520" cy="90" rx="15" ry="10"/>
+            <ellipse cx="580" cy="70" rx="16" ry="11"/><ellipse cx="640" cy="90" rx="15" ry="10"/>
+            <ellipse cx="700" cy="70" rx="16" ry="11"/>
+          </g>
+
+          <!-- Patient serum Na -->
+          <rect x="350" y="115" width="200" height="28" rx="6" fill="#fff" stroke="#991b1b" stroke-width="1.5"/>
+          <text x="450" y="134" text-anchor="middle" font-family="monospace" font-size="13" font-weight="800" fill="#7f1d1d">Serum Na⁺ <tspan id="serumNaTop">130</tspan></text>
+        </g>
+
+        <!-- Membrane -->
+        <g transform="translate(200, 250)">
+          <rect x="0" y="0" width="800" height="40" rx="6" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+          <text x="400" y="25" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#334155">SEMIPERMEABLE MEMBRANE</text>
+          <!-- Membrane pores -->
+          <g stroke="#475569" stroke-width="1.5" opacity="0.7">
+            <line x1="80" y1="8" x2="80" y2="32"/><line x1="140" y1="8" x2="140" y2="32"/>
+            <line x1="200" y1="8" x2="200" y2="32"/><line x1="260" y1="8" x2="260" y2="32"/>
+            <line x1="320" y1="8" x2="320" y2="32"/><line x1="380" y1="8" x2="380" y2="32"/>
+            <line x1="440" y1="8" x2="440" y2="32"/><line x1="500" y1="8" x2="500" y2="32"/>
+            <line x1="560" y1="8" x2="560" y2="32"/><line x1="620" y1="8" x2="620" y2="32"/>
+            <line x1="680" y1="8" x2="680" y2="32"/><line x1="740" y1="8" x2="740" y2="32"/>
+          </g>
+        </g>
+
+        <!-- Dialysate compartment (bottom) -->
+        <g transform="translate(200, 290)">
+          <rect x="0" y="0" width="800" height="150" rx="14" fill="url(#dialysateGrad)" stroke="#1e40af" stroke-width="2"/>
+          <text x="400" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e3a8a">DIALYSATE COMPARTMENT</text>
+
+          <!-- Dialysate ions -->
+          <g fill="#2563eb" opacity="0.85">
+            <circle cx="100" cy="70" r="8"/><circle cx="160" cy="90" r="8"/>
+            <circle cx="220" cy="70" r="8"/><circle cx="280" cy="90" r="8"/>
+            <circle cx="340" cy="70" r="8"/><circle cx="400" cy="90" r="8"/>
+            <circle cx="460" cy="70" r="8"/><circle cx="520" cy="90" r="8"/>
+            <circle cx="580" cy="70" r="8"/><circle cx="640" cy="90" r="8"/>
+            <circle cx="700" cy="70" r="8"/>
+          </g>
+
+          <!-- Dialysate Na -->
+          <rect x="350" y="115" width="200" height="28" rx="6" fill="#fff" stroke="#1e40af" stroke-width="1.5"/>
+          <text x="450" y="134" text-anchor="middle" font-family="monospace" font-size="13" font-weight="800" fill="#1e3a8a">Dialysate Na⁺ <tspan id="dialysateNaBottom">135</tspan></text>
+        </g>
+
+        <!-- ============================================ -->
+        <!-- GRADIENT INDICATORS                          -->
+        <!-- ============================================ -->
+
+        <!-- STATE 1: Dialysate 130 (too low) -->
+        <g id="gradient-low" style="display:none;">
+          <!-- Na moves from blood to dialysate -->
+          <path d="M 600 240 L 600 260" stroke="#dc2626" stroke-width="4" marker-end="url(#arrow-red)"/>
+          <text x="620" y="230" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">Na⁺ diffuses OUT of patient</text>
+          <!-- Serum Na trend -->
+          <g transform="translate(850, 100)">
+            <rect x="0" y="0" width="310" height="340" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+            <text x="155" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">DIALYSATE 130</text>
+            <text x="155" y="45" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Too low → worsens hyponatremia</text>
+            <!-- Serum Na trend arrow down -->
+            <path d="M 60 120 L 250 240" stroke="#dc2626" stroke-width="5" marker-end="url(#arrow-red)"/>
+            <text x="155" y="110" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Serum Na ↓</text>
+            <text x="155" y="280" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Risk: worsens hyponatremia,</text>
+            <text x="155" y="298" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">cerebral edema, seizures</text>
+          </g>
+        </g>
+
+        <!-- STATE 2: Dialysate 135 (target) -->
+        <g id="gradient-target" style="display:block;">
+          <!-- Small Na moves INTO blood -->
+          <path d="M 600 260 L 600 240" stroke="#16a34a" stroke-width="4" marker-end="url(#arrow-green)"/>
+          <text x="620" y="230" font-family="Arial" font-size="11" font-weight="800" fill="#065f46">Small Na⁺ gradient IN → gradual correction</text>
+          <!-- Serum Na trend -->
+          <g transform="translate(850, 100)">
+            <rect x="0" y="0" width="310" height="340" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+            <text x="155" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#065f46">DIALYSATE 135 ★</text>
+            <text x="155" y="45" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">Correct choice — target value</text>
+            <!-- Serum Na trend arrow up (gentle) -->
+            <path d="M 60 240 L 250 130" stroke="#16a34a" stroke-width="5" marker-end="url(#arrow-green)"/>
+            <text x="155" y="110" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#065f46">Serum Na ↑ gradually</text>
+            <text x="155" y="280" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">Goal: 135–140 mEq/L over time.</text>
+            <text x="155" y="298" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">Avoids rapid osmotic shifts.</text>
+          </g>
+        </g>
+
+        <!-- STATE 3: Dialysate 145 (high) -->
+        <g id="gradient-high" style="display:none;">
+          <!-- Big Na moves into blood -->
+          <path d="M 600 260 L 600 240" stroke="#2563eb" stroke-width="6" marker-end="url(#arrow-blue)"/>
+          <text x="620" y="230" font-family="Arial" font-size="11" font-weight="800" fill="#1e3a8a">Large Na⁺ gradient IN → too rapid</text>
+          <g transform="translate(850, 100)">
+            <rect x="0" y="0" width="310" height="340" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+            <text x="155" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e3a8a">DIALYSATE 145</text>
+            <text x="155" y="45" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">Too high — corrects too fast</text>
+            <!-- Rapid rise -->
+            <path d="M 60 240 L 250 80" stroke="#2563eb" stroke-width="6" marker-end="url(#arrow-blue)"/>
+            <text x="155" y="110" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e3a8a">Serum Na ↑↑ rapidly</text>
+            <text x="155" y="280" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">Risk: osmotic demyelination,</text>
+            <text x="155" y="298" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">hypernatremia, thirst</text>
+          </g>
+        </g>
+
+        <!-- STATE 4: Dialysate = Serum Na -->
+        <g id="gradient-same" style="display:none;">
+          <!-- No gradient -->
+          <text x="600" y="230" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#92400e">No gradient → no correction</text>
+          <g transform="translate(850, 100)">
+            <rect x="0" y="0" width="310" height="340" rx="12" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="155" y="25" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">DIALYSATE 130 = SERUM 130</text>
+            <text x="155" y="45" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">No gradient — no correction</text>
+            <path d="M 60 160 L 250 160" stroke="#ca8a04" stroke-width="5" stroke-dasharray="6 4"/>
+            <text x="155" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">Serum Na → unchanged</text>
+            <text x="155" y="280" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Hyponatremia persists,</text>
+            <text x="155" y="298" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">symptoms continue</text>
+          </g>
+        </g>
+
+        <!-- Metadata -->
+        <g font-family="monospace" font-size="9" fill="#4b5563" opacity="0.7">
+          <text x="30" y="30">HEMODIALYSIS PRESCRIPTION SIMULATOR</text>
+          <text x="30" y="42">Dialysate Na⁺ determines serum Na⁺ equilibrium</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Dialysate Na⁺</div>
+        <div class="rc-value" id="rcDialValue">—</div>
+        <div class="rc-sub" id="rcDialSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Sodium Gradient</div>
+        <div class="rc-value" id="rcGradValue">—</div>
+        <div class="rc-sub" id="rcGradSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Effect on Serum Na⁺</div>
+        <div class="rc-value" id="rcEffectValue">—</div>
+        <div class="rc-sub" id="rcEffectSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Clinical Risk</div>
+        <div class="rc-note" id="rcRiskValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Interpretation</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Dialysate Sodium Options in Chronic Hyponatremia</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Dialysate Na⁺</th>
+          <th>Gradient Direction</th>
+          <th>Effect on Serum Na⁺</th>
+          <th>Risk / Benefit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-target">
+          <td><strong>Dialysate Na⁺ 135 ★</strong> <span class="tag tag-tgt">Correct</span></td>
+          <td>135 mEq/L</td>
+          <td>Slightly higher than serum (130)</td>
+          <td>Gradual rise to 135–140 mEq/L</td>
+          <td><strong>Safe, gradual correction</strong> — avoids cerebral edema and osmotic demyelination. Standard approach for chronic hyponatremia in HD.</td>
+        </tr>
+        <tr>
+          <td>Dialysate Na⁺ 130 <span class="tag tag-low">Distractor</span></td>
+          <td>130 mEq/L</td>
+          <td>Equal to or lower than serum</td>
+          <td>No correction, or worsens Na⁺</td>
+          <td>Will not correct hyponatremia; may worsen it. Risk of cerebral edema, seizures.</td>
+        </tr>
+        <tr>
+          <td>Dialysate Na⁺ 145 <span class="tag tag-high">Distractor</span></td>
+          <td>145 mEq/L</td>
+          <td>Much higher than serum</td>
+          <td>Rapid rise of serum Na⁺</td>
+          <td>Risk of osmotic demyelination, hypernatremia, thirst, hypertension.</td>
+        </tr>
+        <tr>
+          <td>NaCl tablets <span class="tag tag-tab">Distractor</span></td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>May increase thirst</td>
+          <td>Worsens fluid overload in a nonadherent patient. Not preferred.</td>
+        </tr>
+        <tr>
+          <td>Urea in dialysate <span class="tag tag-urea">Distractor</span></td>
+          <td>Variable</td>
+          <td>N/A</td>
+          <td>Not a standard treatment</td>
+          <td>Urea in dialysate is used in specific protocols to prevent rapid osmotic shifts, but is not first-line for hyponatremia.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 52-year-old man on hemodialysis has recurrent predialysis sodium of 128–132 mEq/L. What is the best treatment?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Sodium chloride tablets 1 g three times daily</button>
+        <button class="opt" onclick="answer(this,false)">B. No intervention needed</button>
+        <button class="opt" onclick="answer(this,true)">C. Dialysate sodium concentration of 135 mEq/L</button>
+        <button class="opt" onclick="answer(this,false)">D. Dialysate sodium concentration of 130 mEq/L</button>
+        <button class="opt" onclick="answer(this,false)">E. Urea in the dialysate bath</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> A dialysate sodium of <strong>135 mEq/L</strong> is slightly higher than the patient's serum sodium, creating a small gradient that gradually raises serum sodium. This is the standard approach for chronic hyponatremia in hemodialysis.</div>
+    </div>
+
+    <div class="q">
+      <p>2. Why is dialysate sodium of 130 mEq/L NOT appropriate for this patient?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. It is too high and would cause hypernatremia</button>
+        <button class="opt" onclick="answer(this,true)">B. It is equal to or lower than his serum sodium and will not correct the hyponatremia</button>
+        <button class="opt" onclick="answer(this,false)">C. It causes dialysis disequilibrium syndrome</button>
+        <button class="opt" onclick="answer(this,false)">D. It has no effect on serum sodium</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The dialysate sodium drives the serum sodium in HD. A dialysate of 130 mEq/L (equal to or lower than his serum) will not correct his hyponatremia — in fact, it may worsen it, increasing the risk of cerebral edema and seizures.</div>
+    </div>
+
+    <div class="q">
+      <p>3. What is the primary risk of using a dialysate sodium of 145 mEq/L in this patient?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Hyperkalemia</button>
+        <button class="opt" onclick="answer(this,true)">B. Osmotic demyelination from overly rapid correction of hyponatremia</button>
+        <button class="opt" onclick="answer(this,false)">C. Hypoglycemia</button>
+        <button class="opt" onclick="answer(this,false)">D. Metabolic alkalosis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Correcting chronic hyponatremia too rapidly can cause <strong>osmotic demyelination syndrome (central pontine myelinolysis)</strong>. The goal is to correct sodium slowly — usually no more than 8–10 mEq/L per 24 hours. A dialysate of 145 creates too steep a gradient and risks overly rapid correction.</div>
+    </div>
+
+    <div class="q">
+      <p>4. Why are sodium chloride tablets NOT the best choice for this patient?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. They are ineffective for hyponatremia</button>
+        <button class="opt" onclick="answer(this,true)">B. They increase thirst and worsen fluid overload in a nonadherent patient</button>
+        <button class="opt" onclick="answer(this,false)">C. They cause hyperkalemia</button>
+        <button class="opt" onclick="answer(this,false)">D. They interfere with dialysis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Oral sodium chloride increases serum osmolality, which triggers thirst. In a patient who is already nonadherent with fluid restriction (with &gt;4 kg interdialytic weight gain), this will worsen volume overload, hypertension, and intradialytic complications — without fixing the underlying problem.</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which factor primarily determines the serum sodium concentration in a hemodialysis patient?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Dietary sodium intake</button>
+        <button class="opt" onclick="answer(this,false)">B. Fluid restriction alone</button>
+        <button class="opt" onclick="answer(this,true)">C. Dialysate sodium concentration relative to ultrafiltration</button>
+        <button class="opt" onclick="answer(this,false)">D. Residual kidney function</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> In ESRD patients on hemodialysis, serum sodium is primarily determined by the <strong>dialysate sodium concentration</strong> and the extent of ultrafiltration. The dialysate sodium sets the equilibrium point that serum sodium moves toward during each treatment. Dietary sodium and fluid intake influence weight gain but not the steady-state serum sodium set point.</div>
+    </div>
+
+    <div class="q">
+      <p>6. What is the general target rate of sodium correction in chronic hyponatremia?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. 15–20 mEq/L per 24 hours</button>
+        <button class="opt" onclick="answer(this,true)">B. No more than 8–10 mEq/L per 24 hours</button>
+        <button class="opt" onclick="answer(this,false)">C. 20–30 mEq/L per 24 hours</button>
+        <button class="opt" onclick="answer(this,false)">D. As fast as possible to normalize</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> For <strong>chronic hyponatremia</strong>, the goal is to correct sodium by no more than <strong>8–10 mEq/L in 24 hours</strong> (and 18 mEq/L in 48 hours) to avoid osmotic demyelination. The brain has adapted to the low sodium, and rapid correction can cause irreversible neurological damage.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and dialysis medicine</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    low: {
+      dial: '130 mEq/L',
+      dialSub: 'Equal to or lower than serum',
+      grad: 'No gradient or reversed',
+      gradSub: 'Dialysate Na ≤ Serum Na (130)',
+      effect: 'No correction or ↓',
+      effectSub: 'Hyponatremia persists / worsens',
+      risk: 'Will <strong>not correct</strong> the hyponatremia. May worsen it. Risk of cerebral edema, seizures, and worsening symptoms.',
+      verdict: 'Dialysate Na⁺ 130 is TOO LOW — equal to or below the patient\'s serum sodium. It will not correct the hyponatremia and may worsen it. NOT recommended.',
+      color: '#dc2626',
+      serumNa: '130'
+    },
+    target: {
+      dial: '135 mEq/L',
+      dialSub: 'Slightly above serum',
+      grad: 'Small gradient',
+      gradSub: 'Dialysate 135 > Serum ~130',
+      effect: 'Gradual ↑',
+      effectSub: 'Serum Na⁺ slowly rises to 135–140',
+      risk: '<strong>Safe, gradual correction</strong> — avoids both cerebral edema (from persistent hyponatremia) and osmotic demyelination (from overly rapid correction). Standard of care.',
+      verdict: 'Dialysate Na⁺ 135 ★ — The CORRECT answer. Slightly higher than the patient\'s serum sodium → gradual, safe correction. Achieves the goal serum sodium of 135–140 mEq/L over time.',
+      color: '#16a34a',
+      serumNa: '135'
+    },
+    high: {
+      dial: '145 mEq/L',
+      dialSub: 'Much higher than serum',
+      grad: 'Large gradient',
+      gradSub: 'Dialysate 145 ≫ Serum ~130',
+      effect: 'Rapid ↑↑',
+      effectSub: 'Serum Na⁺ rises too quickly',
+      risk: 'Risk of <strong>osmotic demyelination syndrome</strong> (central pontine myelinolysis), hypernatremia, thirst, and hypertension. Too aggressive for chronic hyponatremia.',
+      verdict: 'Dialysate Na⁺ 145 is TOO HIGH — creates too steep a gradient, corrects serum sodium too quickly. Risk of osmotic demyelination. NOT recommended for chronic hyponatremia.',
+      color: '#2563eb',
+      serumNa: '145'
+    },
+    same: {
+      dial: '= Serum Na',
+      dialSub: 'Equal to serum (~130)',
+      grad: 'Zero gradient',
+      gradSub: 'Dialysate = Serum',
+      effect: 'No change',
+      effectSub: 'Serum Na⁺ stays the same',
+      risk: 'Hyponatremia <strong>persists</strong>. Symptoms continue. Does not treat the underlying problem.',
+      verdict: 'Dialysate Na⁺ = Serum Na⁺ — no gradient, no correction. The hyponatremia will persist. NOT a treatment option.',
+      color: '#ca8a04',
+      serumNa: '130'
+    }
+  };
+
+  function setMode(mode) {
+    ['gradient-low','gradient-target','gradient-high','gradient-same'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnLow','btnTarget','btnHigh','btnSame'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      low:'btnLow', target:'btnTarget', high:'btnHigh', same:'btnSame'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode === 'low') {
+      document.getElementById('gradient-low').style.display = 'block';
+    } else if (mode === 'target') {
+      document.getElementById('gradient-target').style.display = 'block';
+    } else if (mode === 'high') {
+      document.getElementById('gradient-high').style.display = 'block';
+    } else if (mode === 'same') {
+      document.getElementById('gradient-same').style.display = 'block';
+    }
+
+    // Update dialysate Na text
+    document.getElementById('dialysateNaBottom').textContent = d.serumNa;
+
+    document.getElementById('rcDialValue').textContent = d.dial;
+    document.getElementById('rcDialValue').style.color = d.color;
+    document.getElementById('rcDialSub').textContent = d.dialSub;
+
+    document.getElementById('rcGradValue').textContent = d.grad;
+    document.getElementById('rcGradValue').style.color = d.color;
+    document.getElementById('rcGradSub').textContent = d.gradSub;
+
+    document.getElementById('rcEffectValue').textContent = d.effect;
+    document.getElementById('rcEffectValue').style.color = d.color;
+    document.getElementById('rcEffectSub').textContent = d.effectSub;
+
+    document.getElementById('rcRiskValue').innerHTML = d.risk;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('target');
+</script>
+</body>
+</html>

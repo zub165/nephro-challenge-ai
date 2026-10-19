@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delayed Graft Function — Ischemia-Reperfusion Acute Tubular Injury</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE (DGF with ATI)
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">DELAYED GRAFT FUNCTION — ACUTE TUBULAR INJURY</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">POD 8 · Cr 6.2 · HD on POD 2 and 4 · Biopsy: ATI without rejection</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Ischemia-reperfusion injury from deceased-donor transplantation</text>
+          </g>
+
+          <!-- Four clinical clues -->
+          <g transform="translate(200, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">TIMING</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="34" font-weight="800" fill="#dc2626">POD 2 & 4</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">Dialysis required</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#7f1d1d">Classic definition of</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#7f1d1d">delayed graft function</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">HD in first week</text>
+          </g>
+
+          <g transform="translate(533, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">BIOPSY — TUBULES</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="40" font-weight="800" fill="#dc2626">🔬</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">Acute tubular injury</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#7f1d1d">Flattening, loss of</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#7f1d1d">brush borders, regeneration</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">ATI hallmark</text>
+          </g>
+
+          <g transform="translate(866, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">BIOPSY — NO REJECTION</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="30" font-weight="800" fill="#16a34a">i0 t0 v0</text>
+            <text x="0" y="10" text-anchor="middle" font-size="30" font-weight="800" fill="#16a34a">g0 ptc0</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#15803d">All inflammation scores</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#15803d">are ZERO</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Rules out rejection</text>
+          </g>
+
+          <g transform="translate(1200, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">DSA & C4d</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="40" font-weight="800" fill="#16a34a">⊘</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">BOTH NEGATIVE</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#15803d">Rules out</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#15803d">antibody-mediated rejection</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">No AMR</text>
+          </g>
+
+          <!-- Doppler -->
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ DOPPLER — PATENT VESSELS, NO HYDRONEPHROSIS</text>
+            <text x="-580" y="10" font-size="17" font-weight="700" fill="#15803d">• Renal artery patent</text>
+            <text x="-580" y="38" font-size="17" font-weight="700" fill="#15803d">• Renal vein patent (no thrombosis)</text>
+            <text x="100" y="10" font-size="17" font-weight="700" fill="#15803d">• No hydronephrosis (no obstruction)</text>
+            <text x="100" y="38" font-size="17" font-weight="700" fill="#15803d">• Rules out vascular/surgical causes</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">DGF from ischemia-reperfusion ATI — supportive management only</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — BANFF SCORES (NO REJECTION)
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">BANFF SCORES — ALL ZERO IN THIS PATIENT</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">No inflammation, no rejection — just acute tubular injury</text>
+          </g>
+
+          <!-- i score -->
+          <g transform="translate(250, 480)">
+            <rect x="-200" y="-260" width="400" height="520" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-260" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-215" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-213" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">i — INTERSTITIAL</text>
+
+            <circle cx="0" cy="-90" r="70" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-70" text-anchor="middle" font-size="56" font-weight="800" fill="#16a34a">i0</text>
+
+            <g font-size="15">
+              <text x="-180" y="30" font-weight="700" fill="#166534">• i0:</text>
+              <text x="-40" y="30" font-weight="800" fill="#166534">No inflammation</text>
+              <text x="-180" y="65" font-weight="700" fill="#166534">• i1:</text>
+              <text x="-40" y="65" font-weight="800" fill="#166534">10–25%</text>
+              <text x="-180" y="100" font-weight="700" fill="#166534">• i2:</text>
+              <text x="-40" y="100" font-weight="800" fill="#166534">26–50%</text>
+              <text x="-180" y="135" font-weight="700" fill="#166534">• i3:</text>
+              <text x="-40" y="135" font-weight="800" fill="#166534">&gt; 50%</text>
+            </g>
+
+            <rect x="-180" y="165" width="360" height="60" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">This patient has i0</text>
+            <text x="0" y="212" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">→ No interstitial inflammation</text>
+          </g>
+
+          <!-- t score -->
+          <g transform="translate(700, 480)">
+            <rect x="-200" y="-260" width="400" height="520" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-260" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-215" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-213" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">t — TUBULITIS</text>
+
+            <circle cx="0" cy="-90" r="70" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-70" text-anchor="middle" font-size="56" font-weight="800" fill="#16a34a">t0</text>
+
+            <g font-size="15">
+              <text x="-180" y="30" font-weight="700" fill="#166534">• t0:</text>
+              <text x="-40" y="30" font-weight="800" fill="#166534">None</text>
+              <text x="-180" y="65" font-weight="700" fill="#166534">• t1:</text>
+              <text x="-40" y="65" font-weight="800" fill="#166534">Mild (1–4 tubules)</text>
+              <text x="-180" y="100" font-weight="700" fill="#166534">• t2:</text>
+              <text x="-40" y="100" font-weight="800" fill="#166534">Moderate (5–10)</text>
+              <text x="-180" y="135" font-weight="700" fill="#166534">• t3:</text>
+              <text x="-40" y="135" font-weight="800" fill="#166534">&gt; 10 tubules</text>
+            </g>
+
+            <rect x="-180" y="165" width="360" height="60" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">This patient has t0</text>
+            <text x="0" y="212" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">→ NO TUBULITIS</text>
+          </g>
+
+          <!-- v score -->
+          <g transform="translate(1150, 480)">
+            <rect x="-200" y="-260" width="400" height="520" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-260" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-215" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-213" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">v, g, ptc — ALL 0</text>
+
+            <circle cx="0" cy="-90" r="70" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-70" text-anchor="middle" font-size="44" font-weight="800" fill="#16a34a">v0g0</text>
+            <text x="0" y="-35" text-anchor="middle" font-size="44" font-weight="800" fill="#16a34a">ptc0</text>
+
+            <g font-size="15">
+              <text x="-180" y="30" font-weight="700" fill="#166534">• v0:</text>
+              <text x="-40" y="30" font-weight="800" fill="#166534">No arteritis</text>
+              <text x="-180" y="65" font-weight="700" fill="#166534">• g0:</text>
+              <text x="-40" y="65" font-weight="800" fill="#166534">No glomerulitis</text>
+              <text x="-180" y="100" font-weight="700" fill="#166534">• ptc0:</text>
+              <text x="-40" y="100" font-weight="800" fill="#166534">No cap. inflammation</text>
+            </g>
+
+            <rect x="-180" y="165" width="360" height="60" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">All microvascular</text>
+            <text x="0" y="212" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">inflammation is ABSENT</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">All Banff inflammatory scores are ZERO → no rejection → supportive care</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DIFFERENTIAL OF DGF
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DIFFERENTIAL DIAGNOSIS OF DELAYED GRAFT FUNCTION</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Biopsy and Doppler distinguish these entities</text>
+          </g>
+
+          <!-- ATI (this patient) -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ATI (ischemic)</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">POD 0–7</text>
+            <text x="0" y="-72" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">early</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Biopsy:</text>
+              <text x="-100" y="0" font-weight="800" fill="#166534">ATI, i0t0v0</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Tubules:</text>
+              <text x="-100" y="28" font-weight="800" fill="#166534">Flat, regenerating</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• DSA:</text>
+              <text x="-100" y="56" font-weight="800" fill="#166534">Negative</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• C4d:</text>
+              <text x="-100" y="84" font-weight="800" fill="#166534">Negative</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Doppler:</text>
+              <text x="-100" y="112" font-weight="800" fill="#166534">Patent</text>
+              <text x="-180" y="140" font-weight="700" fill="#166534">• Treatment:</text>
+              <text x="-100" y="140" font-weight="800" fill="#166534">Supportive</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Dialysis as needed</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">Continue immunosuppression</text>
+          </g>
+
+          <!-- TCMR -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#dc2626"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">T-CELL REJECTION</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Cellular rejection</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">Weeks</text>
+            <text x="0" y="-72" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">onset</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#991b1b">• Biopsy:</text>
+              <text x="-100" y="0" font-weight="800" fill="#991b1b">i2–3 + t2–3</text>
+              <text x="-180" y="28" font-weight="700" fill="#991b1b">• Tubules:</text>
+              <text x="-100" y="28" font-weight="800" fill="#991b1b">Tubulitis present</text>
+              <text x="-180" y="56" font-weight="700" fill="#991b1b">• DSA:</text>
+              <text x="-100" y="56" font-weight="800" fill="#991b1b">Often negative</text>
+              <text x="-180" y="84" font-weight="700" fill="#991b1b">• C4d:</text>
+              <text x="-100" y="84" font-weight="800" fill="#991b1b">Negative</text>
+              <text x="-180" y="112" font-weight="700" fill="#991b1b">• Doppler:</text>
+              <text x="-100" y="112" font-weight="800" fill="#991b1b">Normal</text>
+              <text x="-180" y="140" font-weight="700" fill="#991b1b">• Treatment:</text>
+              <text x="-100" y="140" font-weight="800" fill="#991b1b">Steroids</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Requires i &gt; 0 AND t &gt; 0</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">This patient: i0t0 → RULED OUT</text>
+          </g>
+
+          <!-- AMR -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">AMR</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Antibody-mediated</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">Weeks</text>
+            <text x="0" y="-72" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">onset</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• Biopsy:</text>
+              <text x="-100" y="0" font-weight="800" fill="#5b21b6">g + ptc &gt; 2</text>
+              <text x="-180" y="28" font-weight="700" fill="#5b21b6">• Tubules:</text>
+              <text x="-100" y="28" font-weight="800" fill="#5b21b6">Variable</text>
+              <text x="-180" y="56" font-weight="700" fill="#5b21b6">• DSA:</text>
+              <text x="-100" y="56" font-weight="800" fill="#5b21b6">POSITIVE</text>
+              <text x="-180" y="84" font-weight="700" fill="#5b21b6">• C4d:</text>
+              <text x="-100" y="84" font-weight="800" fill="#5b21b6">Often positive</text>
+              <text x="-180" y="112" font-weight="700" fill="#5b21b6">• Doppler:</text>
+              <text x="-100" y="112" font-weight="800" fill="#5b21b6">Normal</text>
+              <text x="-180" y="140" font-weight="700" fill="#5b21b6">• Treatment:</text>
+              <text x="-100" y="140" font-weight="800" fill="#5b21b6">PLEX + IVIG</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Requires DSA+ or C4d+</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">This patient: both neg → RULED OUT</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Biopsy is the key: ATI without inflammation = supportive care, not steroids</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Answer -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER D</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Ischemia-reperfusion–associated acute tubular injury causing delayed graft function</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Continue supportive management, dialysis as indicated, and maintenance immunosuppression</text>
+          </g>
+
+          <!-- Option cards -->
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Ischemia-reperfusion ATI causing DGF; supportive management</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Biopsy shows ATI (i0t0v0g0ptc0); no rejection; Doppler patent</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Acute T-cell–mediated rejection; pulse methylprednisolone</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">TCMR requires tubulitis (t > 0) and interstitial inflammation (i > 0). Both are absent (i0, t0).</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Active antibody-mediated rejection</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">AMR requires DSA+ and/or C4d+ with microvascular inflammation. All are NEGATIVE here.</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Chronic CNI toxicity; discontinue all immunosuppression</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">CNI toxicity shows CHRONIC changes (fibrosis, atrophy), not acute tubular injury. Never discontinue all immunosuppression.</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Transplant renal vein thrombosis; immediate thrombectomy</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Doppler shows PATENT renal artery and vein. RVT would show absent venous flow and reversed diastolic flow.</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: D — Ischemia-reperfusion ATI causing DGF</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Delayed Graft Function — Ischemia-Reperfusion Acute Tubular Injury",
+  subtitle: "Biopsy shows ATI without rejection — supportive management is the answer",
+  badge: "TRANSPLANT NEPHROLOGY · RENAL PATHOLOGY · BANFF",
+  caseTitle: "Case: 55-year-old man, POD 8 after deceased-donor kidney transplant",
+  caseDescription: "Required HD on POD 2 and 4 for oliguria and hyperkalemia. On POD 8, creatinine remains 6.2 mg/dL. Biopsy: tubular flattening, loss of brush borders, regenerative changes. All Banff inflammatory scores are zero (i0, t0, v0, g0, ptc0). C4d negative, DSA negative. Doppler: patent renal artery and vein, no hydronephrosis.",
+  labChips: [
+    { text: "Creatinine 6.2 mg/dL", abnormal: true },
+    { text: "HD on POD 2 and 4", abnormal: true },
+    { text: "Tubular injury present", abnormal: true },
+    { text: "i0, t0, v0, g0, ptc0", abnormal: false },
+    { text: "C4d negative", abnormal: false },
+    { text: "DSA negative", abnormal: false },
+    { text: "Doppler: patent vessels", abnormal: false },
+    { text: "No hydronephrosis", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Banff Scores", className: "opt2" },
+    { id: "opt3", label: "🔵 Differential", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Delayed Graft Function",
+      infoRows: [
+        { k: "Definition", v: "HD in first week post-Tx" },
+        { k: "Biopsy", v: "Acute tubular injury" },
+        { k: "Inflammation", v: "All scores 0" },
+        { k: "DSA / C4d", v: "Both negative" },
+        { k: "Management", v: "Supportive" }
+      ],
+      svgTitle: "Delayed Graft Function — Acute Tubular Injury",
+      svgSubtitle: "POD 8 · Cr 6.2 · HD on POD 2 and 4 · Biopsy: ATI without rejection",
+      bannerBg: "#dc2626",
+      bannerText1: "DGF from ischemia-reperfusion ATI — supportive management only",
+      bannerText2: "Do not escalate immunosuppression — this is not rejection",
+      panel1Title: "🧪 What is delayed graft function?",
+      panel1Tagline: "Definition and mechanism",
+      panel1List: [
+        "<strong>DGF = need for dialysis within the first week post-transplant</strong>",
+        "Most common cause: <strong>ischemia-reperfusion acute tubular injury (ATI)</strong>",
+        "More common with <strong>deceased-donor kidneys</strong>, especially donation after circulatory death (DCD)",
+        "The biopsy shows <strong>tubular flattening, loss of brush borders, and regenerative changes</strong>",
+        "There is <strong>no inflammation and no rejection</strong> — all Banff scores are zero"
+      ],
+      panel2Title: "🔬 Why the biopsy is critical",
+      panel2Tagline: "Rule out rejection",
+      panel2List: [
+        "<strong>i0</strong> — no interstitial inflammation",
+        "<strong>t0</strong> — no tubulitis",
+        "<strong>v0</strong> — no intimal arteritis",
+        "<strong>g0, ptc0</strong> — no microvascular inflammation",
+        "<strong>C4d negative, DSA negative</strong> — rules out antibody-mediated rejection",
+        "Together, these findings <strong>confirm ATI</strong> and rule out rejection"
+      ],
+      alertIcon: "🧪",
+      alertTitle: "Board Pearl — Biopsy before treating DGF",
+      alertText: "Always perform a <strong>biopsy</strong> in prolonged DGF to distinguish ATI from rejection. If the biopsy shows <strong>ATI without inflammation</strong>, treatment is <strong>supportive</strong> — do not give steroids."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Banff Scores — All Zero in This Patient",
+      infoRows: [
+        { k: "i", v: "0 — no interstitial inflammation" },
+        { k: "t", v: "0 — no tubulitis" },
+        { k: "v", v: "0 — no arteritis" },
+        { k: "g", v: "0 — no glomerulitis" },
+        { k: "ptc", v: "0 — no capillaritis" }
+      ],
+      svgTitle: "Banff Scores — All Zero in This Patient",
+      svgSubtitle: "No inflammation, no rejection — just acute tubular injury",
+      bannerBg: "#7c3aed",
+      bannerText1: "All Banff inflammatory scores are ZERO → no rejection → supportive care",
+      bannerBg2: "#7c3aed",
+      bannerText2: "The diagnosis is ATI, not TCMR or AMR",
+      panel1Title: "🔬 The Banff scoring system",
+      panel1Tagline: "What each score means",
+      panel1List: [
+        "<strong>i</strong> — interstitial inflammation (i0 = none, i1–i3 = increasing)",
+        "<strong>t</strong> — tubulitis (t0 = none, t1–t3 = increasing)",
+        "<strong>v</strong> — intimal arteritis (v0 = none, v1–v3 = increasing)",
+        "<strong>g</strong> — glomerulitis (g0 = none, g1–g3 = increasing)",
+        "<strong>ptc</strong> — peritubular capillaritis (ptc0 = none, ptc1–ptc3 = increasing)",
+        "<strong>These scores define rejection categories</strong>"
+      ],
+      panel2Title: "🧪 How the scores translate to diagnosis",
+      panel2Tagline: "The rejection categories",
+      panel2List: [
+        "<strong>TCMR</strong> — requires i > 0 AND t > 0 (this patient: i0t0 — ruled out)",
+        "<strong>AMR</strong> — requires DSA+ and/or C4d+ with g + ptc ≥ 2 (this patient: g0ptc0 — ruled out)",
+        "<strong>ATI</strong> — tubular injury without inflammation (this patient — confirmed)",
+        "<strong>Borderline changes</strong> — i1 + t1 (suspicious but not diagnostic of TCMR)",
+        "This patient's all-zero profile is <strong>diagnostic of ATI without rejection</strong>"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — All-zero Banff scores = no rejection",
+      alertText: "When all Banff inflammatory scores are zero (i0t0v0g0ptc0), rejection is effectively ruled out. Look for another cause of graft dysfunction — here, ATI."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Differential Diagnosis of DGF",
+      infoRows: [
+        { k: "ATI", v: "Tubular injury, i0t0v0, supportive care" },
+        { k: "TCMR", v: "i > 0 + t > 0, steroids" },
+        { k: "AMR", v: "DSA+/C4d+, PLEX + IVIG" },
+        { k: "CNI toxicity", v: "Chronic changes, reduce CNI" },
+        { k: "RVT", v: "Absent venous flow, surgery" }
+      ],
+      svgTitle: "Differential Diagnosis of Delayed Graft Function",
+      svgSubtitle: "Biopsy and Doppler distinguish these entities",
+      bannerBg: "#0891b2",
+      bannerText1: "Biopsy is the key: ATI without inflammation = supportive care, not steroids",
+      bannerText2: "Doppler rules out vascular causes when patent",
+      panel1Title: "❌ T-cell–mediated rejection — ruled out",
+      panel1Tagline: "Requires tubulitis and inflammation",
+      panel1List: [
+        "TCMR requires <strong>interstitial inflammation (i > 0)</strong> AND <strong>tubulitis (t > 0)</strong>",
+        "This patient has <strong>i0 and t0</strong> — ruling out TCMR",
+        "Treatment of TCMR is <strong>pulse steroids</strong> — not appropriate here",
+        "Other features: fever, graft tenderness, rising creatinine (may overlap with ATI)",
+        "Always biopsy before treating presumed rejection"
+      ],
+      panel2Title: "❌ AMR, CNI toxicity, and RVT — ruled out",
+      panel2Tagline: "Each has distinguishing features",
+      panel2List: [
+        "<strong>AMR</strong> — requires DSA+ and/or C4d+ with microvascular inflammation. This patient has neither.",
+        "<strong>CNI toxicity</strong> — shows chronic changes (interstitial fibrosis, tubular atrophy), not acute tubular injury.",
+        "<strong>Transplant renal vein thrombosis</strong> — Doppler shows absent venous flow and reversed diastolic arterial flow. This patient has patent vessels.",
+        "<strong>Ureteral obstruction</strong> — would show hydronephrosis on ultrasound. This patient has none.",
+        "<strong>This patient's biopsy and Doppler rule out all these alternatives</strong>"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Biopsy is the gold standard",
+      alertText: "When DGF is prolonged, <strong>biopsy</strong> is essential. It distinguishes ATI (supportive care) from rejection (immunosuppression). Doppler rules out vascular and obstructive causes."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "D — Ischemia-reperfusion ATI" },
+        { k: "Biopsy", v: "ATI, i0t0v0g0ptc0" },
+        { k: "DSA/C4d", v: "Negative" },
+        { k: "Doppler", v: "Patent vessels" },
+        { k: "Management", v: "Supportive + dialysis PRN" }
+      ],
+      svgTitle: "Answer Summary — Ischemia-Reperfusion ATI Causing DGF",
+      svgSubtitle: "Biopsy shows ATI without rejection; Doppler shows patent vessels",
+      bannerBg: "#ca8a04",
+      bannerText1: "D — Ischemia-reperfusion–associated acute tubular injury causing delayed graft function",
+      bannerText2: "Continue supportive management, dialysis as indicated, maintenance immunosuppression",
+      panel1Title: "✅ The correct answer (D)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>POD 8 with creatinine 6.2</strong> — persistent graft dysfunction",
+        "<strong>HD on POD 2 and 4</strong> — defines delayed graft function",
+        "<strong>Biopsy: acute tubular injury</strong> — flattening, loss of brush borders, regeneration",
+        "<strong>All Banff inflammatory scores are zero</strong> — i0, t0, v0, g0, ptc0",
+        "<strong>DSA and C4d negative</strong> — rules out AMR",
+        "<strong>Doppler patent vessels</strong> — rules out vascular causes"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (TCMR):</strong> Requires tubulitis (t > 0) and interstitial inflammation (i > 0). Both are absent here.",
+        "<strong>B (AMR):</strong> Requires DSA+ and/or C4d+ with microvascular inflammation. All are negative.",
+        "<strong>C (CNI toxicity):</strong> Shows chronic changes (fibrosis, atrophy), not ATI. Also, never discontinue all immunosuppression.",
+        "<strong>E (RVT):</strong> Doppler shows patent vessels. RVT would show absent venous flow."
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>Ischemia-reperfusion–associated acute tubular injury</strong> causing delayed graft function. Continue <strong>supportive management, dialysis as indicated, and maintenance immunosuppression</strong>."
+    }
+  },
+  comparison: {
+    title: "📊 Delayed Graft Function — Differential Diagnosis",
+    sub: "Biopsy and Doppler distinguish these entities",
+    head: ["Cause", "Biopsy findings", "DSA/C4d", "Doppler", "Management"],
+    rows: [
+      { cells: ["Ischemia-reperfusion ATI (this patient)", "Tubular injury, i0t0v0g0ptc0", "Both negative", "Patent", "Supportive + dialysis PRN"], hero: true },
+      { cells: ["Acute T-cell–mediated rejection", "i > 0 + t > 0 (tubulitis)", "Usually negative", "Normal", "Pulse steroids"], hero: false },
+      { cells: ["Active antibody-mediated rejection", "g + ptc ≥ 2", "DSA+ or C4d+", "Normal", "PLEX + IVIG"], hero: false },
+      { cells: ["Chronic CNI toxicity", "Interstitial fibrosis, tubular atrophy", "Negative", "Normal", "Reduce/switch CNI"], hero: false },
+      { cells: ["Transplant renal vein thrombosis", "Hemorrhagic infarction", "Negative", "Absent venous flow", "Emergent surgery"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 55-year-old man, POD 8 after deceased-donor kidney transplant, has creatinine 6.2 and required HD on POD 2 and 4. Biopsy shows acute tubular injury with i0, t0, v0, g0, ptc0. C4d and DSA are negative. Doppler shows patent vessels. What is the diagnosis and management?",
+      options: [
+        { text: "Ischemia-reperfusion–associated acute tubular injury causing delayed graft function; continue supportive management, dialysis as indicated, and appropriate maintenance immunosuppression.", correct: true,
+          explanation: "The biopsy shows ATI without any inflammatory scores, ruling out rejection. Doppler is patent. This is classic DGF from ischemia-reperfusion ATI — manage supportively." },
+        { text: "Acute T-cell–mediated rejection; administer pulse methylprednisolone.", correct: false,
+          explanation: "TCMR requires tubulitis (t > 0) and interstitial inflammation (i > 0). Both are absent here (i0, t0)." },
+        { text: "Active antibody-mediated rejection; initiate plasma exchange and IVIG.", correct: false,
+          explanation: "AMR requires DSA+ and/or C4d+ with microvascular inflammation. All are negative in this patient." }
+      ]
+    },
+    {
+      question: "What defines delayed graft function (DGF)?",
+      options: [
+        { text: "The need for dialysis within the first week after transplantation.", correct: true,
+          explanation: "DGF is defined as the need for dialysis in the first week post-transplant. It most commonly results from ischemia-reperfusion acute tubular injury." },
+        { text: "A creatinine that rises by more than 50% in the first month.", correct: false,
+          explanation: "This describes acute rejection or other graft dysfunction, not DGF specifically." },
+        { text: "The presence of donor-specific antibodies in the first week.", correct: false,
+          explanation: "DSA positivity suggests AMR, not DGF." }
+      ]
+    },
+    {
+      question: "What biopsy findings are characteristic of ischemia-reperfusion acute tubular injury?",
+      options: [
+        { text: "Tubular flattening, loss of brush borders, and regenerative changes.", correct: true,
+          explanation: "These are the classic findings of ATI. Inflammatory scores (i, t, v, g, ptc) are typically zero unless there is coexisting rejection." },
+        { text: "Tubulitis and interstitial inflammation.", correct: false,
+          explanation: "These findings suggest T-cell–mediated rejection, not ATI." },
+        { text: "Intimal arteritis and fibrinoid necrosis.", correct: false,
+          explanation: "These findings suggest severe rejection or vascular injury, not ATI." }
+      ]
+    },
+    {
+      question: "Which Banff score requires tubulitis to be present for the diagnosis of T-cell–mediated rejection?",
+      options: [
+        { text: "t > 0.", correct: true,
+          explanation: "Tubulitis (t > 0) is required for the diagnosis of TCMR, along with interstitial inflammation (i > 0)." },
+        { text: "g > 0.", correct: false,
+          explanation: "Glomerulitis (g > 0) suggests antibody-mediated processes, not TCMR." },
+        { text: "v > 0.", correct: false,
+          explanation: "Intimal arteritis (v > 0) suggests more severe TCMR or vascular rejection, but is not the defining feature." }
+      ]
+    },
+    {
+      question: "What is the most common cause of delayed graft function after deceased-donor kidney transplantation?",
+      options: [
+        { text: "Ischemia-reperfusion acute tubular injury.", correct: true,
+          explanation: "Ischemia-reperfusion injury causing ATI is the most common cause of DGF. It reflects the injury from organ procurement, cold storage, and reperfusion." },
+        { text: "Acute T-cell–mediated rejection.", correct: false,
+          explanation: "TCMR typically presents later (weeks), not as DGF in the first few days." },
+        { text: "Calcineurin inhibitor toxicity.", correct: false,
+          explanation: "CNI toxicity is a chronic complication, not a common cause of DGF." }
+      ]
+    },
+    {
+      question: "Why is a biopsy essential in prolonged delayed graft function?",
+      options: [
+        { text: "To distinguish ischemia-reperfusion ATI from rejection, which requires different treatment.", correct: true,
+          explanation: "ATI is treated supportively, while rejection requires immunosuppression. Biopsy is the gold standard for distinguishing these entities." },
+        { text: "To confirm the diagnosis of DGF.", correct: false,
+          explanation: "DGF is a clinical diagnosis (need for dialysis in the first week). Biopsy is used to determine the underlying cause." },
+        { text: "To assess for BK nephropathy.", correct: false,
+          explanation: "BK nephropathy typically presents weeks to months post-transplant, not in the first week." }
+      ]
+    },
+    {
+      question: "A patient with DGF has a biopsy showing i2, t2, v0, g0, ptc0 with negative DSA and C4d. What is the diagnosis?",
+      options: [
+        { text: "Acute T-cell–mediated rejection.", correct: true,
+          explanation: "i > 0 and t > 0 (with v0, g0, ptc0, DSA−, C4d−) is diagnostic of TCMR. Treatment is pulse steroids." },
+        { text: "Ischemia-reperfusion acute tubular injury.", correct: false,
+          explanation: "ATI would have i0 and t0. The presence of i2 and t2 indicates TCMR." },
+        { text: "Antibody-mediated rejection.", correct: false,
+          explanation: "AMR would require DSA+ or C4d+ with microvascular inflammation. This patient has neither." }
+      ]
+    },
+    {
+      question: "What is the appropriate management for ischemia-reperfusion ATI causing DGF?",
+      options: [
+        { text: "Supportive care, dialysis as needed, and continuation of maintenance immunosuppression.", correct: true,
+          explanation: "There is no specific therapy for ATI. Management is supportive — dialysis for uremia/hyperkalemia/volume overload, maintaining immunosuppression, and waiting for tubular recovery." },
+        { text: "Pulse methylprednisolone.", correct: false,
+          explanation: "Steroids are used for rejection, not ATI. They are not indicated here." },
+        { text: "Discontinue all immunosuppression until the graft recovers.", correct: false,
+          explanation: "Discontinuing immunosuppression risks rejection. Maintenance immunosuppression should be continued." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Transplant Nephrology / Renal Pathology / Banff",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

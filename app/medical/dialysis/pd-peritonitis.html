@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PD Peritonitis — Complete Guide with Anatomy Diagrams</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04; --accent5:#16a34a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1600px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:780px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.active{background:#f0fdf4; border-color:var(--accent5); color:#166534;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:12px;
+    align-items:start;
+  }
+  @media(max-width:1200px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1200px){ .info-col{position:static;} }
+
+  .info-float{background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08); overflow:hidden; width:100%;}
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-float.highlight-opt5{border-color:var(--accent5);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-float.highlight-opt5 .info-header{background:#dcfce7;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800; color:#0f172a;
+    flex:1; display:flex; align-items:center; pointer-events:none;}
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;}
+  .footer .footer-gift strong{color:#fff;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>PD Peritonitis — Complete Guide with Anatomy Diagrams</h1>
+      <p>Bacterial · Fungal · Mycobacterial · Exit-site · Bleeding</p>
+    </div>
+    <div class="badge">NEPHROLOGY · INFECTIOUS DISEASE</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>58-year-old woman on CAPD with MSSA peritonitis</h2>
+      <p>Abdominal pain and cloudy dialysate. Dialysate WBC 1,850/µL (88% PMN). Culture: MSSA. Exit site and tunnel unremarkable. Hemodynamically stable. Initially treated with IP vancomycin + ceftazidime.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">WBC 1,850/µL</span>
+      <span class="lab-chip abn">88% Neutrophils</span>
+      <span class="lab-chip abn">MSSA</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('opt1')">🔴 Bacterial (MSSA)</button>
+    <button class="tab" onclick="setMode('opt2')">🟣 Fungal</button>
+    <button class="tab" onclick="setMode('opt3')">🔵 Mycobacterial</button>
+    <button class="tab" onclick="setMode('opt4')">🟡 Exit Site & Bleeding</button>
+    <button class="tab" onclick="setMode('opt5')">🟢 Summary</button>
+  </div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+        <text id="svg-title" x="700" y="45" text-anchor="middle" font-family="Arial" font-size="26" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="75" text-anchor="middle" font-family="Arial" font-size="15" fill="#64748b"></text>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 1 — PD CATHETER ANATOMY + BACTERIAL PERITONITIS -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt1">
+          <!-- Abdominal wall layers -->
+          <!-- Skin -->
+          <rect x="60" y="110" width="950" height="55" fill="#fde8e4" stroke="#c0392b" stroke-width="2"/>
+          <text x="85" y="145" font-family="Arial" font-weight="800" font-size="14" fill="#8b0000">SKIN</text>
+
+          <!-- Subcutaneous fat -->
+          <rect x="60" y="165" width="950" height="190" fill="#fef5e7" stroke="#d4a373" stroke-width="2"/>
+          <text x="85" y="200" font-family="Arial" font-weight="800" font-size="14" fill="#8b5a2b">SUBCUTANEOUS FAT</text>
+
+          <!-- Muscle -->
+          <rect x="60" y="355" width="950" height="90" fill="#f5cba7" stroke="#a0522d" stroke-width="2"/>
+          <text x="85" y="405" font-family="Arial" font-weight="800" font-size="14" fill="#6d3410">RECTUS MUSCLE</text>
+
+          <!-- Parietal peritoneum -->
+          <rect x="60" y="445" width="950" height="25" fill="#f9e4d4" stroke="#8b5a2b" stroke-width="2"/>
+          <text x="85" y="463" font-family="Arial" font-weight="800" font-size="12" fill="#5c3410">PARIETAL PERITONEUM</text>
+
+          <!-- Peritoneal cavity — cloudy dialysate -->
+          <rect x="60" y="470" width="950" height="450" fill="#fdf6d8" stroke="#b8860b" stroke-width="2"/>
+          <text x="530" y="500" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#8b6914">PERITONEAL CAVITY — CLOUDY DIALYSATE</text>
+
+          <!-- Bowel loops (anatomy) -->
+          <path d="M 150 620 Q 200 560 280 610 Q 340 660 280 720 Q 220 760 150 720 Q 100 670 150 620 Z" fill="#f5e6d3" stroke="#a0522d" stroke-width="1.5" opacity="0.6"/>
+          <path d="M 700 680 Q 780 630 850 680 Q 900 740 830 790 Q 760 830 690 780 Q 640 730 700 680 Z" fill="#f5e6d3" stroke="#a0522d" stroke-width="1.5" opacity="0.6"/>
+          <path d="M 300 830 Q 380 780 450 830 Q 500 880 440 910" fill="#f5e6d3" stroke="#a0522d" stroke-width="1.5" opacity="0.6"/>
+
+          <!-- PD Catheter path -->
+          <!-- Exit site -->
+          <circle cx="330" cy="137" r="14" fill="#ff2d2d" stroke="#8b0000" stroke-width="3"/>
+          <text x="330" y="105" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#8b0000">EXIT SITE</text>
+
+          <!-- Tunnel through subcutaneous -->
+          <line x1="330" y1="151" x2="540" y2="355" stroke="#374151" stroke-width="14" stroke-linecap="round"/>
+          <text x="460" y="260" font-family="Arial" font-weight="800" font-size="13" fill="#1f2937" text-anchor="middle">SUBCUTANEOUS</text>
+          <text x="460" y="278" font-family="Arial" font-weight="800" font-size="13" fill="#1f2937" text-anchor="middle">TUNNEL</text>
+
+          <!-- Deep cuff at muscle entry -->
+          <circle cx="540" cy="355" r="18" fill="#c0392b" stroke="#7f1d1d" stroke-width="2"/>
+          <text x="570" y="350" font-family="Arial" font-weight="800" font-size="14" fill="#7f1d1d">DEEP CUFF</text>
+          <text x="570" y="368" font-family="Arial" font-size="12" fill="#7f1d1d">(muscle entry)</text>
+
+          <!-- Catheter through muscle + peritoneum -->
+          <line x1="540" y1="355" x2="540" y2="600" stroke="#374151" stroke-width="14" stroke-linecap="round"/>
+
+          <!-- Catheter curls into pelvis (floating tip with holes) -->
+          <path d="M 540 600 Q 500 680 470 760 Q 450 810 500 840" stroke="#374151" stroke-width="14" fill="none" stroke-linecap="round"/>
+
+          <!-- Catheter side holes -->
+          <g fill="#374151">
+            <circle cx="490" cy="670" r="3"/>
+            <circle cx="478" cy="700" r="3"/>
+            <circle cx="470" cy="730" r="3"/>
+            <circle cx="468" cy="760" r="3"/>
+            <circle cx="475" cy="790" r="3"/>
+            <circle cx="492" cy="815" r="3"/>
+          </g>
+
+          <!-- MSSA cocci (clusters of red circles) -->
+          <g fill="#dc2626" stroke="#7f1d1d" stroke-width="1">
+            <circle cx="180" cy="560" r="9"/><circle cx="200" cy="575" r="9"/><circle cx="185" cy="585" r="9"/>
+            <circle cx="350" cy="600" r="9"/><circle cx="365" cy="615" r="9"/><circle cx="340" cy="625" r="9"/>
+            <circle cx="700" cy="580" r="9"/><circle cx="720" cy="595" r="9"/><circle cx="705" cy="610" r="9"/>
+            <circle cx="850" cy="650" r="9"/><circle cx="830" cy="665" r="9"/><circle cx="850" cy="680" r="9"/>
+            <circle cx="620" cy="740" r="9"/><circle cx="640" cy="755" r="9"/><circle cx="620" cy="770" r="9"/>
+            <circle cx="780" cy="800" r="9"/><circle cx="800" cy="815" r="9"/>
+            <circle cx="300" cy="800" r="9"/><circle cx="320" cy="815" r="9"/>
+          </g>
+
+          <!-- Close-up circle showing cocci in cluster -->
+          <circle cx="180" cy="575" r="40" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 3"/>
+          <line x1="220" y1="575" x2="380" y2="450" stroke="#dc2626" stroke-width="2"/>
+          <text x="390" y="445" font-family="Arial" font-weight="800" font-size="13" fill="#7f1d1d">MSSA cocci</text>
+          <text x="390" y="463" font-family="Arial" font-size="12" fill="#7f1d1d">(gram-positive clusters)</text>
+
+          <!-- Right callout panel -->
+          <rect x="1040" y="110" width="340" height="810" rx="18" fill="#fff" stroke="#c0392b" stroke-width="3"/>
+          <text x="1210" y="150" text-anchor="middle" font-family="Arial" font-weight="800" font-size="18" fill="#8b0000">BACTERIAL PERITONITIS</text>
+          <text x="1210" y="175" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">(MSSA in this case)</text>
+
+          <line x1="1060" y1="195" x2="1360" y2="195" stroke="#fecaca" stroke-width="2"/>
+
+          <text x="1060" y="225" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">DIAGNOSIS</text>
+          <text x="1060" y="250" font-family="Arial" font-size="13" fill="#334155">• Cloudy dialysate</text>
+          <text x="1060" y="272" font-family="Arial" font-size="13" fill="#334155">• WBC &gt;100/µL</text>
+          <text x="1060" y="294" font-family="Arial" font-size="13" fill="#334155">• ≥50% neutrophils</text>
+          <text x="1060" y="316" font-family="Arial" font-size="13" fill="#334155">• Send culture + Gram stain</text>
+
+          <line x1="1060" y1="335" x2="1360" y2="335" stroke="#fecaca" stroke-width="2"/>
+
+          <text x="1060" y="365" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">EMPIRIC THERAPY</text>
+          <text x="1060" y="390" font-family="Arial" font-size="13" fill="#334155">• Gram-positive coverage</text>
+          <text x="1060" y="412" font-family="Arial" font-size="13" fill="#334155">  (cefazolin or vancomycin)</text>
+          <text x="1060" y="434" font-family="Arial" font-size="13" fill="#334155">• Gram-negative coverage</text>
+          <text x="1060" y="456" font-family="Arial" font-size="13" fill="#334155">  (ceftazidime or aminoglycoside)</text>
+
+          <line x1="1060" y1="475" x2="1360" y2="475" stroke="#fecaca" stroke-width="2"/>
+
+          <text x="1060" y="505" font-family="Arial" font-weight="800" font-size="14" fill="#166534">DEFINITIVE (MSSA)</text>
+          <rect x="1060" y="520" width="300" height="70" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+          <text x="1210" y="548" text-anchor="middle" font-family="Arial" font-weight="800" font-size="18" fill="#166534">IP CEFAZOLIN</text>
+          <text x="1210" y="575" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">× 3 WEEKS</text>
+
+          <line x1="1060" y1="605" x2="1360" y2="605" stroke="#fecaca" stroke-width="2"/>
+
+          <text x="1060" y="635" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">CATHETER</text>
+          <text x="1060" y="660" font-family="Arial" font-size="13" fill="#334155">• Do NOT remove routinely</text>
+          <text x="1060" y="682" font-family="Arial" font-size="13" fill="#334155">• Reserve for:</text>
+          <text x="1075" y="704" font-family="Arial" font-size="13" fill="#334155">- Refractory (no clear by day 5)</text>
+          <text x="1075" y="726" font-family="Arial" font-size="13" fill="#334155">- Relapsing within 4 weeks</text>
+          <text x="1075" y="748" font-family="Arial" font-size="13" fill="#334155">- Tunnel infection</text>
+
+          <line x1="1060" y1="767" x2="1360" y2="767" stroke="#fecaca" stroke-width="2"/>
+
+          <text x="1060" y="797" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">MONITOR</text>
+          <text x="1060" y="822" font-family="Arial" font-size="13" fill="#334155">• Dialysate cell count at 72h</text>
+          <text x="1060" y="844" font-family="Arial" font-size="13" fill="#334155">• Clinical response</text>
+          <text x="1060" y="866" font-family="Arial" font-size="13" fill="#334155">• Repeat culture if not improving</text>
+          <text x="1060" y="888" font-family="Arial" font-size="13" fill="#334155">• Exit site + tunnel exam</text>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 2 — FUNGAL PERITONITIS -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <!-- Same anatomy -->
+          <rect x="60" y="110" width="950" height="55" fill="#fde8e4" stroke="#c0392b" stroke-width="2"/>
+          <text x="85" y="145" font-family="Arial" font-weight="800" font-size="14" fill="#8b0000">SKIN</text>
+
+          <rect x="60" y="165" width="950" height="190" fill="#fef5e7" stroke="#d4a373" stroke-width="2"/>
+          <text x="85" y="200" font-family="Arial" font-weight="800" font-size="14" fill="#8b5a2b">SUBCUTANEOUS FAT</text>
+
+          <rect x="60" y="355" width="950" height="90" fill="#f5cba7" stroke="#a0522d" stroke-width="2"/>
+          <text x="85" y="405" font-family="Arial" font-weight="800" font-size="14" fill="#6d3410">RECTUS MUSCLE</text>
+
+          <rect x="60" y="445" width="950" height="25" fill="#f9e4d4" stroke="#8b5a2b" stroke-width="2"/>
+
+          <rect x="60" y="470" width="950" height="450" fill="#f3e8f0" stroke="#a020a0" stroke-width="2"/>
+          <text x="530" y="500" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#7c2d7c">PERITONEAL CAVITY — FUNGAL DIALYSATE</text>
+
+          <!-- Catheter -->
+          <circle cx="330" cy="137" r="14" fill="#ff2d2d" stroke="#8b0000" stroke-width="3"/>
+          <text x="330" y="105" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#8b0000">EXIT SITE</text>
+
+          <line x1="330" y1="151" x2="540" y2="355" stroke="#374151" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="540" cy="355" r="18" fill="#c0392b" stroke="#7f1d1d" stroke-width="2"/>
+          <line x1="540" y1="355" x2="540" y2="600" stroke="#374151" stroke-width="14"/>
+          <path d="M 540 600 Q 500 680 470 760 Q 450 810 500 840" stroke="#374151" stroke-width="14" fill="none" stroke-linecap="round"/>
+
+          <!-- BIG RED X over the catheter — REMOVE -->
+          <g opacity="0.9">
+            <line x1="290" y1="100" x2="600" y2="850" stroke="#dc2626" stroke-width="18" stroke-linecap="round"/>
+            <line x1="600" y1="100" x2="290" y2="850" stroke="#dc2626" stroke-width="18" stroke-linecap="round"/>
+          </g>
+          <rect x="250" y="450" width="400" height="90" rx="14" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+          <text x="450" y="490" text-anchor="middle" font-family="Arial" font-weight="800" font-size="26" fill="#dc2626">REMOVE</text>
+          <text x="450" y="522" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#dc2626">CATHETER NOW</text>
+
+          <!-- Candida yeast cells (oval + bud) -->
+          <g>
+            <!-- Cell 1 -->
+            <ellipse cx="180" cy="620" rx="16" ry="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <circle cx="195" cy="612" r="7" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <!-- Cell 2 -->
+            <ellipse cx="350" cy="700" rx="16" ry="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <circle cx="365" cy="692" r="7" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <!-- Cell 3 -->
+            <ellipse cx="700" cy="620" rx="16" ry="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <circle cx="715" cy="612" r="7" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <!-- Cell 4 -->
+            <ellipse cx="850" cy="720" rx="16" ry="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <circle cx="865" cy="712" r="7" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <!-- Cell 5 -->
+            <ellipse cx="620" cy="800" rx="16" ry="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <circle cx="635" cy="792" r="7" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <!-- Cell 6 -->
+            <ellipse cx="420" cy="810" rx="16" ry="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+            <circle cx="435" cy="802" r="7" fill="#a855f7" stroke="#6b21a8" stroke-width="2"/>
+          </g>
+
+          <!-- Close-up -->
+          <circle cx="180" cy="620" r="42" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4 3"/>
+          <line x1="222" y1="620" x2="380" y2="620" stroke="#7c3aed" stroke-width="2"/>
+          <text x="390" y="615" font-family="Arial" font-weight="800" font-size="13" fill="#5b21b6">Candida</text>
+          <text x="390" y="633" font-family="Arial" font-size="12" fill="#5b21b6">budding yeast</text>
+
+          <!-- Right callout -->
+          <rect x="1040" y="110" width="340" height="810" rx="18" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+          <text x="1210" y="150" text-anchor="middle" font-family="Arial" font-weight="800" font-size="18" fill="#5b21b6">FUNGAL PERITONITIS</text>
+          <text x="1210" y="175" text-anchor="middle" font-family="Arial" font-size="13" fill="#6d28d9">Candida most common</text>
+
+          <line x1="1060" y1="195" x2="1360" y2="195" stroke="#ddd6fe" stroke-width="2"/>
+
+          <text x="1060" y="225" font-family="Arial" font-weight="800" font-size="14" fill="#dc2626">⚠ CATHETER REMOVAL</text>
+          <rect x="1060" y="240" width="300" height="70" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+          <text x="1210" y="268" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">MANDATORY</text>
+          <text x="1210" y="295" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Immediate — do not delay</text>
+
+          <line x1="1060" y1="325" x2="1360" y2="325" stroke="#ddd6fe" stroke-width="2"/>
+
+          <text x="1060" y="355" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">ANTIFUNGAL</text>
+          <text x="1060" y="380" font-family="Arial" font-size="13" fill="#334155">• Oral fluconazole (Candida)</text>
+          <text x="1060" y="402" font-family="Arial" font-size="13" fill="#334155">• Alternatives:</text>
+          <text x="1075" y="424" font-family="Arial" font-size="13" fill="#334155">- Voriconazole</text>
+          <text x="1075" y="446" font-family="Arial" font-size="13" fill="#334155">- Amphotericin B</text>
+          <text x="1060" y="468" font-family="Arial" font-size="13" fill="#334155">• IP antifungals discouraged</text>
+
+          <line x1="1060" y1="487" x2="1360" y2="487" stroke="#ddd6fe" stroke-width="2"/>
+
+          <text x="1060" y="517" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">DURATION</text>
+          <text x="1060" y="542" font-family="Arial" font-size="13" fill="#334155">• ≥2 weeks after removal</text>
+          <text x="1060" y="564" font-family="Arial" font-size="13" fill="#334155">• Reinsertion delayed</text>
+          <text x="1075" y="586" font-family="Arial" font-size="13" fill="#334155">2–3 weeks after resolution</text>
+
+          <line x1="1060" y1="605" x2="1360" y2="605" stroke="#ddd6fe" stroke-width="2"/>
+
+          <text x="1060" y="635" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">RISK FACTORS</text>
+          <text x="1060" y="660" font-family="Arial" font-size="13" fill="#334155">• Recent antibiotic use</text>
+          <text x="1060" y="682" font-family="Arial" font-size="13" fill="#334155">• Immunosuppression</text>
+          <text x="1060" y="704" font-family="Arial" font-size="13" fill="#334155">• Poor technique</text>
+          <text x="1060" y="726" font-family="Arial" font-size="13" fill="#334155">• Prior peritonitis</text>
+
+          <line x1="1060" y1="745" x2="1360" y2="745" stroke="#ddd6fe" stroke-width="2"/>
+
+          <text x="1060" y="775" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">PROGNOSIS</text>
+          <text x="1060" y="800" font-family="Arial" font-size="13" fill="#334155">• High mortality (~25%)</text>
+          <text x="1060" y="822" font-family="Arial" font-size="13" fill="#334155">• Prompt removal is</text>
+          <text x="1060" y="844" font-family="Arial" font-size="13" fill="#334155">  the key intervention</text>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 3 — MYCOBACTERIAL PERITONITIS -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <rect x="60" y="110" width="950" height="55" fill="#fde8e4" stroke="#c0392b" stroke-width="2"/>
+          <text x="85" y="145" font-family="Arial" font-weight="800" font-size="14" fill="#8b0000">SKIN</text>
+
+          <rect x="60" y="165" width="950" height="190" fill="#fef5e7" stroke="#d4a373" stroke-width="2"/>
+          <text x="85" y="200" font-family="Arial" font-weight="800" font-size="14" fill="#8b5a2b">SUBCUTANEOUS FAT</text>
+
+          <rect x="60" y="355" width="950" height="90" fill="#f5cba7" stroke="#a0522d" stroke-width="2"/>
+          <text x="85" y="405" font-family="Arial" font-weight="800" font-size="14" fill="#6d3410">RECTUS MUSCLE</text>
+
+          <rect x="60" y="445" width="950" height="25" fill="#f9e4d4" stroke="#8b5a2b" stroke-width="2"/>
+
+          <rect x="60" y="470" width="950" height="450" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+          <text x="530" y="500" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#1b5e20">PERITONEAL CAVITY — REFRACTORY / CULTURE-NEGATIVE</text>
+
+          <!-- Catheter -->
+          <circle cx="330" cy="137" r="14" fill="#ff2d2d" stroke="#8b0000" stroke-width="3"/>
+          <line x1="330" y1="151" x2="540" y2="355" stroke="#374151" stroke-width="14" stroke-linecap="round"/>
+          <circle cx="540" cy="355" r="18" fill="#c0392b" stroke="#7f1d1d" stroke-width="2"/>
+          <line x1="540" y1="355" x2="540" y2="600" stroke="#374151" stroke-width="14"/>
+          <path d="M 540 600 Q 500 680 470 760 Q 450 810 500 840" stroke="#374151" stroke-width="14" fill="none" stroke-linecap="round"/>
+
+          <!-- Mycobacteria — rod-shaped -->
+          <g fill="#0d9488" stroke="#115e59" stroke-width="1.5">
+            <!-- Rod 1 -->
+            <rect x="170" y="610" width="40" height="10" rx="5" transform="rotate(-20 190 615)"/>
+            <!-- Rod 2 -->
+            <rect x="330" y="690" width="40" height="10" rx="5" transform="rotate(15 350 695)"/>
+            <!-- Rod 3 -->
+            <rect x="680" y="600" width="40" height="10" rx="5" transform="rotate(-30 700 605)"/>
+            <!-- Rod 4 -->
+            <rect x="820" y="710" width="40" height="10" rx="5" transform="rotate(25 840 715)"/>
+            <!-- Rod 5 -->
+            <rect x="600" y="790" width="40" height="10" rx="5" transform="rotate(-10 620 795)"/>
+            <!-- Rod 6 -->
+            <rect x="400" y="800" width="40" height="10" rx="5" transform="rotate(40 420 805)"/>
+            <!-- Rod 7 -->
+            <rect x="250" y="750" width="40" height="10" rx="5" transform="rotate(-25 270 755)"/>
+            <!-- Rod 8 -->
+            <rect x="780" y="820" width="40" height="10" rx="5" transform="rotate(20 800 825)"/>
+          </g>
+
+          <!-- Close-up -->
+          <circle cx="190" cy="615" r="42" fill="none" stroke="#0d9488" stroke-width="2" stroke-dasharray="4 3"/>
+          <line x1="232" y1="615" x2="380" y2="555" stroke="#0d9488" stroke-width="2"/>
+          <text x="390" y="550" font-family="Arial" font-weight="800" font-size="13" fill="#115e59">Mycobacteria</text>
+          <text x="390" y="568" font-family="Arial" font-size="12" fill="#115e59">(rod-shaped, acid-fast)</text>
+
+          <!-- Right callout -->
+          <rect x="1040" y="110" width="340" height="810" rx="18" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+          <text x="1210" y="150" text-anchor="middle" font-family="Arial" font-weight="800" font-size="18" fill="#166534">MYCOBACTERIAL</text>
+          <text x="1210" y="175" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">TB and Non-TB Mycobacteria</text>
+
+          <line x1="1060" y1="195" x2="1360" y2="195" stroke="#bbf7d0" stroke-width="2"/>
+
+          <text x="1060" y="225" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">PRESENTATION</text>
+          <text x="1060" y="250" font-family="Arial" font-size="13" fill="#334155">• Often REFRACTORY</text>
+          <text x="1060" y="272" font-family="Arial" font-size="13" fill="#334155">• CULTURE-NEGATIVE</text>
+          <text x="1060" y="294" font-family="Arial" font-size="13" fill="#334155">• May need peritoneal</text>
+          <text x="1075" y="316" font-family="Arial" font-size="13" fill="#334155">biopsy for diagnosis</text>
+
+          <line x1="1060" y1="335" x2="1360" y2="335" stroke="#bbf7d0" stroke-width="2"/>
+
+          <text x="1060" y="365" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">TB</text>
+          <text x="1060" y="390" font-family="Arial" font-size="13" fill="#334155">• Rare but severe</text>
+          <text x="1060" y="412" font-family="Arial" font-size="13" fill="#334155">• Consider empiric therapy</text>
+          <text x="1075" y="434" font-family="Arial" font-size="13" fill="#334155">in endemic regions</text>
+          <text x="1060" y="456" font-family="Arial" font-size="13" fill="#334155">• AFB stain, culture, PCR</text>
+
+          <line x1="1060" y1="475" x2="1360" y2="475" stroke="#bbf7d0" stroke-width="2"/>
+
+          <text x="1060" y="505" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">NTM</text>
+          <text x="1060" y="530" font-family="Arial" font-size="13" fill="#334155">• Refractory, culture-negative</text>
+          <text x="1060" y="552" font-family="Arial" font-size="13" fill="#334155">• Catheter removal REQUIRED</text>
+          <text x="1060" y="574" font-family="Arial" font-size="13" fill="#334155">• Resistant to first-line TB drugs</text>
+          <text x="1060" y="596" font-family="Arial" font-size="13" fill="#334155">• Amikacin often only effective</text>
+
+          <line x1="1060" y1="615" x2="1360" y2="615" stroke="#bbf7d0" stroke-width="2"/>
+
+          <text x="1060" y="645" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">TREATMENT DURATION</text>
+          <text x="1060" y="670" font-family="Arial" font-size="13" fill="#334155">• Prolonged (months)</text>
+          <text x="1060" y="692" font-family="Arial" font-size="13" fill="#334155">• Guided by susceptibility</text>
+
+          <line x1="1060" y1="711" x2="1360" y2="711" stroke="#bbf7d0" stroke-width="2"/>
+
+          <text x="1060" y="741" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">CLINICAL PEARL</text>
+          <text x="1060" y="766" font-family="Arial" font-size="13" fill="#334155">Suspect NTM in any</text>
+          <text x="1060" y="788" font-family="Arial" font-size="13" fill="#334155">culture-negative case</text>
+          <text x="1060" y="810" font-family="Arial" font-size="13" fill="#334155">failing to improve by 72h</text>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 4 — EXIT SITE INFECTION & BLEEDING -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Close-up view — zoomed in -->
+          <rect x="60" y="110" width="950" height="750" fill="#fef5e7" stroke="#d4a373" stroke-width="2"/>
+          <text x="85" y="140" font-family="Arial" font-weight="800" font-size="16" fill="#8b5a2b">CLOSE-UP: EXIT SITE — MAGNIFIED VIEW</text>
+
+          <!-- Skin surface -->
+          <rect x="60" y="170" width="950" height="40" fill="#fde8e4" stroke="#c0392b" stroke-width="2"/>
+          <text x="85" y="196" font-family="Arial" font-weight="800" font-size="12" fill="#8b0000">SKIN SURFACE</text>
+
+          <!-- Erythema (red halo around exit site) -->
+          <ellipse cx="470" cy="190" rx="140" ry="55" fill="#ffcccc" opacity="0.7"/>
+          <ellipse cx="470" cy="190" rx="100" ry="40" fill="#ff9999" opacity="0.6"/>
+
+          <!-- Exit site hole -->
+          <ellipse cx="470" cy="185" rx="40" ry="18" fill="#c0392b" stroke="#7f1d1d" stroke-width="2"/>
+          <ellipse cx="470" cy="183" rx="30" ry="12" fill="#8b0000"/>
+
+          <!-- Catheter emerging from exit site -->
+          <rect x="455" y="60" width="30" height="130" fill="#4a5568" stroke="#1f2937" stroke-width="2"/>
+          <rect x="455" y="60" width="30" height="20" fill="#dc2626"/>
+          <text x="470" y="50" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#8b0000">PD CATHETER</text>
+
+          <!-- Purulent discharge -->
+          <ellipse cx="430" cy="200" rx="20" ry="12" fill="#fde047" stroke="#ca8a04" stroke-width="1.5"/>
+          <ellipse cx="510" cy="205" rx="18" ry="10" fill="#fde047" stroke="#ca8a04" stroke-width="1.5"/>
+          <ellipse cx="470" cy="215" rx="25" ry="10" fill="#fde047" stroke="#ca8a04" stroke-width="1.5"/>
+          <text x="560" y="225" font-family="Arial" font-weight="700" font-size="13" fill="#a16207">PURULENT</text>
+          <text x="560" y="242" font-family="Arial" font-weight="700" font-size="13" fill="#a16207">DISCHARGE</text>
+          <line x1="540" y1="215" x2="558" y2="220" stroke="#a16207" stroke-width="2"/>
+
+          <!-- Erythema label -->
+          <line x1="610" y1="170" x2="680" y2="170" stroke="#dc2626" stroke-width="2"/>
+          <text x="690" y="175" font-family="Arial" font-weight="700" font-size="13" fill="#dc2626">ERYTHEMA</text>
+
+          <!-- Bacteria on skin surface (cocci) -->
+          <g fill="#dc2626" stroke="#7f1d1d" stroke-width="1">
+            <circle cx="380" cy="160" r="6"/>
+            <circle cx="400" cy="155" r="6"/>
+            <circle cx="540" cy="158" r="6"/>
+            <circle cx="560" cy="163" r="6"/>
+            <circle cx="320" cy="170" r="6"/>
+            <circle cx="620" cy="172" r="6"/>
+          </g>
+          <text x="700" y="230" font-family="Arial" font-weight="700" font-size="13" fill="#7f1d1d">Bacteria on skin</text>
+
+          <!-- Bleeding component -->
+          <g fill="#dc2626" opacity="0.9">
+            <ellipse cx="430" cy="240" rx="18" ry="8"/>
+            <ellipse cx="510" cy="245" rx="15" ry="7"/>
+            <ellipse cx="470" cy="255" rx="22" ry="9"/>
+          </g>
+          <text x="600" y="270" font-family="Arial" font-weight="700" font-size="13" fill="#991b1b">BLEEDING</text>
+          <line x1="560" y1="255" x2="598" y2="262" stroke="#991b1b" stroke-width="2"/>
+
+          <!-- Blood vessels in skin -->
+          <path d="M 200 195 Q 300 185 380 195" stroke="#c0392b" stroke-width="3" fill="none" opacity="0.6"/>
+          <path d="M 560 195 Q 640 185 740 195" stroke="#c0392b" stroke-width="3" fill="none" opacity="0.6"/>
+          <path d="M 250 205 Q 320 215 380 205" stroke="#c0392b" stroke-width="2" fill="none" opacity="0.5"/>
+
+          <!-- Tunnel visible below the skin -->
+          <rect x="60" y="280" width="950" height="400" fill="#fef5e7" stroke="#d4a373" stroke-width="2"/>
+          <text x="85" y="310" font-family="Arial" font-weight="800" font-size="12" fill="#8b5a2b">SUBCUTANEOUS TISSUE</text>
+
+          <!-- Catheter tunnel path -->
+          <line x1="470" y1="280" x2="620" y2="560" stroke="#4a5568" stroke-width="14" stroke-linecap="round"/>
+          <line x1="470" y1="280" x2="620" y2="560" stroke="#718096" stroke-width="8" stroke-linecap="round" stroke-dasharray="10 5" opacity="0.5"/>
+
+          <!-- Tunnel inflammation (dashed red outline) -->
+          <line x1="470" y1="280" x2="620" y2="560" stroke="#dc2626" stroke-width="3" stroke-dasharray="8 4" opacity="0.6"/>
+          <text x="650" y="480" font-family="Arial" font-weight="700" font-size="13" fill="#991b1b">TUNNEL</text>
+          <text x="650" y="498" font-family="Arial" font-weight="700" font-size="13" fill="#991b1b">INFLAMMATION</text>
+
+          <!-- Deep cuff -->
+          <circle cx="620" cy="560" r="20" fill="#c0392b" stroke="#7f1d1d" stroke-width="2"/>
+          <text x="660" y="565" font-family="Arial" font-weight="700" font-size="13" fill="#7f1d1d">DEEP CUFF</text>
+
+          <!-- Right callout -->
+          <rect x="1040" y="110" width="340" height="810" rx="18" fill="#fff" stroke="#ca8a04" stroke-width="3"/>
+          <text x="1210" y="150" text-anchor="middle" font-family="Arial" font-weight="800" font-size="18" fill="#713f12">EXIT SITE COMPLICATIONS</text>
+
+          <line x1="1060" y1="175" x2="1360" y2="175" stroke="#fef3c7" stroke-width="2"/>
+
+          <text x="1060" y="205" font-family="Arial" font-weight="800" font-size="15" fill="#0f172a">EXIT SITE INFECTION</text>
+          <text x="1060" y="228" font-family="Arial" font-size="13" fill="#334155">Diagnosis:</text>
+          <text x="1060" y="250" font-family="Arial" font-size="13" fill="#334155">• Purulent discharge</text>
+          <text x="1075" y="270" font-family="Arial" font-size="13" fill="#334155">at catheter-skin interface</text>
+          <text x="1060" y="292" font-family="Arial" font-size="13" fill="#334155">• ± erythema</text>
+          <text x="1060" y="314" font-family="Arial" font-size="13" fill="#334155">• ± tenderness</text>
+
+          <line x1="1060" y1="330" x2="1360" y2="330" stroke="#fef3c7" stroke-width="2"/>
+
+          <text x="1060" y="360" font-family="Arial" font-weight="800" font-size="14" fill="#166534">TREATMENT (ESI)</text>
+          <text x="1060" y="385" font-family="Arial" font-size="13" fill="#334155">• Oral cephalexin</text>
+          <text x="1075" y="405" font-family="Arial" font-size="13" fill="#334155">(1st-gen cephalosporin)</text>
+          <text x="1060" y="427" font-family="Arial" font-size="13" fill="#334155">• MRSA → vancomycin</text>
+          <text x="1060" y="449" font-family="Arial" font-size="13" fill="#334155">• Pseudomonas →</text>
+          <text x="1075" y="469" font-family="Arial" font-size="13" fill="#334155">antipseudomonal agents</text>
+          <text x="1060" y="491" font-family="Arial" font-size="13" fill="#334155">• Duration 7–14 days</text>
+          <text x="1075" y="511" font-family="Arial" font-size="13" fill="#334155">(≥3 wk for Pseudomonas)</text>
+
+          <line x1="1060" y1="530" x2="1360" y2="530" stroke="#fef3c7" stroke-width="2"/>
+
+          <text x="1060" y="560" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">TUNNEL INFECTION</text>
+          <text x="1060" y="585" font-family="Arial" font-size="13" fill="#334155">• Erythema + tenderness</text>
+          <text x="1075" y="605" font-family="Arial" font-size="13" fill="#334155">along catheter tract</text>
+          <text x="1060" y="627" font-family="Arial" font-size="13" fill="#334155">• Treat aggressively</text>
+          <text x="1060" y="649" font-family="Arial" font-size="13" fill="#334155">• May require catheter</text>
+          <text x="1075" y="669" font-family="Arial" font-size="13" fill="#334155">removal if it progresses</text>
+
+          <line x1="1060" y1="688" x2="1360" y2="688" stroke="#fef3c7" stroke-width="2"/>
+
+          <text x="1060" y="718" font-family="Arial" font-weight="800" font-size="14" fill="#991b1b">BLEEDING</text>
+          <text x="1060" y="743" font-family="Arial" font-size="13" fill="#334155">• Pressure dressing</text>
+          <text x="1060" y="765" font-family="Arial" font-size="13" fill="#334155">• Immobilize catheter</text>
+          <text x="1060" y="787" font-family="Arial" font-size="13" fill="#334155">• Check anticoagulants</text>
+          <text x="1060" y="809" font-family="Arial" font-size="13" fill="#334155">• Significant bleed →</text>
+          <text x="1075" y="829" font-family="Arial" font-size="13" fill="#334155">desmopressin/transfusion</text>
+          <text x="1060" y="851" font-family="Arial" font-size="13" fill="#334155">• Rule out infection if</text>
+          <text x="1075" y="871" font-family="Arial" font-size="13" fill="#334155">granulation tissue present</text>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 5 — SUMMARY MATRIX -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt5" style="display:none">
+          <text x="700" y="140" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#0f172a">PERITONITIS — PATHOGEN-SPECIFIC MANAGEMENT</text>
+
+          <!-- Matrix -->
+          <g transform="translate(80, 180)">
+            <!-- Header row -->
+            <rect x="0" y="0" width="240" height="60" fill="#475569"/>
+            <text x="120" y="28" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#fff">PATHOGEN</text>
+            <text x="120" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#cbd5e1">(most common)</text>
+
+            <rect x="240" y="0" width="280" height="60" fill="#7c3aed"/>
+            <text x="380" y="36" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#fff">FIRST-LINE ANTIBIOTIC</text>
+
+            <rect x="520" y="0" width="160" height="60" fill="#0891b2"/>
+            <text x="600" y="36" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#fff">DURATION</text>
+
+            <rect x="680" y="0" width="240" height="60" fill="#dc2626"/>
+            <text x="800" y="36" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#fff">CATHETER REMOVAL?</text>
+
+            <!-- Row 1: MSSA (highlighted) -->
+            <rect x="0" y="60" width="240" height="90" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="120" y="95" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">MSSA</text>
+            <text x="120" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">(this patient)</text>
+            <text x="120" y="138" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">Gram-positive cocci</text>
+
+            <rect x="240" y="60" width="280" height="90" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="380" y="100" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">IP cefazolin</text>
+            <text x="380" y="123" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">15–20 mg/kg/day</text>
+            <text x="380" y="142" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">(IP route)</text>
+
+            <rect x="520" y="60" width="160" height="90" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="600" y="112" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#166534">3 wk</text>
+
+            <rect x="680" y="60" width="240" height="90" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="800" y="95" text-anchor="middle" font-family="Arial" font-weight="800" font-size="15" fill="#166534">NOT routinely</text>
+            <text x="800" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Reserve for refractory/</text>
+            <text x="800" y="136" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">relapsing</text>
+
+            <!-- Row 2: MRSA -->
+            <rect x="0" y="150" width="240" height="80" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="120" y="185" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#5b21b6">MRSA</text>
+            <text x="120" y="208" text-anchor="middle" font-family="Arial" font-size="11" fill="#6d28d9">Ceftazidime-resistant</text>
+
+            <rect x="240" y="150" width="280" height="80" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="380" y="192" text-anchor="middle" font-family="Arial" font-weight="700" font-size="15" fill="#5b21b6">IP vancomycin</text>
+            <text x="380" y="212" text-anchor="middle" font-family="Arial" font-size="11" fill="#6d28d9">(if MRSA prevalent)</text>
+
+            <rect x="520" y="150" width="160" height="80" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="600" y="195" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#5b21b6">3 wk</text>
+
+            <rect x="680" y="150" width="240" height="80" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+            <text x="800" y="185" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#5b21b6">Consider if</text>
+            <text x="800" y="205" text-anchor="middle" font-family="Arial" font-size="12" fill="#6d28d9">refractory</text>
+
+            <!-- Row 3: CoNS -->
+            <rect x="0" y="230" width="240" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="120" y="265" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#155e75">CoNS</text>
+            <text x="120" y="288" text-anchor="middle" font-family="Arial" font-size="11" fill="#0e7490">Most common</text>
+
+            <rect x="240" y="230" width="280" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="380" y="272" text-anchor="middle" font-family="Arial" font-weight="700" font-size="15" fill="#155e75">IP cefazolin</text>
+            <text x="380" y="292" text-anchor="middle" font-family="Arial" font-size="11" fill="#0e7490">(or vancomycin if resistant)</text>
+
+            <rect x="520" y="230" width="160" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="600" y="275" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#155e75">2 wk</text>
+
+            <rect x="680" y="230" width="240" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="800" y="265" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#155e75">Not routinely</text>
+            <text x="800" y="285" text-anchor="middle" font-family="Arial" font-size="12" fill="#0e7490">(unless relapsing)</text>
+
+            <!-- Row 4: Streptococci -->
+            <rect x="0" y="310" width="240" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="120" y="345" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#155e75">Streptococci</text>
+
+            <rect x="240" y="310" width="280" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="380" y="352" text-anchor="middle" font-family="Arial" font-weight="700" font-size="15" fill="#155e75">IP cefazolin</text>
+            <text x="380" y="372" text-anchor="middle" font-family="Arial" font-size="11" fill="#0e7490">(or oral amoxicillin)</text>
+
+            <rect x="520" y="310" width="160" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="600" y="355" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#155e75">2 wk</text>
+
+            <rect x="680" y="310" width="240" height="80" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="800" y="352" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#155e75">Not routinely</text>
+
+            <!-- Row 5: Pseudomonas -->
+            <rect x="0" y="390" width="240" height="80" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="120" y="425" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#713f12">Pseudomonas</text>
+
+            <rect x="240" y="390" width="280" height="80" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="380" y="425" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#713f12">IP ceftazidime or cefepime</text>
+            <text x="380" y="448" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#713f12">+ IP aminoglycoside</text>
+
+            <rect x="520" y="390" width="160" height="80" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="600" y="435" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#713f12">3 wk</text>
+
+            <rect x="680" y="390" width="240" height="80" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="800" y="425" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#713f12">Not routinely</text>
+            <text x="800" y="445" text-anchor="middle" font-family="Arial" font-size="12" fill="#a16207">unless refractory</text>
+
+            <!-- Row 6: Fungal -->
+            <rect x="0" y="470" width="240" height="100" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="120" y="505" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">Fungal</text>
+            <text x="120" y="528" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">(Candida most common)</text>
+
+            <rect x="240" y="470" width="280" height="100" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="380" y="505" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#991b1b">Oral fluconazole</text>
+            <text x="380" y="528" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">(alternatives: voriconazole,</text>
+            <text x="380" y="546" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">amphotericin B)</text>
+
+            <rect x="520" y="470" width="160" height="100" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="600" y="505" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#991b1b">≥2 wk</text>
+            <text x="600" y="528" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">after catheter</text>
+            <text x="600" y="546" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">removal</text>
+
+            <rect x="680" y="470" width="240" height="100" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="800" y="505" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">IMMEDIATE</text>
+            <text x="800" y="528" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#991b1b">MANDATORY</text>
+            <text x="800" y="550" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">(delay → ↑ mortality)</text>
+
+            <!-- Row 7: NTM -->
+            <rect x="0" y="570" width="240" height="100" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="120" y="605" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">NTM</text>
+            <text x="120" y="628" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Refractory, culture-negative</text>
+
+            <rect x="240" y="570" width="280" height="100" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="380" y="605" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#166534">Amikacin-based regimen</text>
+            <text x="380" y="628" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">(often only effective agent;</text>
+            <text x="380" y="646" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">resistant to first-line TB drugs)</text>
+
+            <rect x="520" y="570" width="160" height="100" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="600" y="615" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">Months</text>
+            <text x="600" y="638" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">(prolonged)</text>
+
+            <rect x="680" y="570" width="240" height="100" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="800" y="615" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">REQUIRED</text>
+            <text x="800" y="638" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">(for NTM cure)</text>
+          </g>
+
+          <!-- Legend / key point at bottom -->
+          <g transform="translate(80, 730)">
+            <rect x="0" y="0" width="1200" height="80" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="600" y="30" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">CATHETER REMOVAL DECISION</text>
+            <text x="600" y="55" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Fungal → Immediate · NTM → Required · Bacterial → Reserve for refractory, relapsing, or tunnel infection</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 960)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" onclick="togglePanel(event)">
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <div class="panels">
+    <div class="panel one" id="panelOne">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div style="margin-top:8px;">Teaching Animation Template · Nephrology / Infectious Disease · Based on ISPD 2022 Guidelines</div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  opt1: {
+    title: "🔴 Bacterial Peritonitis (MSSA)",
+    svgTitle: "PD Catheter Anatomy — MSSA Peritonitis",
+    svgSubtitle: "Cross-section of the abdominal wall showing the catheter tunnel and infected dialysate",
+    panelClass: "highlight-opt1",
+    bannerBg: "#dc2626",
+    bannerText1: "MSSA → IP cefazolin × 3 weeks · catheter removal NOT routine",
+    bannerText2: "Catheter with MSSA cocci in cloudy dialysate",
+    infoRows: [
+      { k: "Organism", v: "MSSA" },
+      { k: "Dialysate WBC", v: "1,850/µL (88% PMN)" },
+      { k: "Definitive therapy", v: "IP cefazolin" },
+      { k: "Duration", v: "3 weeks" },
+      { k: "Catheter", v: "Not routinely removed" }
+    ],
+    panel1Title: "📋 Diagnosis & Empiric Therapy",
+    panel1Tagline: "ISPD 2022 Guidelines",
+    panel1List: [
+      "<strong>Diagnosis:</strong> Cloudy effluent, WBC >100/µL, >50% neutrophils",
+      "<strong>Empiric coverage:</strong> Both Gram-positive and Gram-negative",
+      "<strong>Gram-positive:</strong> Cefazolin or vancomycin",
+      "<strong>Gram-negative:</strong> Ceftazidime or aminoglycoside",
+      "<strong>Send culture</strong> before starting antibiotics"
+    ],
+    panel2Title: "🎯 Definitive (MSSA)",
+    panel2Tagline: "Once susceptibilities return",
+    panel2List: [
+      "<strong>Switch to IP cefazolin</strong> for MSSA",
+      "<strong>Duration: 3 weeks</strong>",
+      "<strong>Catheter removal</strong> NOT routine — reserve for refractory, relapsing, or tunnel infection",
+      "<strong>Refractory:</strong> Failure to clear after 5 days",
+      "<strong>Relapsing:</strong> Same organism within 4 weeks"
+    ],
+    alertIcon: "🩸",
+    alertTitle: "Key Takeaway",
+    alertText: "MSSA peritonitis → <strong>IP cefazolin × 3 weeks</strong>. Do NOT remove the catheter unless the infection is refractory or complicated."
+  },
+  opt2: {
+    title: "🟣 Fungal Peritonitis",
+    svgTitle: "Fungal Peritonitis — Candida in Dialysate",
+    svgSubtitle: "Budding yeast in dialysate — catheter removal is MANDATORY",
+    panelClass: "highlight-opt2",
+    bannerBg: "#7c3aed",
+    bannerText1: "Fungal → IMMEDIATE catheter removal + oral fluconazole × ≥2 weeks",
+    bannerText2: "Candida (budding yeast) in dialysate",
+    infoRows: [
+      { k: "Most common", v: "Candida species" },
+      { k: "Catheter", v: "Immediate removal" },
+      { k: "Antifungal", v: "Oral fluconazole" },
+      { k: "Duration", v: "≥2 weeks after removal" },
+      { k: "Reinsertion", v: "Delay 2–3 weeks" }
+    ],
+    panel1Title: "🚨 Immediate Catheter Removal",
+    panel1Tagline: "ISPD 2022 Guideline 14",
+    panel1List: [
+      "<strong>Immediate catheter removal</strong> is mandatory",
+      "<strong>Delayed removal</strong> → significantly higher mortality",
+      "<strong>Oral fluconazole</strong> preferred for Candida",
+      "<strong>Alternatives:</strong> Voriconazole, amphotericin B",
+      "<strong>IP antifungals are discouraged</strong>"
+    ],
+    panel2Title: "📅 Duration & Follow-up",
+    panel2Tagline: "After catheter removal",
+    panel2List: [
+      "<strong>Continue antifungal</strong> for at least <strong>2 weeks</strong> after removal",
+      "<strong>Delay reinsertion</strong> by <strong>2–3 weeks</strong>",
+      "<strong>Mortality ~25%</strong> despite treatment",
+      "Consider <strong>environmental control</strong>",
+      "Review <strong>antibiotic history</strong> — prior use is a risk factor"
+    ],
+    alertIcon: "🚨",
+    alertTitle: "Critical Action",
+    alertText: "<strong>Remove the catheter immediately</strong>. Start oral fluconazole and continue for at least 2 weeks after removal."
+  },
+  opt3: {
+    title: "🔵 Mycobacterial Peritonitis",
+    svgTitle: "Mycobacterial Peritonitis — Rod-shaped AFB",
+    svgSubtitle: "Refractory, culture-negative presentation — NTM requires catheter removal",
+    panelClass: "highlight-opt3",
+    bannerBg: "#0891b2",
+    bannerText1: "NTM → catheter removal + prolonged amikacin-based therapy",
+    bannerText2: "Mycobacteria (rod-shaped, acid-fast) in dialysate",
+    infoRows: [
+      { k: "TB", v: "Rare; empiric therapy in endemic areas" },
+      { k: "NTM", v: "Refractory, culture-negative" },
+      { k: "Catheter", v: "Removal required for NTM" },
+      { k: "Amikacin", v: "Often only effective agent" },
+      { k: "Duration", v: "Months" }
+    ],
+    panel1Title: "🧬 Tuberculous Peritonitis",
+    panel1Tagline: "Mycobacterium tuberculosis",
+    panel1List: [
+      "<strong>Rare but severe</strong>",
+      "Consider <strong>empiric anti-TB therapy</strong> in endemic regions",
+      "Diagnosis: <strong>AFB stain, culture, PCR</strong>",
+      "<strong>Peritoneal biopsy</strong> may be needed",
+      "<strong>Catheter removal</strong> often required"
+    ],
+    panel2Title: "🧬 Non-Tuberculous Mycobacteria",
+    panel2Tagline: "Refractory, culture-negative peritonitis",
+    panel2List: [
+      "Presents as <strong>refractory, culture-negative peritonitis</strong>",
+      "<strong>Catheter removal is required</strong>",
+      "Resistant to first-line TB drugs",
+      "<strong>Amikacin</strong> is often the only effective agent",
+      "Treatment is <strong>prolonged (months)</strong>"
+    ],
+    alertIcon: "🧬",
+    alertTitle: "Key Point",
+    alertText: "Suspect NTM in any <strong>culture-negative, refractory</strong> peritonitis. Catheter removal is required; amikacin is often the only effective agent."
+  },
+  opt4: {
+    title: "🟡 Exit Site Infection & Bleeding",
+    svgTitle: "Exit Site — Infection, Tunnel Infection, Bleeding",
+    svgSubtitle: "Magnified view of the catheter-skin interface",
+    panelClass: "highlight-opt4",
+    bannerBg: "#ca8a04",
+    bannerText1: "ESI → oral cephalexin × 7–14 days · Bleeding → pressure dressing",
+    bannerText2: "Erythema, purulent discharge, and bleeding at the exit site",
+    infoRows: [
+      { k: "ESI", v: "Purulent discharge at exit" },
+      { k: "Tunnel", v: "Erythema + tenderness" },
+      { k: "First-line", v: "Oral cephalexin" },
+      { k: "Duration", v: "7–14 days (3 wk if Pseudomonas)" },
+      { k: "Bleeding", v: "Pressure dressing + immobilize" }
+    ],
+    panel1Title: "🩹 Exit-Site Infection",
+    panel1Tagline: "Diagnosis & treatment",
+    panel1List: [
+      "<strong>Definition:</strong> Purulent discharge at the catheter-skin interface",
+      "<strong>First-line:</strong> Oral first-generation cephalosporin (cephalexin)",
+      "<strong>MRSA or Pseudomonas:</strong> Vancomycin or antipseudomonal agents",
+      "<strong>Duration:</strong> 7–14 days; <strong>≥3 weeks</strong> for Pseudomonas or tunnel infection",
+      "<strong>Refractory ESI with peritonitis</strong> → catheter removal"
+    ],
+    panel2Title: "🩸 Bleeding",
+    panel2Tagline: "Conservative management",
+    panel2List: [
+      "<strong>Mild bleeding</strong> is usually self-limiting",
+      "<strong>Management:</strong> Local compression + circumferential pressure dressing",
+      "<strong>Immobilize</strong> the catheter to prevent traction",
+      "<strong>Check medications:</strong> Antiplatelets/anticoagulants may contribute",
+      "<strong>Significant bleed:</strong> Desmopressin (0.3 mcg/kg IV) or transfusion"
+    ],
+    alertIcon: "🩹",
+    alertTitle: "Clinical Pearl",
+    alertText: "Start with <strong>pressure dressing and immobilization</strong> for exit-site bleeding. Rule out infection if granulation tissue is present."
+  },
+  opt5: {
+    title: "🟢 Summary Matrix",
+    svgTitle: "Peritonitis — Pathogen-Specific Management",
+    svgSubtitle: "2022 ISPD Guidelines — summary matrix",
+    panelClass: "highlight-opt5",
+    bannerBg: "#16a34a",
+    bannerText1: "Fungal/NTM → catheter removal · MSSA → cefazolin × 3 weeks",
+    bannerText2: "Catheter removal decision matrix",
+    infoRows: [
+      { k: "MSSA", v: "IP cefazolin × 3 weeks" },
+      { k: "Fungal", v: "Immediate removal" },
+      { k: "NTM", v: "Removal + months of therapy" },
+      { k: "Refractory", v: "Remove if no clear by day 5" },
+      { k: "Reinsertion", v: "Delay 2–3 weeks" }
+    ],
+    panel1Title: "📊 Treatment Durations",
+    panel1Tagline: "2022 ISPD Guidelines",
+    panel1List: [
+      "<strong>CoNS:</strong> 2 weeks",
+      "<strong>Streptococci:</strong> 2 weeks",
+      "<strong>S. aureus:</strong> 3 weeks",
+      "<strong>Pseudomonas:</strong> 3 weeks (dual therapy)",
+      "<strong>Fungal:</strong> ≥2 weeks after catheter removal"
+    ],
+    panel2Title: "🚨 Catheter Removal Indications",
+    panel2Tagline: "When to remove the PD catheter",
+    panel2List: [
+      "<strong>Fungal peritonitis:</strong> Immediate removal",
+      "<strong>Refractory peritonitis:</strong> No improvement by day 5",
+      "<strong>Relapsing peritonitis:</strong> Same organism within 4 weeks",
+      "<strong>Tunnel infection</strong> with associated peritonitis",
+      "<strong>NTM peritonitis:</strong> Removal required"
+    ],
+    alertIcon: "✅",
+    alertTitle: "Summary",
+    alertText: "Tailor therapy to the organism. <strong>Fungal and NTM</strong> require catheter removal. <strong>Bacterial</strong> → reserve removal for refractory/relapsing."
+  }
+};
+
+function setMode(mode) {
+  const d = CONFIG[mode];
+  if (!d) return;
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', 'opt' + (i + 1) === mode);
+  });
+
+  // SVG groups
+  for (let i = 1; i <= 5; i++) {
+    const g = document.getElementById('diagram-opt' + i);
+    if (g) g.style.display = 'none';
+  }
+  const activeG = document.getElementById('diagram-' + mode);
+  if (activeG) activeG.style.display = '';
+
+  // Titles
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  // Banner
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  // Info panel
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(r =>
+    `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`
+  ).join('');
+
+  // Teaching panels
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  // Alert
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+
+  // Panel accent color
+  document.getElementById('panelOne').style.borderTopColor =
+    mode === 'opt1' ? '#dc2626' :
+    mode === 'opt2' ? '#7c3aed' :
+    mode === 'opt3' ? '#0891b2' :
+    mode === 'opt4' ? '#ca8a04' : '#16a34a';
+}
+
+let panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+// Init
+setMode('opt1');
+</script>
+</body>
+</html>

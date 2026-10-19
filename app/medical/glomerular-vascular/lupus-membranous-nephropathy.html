@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lupus Membranous Nephropathy — Microscopy with Labeled Findings</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  @keyframes glow{0%,100%{opacity:.85;}50%{opacity:1;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+  .glow-deposit{animation:glow 2s ease-in-out infinite;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <radialGradient id="glomerulusGrad" cx="40%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#fce7ea"/>
+            <stop offset="100%" stop-color="#e8a3b1"/>
+          </radialGradient>
+          <filter id="softGlow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="greenGlow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowYellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — LIGHT MICROSCOPY (H&E / silver style)
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Title -->
+          <text x="700" y="130" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0f172a">LIGHT MICROSCOPY — H&amp;E / PAS</text>
+          <text x="700" y="156" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b">Membranous pattern with thickened capillary walls</text>
+
+          <!-- Microscope field background -->
+          <circle cx="550" cy="520" r="330" fill="#fef7f4" stroke="#e8d0cc" stroke-width="2"/>
+          <circle cx="550" cy="520" r="300" fill="#fdf1ec"/>
+
+          <!-- Bowman's capsule -->
+          <circle cx="550" cy="520" r="270" fill="none" stroke="#d4a5a5" stroke-width="6"/>
+          <circle cx="550" cy="520" r="255" fill="#fce8e8" opacity="0.4"/>
+
+          <!-- Capillary tuft (multiple loops) -->
+          <g opacity="0.95">
+            <!-- Central mesangial core -->
+            <ellipse cx="550" cy="520" rx="130" ry="110" fill="#f5c6cf" stroke="#d68a99" stroke-width="3"/>
+            <ellipse cx="550" cy="520" rx="90" ry="75" fill="#eeb3c1" opacity="0.8"/>
+
+            <!-- Capillary loops as thick tubes -->
+            <path d="M 350,480 Q 380,380 470,370 Q 560,360 640,390 Q 720,420 745,500 Q 760,560 720,620 Q 660,680 560,690 Q 460,700 400,660 Q 340,610 345,540 Z"
+                  fill="none" stroke="#d97789" stroke-width="22" opacity="0.85"/>
+            <path d="M 380,520 Q 420,440 500,430 Q 590,425 660,470 Q 720,520 700,590 Q 660,660 580,670 Q 490,675 430,630 Q 380,585 380,520 Z"
+                  fill="none" stroke="#e89aab" stroke-width="18" opacity="0.8"/>
+            <path d="M 430,560 Q 470,500 540,490 Q 610,485 660,530 Q 690,570 660,620 Q 620,665 550,665 Q 480,660 445,620 Q 420,585 430,560 Z"
+                  fill="none" stroke="#d97789" stroke-width="16" opacity="0.85"/>
+
+            <!-- Inner dark vascular lumens -->
+            <path d="M 400,500 Q 440,430 530,420 Q 620,415 690,470" fill="none" stroke="#b85b6d" stroke-width="6" opacity="0.7"/>
+            <path d="M 450,600 Q 510,650 600,640 Q 670,620 700,570" fill="none" stroke="#b85b6d" stroke-width="6" opacity="0.7"/>
+
+            <!-- Endothelial nuclei (dark blue-purple dots along capillary walls) -->
+            <circle cx="380" cy="470" r="6" fill="#5b4a8a"/>
+            <circle cx="420" cy="400" r="6" fill="#5b4a8a"/>
+            <circle cx="500" cy="375" r="6" fill="#5b4a8a"/>
+            <circle cx="580" cy="372" r="6" fill="#5b4a8a"/>
+            <circle cx="660" cy="395" r="6" fill="#5b4a8a"/>
+            <circle cx="715" cy="440" r="6" fill="#5b4a8a"/>
+            <circle cx="745" cy="530" r="6" fill="#5b4a8a"/>
+            <circle cx="720" cy="610" r="6" fill="#5b4a8a"/>
+            <circle cx="650" cy="670" r="6" fill="#5b4a8a"/>
+            <circle cx="560" cy="690" r="6" fill="#5b4a8a"/>
+            <circle cx="470" cy="680" r="6" fill="#5b4a8a"/>
+            <circle cx="395" cy="635" r="6" fill="#5b4a8a"/>
+            <circle cx="352" cy="560" r="6" fill="#5b4a8a"/>
+
+            <!-- Mesangial nuclei (clustered in center) -->
+            <circle cx="510" cy="500" r="8" fill="#4a3a72"/>
+            <circle cx="560" cy="490" r="8" fill="#4a3a72"/>
+            <circle cx="600" cy="520" r="8" fill="#4a3a72"/>
+            <circle cx="555" cy="545" r="8" fill="#4a3a72"/>
+            <circle cx="510" cy="555" r="8" fill="#4a3a72"/>
+            <circle cx="595" cy="565" r="8" fill="#4a3a72"/>
+          </g>
+
+          <!-- Podocyte epithelial cells (outer ring of Bowman's space) -->
+          <g fill="#c88a92" opacity="0.6">
+            <circle cx="320" cy="450" r="7"/>
+            <circle cx="280" cy="540" r="7"/>
+            <circle cx="320" cy="620" r="7"/>
+            <circle cx="410" cy="720" r="7"/>
+            <circle cx="540" cy="770" r="7"/>
+            <circle cx="680" cy="760" r="7"/>
+            <circle cx="800" cy="680" r="7"/>
+            <circle cx="850" cy="560" r="7"/>
+            <circle cx="800" cy="430" r="7"/>
+            <circle cx="690" cy="320" r="7"/>
+            <circle cx="550" cy="280" r="7"/>
+            <circle cx="410" cy="310" r="7"/>
+          </g>
+
+          <!-- Arrows + labels for key findings -->
+          <!-- Arrow 1: Thickened capillary walls -->
+          <line x1="900" y1="380" x2="740" y2="440" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowAccent1)"/>
+          <rect x="870" y="340" width="480" height="70" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+          <text x="890" y="368" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">① Thickened capillary walls</text>
+          <text x="890" y="392" font-family="Arial" font-size="13" fill="#7f1d1d">Membranous pattern — pink outline of loops</text>
+
+          <!-- Arrow 2: Mesangial expansion -->
+          <line x1="240" y1="360" x2="480" y2="490" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrowAccent2)"/>
+          <rect x="60" y="300" width="440" height="70" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+          <text x="80" y="328" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">② Mesangial expansion</text>
+          <text x="80" y="352" font-family="Arial" font-size="13" fill="#6d28d9">Central lobulation — atypical for primary MN</text>
+
+          <!-- Arrow 3: Capillary loop -->
+          <line x1="240" y1="680" x2="420" y2="600" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowAccent3)"/>
+          <rect x="60" y="680" width="440" height="70" rx="10" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+          <text x="80" y="708" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">③ Capillary loops</text>
+          <text x="80" y="732" font-family="Arial" font-size="13" fill="#0e7490">Patent lumens — no crescents or proliferation</text>
+
+          <!-- Arrow 4: Podocytes -->
+          <line x1="900" y1="680" x2="800" y2="620" stroke="#ca8a04" stroke-width="3" marker-end="url(#arrowAccent4)"/>
+          <rect x="870" y="680" width="480" height="70" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+          <text x="890" y="708" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">④ Podocytes</text>
+          <text x="890" y="732" font-family="Arial" font-size="13" fill="#a16207">Outer Bowman's space — foot processes effaced</text>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 900)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#0f172a"/>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">Membranous pattern on LM — but mesangial expansion hints at a secondary cause</text>
+            <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="14" fill="#cbd5e1">Primary MN rarely shows significant mesangial expansion or hypercellularity</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — IMMUNOFLUORESCENCE (three mini-panels)
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <text x="700" y="130" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0f172a">IMMUNOFLUORESCENCE — "FULL HOUSE" PATTERN</text>
+          <text x="700" y="156" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b">Granular deposits along capillary walls + mesangial C1q = lupus nephritis class V</text>
+
+          <!-- Panel 1 — IgG -->
+          <g transform="translate(60, 200)">
+            <rect x="0" y="0" width="400" height="480" rx="18" fill="#0f172a"/>
+            <rect x="0" y="0" width="400" height="50" rx="18" fill="#1e293b"/>
+            <rect x="0" y="25" width="400" height="25" fill="#1e293b"/>
+            <text x="200" y="33" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">IgG</text>
+
+            <!-- Green fluorescent deposits along a capillary loop shape -->
+            <g filter="url(#greenGlow)" opacity="0.9">
+              <path d="M 60,260 Q 120,180 200,180 Q 280,180 340,240 Q 380,290 360,360 Q 320,430 220,430 Q 120,430 80,360 Q 60,320 60,260 Z"
+                    fill="none" stroke="#22ff66" stroke-width="6"/>
+              <!-- Granular deposits -->
+              <circle cx="90" cy="240" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="130" cy="200" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="180" cy="185" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="230" cy="185" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="290" cy="205" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="335" cy="245" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="360" cy="305" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="345" cy="365" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="300" cy="410" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="240" cy="425" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="180" cy="425" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="120" cy="410" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="80" cy="360" r="8" fill="#22ff66" class="glow-deposit"/>
+            </g>
+
+            <text x="200" y="460" text-anchor="middle" font-family="Arial" font-size="14" fill="#94a3b8">Granular capillary wall</text>
+          </g>
+
+          <!-- Panel 2 — C3 -->
+          <g transform="translate(500, 200)">
+            <rect x="0" y="0" width="400" height="480" rx="18" fill="#0f172a"/>
+            <rect x="0" y="0" width="400" height="50" rx="18" fill="#1e293b"/>
+            <rect x="0" y="25" width="400" height="25" fill="#1e293b"/>
+            <text x="200" y="33" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">C3</text>
+
+            <g filter="url(#greenGlow)" opacity="0.85">
+              <path d="M 60,260 Q 120,180 200,180 Q 280,180 340,240 Q 380,290 360,360 Q 320,430 220,430 Q 120,430 80,360 Q 60,320 60,260 Z"
+                    fill="none" stroke="#22ff66" stroke-width="5"/>
+              <circle cx="95" cy="245" r="7" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="140" cy="205" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="200" cy="185" r="7" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="260" cy="195" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="320" cy="230" r="7" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="350" cy="290" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="345" cy="350" r="7" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="290" cy="405" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="220" cy="425" r="7" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="150" cy="420" r="8" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="95" cy="380" r="7" fill="#22ff66" class="glow-deposit"/>
+              <!-- Some mesangial deposits -->
+              <circle cx="180" cy="290" r="6" fill="#22ff66" class="glow-deposit" opacity="0.6"/>
+              <circle cx="240" cy="310" r="6" fill="#22ff66" class="glow-deposit" opacity="0.6"/>
+            </g>
+
+            <text x="200" y="460" text-anchor="middle" font-family="Arial" font-size="14" fill="#94a3b8">Capillary wall + some mesangium</text>
+          </g>
+
+          <!-- Panel 3 — C1q -->
+          <g transform="translate(940, 200)">
+            <rect x="0" y="0" width="400" height="480" rx="18" fill="#0f172a"/>
+            <rect x="0" y="0" width="400" height="50" rx="18" fill="#1e293b"/>
+            <rect x="0" y="25" width="400" height="25" fill="#1e293b"/>
+            <text x="200" y="33" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">C1q — the "atypical" finding</text>
+
+            <g filter="url(#greenGlow)" opacity="0.9">
+              <path d="M 60,260 Q 120,180 200,180 Q 280,180 340,240 Q 380,290 360,360 Q 320,430 220,430 Q 120,430 80,360 Q 60,320 60,260 Z"
+                    fill="none" stroke="#22ff66" stroke-width="4" opacity="0.7"/>
+              <!-- Mesangial C1q — the key clue -->
+              <circle cx="180" cy="280" r="10" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="240" cy="295" r="11" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="210" cy="330" r="10" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="260" cy="340" r="9" fill="#22ff66" class="glow-deposit"/>
+              <circle cx="160" cy="330" r="9" fill="#22ff66" class="glow-deposit"/>
+              <!-- Some capillary wall -->
+              <circle cx="130" cy="215" r="6" fill="#22ff66" class="glow-deposit" opacity="0.7"/>
+              <circle cx="290" cy="215" r="6" fill="#22ff66" class="glow-deposit" opacity="0.7"/>
+            </g>
+
+            <!-- Arrow to mesangial C1q -->
+            <line x1="320" y1="420" x2="240" y2="330" stroke="#fbbf24" stroke-width="3" marker-end="url(#arrowYellow)"/>
+            <text x="340" y="430" font-family="Arial" font-size="14" font-weight="800" fill="#fbbf24">Mesangial</text>
+            <text x="340" y="450" font-family="Arial" font-size="14" font-weight="800" fill="#fbbf24">C1q deposits</text>
+          </g>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 780)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#991b1b">"FULL HOUSE" = IgG + IgA + IgM + C3 + C1q in the same distribution</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="16" fill="#7f1d1d">C1q in the mesangium is the most specific marker of lupus nephritis</text>
+            <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#991b1b">Primary membranous nephropathy: IgG + C3 only, NO C1q</text>
+            <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#991b1b">Low C3/C4 = classical complement pathway consumption</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — ELECTRON MICROSCOPY (with subepithelial, subendothelial, mesangial arrows)
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <text x="700" y="130" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0f172a">ELECTRON MICROSCOPY — MULTIPLE DEPOSIT LOCATIONS</text>
+          <text x="700" y="156" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b">Subepithelial + subendothelial + mesangial deposits = atypical for primary MN</text>
+
+          <!-- EM field -->
+          <rect x="200" y="200" width="1000" height="640" rx="18" fill="#ececec" stroke="#94a3b8" stroke-width="2"/>
+
+          <!-- Urine space (top, very light) -->
+          <rect x="200" y="200" width="1000" height="60" fill="#f8f8f8"/>
+          <text x="250" y="235" font-family="Arial" font-size="13" font-style="italic" fill="#94a3b8">Urine space</text>
+
+          <!-- Podocyte cytoplasm (dark gray band) -->
+          <rect x="200" y="260" width="1000" height="60" fill="#7a7a7a"/>
+          <!-- Podocyte foot processes (dark gray, thin vertical stripes) -->
+          <g fill="#4a4a4a">
+            <rect x="230" y="320" width="14" height="40"/>
+            <rect x="260" y="320" width="14" height="40"/>
+            <rect x="290" y="320" width="14" height="40"/>
+            <rect x="320" y="320" width="14" height="40"/>
+            <rect x="350" y="320" width="14" height="40"/>
+            <rect x="380" y="320" width="14" height="40"/>
+            <rect x="410" y="320" width="14" height="40"/>
+            <rect x="440" y="320" width="14" height="40"/>
+            <rect x="470" y="320" width="14" height="40"/>
+            <rect x="500" y="320" width="14" height="40"/>
+            <rect x="530" y="320" width="14" height="40"/>
+            <rect x="560" y="320" width="14" height="40"/>
+            <rect x="590" y="320" width="14" height="40"/>
+            <rect x="620" y="320" width="14" height="40"/>
+            <rect x="650" y="320" width="14" height="40"/>
+            <rect x="680" y="320" width="14" height="40"/>
+            <rect x="710" y="320" width="14" height="40"/>
+            <rect x="740" y="320" width="14" height="40"/>
+            <rect x="770" y="320" width="14" height="40"/>
+            <rect x="800" y="320" width="14" height="40"/>
+            <rect x="830" y="320" width="14" height="40"/>
+            <rect x="860" y="320" width="14" height="40"/>
+            <rect x="890" y="320" width="14" height="40"/>
+            <rect x="920" y="320" width="14" height="40"/>
+            <rect x="950" y="320" width="14" height="40"/>
+            <rect x="980" y="320" width="14" height="40"/>
+            <rect x="1010" y="320" width="14" height="40"/>
+            <rect x="1040" y="320" width="14" height="40"/>
+            <rect x="1070" y="320" width="14" height="40"/>
+            <rect x="1100" y="320" width="14" height="40"/>
+            <rect x="1130" y="320" width="14" height="40"/>
+            <rect x="1160" y="320" width="14" height="40"/>
+          </g>
+
+          <!-- Subepithelial deposits (between foot processes and GBM) -->
+          <g fill="#1f1f1f">
+            <ellipse cx="275" cy="345" rx="18" ry="12"/>
+            <ellipse cx="335" cy="345" rx="20" ry="13"/>
+            <ellipse cx="395" cy="345" rx="18" ry="12"/>
+            <ellipse cx="455" cy="345" rx="20" ry="13"/>
+            <ellipse cx="515" cy="345" rx="18" ry="12"/>
+            <ellipse cx="575" cy="345" rx="20" ry="13"/>
+            <ellipse cx="635" cy="345" rx="18" ry="12"/>
+            <ellipse cx="695" cy="345" rx="20" ry="13"/>
+            <ellipse cx="755" cy="345" rx="18" ry="12"/>
+            <ellipse cx="815" cy="345" rx="20" ry="13"/>
+            <ellipse cx="875" cy="345" rx="18" ry="12"/>
+            <ellipse cx="935" cy="345" rx="20" ry="13"/>
+            <ellipse cx="995" cy="345" rx="18" ry="12"/>
+            <ellipse cx="1055" cy="345" rx="20" ry="13"/>
+            <ellipse cx="1115" cy="345" rx="18" ry="12"/>
+          </g>
+          <!-- "Spikes" between subepithelial deposits -->
+          <g stroke="#6b6b6b" stroke-width="3">
+            <line x1="295" y1="320" x2="295" y2="360"/>
+            <line x1="355" y1="320" x2="355" y2="360"/>
+            <line x1="415" y1="320" x2="415" y2="360"/>
+            <line x1="475" y1="320" x2="475" y2="360"/>
+            <line x1="535" y1="320" x2="535" y2="360"/>
+            <line x1="595" y1="320" x2="595" y2="360"/>
+            <line x1="655" y1="320" x2="655" y2="360"/>
+            <line x1="715" y1="320" x2="715" y2="360"/>
+            <line x1="775" y1="320" x2="775" y2="360"/>
+            <line x1="835" y1="320" x2="835" y2="360"/>
+            <line x1="895" y1="320" x2="895" y2="360"/>
+            <line x1="955" y1="320" x2="955" y2="360"/>
+            <line x1="1015" y1="320" x2="1015" y2="360"/>
+            <line x1="1075" y1="320" x2="1075" y2="360"/>
+            <line x1="1135" y1="320" x2="1135" y2="360"/>
+          </g>
+
+          <!-- GBM (thick dark band) -->
+          <rect x="200" y="360" width="1000" height="70" fill="#6b6b6b"/>
+
+          <!-- Subendothelial deposits -->
+          <g fill="#1f1f1f">
+            <ellipse cx="310" cy="405" rx="20" ry="10"/>
+            <ellipse cx="410" cy="405" rx="22" ry="11"/>
+            <ellipse cx="510" cy="405" rx="20" ry="10"/>
+            <ellipse cx="610" cy="405" rx="22" ry="11"/>
+            <ellipse cx="710" cy="405" rx="20" ry="10"/>
+            <ellipse cx="810" cy="405" rx="22" ry="11"/>
+            <ellipse cx="910" cy="405" rx="20" ry="10"/>
+            <ellipse cx="1010" cy="405" rx="22" ry="11"/>
+            <ellipse cx="1110" cy="405" rx="20" ry="10"/>
+          </g>
+
+          <!-- Endothelial cell (light-medium gray band) -->
+          <rect x="200" y="430" width="1000" height="60" fill="#b8b8b8"/>
+
+          <!-- Endothelial fenestrations (small ovals) -->
+          <g fill="#f0f0f0" opacity="0.6">
+            <ellipse cx="260" cy="460" rx="6" ry="3"/>
+            <ellipse cx="320" cy="460" rx="6" ry="3"/>
+            <ellipse cx="380" cy="460" rx="6" ry="3"/>
+            <ellipse cx="440" cy="460" rx="6" ry="3"/>
+            <ellipse cx="500" cy="460" rx="6" ry="3"/>
+            <ellipse cx="560" cy="460" rx="6" ry="3"/>
+            <ellipse cx="620" cy="460" rx="6" ry="3"/>
+            <ellipse cx="680" cy="460" rx="6" ry="3"/>
+            <ellipse cx="740" cy="460" rx="6" ry="3"/>
+            <ellipse cx="800" cy="460" rx="6" ry="3"/>
+            <ellipse cx="860" cy="460" rx="6" ry="3"/>
+            <ellipse cx="920" cy="460" rx="6" ry="3"/>
+            <ellipse cx="980" cy="460" rx="6" ry="3"/>
+            <ellipse cx="1040" cy="460" rx="6" ry="3"/>
+            <ellipse cx="1100" cy="460" rx="6" ry="3"/>
+            <ellipse cx="1160" cy="460" rx="6" ry="3"/>
+          </g>
+
+          <!-- Capillary lumen (very light) -->
+          <rect x="200" y="490" width="1000" height="80" fill="#f8f8f8"/>
+          <text x="250" y="535" font-family="Arial" font-size="13" font-style="italic" fill="#94a3b8">Capillary lumen</text>
+          <!-- Red cell ghost -->
+          <ellipse cx="900" cy="530" rx="50" ry="30" fill="#e8e8e8" stroke="#b8b8b8" stroke-width="1"/>
+
+          <!-- Mesangial area (right side) -->
+          <rect x="200" y="570" width="1000" height="130" fill="#d8d8d8"/>
+          <!-- Mesangial cell nuclei -->
+          <ellipse cx="500" cy="635" rx="35" ry="25" fill="#5a5a5a"/>
+          <ellipse cx="700" cy="630" rx="30" ry="22" fill="#5a5a5a"/>
+          <!-- Mesangial deposits -->
+          <ellipse cx="600" cy="620" rx="35" ry="20" fill="#1f1f1f"/>
+          <ellipse cx="820" cy="635" rx="30" ry="18" fill="#1f1f1f"/>
+          <ellipse cx="400" cy="615" rx="25" ry="15" fill="#1f1f1f"/>
+          <text x="250" y="690" font-family="Arial" font-size="13" font-style="italic" fill="#94a3b8">Mesangial matrix</text>
+
+          <!-- Labels on the left with arrows -->
+          <!-- Arrow to subepithelial -->
+          <line x1="180" y1="345" x2="260" y2="345" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowAccent1)"/>
+          <text x="20" y="340" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">① Subepithelial</text>
+          <text x="20" y="358" font-family="Arial" font-size="13" fill="#7f1d1d">deposits</text>
+
+          <!-- Arrow to spikes -->
+          <line x1="180" y1="385" x2="260" y2="385" stroke="#ca8a04" stroke-width="3" marker-end="url(#arrowAccent4)"/>
+          <text x="20" y="380" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">② GBM "spikes"</text>
+          <text x="20" y="398" font-family="Arial" font-size="13" fill="#a16207">between deposits</text>
+
+          <!-- Arrow to subendothelial -->
+          <line x1="180" y1="410" x2="290" y2="410" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrowAccent2)"/>
+          <text x="20" y="455" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">③ Subendothelial</text>
+          <text x="20" y="473" font-family="Arial" font-size="13" fill="#6d28d9">deposits</text>
+
+          <!-- Arrow to mesangial -->
+          <line x1="180" y1="630" x2="350" y2="625" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowAccent3)"/>
+          <text x="20" y="650" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">④ Mesangial</text>
+          <text x="20" y="668" font-family="Arial" font-size="13" fill="#0e7490">deposits</text>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 900)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#991b1b">Primary MN has ONLY subepithelial deposits — no subendothelial, no mesangial</text>
+            <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="15" fill="#7f1d1d">The multiple deposit locations (① + ③ + ④) point to a secondary, immune-complex cause — lupus</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — DIAGNOSTIC COMPARISON
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <text x="700" y="130" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0f172a">COMPARISON — THE FOUR DIAGNOSES</text>
+          <text x="700" y="156" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b">Why the atypical features point to lupus nephritis class V</text>
+
+          <!-- Primary MN -->
+          <g transform="translate(200, 400)">
+            <rect x="-180" y="-230" width="360" height="460" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <rect x="-180" y="-230" width="360" height="70" rx="20" fill="#16a34a"/>
+            <rect x="-180" y="-190" width="360" height="30" fill="#16a34a"/>
+            <text x="0" y="-185" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff">PRIMARY MN</text>
+
+            <circle cx="0" cy="-115" r="45" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">IgG</text>
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">+ C3</text>
+
+            <g font-family="Arial" font-size="13">
+              <text x="-160" y="-40" font-weight="700" fill="#166534">• C1q:</text>
+              <text x="-30" y="-40" font-weight="800" fill="#166534">NEGATIVE</text>
+              <text x="-160" y="-10" font-weight="700" fill="#166534">• C3/C4:</text>
+              <text x="-30" y="-10" font-weight="800" fill="#166534">Normal</text>
+              <text x="-160" y="20" font-weight="700" fill="#166534">• Deposits:</text>
+              <text x="-30" y="20" font-weight="800" fill="#166534">Subepithelial only</text>
+              <text x="-160" y="50" font-weight="700" fill="#166534">• Mesangium:</text>
+              <text x="-30" y="50" font-weight="800" fill="#166534">Normal</text>
+              <text x="-160" y="80" font-weight="700" fill="#166534">• Extrarenal:</text>
+              <text x="-30" y="80" font-weight="800" fill="#166534">None</text>
+            </g>
+
+            <rect x="-160" y="120" width="320" height="60" rx="10" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="145" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Not this patient</text>
+            <text x="0" y="165" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">C1q+ and low C3/C4 rule out</text>
+          </g>
+
+          <!-- Malignancy MN -->
+          <g transform="translate(560, 400)">
+            <rect x="-180" y="-230" width="360" height="460" rx="20" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <rect x="-180" y="-230" width="360" height="70" rx="20" fill="#ca8a04"/>
+            <rect x="-180" y="-190" width="360" height="30" fill="#ca8a04"/>
+            <text x="0" y="-185" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff">MALIGNANCY MN</text>
+
+            <circle cx="0" cy="-115" r="45" fill="#fef3c7" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">IgG</text>
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">+ C3</text>
+
+            <g font-family="Arial" font-size="13">
+              <text x="-160" y="-40" font-weight="700" fill="#713f12">• C1q:</text>
+              <text x="-30" y="-40" font-weight="800" fill="#713f12">NEGATIVE</text>
+              <text x="-160" y="-10" font-weight="700" fill="#713f12">• C3/C4:</text>
+              <text x="-30" y="-10" font-weight="800" fill="#713f12">Normal</text>
+              <text x="-160" y="20" font-weight="700" fill="#713f12">• Deposits:</text>
+              <text x="-30" y="20" font-weight="800" fill="#713f12">Subepithelial</text>
+              <text x="-160" y="50" font-weight="700" fill="#713f12">• Age:</text>
+              <text x="-30" y="50" font-weight="800" fill="#713f12">Older</text>
+              <text x="-160" y="80" font-weight="700" fill="#713f12">• PLA2R:</text>
+              <text x="-30" y="80" font-weight="800" fill="#713f12">Often negative</text>
+            </g>
+
+            <rect x="-160" y="120" width="320" height="60" rx="10" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="145" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Not this patient</text>
+            <text x="0" y="165" text-anchor="middle" font-family="Arial" font-size="12" fill="#a16207">C1q+ and low complement don't fit</text>
+          </g>
+
+          <!-- Lupus MN -->
+          <g transform="translate(920, 400)">
+            <rect x="-180" y="-230" width="360" height="460" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-180" y="-230" width="360" height="70" rx="20" fill="#16a34a"/>
+            <rect x="-180" y="-190" width="360" height="30" fill="#16a34a"/>
+            <text x="0" y="-185" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff">LUPUS MN (CLASS V)</text>
+            <text x="0" y="-205" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dcfce7">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-115" r="45" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-120" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Full</text>
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">house</text>
+
+            <g font-family="Arial" font-size="13">
+              <text x="-160" y="-40" font-weight="700" fill="#166534">• C1q:</text>
+              <text x="-30" y="-40" font-weight="800" fill="#166534">POSITIVE</text>
+              <text x="-160" y="-10" font-weight="700" fill="#166534">• C3/C4:</text>
+              <text x="-30" y="-10" font-weight="800" fill="#166534">LOW</text>
+              <text x="-160" y="20" font-weight="700" fill="#166534">• Deposits:</text>
+              <text x="-30" y="20" font-weight="800" fill="#166534">Subepi + subendo</text>
+              <text x="-160" y="50" font-weight="700" fill="#166534">• Mesangial:</text>
+              <text x="-30" y="50" font-weight="800" fill="#166534">C1q+ deposits</text>
+              <text x="-160" y="80" font-weight="700" fill="#166534">• Extrarenal:</text>
+              <text x="-30" y="80" font-weight="800" fill="#166534">Can be absent</text>
+            </g>
+
+            <rect x="-160" y="120" width="320" height="60" rx="10" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="145" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Renal-limited lupus</text>
+            <text x="0" y="165" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">No extrarenal disease ≠ no lupus</text>
+          </g>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 780)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="18" fill="#0f172a"/>
+            <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#fff">THE DECISION TRIAD</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fbbf24">① C1q in mesangium  +  ② Low C3/C4  +  ③ Multiple deposit locations</text>
+            <text x="0" y="35" text-anchor="middle" font-family="Arial" font-size="16" fill="#cbd5e1">= Lupus nephritis class V until proven otherwise</text>
+            <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="14" fill="#94a3b8">Absence of extrarenal lupus does NOT exclude the diagnosis — renal-limited lupus nephritis exists</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Lupus Membranous Nephropathy — Microscopy with Labeled Findings",
+  subtitle: "C1q-positive membranous pattern + low C3/C4 + multiple deposit locations = lupus nephritis class V",
+  badge: "NEPHROLOGY · RENAL PATHOLOGY · LUPUS",
+  caseTitle: "Case: 32-year-old woman with glomerular hematuria, 3.2 g proteinuria, and membranous pattern on biopsy",
+  caseDescription: "Serum creatinine 0.9 mg/dL, albumin 2.9 mg/dL. Biopsy shows membranous nephropathy with atypical features: C1q staining in the mesangium, intramembranous + subendothelial + mesangial deposits on EM, low C3 and C4. No extrarenal manifestations of disease.",
+  labChips: [
+    { text: "Hematuria (glomerular)", abnormal: true },
+    { text: "Proteinuria 3.2 g/d", abnormal: true },
+    { text: "Creatinine 0.9 mg/dL", abnormal: false },
+    { text: "Albumin 2.9 g/dL", abnormal: true },
+    { text: "C1q in mesangium", abnormal: true },
+    { text: "Low C3 and C4", abnormal: true },
+    { text: "Subendothelial deposits", abnormal: true },
+    { text: "Mesangial deposits", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Light Microscopy", className: "opt1" },
+    { id: "opt2", label: "🟣 Immunofluorescence", className: "opt2" },
+    { id: "opt3", label: "🔵 Electron Microscopy", className: "opt3" },
+    { id: "opt4", label: "🟡 Comparison", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Light Microscopy — Membranous Pattern",
+      infoRows: [
+        { k: "Pattern", v: "Membranous" },
+        { k: "Capillary walls", v: "Thickened" },
+        { k: "Mesangium", v: "Expanded" },
+        { k: "Crescents", v: "Absent" },
+        { k: "Atypical feature", v: "Mesangial expansion" }
+      ],
+      svgTitle: "Light Microscopy — Membranous Pattern with Mesangial Expansion",
+      svgSubtitle: "H&E / PAS · Thickened capillary walls · Mesangial expansion hints at secondary cause",
+      bannerBg: "#dc2626",
+      bannerText1: "Membranous pattern on LM — but mesangial expansion hints at a secondary cause",
+      bannerText2: "Primary MN rarely shows significant mesangial expansion",
+      panel1Title: "🔬 What you see on LM",
+      panel1Tagline: "The overall pattern",
+      panel1List: [
+        "<strong>Thickened capillary walls</strong> — the hallmark of membranous pattern (silver stain shows spikes)",
+        "<strong>Mesangial expansion</strong> — more than expected for pure primary MN",
+        "<strong>Patent capillary lumens</strong> — no significant hypercellularity or proliferation",
+        "<strong>No crescents</strong> — excludes crescentic GN",
+        "<strong>Podocytes</strong> in Bowman's space appear effaced"
+      ],
+      panel2Title: "🔬 Why this is atypical for primary MN",
+      panel2Tagline: "The clue that pushes you to secondary causes",
+      panel2List: [
+        "Primary MN is typically a <strong>pure membranous pattern</strong>",
+        "<strong>Mesangial expansion</strong> is a subtle but important atypical feature",
+        "It raises the possibility of a <strong>secondary cause</strong> — lupus, infection, malignancy, or drug",
+        "Combined with the IF and EM findings, this points strongly to <strong>lupus nephritis</strong>",
+        "Renal-limited lupus nephritis can present without extrarenal symptoms"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Pearl — Look beyond the pattern",
+      alertText: "The <strong>overall pattern</strong> on LM is membranous, but the <strong>atypical features</strong> (mesangial expansion, mixed deposits on EM, C1q on IF) are what make the diagnosis. Always integrate LM + IF + EM."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Immunofluorescence — Full House Pattern",
+      infoRows: [
+        { k: "IgG", v: "Granular capillary wall" },
+        { k: "C3", v: "Capillary wall + mesangium" },
+        { k: "C1q", v: "Mesangium + capillary wall" },
+        { k: "Pattern", v: "Full house" },
+        { k: "Implication", v: "Lupus nephritis" }
+      ],
+      svgTitle: "Immunofluorescence — Full House Pattern",
+      svgSubtitle: "Granular deposits along capillary walls + mesangial C1q = lupus nephritis class V",
+      bannerBg: "#7c3aed",
+      bannerText1: "Full house = IgG + IgA + IgM + C3 + C1q in the same distribution",
+      bannerText2: "Primary MN: IgG + C3 only, NO C1q",
+      panel1Title: "🔬 What you see on IF",
+      panel1Tagline: "Three panels",
+      panel1List: [
+        "<strong>IgG:</strong> granular deposits along capillary walls",
+        "<strong>C3:</strong> granular deposits along capillary walls + some mesangium",
+        "<strong>C1q:</strong> prominent granular deposits in the <strong>mesangium</strong> — the atypical finding",
+        "Together this is the <strong>\"full house\"</strong> pattern: IgG, IgA, IgM, C3, C1q",
+        "The presence of mesangial C1q is a strong marker of <strong>lupus nephritis</strong>"
+      ],
+      panel2Title: "🔬 Why C1q matters",
+      panel2Tagline: "The specific marker",
+      panel2List: [
+        "<strong>C1q</strong> is the first component of the classical complement pathway",
+        "Its presence in the mesangium is <strong>highly specific for lupus nephritis</strong>",
+        "<strong>Low serum C3 and C4</strong> confirm classical pathway consumption — consistent with lupus",
+        "Primary MN typically has <strong>IgG and C3 only</strong> — no C1q, normal complement",
+        "Malignancy-associated MN is also typically C1q-negative with normal complement"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — C1q in mesangium + low C3/C4 = lupus",
+      alertText: "A membranous pattern with <strong>mesangial C1q</strong> and <strong>low C3/C4</strong> is lupus nephritis class V until proven otherwise. The C1q finding alone should trigger this differential."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Electron Microscopy — Multiple Deposit Locations",
+      infoRows: [
+        { k: "Subepithelial", v: "Present" },
+        { k: "Subendothelial", v: "Present (atypical)" },
+        { k: "Mesangial", v: "Present (atypical)" },
+        { k: "GBM spikes", v: "Present" },
+        { k: "Implication", v: "Secondary cause" }
+      ],
+      svgTitle: "Electron Microscopy — Multiple Deposit Locations",
+      svgSubtitle: "Subepithelial + subendothelial + mesangial deposits = atypical for primary MN",
+      bannerBg: "#0891b2",
+      bannerText1: "Primary MN has ONLY subepithelial deposits",
+      bannerText2: "Multiple deposit locations point to a secondary cause — lupus",
+      panel1Title: "🔬 What you see on EM",
+      panel1Tagline: "The four deposit locations",
+      panel1List: [
+        "<strong>① Subepithelial deposits:</strong> between podocyte foot processes and the GBM (classic for any MN)",
+        "<strong>② GBM \"spikes\":</strong> projection of GBM matrix between deposits — the silver stain correlate",
+        "<strong>③ Subendothelial deposits:</strong> between the GBM and endothelial cells — <strong>atypical for primary MN</strong>",
+        "<strong>④ Mesangial deposits:</strong> in the mesangial matrix — <strong>also atypical for primary MN</strong>",
+        "The <strong>combination</strong> of all four locations is the EM signature of lupus nephritis"
+      ],
+      panel2Title: "🔬 Why this points to lupus",
+      panel2Tagline: "Comparing with primary MN",
+      panel2List: [
+        "<strong>Primary MN:</strong> deposits are ONLY subepithelial",
+        "<strong>Lupus nephritis class V:</strong> deposits are subepithelial + subendothelial + mesangial",
+        "<strong>Malignancy-associated MN:</strong> typically only subepithelial, like primary MN",
+        "The <strong>mixed deposit locations</strong> are the EM clue to a secondary immune-complex disease",
+        "Combined with C1q on IF and low C3/C4, the diagnosis is <strong>lupus nephritis class V</strong>"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Where are the deposits?",
+      alertText: "On EM, always map <strong>where the deposits are</strong>. Subepithelial only = primary MN or malignancy. Subepithelial + subendothelial + mesangial = <strong>lupus nephritis</strong>."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Comparison — Why Lupus Nephritis Class V",
+      infoRows: [
+        { k: "Correct answer", v: "C — Lupus MN" },
+        { k: "C1q", v: "Positive (mesangium)" },
+        { k: "C3/C4", v: "Low" },
+        { k: "Deposits", v: "Mixed locations" },
+        { k: "Renal-limited", v: "Possible without extrarenal disease" }
+      ],
+      svgTitle: "Comparison — The Four Diagnoses",
+      svgSubtitle: "Why the atypical features point to lupus nephritis class V",
+      bannerBg: "#ca8a04",
+      bannerText1: "C1q in mesangium + low C3/C4 + multiple deposit locations = lupus nephritis class V",
+      bannerText2: "Renal-limited lupus nephritis can present without extrarenal disease",
+      panel1Title: "✅ The correct answer (C)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>C1q in mesangium</strong> — highly specific for lupus nephritis",
+        "<strong>Low C3/C4</strong> — classical pathway consumption, consistent with lupus",
+        "<strong>Multiple deposit locations</strong> (subepithelial + subendothelial + mesangial) — atypical for primary MN",
+        "<strong>Absence of extrarenal disease</strong> does NOT exclude lupus — renal-limited lupus nephritis exists",
+        "The overall picture is <strong>lupus nephritis class V</strong> (membranous pattern)"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (Primary MN):</strong> Would have <strong>normal C3/C4</strong>, <strong>no C1q</strong>, and <strong>subepithelial deposits only</strong>",
+        "<strong>B (Malignancy MN):</strong> Would have <strong>normal C3/C4</strong>, <strong>no C1q</strong>, and <strong>subepithelial deposits only</strong>; usually older patients",
+        "<strong>D (MPGN):</strong> Would show a <strong>proliferative LM pattern</strong> with double contours — not a pure membranous pattern"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "<strong>Membranous nephropathy due to lupus</strong> (lupus nephritis class V). The key findings are <strong>mesangial C1q</strong>, <strong>low C3/C4</strong>, and <strong>mixed deposit locations</strong> on EM — even without extrarenal lupus manifestations."
+    }
+  },
+  comparison: {
+    title: "📊 Differential Diagnosis — Membranous Pattern",
+    sub: "Key distinguishing features on IF, EM, and serology",
+    head: ["Diagnosis", "C1q", "C3/C4", "Deposit locations", "Extrarenal disease"],
+    rows: [
+      { cells: ["Primary MN", "Negative", "Normal", "Subepithelial only", "None"], hero: false },
+      { cells: ["Lupus MN (class V) — this patient", "Positive (mesangium)", "Low", "Subepi + subendo + mesangial", "May be absent"], hero: true },
+      { cells: ["Malignancy-associated MN", "Negative", "Normal", "Subepithelial only", "Malignancy"], hero: false },
+      { cells: ["MPGN", "Variable", "Low (often)", "Subendothelial + mesangial", "Variable"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 32-year-old woman has a membranous pattern on biopsy with mesangial C1q staining, subendothelial and mesangial deposits on EM, and low C3/C4. She has no extrarenal manifestations. What is the most likely diagnosis?",
+      options: [
+        { text: "Membranous nephropathy due to lupus (lupus nephritis class V).", correct: true,
+          explanation: "Mesangial C1q, low C3/C4, and multiple deposit locations (subepithelial + subendothelial + mesangial) strongly point to lupus nephritis class V. Extrarenal manifestations are not required for the diagnosis (renal-limited lupus)." },
+        { text: "Primary membranous glomerulopathy.", correct: false,
+          explanation: "Primary MN would have normal C3/C4, no C1q, and only subepithelial deposits." },
+        { text: "Membranous nephropathy due to malignancy.", correct: false,
+          explanation: "Malignancy-associated MN typically has normal complement, no C1q, and only subepithelial deposits." }
+      ]
+    },
+    {
+      question: "Which immunofluorescence finding is most specific for lupus nephritis in a membranous pattern?",
+      options: [
+        { text: "C1q in the mesangium.", correct: true,
+          explanation: "Mesangial C1q is a highly specific marker of lupus nephritis. It is part of the 'full house' pattern (IgG, IgA, IgM, C3, C1q)." },
+        { text: "IgG along the capillary walls.", correct: false,
+          explanation: "IgG along capillary walls is seen in both primary and secondary MN — it is not specific." },
+        { text: "C3 along the capillary walls.", correct: false,
+          explanation: "C3 along capillary walls is also seen in primary MN — it is not specific." }
+      ]
+    },
+    {
+      question: "Which combination of EM findings distinguishes lupus nephritis class V from primary membranous nephropathy?",
+      options: [
+        { text: "Subepithelial + subendothelial + mesangial deposits.", correct: true,
+          explanation: "Lupus nephritis class V shows deposits in multiple locations. Primary MN shows subepithelial deposits only." },
+        { text: "Subepithelial deposits only.", correct: false,
+          explanation: "Subepithelial-only deposits are typical of primary MN, not lupus." },
+        { text: "No deposits visible.", correct: false,
+          explanation: "Both conditions have deposits — the difference is their location." }
+      ]
+    },
+    {
+      question: "What does the 'full house' pattern on immunofluorescence mean?",
+      options: [
+        { text: "Positive staining for IgG, IgA, IgM, C3, and C1q in the same distribution.", correct: true,
+          explanation: "The 'full house' pattern refers to the co-deposition of multiple immunoglobulins and complement components, most characteristically seen in lupus nephritis." },
+        { text: "Only IgG and C3 positivity.", correct: false,
+          explanation: "This is the pattern of primary membranous nephropathy, not full house." },
+        { text: "Isolated C3 positivity.", correct: false,
+          explanation: "Isolated C3 positivity suggests C3 glomerulopathy, not lupus." }
+      ]
+    },
+    {
+      question: "Can lupus nephritis present without extrarenal manifestations of SLE?",
+      options: [
+        { text: "Yes — renal-limited lupus nephritis can present without extrarenal symptoms.", correct: true,
+          explanation: "Lupus nephritis can be the first or only manifestation of SLE. Absence of extrarenal symptoms does not exclude the diagnosis." },
+        { text: "No — extrarenal symptoms are always present.", correct: false,
+          explanation: "Renal-limited lupus nephritis is a well-recognized entity." },
+        { text: "Only in children.", correct: false,
+          explanation: "Renal-limited lupus can occur at any age." }
+      ]
+    },
+    {
+      question: "What is the significance of low C3 and C4 in this patient?",
+      options: [
+        { text: "It indicates classical complement pathway consumption — consistent with lupus nephritis.", correct: true,
+          explanation: "Low C3 and C4 indicate classical pathway activation and consumption, which is characteristic of lupus nephritis." },
+        { text: "It indicates alternative pathway activation only.", correct: false,
+          explanation: "Low C4 is specific for the classical pathway. Alternative pathway activation would typically show low C3 with normal C4." },
+        { text: "It has no diagnostic significance.", correct: false,
+          explanation: "The complement pattern is a key diagnostic clue." }
+      ]
+    },
+    {
+      question: "Which of the following is NOT a typical feature of primary membranous nephropathy?",
+      options: [
+        { text: "Subendothelial and mesangial deposits on EM.", correct: true,
+          explanation: "Primary MN shows subepithelial deposits ONLY. Subendothelial and mesangial deposits suggest a secondary cause like lupus." },
+        { text: "Subepithelial deposits on EM.", correct: false,
+          explanation: "This IS a typical feature of primary MN." },
+        { text: "Normal C3 and C4 levels.", correct: false,
+          explanation: "This IS a typical feature of primary MN." }
+      ]
+    },
+    {
+      question: "A patient with membranous pattern on LM is found to have C1q positivity and low C3/C4. What is the next most useful test?",
+      options: [
+        { text: "Serologies for lupus (ANA, anti-dsDNA, anti-Sm, anti-Ro/La).", correct: true,
+          explanation: "With a lupus-like pattern on biopsy, the next step is serologic evaluation for systemic lupus erythematosus. Even if extrarenal symptoms are absent, serology may confirm the diagnosis." },
+        { text: "Serum protein electrophoresis.", correct: false,
+          explanation: "SPEP is for monoclonal gammopathy — not the first step when lupus is suspected." },
+        { text: "Genetic testing for Alport syndrome.", correct: false,
+          explanation: "Alport syndrome is unrelated to membranous nephropathy." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Renal Pathology / Lupus",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

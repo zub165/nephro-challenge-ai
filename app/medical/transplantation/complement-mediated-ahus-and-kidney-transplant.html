@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Complement-Mediated aHUS and Kidney Transplant</title>
+<style>
+:root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+  --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+*{box-sizing:border-box;}
+body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+.wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.top h1{margin:0;font-size:1.6rem;font-weight:800;}
+.top .sub{margin:4px 0 0;color:var(--muted);font-size:.95rem;}
+.badge{background:#0f172a;color:#fff;border-radius:999px;padding:6px 12px;font-size:.75rem;font-weight:700;white-space:nowrap;}
+
+.case-strip{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.case-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px;}
+.case-strip p{margin:0 0 8px;font-size:.92rem;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:600;}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.stat .n{font-size:1.2rem;font-weight:800;}
+.stat .l{font-size:.78rem;color:var(--muted);}
+
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.tab{font:inherit;font-weight:700;font-size:.85rem;text-align:left;cursor:pointer;background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--ink);transition:all .2s ease;}
+.tab small{display:block;font-weight:500;color:var(--muted);font-size:.74rem;margin-top:2px;}
+.tab.active[data-mode="opt1"]{border-color:var(--opt1);background:#fef2f2;}
+.tab.active[data-mode="opt2"]{border-color:var(--opt2);background:#f5f3ff;}
+.tab.active[data-mode="opt3"]{border-color:var(--opt3);background:#ecfeff;}
+.tab.active[data-mode="opt4"]{border-color:var(--opt4);background:#fefce8;}
+
+.stage{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);overflow:hidden;}
+.stage-head h2{margin:0;font-size:1.1rem;font-weight:800;}
+.stage-head p{margin:2px 0 8px;color:var(--muted);font-size:.9rem;}
+.stage svg{width:100%;height:auto;display:block;}
+.diagram{display:none;}
+.diagram.show{display:inline;}
+.diagram-wrap{display:block;}
+text{font-family:"Inter","Segoe UI",system-ui,sans-serif;}
+
+/* DRAGGABLE INFO PANEL */
+.info-float{position:absolute;top:80px;right:20px;background:rgba(255,255,255,.98);border-radius:12px;padding:0;border:2px solid var(--line);box-shadow:0 8px 24px rgba(15,23,42,.15);width:290px;max-width:calc(100% - 40px);overflow:hidden;z-index:100;transition:border-color .2s ease,box-shadow .2s ease;touch-action:none;}
+.info-float.highlight-opt1{border-color:var(--opt1);}
+.info-float.highlight-opt2{border-color:var(--opt2);}
+.info-float.highlight-opt3{border-color:var(--opt3);}
+.info-float.highlight-opt4{border-color:var(--opt4);}
+.info-float.dragging{box-shadow:0 12px 32px rgba(15,23,42,.25);transition:none;cursor:grabbing;}
+.info-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:grab;user-select:none;background:#fef2f2;transition:background .2s ease;gap:8px;}
+.info-header:active{cursor:grabbing;}
+.info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+.info-float.highlight-opt3 .info-header{background:#cffafe;}
+.info-float.highlight-opt4 .info-header{background:#fef9c3;}
+.grip{display:inline-flex;gap:2px;flex-shrink:0;margin-right:6px;opacity:.5;}
+.grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+.info-header h4{margin:0;font-size:.82rem;font-weight:800;color:#0f172a;flex:1;display:flex;align-items:center;pointer-events:none;}
+.toggle-btn{font:inherit;font-size:.72rem;color:var(--muted);background:rgba(0,0,0,.06);border:none;padding:3px 8px;border-radius:999px;font-weight:700;flex-shrink:0;cursor:pointer;}
+.info-body{padding:12px 14px 14px;max-height:500px;transition:max-height .3s ease,padding .3s ease;overflow:hidden;}
+.info-float.collapsed .info-body{max-height:0;padding:0 14px;}
+.info-float .row{display:flex;justify-content:space-between;padding:8px 0;font-size:.78rem;border-bottom:1px solid var(--line);gap:8px;}
+.info-float .row:last-child{border:none;}
+.info-float .k{color:var(--muted);font-weight:600;flex-shrink:0;}
+.info-float .v{font-weight:800;color:#0f172a;text-align:right;word-break:break-word;max-width:170px;}
+
+.reset-pos{position:absolute;top:20px;right:20px;background:#0f172a;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0;transition:opacity .2s;z-index:50;pointer-events:none;}
+.reset-pos.visible{opacity:.85;pointer-events:auto;}
+.reset-pos:hover{opacity:1;}
+
+/* ANIMATIONS */
+@keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+.pulse-block{animation:pulseBlock 1.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+.flow-anim{stroke-dasharray:8 6;animation:flowDash 1.4s linear infinite;}
+@keyframes pulseNode{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.65;transform:scale(1.08);}}
+.pulse-node{animation:pulseNode 1.8s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes drift{0%{transform:translate(0,0);opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{transform:translate(120px,0);opacity:0;}}
+.drift{animation:drift 3.6s linear infinite;}
+@media (prefers-reduced-motion:reduce){.pulse-block,.flow-anim,.pulse-node,.drift{animation:none;}}
+
+/* TABLE */
+.table-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);overflow-x:auto;}
+.table-section h2{margin:0 0 8px;font-size:1.05rem;font-weight:800;}
+.drug-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:640px;}
+.drug-table th{text-align:left;padding:8px 10px;background:#f8fafc;border-bottom:2px solid var(--line);font-weight:800;}
+.drug-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+.drug-table tr.hero td{background:#fef2f2;font-weight:600;}
+
+/* PANELS */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.panel h3{margin:0;font-size:1rem;font-weight:800;}
+.panel .tag{margin:2px 0 10px;color:var(--muted);font-size:.85rem;}
+.panel ul{margin:0;padding-left:18px;}
+.panel li{margin-bottom:6px;font-size:.92rem;}
+
+/* ALERT */
+.alert{border-radius:14px;padding:14px 16px;margin-bottom:14px;border:1px solid;display:flex;gap:12px;align-items:flex-start;}
+.alert .ico{font-size:1.3rem;}
+.alert .ttl{font-weight:800;margin-bottom:2px;}
+.alert .txt{font-size:.92rem;}
+.alert.opt1{background:#fef2f2;border-color:#fecaca;}
+.alert.opt2{background:#f5f3ff;border-color:#ddd6fe;}
+.alert.opt3{background:#ecfeff;border-color:#a5f3fc;}
+.alert.opt4{background:#fefce8;border-color:#fde68a;}
+
+/* QUIZ */
+.quiz{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.quiz h2{margin:0 0 4px;font-size:1.05rem;font-weight:800;}
+.quiz .qsub{margin:0 0 12px;color:var(--muted);font-size:.85rem;}
+.qitem{border-top:1px solid var(--line);padding:12px 0;}
+.qitem:first-of-type{border-top:none;}
+.qtext{font-weight:700;margin-bottom:8px;}
+.qopts{display:flex;flex-direction:column;gap:6px;}
+.qopt{font:inherit;text-align:left;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--ink);}
+.qopt:hover{border-color:#94a3b8;}
+.qopt.correct{background:#dcfce7;border-color:#22c55e;}
+.qopt.wrong{background:#fee2e2;border-color:#ef4444;}
+.qexp{display:none;margin-top:8px;font-size:.9rem;background:#f8fafc;border-radius:10px;padding:10px 12px;}
+.qexp.show{display:block;}
+
+.footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:18px;}
+
+@media (max-width:860px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .tabs{grid-template-columns:repeat(2,1fr);}
+  .panels{grid-template-columns:1fr;}
+  .info-float{position:relative;top:auto;right:auto;margin:0 0 12px;width:100%;max-width:100%;}
+  .reset-pos{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>Complement-Mediated aHUS and Kidney Transplant</h1>
+    <p class="sub">Which complement proteins the liver makes, which the graft supplies, and what that means for recurrence</p>
+  </div>
+  <span class="badge">Nephrology · Transplant</span>
+</header>
+
+<section class="case-strip">
+  <div class="case-title">Case</div>
+  <p>29-year-old woman with ESKD from complement-mediated aHUS, on hemodialysis, being evaluated for transplant. Genetic testing shows a pathogenic CFH variant. Her healthy brother is a potential living donor.</p>
+  <div class="chips">
+    <span class="chip">ADAMTS13 normal</span>
+    <span class="chip">Shiga toxin negative</span>
+    <span class="chip">Pathogenic CFH variant</span>
+    <span class="chip">Potential donor: biological brother</span>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat"><div class="n">High</div><div class="l">CFH recurrence risk after transplant</div></div>
+  <div class="stat"><div class="n">Liver</div><div class="l">Where factor H is made</div></div>
+  <div class="stat"><div class="n">C5 inhibitor</div><div class="l">Prophylaxis around transplant</div></div>
+  <div class="stat"><div class="n">Gene test</div><div class="l">Required before donor clearance</div></div>
+</section>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-mode="opt1" role="tab" aria-selected="true">CFH defect<small>Liver-made, soluble</small></button>
+  <button class="tab" data-mode="opt2" role="tab" aria-selected="false">MCP / CD46<small>Graft-derived, membrane</small></button>
+  <button class="tab" data-mode="opt3" role="tab" aria-selected="false">C3 / CFB / CFI<small>Activators and other regulators</small></button>
+  <button class="tab" data-mode="opt4" role="tab" aria-selected="false">Transplant plan<small>Prophylaxis, donor, monitoring</small></button>
+</nav>
+
+<section class="stage" id="stage">
+  <div class="stage-head">
+    <h2 id="svgTitle"></h2>
+    <p id="svgSubtitle"></p>
+  </div>
+
+  <svg viewBox="0 0 900 520" role="img" aria-labelledby="svgTitle">
+    <defs>
+      <linearGradient id="gLiver" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fde68a"/><stop offset="1" stop-color="#fbbf24"/>
+      </linearGradient>
+      <linearGradient id="gCell" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ddd6fe"/><stop offset="1" stop-color="#c4b5fd"/>
+      </linearGradient>
+      <linearGradient id="gLumen" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fee2e2"/><stop offset="1" stop-color="#fecaca"/>
+      </linearGradient>
+      <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+      </marker>
+      <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+      </marker>
+    </defs>
+
+    <!-- ===== DIAGRAM 1: CFH defect ===== -->
+    <g id="diagram-opt1" class="diagram">
+      <rect x="30" y="110" width="210" height="190" rx="14" fill="url(#gLiver)" opacity=".85"/>
+      <text x="135" y="140" text-anchor="middle" font-size="15" font-weight="800" fill="#78350f">LIVER (hepatocytes)</text>
+      <rect x="70" y="170" width="130" height="46" rx="10" fill="#fff" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="135" y="198" text-anchor="middle" font-size="14" font-weight="800" fill="#dc2626">Factor H (CFH)</text>
+      <text x="135" y="240" text-anchor="middle" font-size="13" fill="#78350f">Variant: defective</text>
+
+      <line x1="240" y1="193" x2="330" y2="193" stroke="#dc2626" stroke-width="3" class="flow-anim" marker-end="url(#arrowRed)"/>
+      <text x="285" y="180" text-anchor="middle" font-size="13" fill="#dc2626">secreted into plasma</text>
+
+      <rect x="330" y="150" width="540" height="90" rx="12" fill="url(#gLumen)"/>
+      <text x="350" y="172" font-size="14" font-weight="800" fill="#7f1d1d">Glomerular capillary lumen (plasma)</text>
+
+      <rect x="330" y="240" width="540" height="40" rx="6" fill="#cbd5e1"/>
+      <text x="350" y="266" font-size="14" font-weight="700" fill="#334155">Endothelial surface (graft or native)</text>
+
+      <!-- C3b particles accumulating on the surface -->
+      <circle cx="420" cy="236" r="8" fill="#0891b2" class="pulse-node"/>
+      <circle cx="520" cy="236" r="8" fill="#0891b2" class="pulse-node"/>
+      <circle cx="620" cy="236" r="8" fill="#0891b2" class="pulse-node"/>
+      <circle cx="720" cy="236" r="8" fill="#0891b2" class="pulse-node"/>
+      <circle cx="800" cy="236" r="8" fill="#0891b2" class="pulse-node"/>
+
+      <!-- Drifting C3b -->
+      <circle cx="340" cy="200" r="6" fill="#0891b2" class="drift"/>
+      <circle cx="340" cy="185" r="6" fill="#0891b2" class="drift" style="animation-delay:-1.2s"/>
+
+      <rect x="330" y="300" width="540" height="66" rx="12" fill="#fef2f2" stroke="#dc2626"/>
+      <text x="350" y="328" font-size="15" font-weight="800" fill="#991b1b">Unchecked C3b deposits on the endothelium</text>
+      <text x="350" y="352" font-size="14" fill="#7f1d1d">Thrombotic microangiopathy, ischemia, graft loss</text>
+
+      <text x="30" y="440" font-size="15" font-weight="700" fill="#0f172a">Factor H is made by the liver and does not come from a transplanted kidney.</text>
+    </g>
+
+    <!-- ===== DIAGRAM 2: MCP / CD46 ===== -->
+    <g id="diagram-opt2" class="diagram">
+      <rect x="30" y="110" width="210" height="190" rx="14" fill="#f1f5f9" stroke="#94a3b8"/>
+      <text x="135" y="140" text-anchor="middle" font-size="15" font-weight="800" fill="#334155">Circulating plasma</text>
+      <circle cx="90" cy="200" r="8" fill="#0891b2" class="drift"/>
+      <circle cx="90" cy="230" r="8" fill="#0891b2" class="drift" style="animation-delay:-1.8s"/>
+      <text x="135" y="270" text-anchor="middle" font-size="13" fill="#475569">C3b arrives</text>
+
+      <line x1="240" y1="200" x2="330" y2="200" stroke="#7c3aed" stroke-width="3" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+      <rect x="330" y="130" width="330" height="230" rx="30" fill="url(#gCell)" stroke="#7c3aed" stroke-width="2"/>
+      <ellipse cx="495" cy="265" rx="60" ry="34" fill="#a78bfa" opacity=".55"/>
+      <text x="495" y="270" text-anchor="middle" font-size="13" font-weight="700" fill="#4c1d95">nucleus</text>
+      <text x="495" y="150" text-anchor="middle" font-size="15" font-weight="800" fill="#4c1d95">Graft cell (kidney)</text>
+
+      <!-- CD46 molecules on membrane -->
+      <rect x="370" y="136" width="36" height="16" rx="4" fill="#7c3aed" class="pulse-node"/>
+      <rect x="430" y="136" width="36" height="16" rx="4" fill="#7c3aed" class="pulse-node" style="animation-delay:-.6s"/>
+      <rect x="490" y="136" width="36" height="16" rx="4" fill="#7c3aed" class="pulse-node" style="animation-delay:-1.2s"/>
+      <rect x="550" y="136" width="36" height="16" rx="4" fill="#7c3aed" class="pulse-node" style="animation-delay:-1.5s"/>
+      <text x="495" y="124" text-anchor="middle" font-size="13" font-weight="700" fill="#4c1d95">CD46 (MCP) normal on graft cell</text>
+
+      <path d="M 430 175 Q 470 230 505 175" fill="none" stroke="#0891b2" stroke-width="0" />
+      <circle cx="450" cy="170" r="6" fill="#0891b2" class="pulse-node"/>
+
+      <rect x="690" y="130" width="180" height="230" rx="14" fill="#ecfdf5" stroke="#16a34a"/>
+      <text x="780" y="165" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">Cleared locally</text>
+      <text x="780" y="200" text-anchor="middle" font-size="26" fill="#16a34a">✓</text>
+      <text x="780" y="235" text-anchor="middle" font-size="13" fill="#14532d">Factor I cleaves C3b</text>
+      <text x="780" y="258" text-anchor="middle" font-size="13" fill="#14532d">using CD46 as cofactor</text>
+
+      <rect x="30" y="380" width="840" height="80" rx="12" fill="#f5f3ff" stroke="#7c3aed"/>
+      <text x="50" y="410" font-size="15" font-weight="800" fill="#4c1d95">The graft carries its own normal CD46.</text>
+      <text x="50" y="436" font-size="14" fill="#4c1d95">Recurrence risk is lowest among the genetic forms when the defect is in MCP.</text>
+    </g>
+
+    <!-- ===== DIAGRAM 3: C3 / CFB / CFI ===== -->
+    <g id="diagram-opt3" class="diagram">
+      <circle cx="300" cy="250" r="150" fill="none" stroke="#0891b2" stroke-width="3" stroke-dasharray="10 8" class="flow-anim"/>
+      <circle cx="300" cy="250" r="90" fill="#cffafe" opacity=".6"/>
+      <text x="300" y="244" text-anchor="middle" font-size="15" font-weight="800" fill="#155e75">Amplification</text>
+      <text x="300" y="266" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">loop (C3bBb)</text>
+
+      <g font-size="14" font-weight="800">
+        <rect x="235" y="60" width="130" height="40" rx="10" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+        <text x="300" y="86" text-anchor="middle" fill="#155e75">C3 (gain-of-fn)</text>
+        <rect x="430" y="210" width="130" height="40" rx="10" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+        <text x="495" y="236" text-anchor="middle" fill="#155e75">Factor B (CFB)</text>
+        <rect x="235" y="400" width="130" height="40" rx="10" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+        <text x="300" y="426" text-anchor="middle" fill="#155e75">C3b</text>
+        <rect x="40" y="210" width="130" height="40" rx="10" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+        <text x="105" y="236" text-anchor="middle" fill="#155e75">Factor D</text>
+      </g>
+
+      <circle cx="300" cy="250" r="10" fill="#0891b2" class="pulse-block"/>
+
+      <!-- Regulators failing -->
+      <rect x="560" y="70" width="290" height="110" rx="12" fill="#fef2f2" stroke="#dc2626"/>
+      <text x="580" y="100" font-size="15" font-weight="800" fill="#991b1b">Resists regulation</text>
+      <text x="580" y="124" font-size="14" fill="#7f1d1d">C3 and CFB variants escape</text>
+      <text x="580" y="146" font-size="14" fill="#7f1d1d">factor H and MCP control.</text>
+      <text x="580" y="168" font-size="14" fill="#7f1d1d">CFI loss leaves C3b unchecked.</text>
+
+      <rect x="560" y="210" width="290" height="110" rx="12" fill="#f8fafc" stroke="#94a3b8"/>
+      <text x="580" y="240" font-size="15" font-weight="800" fill="#334155">Source</text>
+      <text x="580" y="264" font-size="14" fill="#475569">C3, CFB, CFI: made mainly by liver.</text>
+      <text x="580" y="286" font-size="14" fill="#475569">A transplanted kidney does not fix them.</text>
+      <text x="580" y="308" font-size="14" fill="#475569">Recurrence risk is substantial.</text>
+
+      <rect x="560" y="350" width="290" height="110" rx="12" fill="#ecfeff" stroke="#0891b2"/>
+      <text x="580" y="380" font-size="15" font-weight="800" fill="#155e75">Management</text>
+      <text x="580" y="404" font-size="14" fill="#164e63">Genetic results guide</text>
+      <text x="580" y="426" font-size="14" fill="#164e63">C5 inhibitor prophylaxis</text>
+      <text x="580" y="448" font-size="14" fill="#164e63">and its duration.</text>
+    </g>
+
+    <!-- ===== DIAGRAM 4: Transplant plan ===== -->
+    <g id="diagram-opt4" class="diagram">
+      <text x="450" y="60" text-anchor="middle" font-size="15" font-weight="800" fill="#854d0e">Transplant pathway for this patient</text>
+
+      <line x1="130" y1="150" x2="770" y2="150" stroke="#ca8a04" stroke-width="4" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+      <g font-size="14" font-weight="700">
+        <circle cx="130" cy="150" r="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="130" y="195" text-anchor="middle" fill="#854d0e">Hemodialysis</text>
+        <text x="130" y="215" text-anchor="middle" font-size="13" fill="#854d0e">ESKD</text>
+
+        <circle cx="330" cy="150" r="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="330" y="195" text-anchor="middle" fill="#854d0e">Donor testing</text>
+        <text x="330" y="215" text-anchor="middle" font-size="13" fill="#854d0e">Brother: CFH variant?</text>
+
+        <circle cx="530" cy="150" r="18" fill="#dcfce7" stroke="#16a34a" stroke-width="2" class="pulse-block"/>
+        <text x="530" y="195" text-anchor="middle" fill="#166534">C5 inhibitor</text>
+        <text x="530" y="215" text-anchor="middle" font-size="13" fill="#166534">Eculizumab or ravulizumab</text>
+
+        <circle cx="770" cy="150" r="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="770" y="195" text-anchor="middle" fill="#854d0e">Transplant</text>
+        <text x="770" y="215" text-anchor="middle" font-size="13" fill="#854d0e">then monitor</text>
+      </g>
+
+      <rect x="60" y="260" width="780" height="200" rx="14" fill="#fefce8" stroke="#ca8a04"/>
+      <text x="90" y="292" font-size="15" font-weight="800" fill="#854d0e">After transplant, watch for hemolysis and graft injury</text>
+      <text x="90" y="320" font-size="14" fill="#713f12">Platelets, hemoglobin, LDH, haptoglobin, smear</text>
+      <text x="90" y="344" font-size="14" fill="#713f12">Creatinine and urine output</text>
+      <text x="90" y="368" font-size="14" fill="#713f12">Complement markers, as directed by the transplant team</text>
+      <text x="90" y="392" font-size="14" fill="#713f12">Biopsy if recurrence is suspected</text>
+      <text x="90" y="430" font-size="14" font-weight="700" fill="#854d0e">Do not clear the brother without testing for the same variant.</text>
+    </g>
+  </svg>
+
+  <div class="info-float" id="infoPanel">
+    <div class="info-header" id="infoHeader">
+      <h4><span class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></span><span id="infoTitle"></span></h4>
+      <button class="toggle-btn" id="toggleBtn" type="button">▲ Hide</button>
+    </div>
+    <div class="info-body" id="infoBody"></div>
+  </div>
+  <button class="reset-pos" id="resetPos" type="button">Reset position</button>
+</section>
+
+<section class="table-section">
+  <h2>Complement genes: source, function, and recurrence after transplant</h2>
+  <table class="drug-table">
+    <thead>
+      <tr><th>Gene / factor</th><th>Source</th><th>Function</th><th>Recurrence after transplant</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr class="hero"><td>CFH (factor H)</td><td>Liver, soluble</td><td>Regulates alternative pathway in plasma and on surfaces</td><td>High</td><td>This patient's variant. Graft does not supply factor H.</td></tr>
+      <tr><td>CFI (factor I)</td><td>Mainly liver</td><td>Cleaves C3b and C4b with cofactors</td><td>Substantial</td><td>Loss leaves C3b unchecked.</td></tr>
+      <tr><td>C3</td><td>Mainly liver</td><td>Central complement component</td><td>High with gain-of-function variants</td><td>Variants resist factor H and MCP regulation.</td></tr>
+      <tr><td>CFB (factor B)</td><td>Mainly liver</td><td>Amplification loop component</td><td>Variable</td><td>Gain-of-function variants amplify the pathway.</td></tr>
+      <tr><td>MCP / CD46</td><td>Graft cells, membrane-bound</td><td>Cofactor for factor I</td><td>Lowest among genetic forms</td><td>Graft expresses normal CD46.</td></tr>
+      <tr><td>THBD</td><td>Endothelium (graft too)</td><td>Cofactor for factor I; anticoagulant</td><td>Less consistent data</td><td>Graft supplies normal protein.</td></tr>
+      <tr><td>DGKE</td><td>Kidney and endothelial cells</td><td>Intracellular enzyme, not a complement protein</td><td>Limited data</td><td>Often infant onset.</td></tr>
+      <tr><td>Anti-factor H antibody</td><td>Acquired</td><td>Blocks factor H function</td><td>Possible</td><td>Plasma exchange and immunosuppression.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="panels">
+  <article class="panel">
+    <h3 id="p1Title"></h3>
+    <p class="tag" id="p1Tag"></p>
+    <ul id="p1List"></ul>
+  </article>
+  <article class="panel">
+    <h3 id="p2Title"></h3>
+    <p class="tag" id="p2Tag"></p>
+    <ul id="p2List"></ul>
+  </article>
+</section>
+
+<section class="alert opt1" id="alertBox">
+  <div class="ico" id="alertIcon"></div>
+  <div>
+    <div class="ttl" id="alertTitle"></div>
+    <div class="txt" id="alertText"></div>
+  </div>
+</section>
+
+<section class="quiz">
+  <h2>Quiz</h2>
+  <p class="qsub">Select an answer to see the explanation.</p>
+  <div id="quizList"></div>
+</section>
+
+<div class="footer">Teaching template · Content for educational use. Verify dosing and protocols against current guidelines and your transplant center's practice.</div>
+
+</div>
+
+<script>
+var TABS = ["opt1", "opt2", "opt3", "opt4"];
+
+var MODES = {
+  opt1: {
+    label: "CFH defect",
+    infoTitle: "🔴 CFH (factor H) defect",
+    panelClass: "highlight-opt1",
+    svgTitle: "Factor H defect: unchecked C3b on the endothelium",
+    svgSubtitle: "Liver-made regulator fails to reach the surface, and the graft sits in the same plasma",
+    infoRows: [
+      { k: "Gene", v: "CFH" },
+      { k: "Made by", v: "Liver (soluble)" },
+      { k: "Graft supplies it?", v: "No" },
+      { k: "Recurrence risk", v: "High" },
+      { k: "Prophylaxis", v: "C5 inhibitor often used" }
+    ],
+    p1Title: "What the variant does",
+    p1Tag: "Loss of a plasma regulator",
+    p1List: [
+      "Factor H normally limits C3b amplification in plasma and on cell surfaces.",
+      "A <strong>pathogenic CFH variant</strong> reduces its function, so C3b builds up on endothelium.",
+      "Result: <strong>thrombotic microangiopathy</strong> with hemolysis and kidney injury."
+    ],
+    p2Title: "Why it matters after transplant",
+    p2Tag: "Plasma factor, not a cell factor",
+    p2List: [
+      "The liver makes factor H, so a new kidney does not correct the defect.",
+      "The graft is exposed to the same abnormal complement regulation.",
+      "Recurrence is common and often leads to graft loss without prophylaxis."
+    ],
+    alertIcon: "🔴",
+    alertClass: "opt1",
+    alertTitle: "Board Pearl",
+    alertText: "CFH-associated aHUS recurs in the graft because <strong>factor H is made in the liver</strong>. Complement inhibition around transplant reduces this risk."
+  },
+  opt2: {
+    label: "MCP / CD46",
+    infoTitle: "🟣 MCP / CD46 defect",
+    panelClass: "highlight-opt2",
+    svgTitle: "MCP (CD46) defect: graft carries normal cofactor",
+    svgSubtitle: "Membrane-bound regulator on the graft's own cells",
+    infoRows: [
+      { k: "Gene", v: "MCP (CD46)" },
+      { k: "Made by", v: "Graft cells (membrane)" },
+      { k: "Graft supplies it?", v: "Yes" },
+      { k: "Recurrence risk", v: "Lowest among genetic forms" },
+      { k: "Prophylaxis", v: "Individualized" }
+    ],
+    p1Title: "What the variant does",
+    p1Tag: "Loss of a membrane cofactor",
+    p1List: [
+      "CD46 is a cofactor that lets factor I cleave C3b on the cell surface.",
+      "A variant weakens this local clearance step.",
+      "Disease is often seen in young patients with a relapsing course."
+    ],
+    p2Title: "Why it matters after transplant",
+    p2Tag: "The graft brings its own normal protein",
+    p2List: [
+      "Donor kidney cells express normal CD46.",
+      "This is why MCP-associated disease carries the best transplant outcome.",
+      "Prophylaxis is decided case by case with the transplant and hematology teams."
+    ],
+    alertIcon: "🟣",
+    alertClass: "opt2",
+    alertTitle: "Board Pearl",
+    alertText: "<strong>Membrane-bound, graft-derived</strong> regulators such as CD46 are supplied by the new kidney. That is the key contrast with liver-made factor H."
+  },
+  opt3: {
+    label: "C3 / CFB / CFI",
+    infoTitle: "🔵 C3, CFB, and CFI",
+    panelClass: "highlight-opt3",
+    svgTitle: "Activators and other regulators: liver-made, soluble",
+    svgSubtitle: "Gain-of-function C3 or CFB escapes control; CFI loss leaves C3b unchecked",
+    infoRows: [
+      { k: "Genes", v: "C3, CFB, CFI" },
+      { k: "Made by", v: "Mainly liver" },
+      { k: "Graft supplies it?", v: "No" },
+      { k: "Recurrence risk", v: "High to substantial" },
+      { k: "Prophylaxis", v: "Often needed" }
+    ],
+    p1Title: "What the variants do",
+    p1Tag: "Activators and regulators",
+    p1List: [
+      "<strong>C3 and CFB gain-of-function</strong> variants resist regulation and amplify the loop.",
+      "<strong>CFI loss</strong> leaves C3b unchecked, because factor I cannot cleave it.",
+      "All of these proteins are made mainly by the liver."
+    ],
+    p2Title: "Why it matters after transplant",
+    p2Tag: "Soluble plasma proteins",
+    p2List: [
+      "The new kidney does not supply these proteins.",
+      "Abnormal plasma complement continues to act on the graft.",
+      "Genetic results guide prophylaxis and its duration."
+    ],
+    alertIcon: "🔵",
+    alertClass: "opt3",
+    alertTitle: "Board Pearl",
+    alertText: "The <strong>source of the protein</strong> predicts recurrence. Liver-made proteins are not corrected by a transplanted kidney."
+  },
+  opt4: {
+    label: "Transplant plan",
+    infoTitle: "🟡 Transplant plan",
+    panelClass: "highlight-opt4",
+    svgTitle: "Transplant pathway for this patient",
+    svgSubtitle: "Donor testing, prophylaxis, and monitoring",
+    infoRows: [
+      { k: "Donor", v: "Brother" },
+      { k: "Donor screening", v: "Genetic test for CFH variant" },
+      { k: "Prophylaxis", v: "C5 inhibitor (eculizumab or ravulizumab)" },
+      { k: "Monitoring", v: "Hemolysis labs and creatinine" }
+    ],
+    p1Title: "Before transplant",
+    p1Tag: "Selection and planning",
+    p1List: [
+      "Confirm complement-mediated disease with ADAMTS13 and Shiga toxin testing, as done here.",
+      "Test the brother for the <strong>same CFH variant</strong> before clearing him as a donor.",
+      "Penetrance is incomplete, so a negative test in a relative is reassuring but must be interpreted carefully."
+    ],
+    p2Title: "After transplant",
+    p2Tag: "Watch for recurrence",
+    p2List: [
+      "Monitor platelets, hemoglobin, LDH, haptoglobin, and smear.",
+      "Track creatinine and urine output for graft function.",
+      "Biopsy if recurrence is suspected. Adjust complement inhibitor therapy with the transplant team."
+    ],
+    alertIcon: "🟡",
+    alertClass: "opt4",
+    alertTitle: "Board Pearl",
+    alertText: "Transplant is <strong>not absolutely contraindicated</strong> in CFH-associated aHUS. It requires <strong>prophylactic complement inhibition</strong> and careful donor evaluation."
+  }
+};
+
+var QUIZ = [
+  { q: "Which protein is made mainly by the liver and is defective in this patient?",
+    o: ["Factor H (CFH)", "MCP (CD46)", "DGKE"], a: 0,
+    e: "<strong>CFH (factor H)</strong> is made mainly by the liver and circulates in plasma. A transplanted kidney does not supply it.",
+    w: { 1: "MCP (CD46) is membrane-bound and expressed on the graft's own cells, so a new kidney supplies it. The patient's defect is in factor H, which the liver makes.",
+         2: "DGKE is an intracellular enzyme in kidney and endothelial cells, not a liver-made complement protein. This patient's pathogenic variant is in CFH." } },
+  { q: "What do normal ADAMTS13 activity and a negative Shiga toxin test help exclude?",
+    o: ["Complement-mediated aHUS", "TTP and STEC-associated HUS", "Factor H antibodies"], a: 1,
+    e: "Normal ADAMTS13 argues against <strong>TTP</strong>, and a negative Shiga toxin test argues against <strong>STEC-associated HUS</strong>. That leaves a complement-mediated cause.",
+    w: { 0: "These tests are used to exclude other causes. They do not confirm complement-mediated aHUS, which is the diagnosis that remains after TTP and STEC-HUS are ruled out.",
+         2: "Factor H antibodies are an acquired complement cause, so normal ADAMTS13 and a negative Shiga toxin test do not exclude them." } },
+  { q: "Which regulator's graft-derived, membrane-bound form has the lowest recurrence risk after transplant?",
+    o: ["MCP (CD46)", "CFH", "C3"], a: 0,
+    e: "The transplanted kidney expresses <strong>normal CD46</strong>, so MCP-associated disease carries the best transplant outcome.",
+    w: { 1: "CFH is made by the liver, so the graft does not supply normal factor H. Recurrence risk is high.",
+         2: "C3 gain-of-function variants resist regulation and are liver-made. They carry a substantial recurrence risk." } },
+  { q: "Before clearing the brother as a living donor, what should be done?",
+    o: ["Check his CFH genotype", "Accept him because he is healthy", "Use plasma exchange only"], a: 0,
+    e: "The brother may carry the same CFH variant with <strong>incomplete penetrance</strong>. Genetic testing is needed before donation.",
+    w: { 1: "Healthy relatives can still carry a pathogenic variant with incomplete penetrance. Being well does not rule out the risk.",
+         2: "Plasma exchange is a temporizing therapy for active disease. It does not answer the donor question." } },
+  { q: "Which therapy is commonly used to reduce recurrence risk around transplant?",
+    o: ["C5 inhibitor (eculizumab or ravulizumab)", "Chronic plasma exchange alone", "Iron supplementation"], a: 0,
+    e: "A <strong>C5 inhibitor</strong> reduces complement-mediated injury and is commonly used as prophylaxis, guided by genetic results.",
+    w: { 1: "Plasma exchange is temporizing and is not the standard long-term prophylaxis for recurrence around transplant.",
+         2: "Iron supplementation does not address complement-mediated injury." } },
+  { q: "Why do C3 or CFB gain-of-function variants carry a substantial recurrence risk?",
+    o: ["They resist factor H and MCP regulation", "They are made by graft cells", "They only affect the lungs"], a: 0,
+    e: "<strong>Gain-of-function</strong> C3 and CFB variants escape normal regulation, so the amplification loop stays active in the graft.",
+    w: { 1: "C3 and CFB are made mainly by the liver, not by graft cells. Their recurrence risk comes from escaping regulation.",
+         2: "Complement activity in plasma and on the endothelium affects the kidney. These variants are not limited to the lungs." } },
+  { q: "Which statement about liver-made complement proteins is correct?",
+    o: ["A transplanted kidney corrects them", "A transplanted kidney does not supply them", "They only matter in the native kidney"], a: 1,
+    e: "Liver-made proteins such as CFH, CFI, C3, and CFB are <strong>not supplied by the graft</strong>, so abnormal plasma complement continues to act on it.",
+    w: { 0: "A transplanted kidney does not make liver-made proteins, so it cannot correct them.",
+         2: "These proteins circulate systemically. After transplant they act on the graft, not only on the native kidney." } }
+];
+
+var currentMode = "opt1";
+var stage = document.getElementById("stage");
+var panel = document.getElementById("infoPanel");
+var header = document.getElementById("infoHeader");
+var resetBtn = document.getElementById("resetPos");
+var toggleBtn = document.getElementById("toggleBtn");
+var moved = false;
+
+function setMode(mode) {
+  currentMode = mode;
+  var m = MODES[mode];
+
+  TABS.forEach(function (t) {
+    var g = document.getElementById("diagram-" + t);
+    if (g) g.classList.toggle("show", t === mode);
+  });
+  document.querySelectorAll(".tab").forEach(function (b) {
+    var on = b.getAttribute("data-mode") === mode;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", String(on));
+  });
+
+  document.getElementById("svgTitle").textContent = m.svgTitle;
+  document.getElementById("svgSubtitle").textContent = m.svgSubtitle;
+
+  panel.classList.remove("highlight-opt1", "highlight-opt2", "highlight-opt3", "highlight-opt4");
+  panel.classList.add(m.panelClass);
+  document.getElementById("infoTitle").textContent = m.infoTitle;
+  document.getElementById("infoBody").innerHTML = m.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + "</span></div>";
+  }).join("");
+
+  document.getElementById("p1Title").textContent = m.p1Title;
+  document.getElementById("p1Tag").textContent = m.p1Tag;
+  document.getElementById("p1List").innerHTML = m.p1List.map(function (li) { return "<li>" + li + "</li>"; }).join("");
+  document.getElementById("p2Title").textContent = m.p2Title;
+  document.getElementById("p2Tag").textContent = m.p2Tag;
+  document.getElementById("p2List").innerHTML = m.p2List.map(function (li) { return "<li>" + li + "</li>"; }).join("");
+
+  var alertBox = document.getElementById("alertBox");
+  alertBox.className = "alert " + m.alertClass;
+  document.getElementById("alertIcon").textContent = m.alertIcon;
+  document.getElementById("alertTitle").textContent = m.alertTitle;
+  document.getElementById("alertText").innerHTML = m.alertText;
+}
+
+function togglePanel(e) {
+  e.stopPropagation();
+  var collapsed = panel.classList.toggle("collapsed");
+  toggleBtn.textContent = collapsed ? "▼ Show" : "▲ Hide";
+}
+
+function resetPosition() {
+  panel.style.left = "";
+  panel.style.top = "";
+  panel.style.right = "";
+  panel.style.bottom = "";
+  panel.style.top = "80px";
+  panel.style.right = "20px";
+  moved = false;
+  resetBtn.classList.remove("visible");
+}
+
+(function () {
+  var dragging = false, offX = 0, offY = 0;
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function start(clientX, clientY) {
+    var sRect = stage.getBoundingClientRect();
+    var pRect = panel.getBoundingClientRect();
+    if (!moved) {
+      panel.style.left = (pRect.left - sRect.left) + "px";
+      panel.style.top = (pRect.top - sRect.top) + "px";
+      panel.style.right = "auto";
+      moved = true;
+    }
+    offX = clientX - pRect.left;
+    offY = clientY - pRect.top;
+    dragging = true;
+    panel.classList.add("dragging");
+    resetBtn.classList.add("visible");
+  }
+
+  function move(clientX, clientY) {
+    if (!dragging) return;
+    var sRect = stage.getBoundingClientRect();
+    var pW = panel.offsetWidth, pH = panel.offsetHeight;
+    var x = clientX - sRect.left - offX + 0;
+    var y = clientY - sRect.top - offY + 0;
+    x = clamp(x, 8, stage.clientWidth - pW - 8);
+    y = clamp(y, 8, stage.clientHeight - pH - 8);
+    panel.style.left = x + "px";
+    panel.style.top = y + "px";
+  }
+
+  function end() {
+    dragging = false;
+    panel.classList.remove("dragging");
+  }
+
+  header.addEventListener("mousedown", function (e) {
+    if (e.target === toggleBtn) return;
+    e.preventDefault();
+    start(e.clientX, e.clientY);
+  });
+  document.addEventListener("mousemove", function (e) { move(e.clientX, e.clientY); });
+  document.addEventListener("mouseup", end);
+
+  header.addEventListener("touchstart", function (e) {
+    if (e.target === toggleBtn) return;
+    var t = e.touches[0];
+    start(t.clientX, t.clientY);
+  }, { passive: true });
+  document.addEventListener("touchmove", function (e) {
+    if (!dragging) return;
+    var t = e.touches[0];
+    move(t.clientX, t.clientY);
+  }, { passive: true });
+  document.addEventListener("touchend", end);
+})();
+
+function buildQuiz() {
+  var list = document.getElementById("quizList");
+  list.innerHTML = QUIZ.map(function (item, qi) {
+    var opts = item.o.map(function (o, oi) {
+      return '<button class="qopt" type="button" data-q="' + qi + '" data-o="' + oi + '">' + o + "</button>";
+    }).join("");
+    return '<div class="qitem"><div class="qtext">' + (qi + 1) + ". " + item.q + '</div><div class="qopts">' + opts +
+      '</div><div class="qexp" id="qexp-' + qi + '">' + item.e + "</div></div>";
+  }).join("");
+
+  list.addEventListener("click", function (e) {
+    var btn = e.target.closest(".qopt");
+    if (!btn) return;
+    var qi = +btn.getAttribute("data-q");
+    var oi = +btn.getAttribute("data-o");
+    var item = QUIZ[qi];
+    var group = list.querySelectorAll('.qopt[data-q="' + qi + '"]');
+    group.forEach(function (b) { b.classList.remove("correct", "wrong"); });
+    if (oi === item.a) btn.classList.add("correct");
+    else btn.classList.add("wrong");
+    var box = document.getElementById("qexp-" + qi);
+    box.innerHTML = (oi === item.a) ? item.e : item.w[oi];
+    box.classList.add("show");
+  });
+}
+
+toggleBtn.addEventListener("click", togglePanel);
+resetBtn.addEventListener("click", resetPosition);
+
+document.querySelectorAll(".tab").forEach(function (b) {
+  b.addEventListener("click", function () { setMode(b.getAttribute("data-mode")); });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildQuiz();
+  setMode("opt1");
+});
+if (document.readyState !== "loading") { buildQuiz(); setMode("opt1"); }
+</script>
+</body>
+</html>

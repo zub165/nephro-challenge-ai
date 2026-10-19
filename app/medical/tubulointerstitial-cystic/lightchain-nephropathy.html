@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Light Chains & Kidney Disease — Gift by Dr. Malik</title>
+<style>
+  :root{
+    --kappa:#2563eb; --kappa-soft:#dbeafe;
+    --lambda:#7c3aed; --lambda-soft:#ede9fe;
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px;}
+
+  /* HEADER */
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  /* TOGGLE */
+  .toggle-bar{display:flex; gap:12px; margin:26px 0 18px; flex-wrap:wrap; align-items:center;}
+  .toggle-bar .label{font-size:.82rem; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); font-weight:700;}
+  .pill{border:2px solid transparent; background:#fff; padding:11px 22px; border-radius:999px;
+    font-size:.95rem; font-weight:700; cursor:pointer; transition:all .25s ease;
+    box-shadow:0 2px 8px rgba(15,23,42,.06); color:var(--muted);}
+  .pill.k:hover{transform:translateY(-2px); border-color:var(--kappa); color:var(--kappa);}
+  .pill.l:hover{transform:translateY(-2px); border-color:var(--lambda); color:var(--lambda);}
+  .pill.k.active{background:var(--kappa); color:#fff; border-color:var(--kappa); box-shadow:0 8px 20px rgba(37,99,235,.35);}
+  .pill.l.active{background:var(--lambda); color:#fff; border-color:var(--lambda); box-shadow:0 8px 20px rgba(124,58,237,.35);}
+
+  /* ANIMATION STAGE */
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px 18px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); position:relative; overflow:hidden;}
+  .stage-title{font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .track{position:relative; height:190px; margin-top:8px;}
+  .cell, .kidney{position:absolute; top:50%; transform:translateY(-50%); text-align:center; width:150px;}
+  .cell{left:0;} .kidney{right:0;}
+  .cell-body{width:96px; height:96px; margin:0 auto; border-radius:50%;
+    background:radial-gradient(circle at 34% 30%,#fde68a,#f59e0b 70%);
+    box-shadow:0 0 0 6px rgba(245,158,11,.15), inset 0 -8px 16px rgba(0,0,0,.15);
+    animation:pulse 3.2s ease-in-out infinite; position:relative;}
+  .cell-body::after{content:""; position:absolute; inset:26px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#b45309,#78350f); opacity:.85;}
+  @keyframes pulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.06);}}
+  .kidney-shape{width:104px; height:96px; margin:0 auto;
+    background:linear-gradient(150deg,#fecaca,#ef4444 65%);
+    border-radius:60% 40% 45% 55% / 55% 55% 45% 45%;
+    box-shadow:0 0 0 6px rgba(239,68,68,.13), inset 0 -8px 18px rgba(0,0,0,.18);
+    position:relative; animation:breathe 4s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{transform:scale(1);} 50%{transform:scale(1.04);}}
+  .cap{margin-top:12px; font-size:.78rem; font-weight:800; letter-spacing:.04em;}
+  .cap.k{color:var(--kappa);} .cap.l{color:var(--lambda);}
+  .cap small{display:block; font-weight:500; color:var(--muted); letter-spacing:0; margin-top:2px;}
+
+  .particle{position:absolute; top:50%; left:120px; width:16px; height:16px; border-radius:50%; margin-top:-8px; opacity:0;}
+  .mode-k .particle{background:var(--kappa); box-shadow:0 0 12px rgba(37,99,235,.7); animation:travel 3.4s linear infinite;}
+  .mode-l .particle{background:var(--lambda); box-shadow:0 0 12px rgba(124,58,237,.7); animation:travel 3.4s linear infinite;}
+  .mode-l .particle{animation-duration:4.1s;}
+  @keyframes travel{0%{transform:translateX(0) scale(.5); opacity:0;} 12%{opacity:1;} 80%{opacity:1;} 100%{transform:translateX(calc(100% + 640px)) scale(1.15); opacity:0;}}
+  .mode-k .particle:nth-child(1){animation-delay:0s;} .mode-k .particle:nth-child(2){animation-delay:.5s;} .mode-k .particle:nth-child(3){animation-delay:1s;} .mode-k .particle:nth-child(4){animation-delay:1.5s;} .mode-k .particle:nth-child(5){animation-delay:2s;} .mode-k .particle:nth-child(6){animation-delay:2.5s;} .mode-k .particle:nth-child(7){animation-delay:3s;}
+  .mode-l .particle:nth-child(1){animation-delay:0s;} .mode-l .particle:nth-child(2){animation-delay:.6s;} .mode-l .particle:nth-child(3){animation-delay:1.2s;} .mode-l .particle:nth-child(4){animation-delay:1.8s;} .mode-l .particle:nth-child(5){animation-delay:2.4s;} .mode-l .particle:nth-child(6){animation-delay:3s;}
+
+  .ratio-readout{margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+  .chip{background:#f1f5f9; border:1px solid var(--line); border-radius:10px; padding:9px 15px; font-size:.86rem; font-weight:700;}
+  .chip span{font-weight:800;}
+  .mode-k .chip.k-chip{background:var(--kappa-soft); border-color:#bfdbfe; color:#1e40af;}
+  .mode-l .chip.l-chip{background:var(--lambda-soft); border-color:#ddd6fe; color:#5b21b6;}
+
+  /* TABLE */
+  .table-card{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:28px; overflow:hidden;}
+  .table-card h2{margin:0; padding:18px 24px; font-size:1.05rem; border-bottom:1px solid var(--line); background:#fbfdff;}
+  table{width:100%; border-collapse:collapse; font-size:.9rem;}
+  th{text-align:left; padding:13px 16px; background:#f1f5f9; font-size:.75rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); border-bottom:1px solid var(--line);}
+  td{padding:14px 16px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tbody tr{transition:background .3s ease, box-shadow .3s ease;}
+  tbody tr:hover{background:#f8fafc;}
+  tr.kappa-row.hot{background:var(--kappa-soft); box-shadow:inset 4px 0 0 var(--kappa);}
+  tr.lambda-row.hot{background:var(--lambda-soft); box-shadow:inset 4px 0 0 var(--lambda);}
+  .tag{display:inline-block; font-size:.72rem; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.04em;}
+  .tag.k{background:var(--kappa-soft); color:#1e40af;} .tag.l{background:var(--lambda-soft); color:#5b21b6;}
+
+  /* QUIZ */
+  .quiz{margin-top:28px; background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px;}
+  .quiz h2{margin:0 0 4px; font-size:1.05rem;} .quiz .sub{margin:0 0 16px; color:var(--muted); font-size:.86rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px; transition:border-color .25s ease;}
+  .q:hover{border-color:#cbd5e1;} .q p{margin:0 0 10px; font-weight:600; font-size:.94rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px; font-size:.86rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px; border-radius:0 10px 10px 0; font-size:.86rem; color:#334155;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  /* FOOTER / GIFT */
+  .gift-footer{
+    margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center;
+    border:1px solid #1e293b;
+  }
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc; letter-spacing:.02em;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{
+    background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px; padding:14px 18px;
+    font-size:.82rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;
+  }
+  .disclaimer-box strong{color:#c2410c;}
+
+  @media (max-width:760px){
+    .cell,.kidney{position:static; transform:none; width:auto; display:inline-block; margin:0 10px;}
+    .track{height:auto; text-align:center;} .particle{display:none;} .kidney{float:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="top">
+    <div>
+      <h1>Light Chains &amp; the Kidney</h1>
+      <p>An animated teaching module on monoclonal gammopathy of renal significance (MGRS)</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- TOGGLE -->
+  <div class="toggle-bar">
+    <span class="label">Select clone:</span>
+    <button class="pill k active" id="btnK" onclick="setMode('k')">High Kappa κ (κ/λ &gt; 1.65)</button>
+    <button class="pill l" id="btnL" onclick="setMode('l')">High Lambda λ (κ/λ &lt; 0.26)</button>
+  </div>
+
+  <!-- ANIMATION STAGE -->
+  <section class="stage mode-k" id="stage">
+    <div class="stage-title">Pathophysiology — animated</div>
+    <div class="track" id="track">
+      <div class="cell">
+        <div class="cell-body"></div>
+        <div class="cap k" id="cellCap">Kappa clone<small>Plasma cell</small></div>
+      </div>
+      <span class="particle"></span><span class="particle"></span><span class="particle"></span>
+      <span class="particle"></span><span class="particle"></span><span class="particle"></span><span class="particle"></span>
+      <div class="kidney">
+        <div class="kidney-shape"></div>
+        <div class="cap k" id="kidCap">Kappa deposits<small>Glomerulus / tubule</small></div>
+      </div>
+    </div>
+    <div class="ratio-readout">
+      <div class="chip k-chip">κ/λ ratio: <span id="ratioVal">&gt; 1.65</span></div>
+      <div class="chip">Dominant clone: <span id="cloneVal">Kappa</span></div>
+      <div class="chip">Typical lesion: <span id="lesionVal">LCDD · Cast nephropathy · PGNMID</span></div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+  <section class="table-card">
+    <h2>Disease ↔ Light Chain Association</h2>
+    <table>
+      <thead>
+        <tr><th>Kidney lesion</th><th>Usual light chain</th><th>Biopsy clue</th><th>Clinical clue</th></tr>
+      </thead>
+      <tbody>
+        <tr class="lambda-row" id="row-amyloid">
+          <td><strong>AL amyloidosis</strong></td>
+          <td><span class="tag l">Lambda λ</span> ~70–80%</td>
+          <td>Congo red <strong>positive</strong>, apple-green birefringence</td>
+          <td>Nephrotic syndrome, systemic symptoms</td>
+        </tr>
+        <tr class="kappa-row" id="row-lcdd">
+          <td><strong>Light chain deposition disease</strong></td>
+          <td><span class="tag k">Kappa κ</span> ~70–80%</td>
+          <td>Congo red <strong>negative</strong>, amorphous deposits, nodular sclerosis</td>
+          <td>CKD, proteinuria, no amyloid</td>
+        </tr>
+        <tr class="kappa-row" id="row-pgnmid">
+          <td><strong>Proliferative GN with monoclonal Ig deposition</strong></td>
+          <td><span class="tag k">Kappa κ</span> more often</td>
+          <td>Endocapillary proliferation + monoclonal deposits</td>
+          <td><strong>Low C3/C4</strong>, dysmorphic RBCs, small clone</td>
+        </tr>
+        <tr class="kappa-row" id="row-cast">
+          <td><strong>Cast nephropathy</strong></td>
+          <td><span class="tag k">Kappa κ</span> more common</td>
+          <td>Tubular casts with light chains, giant cell reaction</td>
+          <td>AKI, myeloma, light chains on urine EP</td>
+        </tr>
+        <tr class="kappa-row" id="row-tubulo">
+          <td><strong>Light chain proximal tubulopathy</strong></td>
+          <td><span class="tag k">Kappa κ</span> more common</td>
+          <td>Proximal tubule crystals</td>
+          <td>Fanconi syndrome, low-grade proteinuria</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+    <p class="sub">Click an option to reveal the answer and explanation.</p>
+    <div class="q">
+      <p>1. Which light chain is most classically linked to AL amyloidosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">Kappa κ</button>
+        <button class="opt" onclick="answer(this,true)">Lambda λ</button>
+      </div>
+      <div class="explain">Lambda light chains are structurally more prone to misfolding into beta-pleated sheet fibrils, so AL amyloidosis is lambda-predominant in roughly 70–80% of cases.</div>
+    </div>
+    <div class="q">
+      <p>2. A patient has κ/λ ratio of 6.1, low C3/C4, and a proliferative GN on biopsy. Most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">AL amyloidosis</button>
+        <button class="opt" onclick="answer(this,false)">Myeloma cast nephropathy</button>
+        <button class="opt" onclick="answer(this,true)">PGNMID</button>
+        <button class="opt" onclick="answer(this,false)">Diabetic kidney disease</button>
+      </div>
+      <div class="explain">Proliferative GN + monoclonal immunoglobulin + low complement = PGNMID. The clone is often small and missed on marrow biopsy, and urine protein is predominantly albumin.</div>
+    </div>
+    <div class="q">
+      <p>3. Which finding favors light chain deposition disease over AL amyloidosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">Congo red negative deposits</button>
+        <button class="opt" onclick="answer(this,false)">Apple-green birefringence</button>
+      </div>
+      <div class="explain">LCDD deposits are amorphous and Congo red negative, whereas amyloid is Congo red positive with apple-green birefringence under polarized light.</div>
+    </div>
+  </section>
+
+  <!-- GIFT & DISCLAIMER FOOTER -->
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and animations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    k: {
+      ratio: "> 1.65",
+      clone: "Kappa",
+      lesion: "LCDD · Cast nephropathy · PGNMID",
+      cellCap: 'Kappa clone<small>Plasma cell</small>',
+      kidCap: 'Kappa deposits<small>Glomerulus / tubule</small>',
+      hot: ['row-lcdd','row-pgnmid','row-cast','row-tubulo']
+    },
+    l: {
+      ratio: "< 0.26",
+      clone: "Lambda",
+      lesion: "AL amyloidosis (most classic)",
+      cellCap: 'Lambda clone<small>Plasma cell</small>',
+      kidCap: 'Lambda fibrils<small>Amyloid in glomerulus</small>',
+      hot: ['row-amyloid']
+    }
+  };
+
+  function setMode(m){
+    const d = data[m];
+    const stage = document.getElementById('stage');
+    stage.classList.remove('mode-k','mode-l');
+    stage.classList.add('mode-' + m);
+    document.getElementById('btnK').classList.toggle('active', m === 'k');
+    document.getElementById('btnL').classList.toggle('active', m === 'l');
+    document.getElementById('ratioVal').textContent = d.ratio;
+    document.getElementById('cloneVal').textContent = d.clone;
+    document.getElementById('lesionVal').textContent = d.lesion;
+    document.getElementById('cellCap').innerHTML = d.cellCap;
+    document.getElementById('kidCap').innerHTML = d.kidCap;
+    const capClass = m === 'k' ? 'cap k' : 'cap l';
+    document.getElementById('cellCap').className = capClass;
+    document.getElementById('kidCap').className = capClass;
+    document.querySelectorAll('tbody tr').forEach(tr => tr.classList.remove('hot'));
+    d.hot.forEach(id => {
+      const row = document.getElementById(id);
+      if(row) row.classList.add('hot');
+    });
+  }
+
+  function answer(btn, correct){
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('k');
+</script>
+</body>
+</html>

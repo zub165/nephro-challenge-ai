@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trimethoprim Blocks ENaC — Clear Cell Diagram</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); position:relative; min-height:700px;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{
+    position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.98);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(15,23,42,.15);
+    width:290px; max-width:calc(100% - 40px);
+    overflow:hidden; z-index:100;
+    transition:border-color .2s ease, box-shadow .2s ease;
+    touch-action:none;
+  }
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-float.dragging{
+    box-shadow:0 12px 32px rgba(15,23,42,.25);
+    transition:none; cursor:grabbing;
+  }
+
+  .info-header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:grab; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;
+  }
+  .info-header:active{cursor:grabbing;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-shrink:0; margin-right:6px; opacity:.5;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569; display:block;}
+
+  .info-header h4{
+    margin:0; font-size:.82rem; font-weight:800; color:#0f172a;
+    flex:1; display:flex; align-items:center; pointer-events:none;
+  }
+  .info-header .toggle-btn{
+    font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px;
+    border-radius:999px; font-weight:700; flex-shrink:0;
+    cursor:pointer; pointer-events:auto;
+  }
+
+  .info-body{
+    padding:12px 14px 14px; max-height:500px;
+    transition:max-height .3s ease, padding .3s ease;
+    overflow:hidden;
+  }
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{
+    display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem;
+    border-bottom:1px solid var(--line); gap:8px;
+  }
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .reset-pos{
+    position:absolute; top:20px; right:20px;
+    background:#0f172a; color:#fff; border:none; border-radius:8px;
+    padding:6px 12px; font-size:.72rem; font-weight:700; cursor:pointer;
+    font-family:inherit; opacity:0; transition:opacity .2s;
+    z-index:50; pointer-events:none;
+  }
+  .reset-pos.visible{opacity:.85;pointer-events:auto;}
+  .reset-pos:hover{opacity:1;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Trimethoprim Blocks ENaC — Clear Cell Diagram</h1>
+      <p>Lumen on the left · Cell in the middle · Blood on the right · Drag the info panel to reposition</p>
+    </div>
+    <div class="badge">Nephrology</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>Patient on trimethoprim develops hyperkalemia</h2>
+      <p>Not on ACEi, ARB, MRA, or K⁺ supplement.</p>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab opt1 active" onclick="setMode('opt1')">🔴 ENaC Blockade</button>
+    <button class="tab opt2" onclick="setMode('opt2')">🟣 Normal vs Blocked</button>
+    <button class="tab opt3" onclick="setMode('opt3')">🔵 Ion Flow</button>
+    <button class="tab opt4" onclick="setMode('opt4')">🟡 Clinical</button>
+  </div>
+
+  <section class="stage" id="stage">
+    <button class="reset-pos" id="resetPos" onclick="resetPanelPosition()">
+      ⟲ Reset panel position
+    </button>
+
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lumenGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#dbeafe"/>
+          <stop offset="100%" stop-color="#eff6ff"/>
+        </linearGradient>
+        <linearGradient id="cellGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fef3c7"/>
+          <stop offset="100%" stop-color="#fde68a"/>
+        </linearGradient>
+        <linearGradient id="bloodGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#fee2e2"/>
+          <stop offset="100%" stop-color="#fecaca"/>
+        </linearGradient>
+        <marker id="arrowNa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlock" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#991b1b"/>
+        </marker>
+        <filter id="shadow">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+          <feOffset dx="0" dy="2" result="offset"/>
+          <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+          <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <!-- ============ TITLE ============ -->
+      <text x="600" y="40" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0f172a">
+        Trimethoprim Blocks ENaC in the Collecting Duct
+      </text>
+      <text x="600" y="68" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b">
+        Lumen (urine) on the left · Principal cell in the middle · Blood on the right
+      </text>
+
+      <!-- ============ COMPARTMENT LABELS (top) ============ -->
+      <!-- Lumen label -->
+      <g transform="translate(155, 120)">
+        <rect x="-120" y="-25" width="240" height="50" rx="10" fill="#2563eb"/>
+        <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🧪 LUMEN (urine side)
+        </text>
+      </g>
+
+      <!-- Cell label -->
+      <g transform="translate(600, 120)">
+        <rect x="-140" y="-25" width="280" height="50" rx="10" fill="#ca8a04"/>
+        <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🔬 PRINCIPAL CELL
+        </text>
+      </g>
+
+      <!-- Blood label -->
+      <g transform="translate(1045, 120)">
+        <rect x="-120" y="-25" width="240" height="50" rx="10" fill="#dc2626"/>
+        <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🩸 BLOOD (interstitium)
+        </text>
+      </g>
+
+      <!-- ============ LUMEN COMPARTMENT ============ -->
+      <rect x="20" y="160" width="270" height="540" rx="16" fill="url(#lumenGrad)" stroke="#2563eb" stroke-width="3"/>
+      <text x="155" y="195" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e40af">
+        URINE / TUBULAR LUMEN
+      </text>
+      <text x="155" y="215" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e40af">
+        (inside the tubule)
+      </text>
+
+      <!-- Na+ in lumen (will be reabsorbed normally) -->
+      <g transform="translate(70, 280)">
+        <circle r="22" fill="#2563eb" stroke="#1e3a8a" stroke-width="2"/>
+        <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">Na⁺</text>
+      </g>
+      <text x="70" y="325" text-anchor="middle" font-family="Arial" font-size="10" fill="#1e40af">sodium</text>
+
+      <!-- K+ in lumen (secreted) -->
+      <g transform="translate(240, 600)">
+        <circle r="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+        <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">K⁺</text>
+      </g>
+      <text x="240" y="645" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">potassium</text>
+
+      <!-- ============ CELL ============ -->
+      <!-- Cell body (drawn as a rounded rectangle, clearly a cell) -->
+      <rect x="380" y="200" width="440" height="460" rx="30" fill="url(#cellGrad)" stroke="#ca8a04" stroke-width="4" filter="url(#shadow)"/>
+
+      <!-- Cell nucleus -->
+      <ellipse cx="600" cy="430" rx="80" ry="60" fill="#fbbf24" stroke="#92400e" stroke-width="3"/>
+      <ellipse cx="600" cy="430" rx="35" ry="28" fill="#92400e" opacity="0.4"/>
+      <text x="600" y="435" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">
+        NUCLEUS
+      </text>
+
+      <!-- ============ APICAL MEMBRANE (left edge of cell, faces lumen) ============ -->
+      <line x1="380" y1="200" x2="380" y2="660" stroke="#7f1d1d" stroke-width="6"/>
+      <text x="360" y="440" text-anchor="end" font-family="Arial" font-size="10" font-weight="800" fill="#7f1d1d" transform="rotate(-90 360 440)">
+        APICAL MEMBRANE
+      </text>
+
+      <!-- ENaC channel embedded in apical membrane -->
+      <g transform="translate(380, 320)">
+        <rect x="-16" y="-50" width="32" height="100" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+        <text x="0" y="-58" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">ENaC</text>
+        <text x="0" y="75" text-anchor="middle" font-family="Arial" font-size="10" fill="#991b1b">sodium channel</text>
+      </g>
+
+      <!-- ROMK channel embedded in apical membrane -->
+      <g transform="translate(380, 560)">
+        <rect x="-16" y="-50" width="32" height="100" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+        <text x="0" y="-58" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">ROMK</text>
+        <text x="0" y="75" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">K⁺ channel</text>
+      </g>
+
+      <!-- ============ BASOLATERAL MEMBRANE (right edge of cell, faces blood) ============ -->
+      <line x1="820" y1="200" x2="820" y2="660" stroke="#1e3a8a" stroke-width="6"/>
+      <text x="840" y="440" text-anchor="start" font-family="Arial" font-size="10" font-weight="800" fill="#1e3a8a" transform="rotate(90 840 440)">
+        BASOLATERAL MEMBRANE
+      </text>
+
+      <!-- Na/K ATPase embedded in basolateral membrane -->
+      <g transform="translate(820, 440)">
+        <rect x="-16" y="-70" width="32" height="140" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+        <text x="0" y="-78" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">Na⁺/K⁺</text>
+        <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">ATPase</text>
+      </g>
+
+      <!-- ============ ION MOVEMENT ARROWS ============ -->
+
+      <!-- 1. Na+ enters cell from lumen through ENaC (blocked in this case) -->
+      <path d="M 260 310 L 360 310" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 4" fill="none"/>
+      <text x="310" y="300" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#64748b">Na⁺ ⛔</text>
+
+      <!-- 2. Trimethoprim blocker circle -->
+      <g transform="translate(335, 380)">
+        <circle r="34" fill="#dc2626" stroke="#7f1d1d" stroke-width="3" class="pulse-block"/>
+        <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="9" font-weight="800" fill="#fff">TRIMETH-</text>
+        <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="9" font-weight="800" fill="#fff">OPRIM</text>
+      </g>
+      <path d="M 335 360 L 335 345" stroke="#dc2626" stroke-width="4" fill="none" marker-end="url(#arrowBlock)"/>
+      <text x="335" y="425" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">
+        BLOCKS ENaC
+      </text>
+
+      <!-- 3. Reduced K+ secretion (K+ stays in cell → blood, less into lumen) -->
+      <path d="M 380 580 L 270 580" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 4" fill="none"/>
+      <text x="325" y="570" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#64748b">K⁺ ↓</text>
+
+      <!-- 4. Na/K ATPase pumps 3 Na out, 2 K in (still works, but K accumulates) -->
+      <path d="M 820 400 L 900 400" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowNa)"/>
+      <text x="860" y="390" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#2563eb">3 Na⁺ out</text>
+
+      <path d="M 900 500 L 820 500" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowK)"/>
+      <text x="860" y="520" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">2 K⁺ in</text>
+
+      <!-- 5. K+ diffuses back out to blood → HYPERKALEMIA -->
+      <path d="M 820 620 L 960 620" stroke="#dc2626" stroke-width="4" fill="none" marker-end="url(#arrowK)"/>
+      <text x="890" y="610" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">
+        K⁺ accumulates in blood
+      </text>
+
+      <!-- ============ BLOOD COMPARTMENT ============ -->
+      <rect x="960" y="160" width="220" height="540" rx="16" fill="url(#bloodGrad)" stroke="#dc2626" stroke-width="3"/>
+      <text x="1070" y="195" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">
+        BLOOD
+      </text>
+      <text x="1070" y="215" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">
+        (peritubular capillary)
+      </text>
+
+      <!-- K+ building up in blood -->
+      <g transform="translate(1030, 350)">
+        <circle r="24" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+        <text x="0" y="7" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">K⁺</text>
+      </g>
+      <g transform="translate(1100, 420)">
+        <circle r="24" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+        <text x="0" y="7" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">K⁺</text>
+      </g>
+      <g transform="translate(1050, 500)">
+        <circle r="24" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+        <text x="0" y="7" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">K⁺</text>
+      </g>
+
+      <text x="1070" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">
+        ⚠ HIGH K⁺
+      </text>
+      <text x="1070" y="662" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">
+        HYPERKALEMIA
+      </text>
+
+      <!-- ============ LEGEND / EXPLANATION ============ -->
+      <g transform="translate(600, 720)">
+        <rect x="-560" y="-30" width="1120" height="60" rx="12" fill="#0f172a"/>
+        <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#fef3c7">
+          Normal: ENaC lets Na⁺ in → lumen becomes negative → drives K⁺ out through ROMK → K⁺ excreted
+        </text>
+        <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#fef3c7">
+          Blocked: Trimethoprim blocks ENaC → no Na⁺ entry → no lumen negativity → K⁺ stays in blood → HYPERKALEMIA
+        </text>
+      </g>
+
+      <style>
+        @keyframes pulseBlock {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.1); opacity: .8; }
+        }
+        .pulse-block { animation: pulseBlock 1.6s ease-in-out infinite; transform-origin: center; }
+      </style>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" id="infoHeader">
+        <h4 id="infoTitle">
+          <span class="grip" aria-hidden="true"><span></span><span></span><span></span></span>
+          Trimethoprim Blocks ENaC
+        </h4>
+        <span class="toggle-btn" id="toggleBtn" onclick="togglePanel(event)">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">Answer</span><span class="v">C</span></div>
+        <div class="row"><span class="k">Target</span><span class="v">ENaC</span></div>
+        <div class="row"><span class="k">Site</span><span class="v">Collecting duct</span></div>
+        <div class="row"><span class="k">Effect</span><span class="v">↓ Lumen negativity</span></div>
+        <div class="row"><span class="k">Result</span><span class="v">↓ K⁺ secretion</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+</div>
+
+<script>
+/* Draggable panel */
+(function () {
+  "use strict";
+  var panel = document.getElementById("infoPanel");
+  var handle = document.getElementById("infoHeader");
+  var stage = document.getElementById("stage");
+  var resetBtn = document.getElementById("resetPos");
+  var isDragging = false, dragOffsetX = 0, dragOffsetY = 0;
+  var DEFAULT_TOP = 80, DEFAULT_RIGHT = 20;
+
+  function getPointer(e) {
+    if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+  }
+  function onDown(e) {
+    if (e.target.closest(".toggle-btn")) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    isDragging = true;
+    var rect = panel.getBoundingClientRect();
+    var stageRect = stage.getBoundingClientRect();
+    var pointer = getPointer(e);
+    dragOffsetX = pointer.x - rect.left;
+    dragOffsetY = pointer.y - rect.top;
+    panel.style.right = "auto";
+    panel.style.left = (rect.left - stageRect.left + stage.scrollLeft) + "px";
+    panel.style.top  = (rect.top  - stageRect.top  + stage.scrollTop)  + "px";
+    panel.classList.add("dragging");
+    resetBtn.classList.add("visible");
+    e.preventDefault();
+  }
+  function onMove(e) {
+    if (!isDragging) return;
+    var pointer = getPointer(e);
+    var stageRect = stage.getBoundingClientRect();
+    var newLeft = pointer.x - dragOffsetX - stageRect.left + stage.scrollLeft;
+    var newTop  = pointer.y - dragOffsetY - stageRect.top  + stage.scrollTop;
+    var maxLeft = stage.clientWidth  - panel.offsetWidth  - 8;
+    var maxTop  = stage.clientHeight - panel.offsetHeight - 8;
+    if (newLeft < 8) newLeft = 8;
+    if (newTop  < 8) newTop  = 8;
+    if (newLeft > maxLeft) newLeft = maxLeft;
+    if (newTop  > maxTop)  newTop  = maxTop;
+    panel.style.left = newLeft + "px";
+    panel.style.top  = newTop  + "px";
+    e.preventDefault();
+  }
+  function onUp() { if (!isDragging) return; isDragging = false; panel.classList.remove("dragging"); }
+  handle.addEventListener("mousedown", onDown);
+  handle.addEventListener("touchstart", onDown, { passive: false });
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("touchmove", onMove, { passive: false });
+  document.addEventListener("mouseup", onUp);
+  document.addEventListener("touchend", onUp);
+  window.resetPanelPosition = function () {
+    panel.style.left = "auto";
+    panel.style.top = DEFAULT_TOP + "px";
+    panel.style.right = DEFAULT_RIGHT + "px";
+    resetBtn.classList.remove("visible");
+  };
+})();
+
+function setMode(mode) {
+  document.querySelectorAll(".tab").forEach(function(t){ t.classList.remove("active"); });
+  document.querySelector(".tab." + mode).classList.add("active");
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-float highlight-" + mode +
+    (panel.classList.contains("collapsed") ? " collapsed" : "");
+}
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  document.getElementById("infoPanel").classList.toggle("collapsed", panelCollapsed);
+  document.getElementById("toggleBtn").textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+</script>
+</body>
+</html>

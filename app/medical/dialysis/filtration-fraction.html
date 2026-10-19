@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filtration Fraction — Native Kidney vs CRRT Circuit</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — NATIVE KIDNEY FF
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">FILTRATION FRACTION — NATIVE KIDNEY</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">The proportion of plasma entering the glomerulus that is filtered</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Normal FF ≈ 20%</text>
+          </g>
+
+          <!-- Formula -->
+          <g transform="translate(700, 400)">
+            <rect x="-500" y="-80" width="1000" height="160" rx="20" fill="#fff" stroke="#0f172a" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="20" font-weight="800" fill="#0f172a">FORMULA</text>
+            <text x="0" y="20" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">FF = GFR / RPF</text>
+            <text x="0" y="60" text-anchor="middle" font-size="16" fill="#64748b">GFR = glomerular filtration rate · RPF = renal plasma flow</text>
+          </g>
+
+          <!-- Values -->
+          <g transform="translate(250, 700)">
+            <rect x="-200" y="-100" width="400" height="200" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">GFR</text>
+            <text x="0" y="0" text-anchor="middle" font-size="36" font-weight="800" fill="#5b21b6">125</text>
+            <text x="0" y="35" text-anchor="middle" font-size="14" fill="#6d28d9">mL/min</text>
+          </g>
+
+          <g transform="translate(700, 700)">
+            <rect x="-200" y="-100" width="400" height="200" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">RPF</text>
+            <text x="0" y="0" text-anchor="middle" font-size="36" font-weight="800" fill="#155e75">600</text>
+            <text x="0" y="35" text-anchor="middle" font-size="14" fill="#0e7490">mL/min</text>
+          </g>
+
+          <g transform="translate(1150, 700)">
+            <rect x="-200" y="-100" width="400" height="200" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">FF</text>
+            <text x="0" y="0" text-anchor="middle" font-size="36" font-weight="800" fill="#166534">20%</text>
+            <text x="0" y="35" text-anchor="middle" font-size="14" fill="#15803d">normal</text>
+          </g>
+
+          <g transform="translate(700, 890)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#713f12">20% OF PLASMA IS FILTERED — 80% CONTINUES TO THE EFFERENT ARTERIOLE</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" fill="#a16207">FF is regulated by the balance of afferent and efferent arteriolar tone</text>
+            <text x="0" y="42" text-anchor="middle" font-size="15" font-style="italic" fill="#a16207">Angiotensin II preferentially constricts the efferent arteriole → ↑ FF</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — CRRT FF
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">FILTRATION FRACTION — CRRT CIRCUIT</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">The proportion of circuit plasma removed as ultrafiltrate</text>
+          </g>
+
+          <!-- Formula -->
+          <g transform="translate(700, 270)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="18" fill="#fff" stroke="#0f172a" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#0f172a">FORMULA</text>
+            <text x="0" y="30" text-anchor="middle" font-size="32" font-weight="800" fill="#dc2626">FF = Q_UF / Q_Plasma</text>
+          </g>
+
+          <!-- Q_UF -->
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">Q_UF (ultrafiltration)</text>
+            <line x1="-140" y1="-70" x2="140" y2="-70" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="-120" y="-30" font-size="14" font-weight="700" fill="#6d28d9">Effluent rate</text>
+            <text x="120" y="-30" text-anchor="end" font-size="14" font-weight="800" fill="#5b21b6">2000 mL/h</text>
+            <text x="-120" y="5" font-size="14" font-weight="700" fill="#6d28d9">Net removal</text>
+            <text x="120" y="5" text-anchor="end" font-size="14" font-weight="800" fill="#5b21b6">300 mL/h</text>
+            <line x1="-140" y1="35" x2="140" y2="35" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="-120" y="70" font-size="14" font-weight="800" fill="#5b21b6">Total</text>
+            <text x="120" y="70" text-anchor="end" font-size="18" font-weight="800" fill="#5b21b6">2300 mL/h</text>
+            <text x="0" y="115" text-anchor="middle" font-size="12" fill="#6d28d9">(dialysate + replacement + net UF)</text>
+          </g>
+
+          <!-- Q_Plasma -->
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">Q_Plasma</text>
+            <line x1="-140" y1="-70" x2="140" y2="-70" stroke="#cffafe" stroke-width="2"/>
+            <text x="-120" y="-30" font-size="14" font-weight="700" fill="#0e7490">Blood flow</text>
+            <text x="120" y="-30" text-anchor="end" font-size="14" font-weight="800" fill="#155e75">12,000 mL/h</text>
+            <text x="-120" y="5" font-size="14" font-weight="700" fill="#0e7490">Hematocrit</text>
+            <text x="120" y="5" text-anchor="end" font-size="14" font-weight="800" fill="#155e75">30%</text>
+            <line x1="-140" y1="35" x2="140" y2="35" stroke="#cffafe" stroke-width="2"/>
+            <text x="-120" y="70" font-size="14" font-weight="800" fill="#155e75">Q_plasma</text>
+            <text x="120" y="70" text-anchor="end" font-size="18" font-weight="800" fill="#155e75">8400 mL/h</text>
+            <text x="0" y="115" text-anchor="middle" font-size="12" fill="#0e7490">= Q_b × (1 − Hct)</text>
+          </g>
+
+          <!-- Result -->
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">FILTRATION FRACTION</text>
+            <line x1="-140" y1="-70" x2="140" y2="-70" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">27%</text>
+            <text x="0" y="20" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">ABOVE TARGET</text>
+            <line x1="-140" y1="45" x2="140" y2="45" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Target: &lt; 20–25%</text>
+            <text x="0" y="100" text-anchor="middle" font-size="12" fill="#7f1d1d">High FF → hemoconcentration</text>
+            <text x="0" y="120" text-anchor="middle" font-size="12" fill="#7f1d1d">→ ↑ clotting risk</text>
+          </g>
+
+          <g transform="translate(700, 890)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">LOWER FF = LOWER CLOTTING RISK</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" fill="#15803d">↑ Blood flow · ↓ Effluent · ↓ Net UF · Switch to prefilter replacement</text>
+            <text x="0" y="42" text-anchor="middle" font-size="15" font-style="italic" fill="#15803d">High FF concentrates proteins within the filter → ↑ oncotic pressure → clotting</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — APPLIED TO THE CASE
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">APPLIED TO THE CRRT CLOTTING CASE</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Two drivers of filter failure — citrate underdosing AND high FF</text>
+          </g>
+
+          <!-- Driver 1 -->
+          <g transform="translate(350, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">DRIVER 1 — INADEQUATE CITRATE</text>
+            <text x="0" y="-180" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">PRIMARY FIX</text>
+
+            <g font-size="16">
+              <text x="-260" y="-120" font-weight="800" fill="#166534">Postfilter iCa</text>
+              <text x="-260" y="-80" font-weight="700" fill="#15803d">0.51 mmol/L (target 0.25–0.35)</text>
+              <text x="-260" y="-40" font-weight="700" fill="#15803d">Coagulation cascade NOT suppressed</text>
+              <text x="-260" y="0" font-weight="800" fill="#166534">Action</text>
+              <text x="-260" y="40" font-weight="700" fill="#15803d">↑ Citrate rate</text>
+              <text x="-260" y="80" font-weight="700" fill="#15803d">Titrate to circuit iCa 0.25–0.35</text>
+              <text x="-260" y="120" font-weight="700" fill="#15803d">Monitor q6h (both circuit & systemic)</text>
+            </g>
+
+            <rect x="-260" y="180" width="520" height="60" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="218" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">THE ANSWER TO THE QUESTION</text>
+          </g>
+
+          <!-- Driver 2 -->
+          <g transform="translate(1050, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#7c3aed"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">DRIVER 2 — HIGH FILTRATION FRACTION</text>
+            <text x="0" y="-180" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">SECONDARY CONSIDERATION</text>
+
+            <g font-size="16">
+              <text x="-260" y="-120" font-weight="800" fill="#5b21b6">Filtration fraction</text>
+              <text x="-260" y="-80" font-weight="700" fill="#6d28d9">27% (target &lt; 20–25%)</text>
+              <text x="-260" y="-40" font-weight="700" fill="#6d28d9">Hemoconcentration within the filter</text>
+              <text x="-260" y="0" font-weight="800" fill="#5b21b6">Actions to lower FF</text>
+              <text x="-260" y="40" font-weight="700" fill="#6d28d9">↑ Blood flow rate</text>
+              <text x="-260" y="80" font-weight="700" fill="#6d28d9">↓ Effluent / dialysate rate</text>
+              <text x="-260" y="120" font-weight="700" fill="#6d28d9">Switch to prefilter replacement</text>
+            </g>
+
+            <rect x="-260" y="180" width="520" height="60" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="218" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">SECOND-LINE ADJUSTMENT</text>
+          </g>
+
+          <g transform="translate(700, 890)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#0f172a"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">ORDER OF CORRECTION</text>
+            <text x="0" y="20" text-anchor="middle" font-size="16" fill="#cbd5e1">1. Fix citrate first → 2. Lower FF if still clotting → 3. Evaluate mechanical causes</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — NATIVE vs CRRT COMPARISON
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">FILTRATION FRACTION — NATIVE KIDNEY vs CRRT</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Same concept, different contexts, different implications</text>
+          </g>
+
+          <!-- Native -->
+          <g transform="translate(350, 500)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#0891b2"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">NATIVE KIDNEY</text>
+
+            <g font-size="16">
+              <text x="-260" y="-160" font-weight="800" fill="#155e75">Formula</text>
+              <text x="-260" y="-120" font-weight="700" fill="#0e7490">FF = GFR / RPF</text>
+              <text x="-260" y="-80" font-weight="800" fill="#155e75">Normal</text>
+              <text x="-260" y="-40" font-weight="700" fill="#0e7490">~20%</text>
+              <text x="-260" y="0" font-weight="800" fill="#155e75">High FF means</text>
+              <text x="-260" y="40" font-weight="700" fill="#0e7490">Glomerular hypertension</text>
+              <text x="-260" y="80" font-weight="700" fill="#0e7490">→ CKD progression</text>
+              <text x="-260" y="120" font-weight="800" fill="#155e75">Modulators</text>
+              <text x="-260" y="160" font-weight="700" fill="#0e7490">Angiotensin II ↑ FF</text>
+              <text x="-260" y="200" font-weight="700" fill="#0e7490">ACEi/ARB ↓ FF (↓ GFR)</text>
+            </g>
+          </g>
+
+          <!-- CRRT -->
+          <g transform="translate(1050, 500)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">CRRT CIRCUIT</text>
+
+            <g font-size="16">
+              <text x="-260" y="-160" font-weight="800" fill="#991b1b">Formula</text>
+              <text x="-260" y="-120" font-weight="700" fill="#7f1d1d">FF = Q_UF / Q_Plasma</text>
+              <text x="-260" y="-80" font-weight="800" fill="#991b1b">Target</text>
+              <text x="-260" y="-40" font-weight="700" fill="#7f1d1d">&lt; 20–25%</text>
+              <text x="-260" y="0" font-weight="800" fill="#991b1b">High FF means</text>
+              <text x="-260" y="40" font-weight="700" fill="#7f1d1d">Hemoconcentration</text>
+              <text x="-260" y="80" font-weight="700" fill="#7f1d1d">→ Filter clotting</text>
+              <text x="-260" y="120" font-weight="800" fill="#991b1b">Modulators</text>
+              <text x="-260" y="160" font-weight="700" fill="#7f1d1d">↑ Qb ↓ FF</text>
+              <text x="-260" y="200" font-weight="700" fill="#7f1d1d">↓ Effluent ↓ FF</text>
+            </g>
+          </g>
+
+          <g transform="translate(700, 890)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">SAME PRINCIPLE, DIFFERENT CONSEQUENCES</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" fill="#15803d">High FF in kidney = glomerular damage · High FF in CRRT = filter clotting</text>
+            <text x="0" y="42" text-anchor="middle" font-size="15" font-style="italic" fill="#15803d">Low FF in kidney = poor clearance · Low FF in CRRT = inefficient dialysis</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Filtration Fraction — Native Kidney vs CRRT Circuit",
+  subtitle: "Same concept, different contexts, different implications",
+  badge: "NEPHROLOGY · PHYSIOLOGY · CRRT",
+  caseTitle: "Concept: Filtration fraction (FF) in the native kidney and in the CRRT circuit",
+  caseDescription: "FF is the proportion of plasma filtered across a membrane. In the native kidney, FF = GFR/RPF (normal ~20%). In the CRRT circuit, FF = Q_UF/Q_Plasma (target < 20–25%). High FF in the kidney drives CKD progression; high FF in the CRRT circuit drives filter clotting.",
+  labChips: [
+    { text: "Native FF = GFR/RPF", abnormal: false },
+    { text: "Normal ≈ 20%", abnormal: false },
+    { text: "CRRT FF = Q_UF/Q_Plasma", abnormal: false },
+    { text: "Target < 20–25%", abnormal: false },
+    { text: "This case: 27% (high)", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Native Kidney", className: "opt1" },
+    { id: "opt2", label: "🟣 CRRT Circuit", className: "opt2" },
+    { id: "opt3", label: "🔵 Applied to Case", className: "opt3" },
+    { id: "opt4", label: "🟡 Native vs CRRT", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Filtration Fraction — Native Kidney",
+      infoRows: [
+        { k: "Formula", v: "FF = GFR / RPF" },
+        { k: "Normal GFR", v: "~125 mL/min" },
+        { k: "Normal RPF", v: "~600 mL/min" },
+        { k: "Normal FF", v: "~20%" },
+        { k: "Regulator", v: "Afferent/efferent tone" }
+      ],
+      svgTitle: "Filtration Fraction — Native Kidney",
+      svgSubtitle: "The proportion of plasma entering the glomerulus that is filtered",
+      bannerBg: "#dc2626",
+      bannerText1: "FF = GFR / RPF — normal ≈ 20%",
+      bannerText2: "20% of plasma is filtered; 80% continues to the efferent arteriole",
+      panel1Title: "🔬 The formula",
+      panel1Tagline: "How to calculate FF",
+      panel1List: [
+        "<strong>FF = GFR / RPF</strong>",
+        "Normal GFR ≈ <strong>125 mL/min</strong>",
+        "Normal RPF ≈ <strong>600 mL/min</strong>",
+        "Normal FF ≈ <strong>20%</strong>",
+        "This means 20% of plasma is filtered into Bowman's space; 80% continues to the efferent arteriole"
+      ],
+      panel2Title: "🔬 What determines FF?",
+      panel2Tagline: "Balance of arteriolar tone",
+      panel2List: [
+        "<strong>↑ Efferent arteriolar tone</strong> (e.g., angiotensin II) → ↑ FF",
+        "<strong>↓ Efferent arteriolar tone</strong> (e.g., ACEi/ARB) → ↓ FF → ↓ GFR",
+        "<strong>↑ Afferent arteriolar tone</strong> (e.g., NSAIDs) → ↓ RPF + ↓ GFR",
+        "<strong>↑ Plasma oncotic pressure</strong> (e.g., dehydration) → ↓ FF",
+        "<strong>↑ Hematocrit</strong> (↑ viscosity) → ↓ FF"
+      ],
+      alertIcon: "🩸",
+      alertTitle: "Clinical relevance — FF in CKD",
+      alertText: "High FF contributes to <strong>glomerular hypertension</strong> and <strong>CKD progression</strong>. Reducing FF with ACEi/ARB is <strong>renoprotective</strong>, even though it causes an acute creatinine rise."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Filtration Fraction — CRRT Circuit",
+      infoRows: [
+        { k: "Formula", v: "FF = Q_UF / Q_Plasma" },
+        { k: "Q_UF", v: "Effluent + net fluid removal" },
+        { k: "Q_Plasma", v: "Q_b × (1 − Hct)" },
+        { k: "Target FF", v: "< 20–25%" },
+        { k: "High FF →", v: "Filter clotting" }
+      ],
+      svgTitle: "Filtration Fraction — CRRT Circuit",
+      svgSubtitle: "The proportion of circuit plasma removed as ultrafiltrate",
+      bannerBg: "#7c3aed",
+      bannerText1: "FF = Q_UF / Q_Plasma — target < 20–25%",
+      bannerText2: "High FF → hemoconcentration → filter clotting",
+      panel1Title: "🔬 How to calculate CRRT FF",
+      panel1Tagline: "Two inputs, one ratio",
+      panel1List: [
+        "<strong>Q_UF</strong> = ultrafiltration rate = effluent + net fluid removal",
+        "<strong>Q_Plasma</strong> = blood flow rate × (1 − hematocrit)",
+        "<strong>FF = Q_UF / Q_Plasma × 100%</strong>",
+        "Example: Q_UF 2300 mL/h, Q_Plasma 8400 mL/h → FF = 27%",
+        "<strong>Target: < 20–25%</strong>"
+      ],
+      panel2Title: "🔬 Why FF matters in CRRT",
+      panel2Tagline: "Hemoconcentration and clotting",
+      panel2List: [
+        "As blood passes through the filter, plasma water is removed → <strong>↑ hematocrit within the filter</strong>",
+        "Proteins become <strong>concentrated</strong> → ↑ oncotic pressure",
+        "↑ Oncotic pressure promotes <strong>clotting and protein deposition</strong> on the membrane",
+        "<strong>High FF = high clotting risk</strong>",
+        "Keep FF < 20–25% to extend filter life"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "How to lower CRRT FF",
+      alertText: "<strong>↑ Blood flow rate · ↓ Effluent/dialysate rate · ↓ Net removal · Switch to prefilter replacement</strong>. These maneuvers lower FF and reduce filter clotting risk."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Applied to the CRRT Clotting Case",
+      infoRows: [
+        { k: "Case Qb", v: "200 mL/min" },
+        { k: "Case Hct", v: "30%" },
+        { k: "Q_Plasma", v: "8400 mL/h" },
+        { k: "Q_UF", v: "2300 mL/h" },
+        { k: "FF", v: "27% (high)" }
+      ],
+      svgTitle: "Applied to the CRRT Clotting Case",
+      svgSubtitle: "Two drivers of filter failure — citrate underdosing AND high FF",
+      bannerBg: "#0891b2",
+      bannerText1: "Order of correction: 1. Fix citrate first → 2. Lower FF if still clotting → 3. Evaluate mechanical causes",
+      bannerText2: "Citrate underdosing is the primary cause; high FF is secondary",
+      panel1Title: "🔬 Driver 1 — Inadequate citrate (primary)",
+      panel1Tagline: "The answer to the question",
+      panel1List: [
+        "<strong>Postfilter iCa 0.51 mmol/L</strong> — above the target range (0.25–0.35)",
+        "Coagulation cascade NOT suppressed → filter thrombosis",
+        "<strong>Fix:</strong> increase citrate rate until circuit iCa is 0.25–0.35",
+        "<strong>Monitor:</strong> circuit iCa q6h; systemic iCa to avoid hypocalcemia",
+        "<strong>This is the primary answer</strong>"
+      ],
+      panel2Title: "🔬 Driver 2 — High filtration fraction (secondary)",
+      panel2Tagline: "Contributing factor",
+      panel2List: [
+        "Q_b 200 mL/min = 12,000 mL/h; Hct 30% → Q_Plasma = 8400 mL/h",
+        "Q_UF = 1000 (dialysate) + 1000 (postfilter RF) + 300 (net) = 2300 mL/h",
+        "<strong>FF = 2300 / 8400 ≈ 27%</strong> — above the 20–25% target",
+        "High FF → hemoconcentration within the filter → ↑ clotting risk",
+        "<strong>Actions:</strong> ↑ Qb, ↓ effluent, ↓ net UF, switch to prefilter replacement"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Order of correction",
+      alertText: "<strong>1. Fix citrate first</strong> (most immediate, most correctable). <strong>2. If filter still clots</strong>, lower the filtration fraction. <strong>3. Only then</strong> consider mechanical causes (access replacement, modality change)."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Native Kidney vs CRRT — Side by Side",
+      infoRows: [
+        { k: "Native", v: "FF = GFR/RPF" },
+        { k: "CRRT", v: "FF = Q_UF/Q_Plasma" },
+        { k: "Native target", v: "~20%" },
+        { k: "CRRT target", v: "< 20–25%" },
+        { k: "Both", v: "Proportion of plasma filtered" }
+      ],
+      svgTitle: "Filtration Fraction — Native Kidney vs CRRT",
+      svgSubtitle: "Same concept, different contexts, different implications",
+      bannerBg: "#ca8a04",
+      bannerText1: "High FF in kidney = glomerular damage · High FF in CRRT = filter clotting",
+      bannerText2: "Low FF in kidney = poor clearance · Low FF in CRRT = inefficient dialysis",
+      panel1Title: "🔬 Native kidney",
+      panel1Tagline: "Physiology and disease",
+      panel1List: [
+        "<strong>Formula:</strong> FF = GFR / RPF",
+        "<strong>Normal:</strong> ~20%",
+        "<strong>High FF</strong> → glomerular hypertension → CKD progression",
+        "<strong>Modulators:</strong> angiotensin II ↑ FF, ACEi/ARB ↓ FF",
+        "<strong>Renoprotection:</strong> reducing FF preserves kidney function long-term"
+      ],
+      panel2Title: "🔬 CRRT circuit",
+      panel2Tagline: "Engineering and filter life",
+      panel2List: [
+        "<strong>Formula:</strong> FF = Q_UF / Q_Plasma",
+        "<strong>Target:</strong> < 20–25%",
+        "<strong>High FF</strong> → hemoconcentration → filter clotting",
+        "<strong>Modulators:</strong> ↑ Qb ↓ FF, ↓ effluent ↓ FF, prefilter RF ↓ FF",
+        "<strong>Filter preservation:</strong> keep FF low to extend filter life"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Key conceptual takeaway",
+      alertText: "The <strong>same physical concept</strong> — the fraction of plasma filtered across a membrane — has <strong>opposite clinical implications</strong> depending on the context: <strong>kidney damage</strong> in the native organ, <strong>filter clotting</strong> in the extracorporeal circuit."
+    }
+  },
+  comparison: {
+    title: "📊 Filtration Fraction — Native Kidney vs CRRT Circuit",
+    sub: "Same concept, different contexts, different implications",
+    head: ["Feature", "Native kidney", "CRRT circuit"],
+    rows: [
+      { cells: ["Formula", "FF = GFR / RPF", "FF = Q_UF / Q_Plasma"], hero: false },
+      { cells: ["Numerator", "GFR (mL/min)", "Q_UF (mL/h)"], hero: false },
+      { cells: ["Denominator", "Renal plasma flow (mL/min)", "Q_Plasma = Q_b × (1 − Hct)"], hero: false },
+      { cells: ["Normal / target", "~20%", "< 20–25%"], hero: false },
+      { cells: ["Consequence of high FF", "Glomerular hypertension → CKD progression", "Hemoconcentration → filter clotting"], hero: true },
+      { cells: ["Consequence of low FF", "Poor clearance", "Inefficient dialysis"], hero: false },
+      { cells: ["Key modulators", "Angiotensin II ↑ FF; ACEi/ARB ↓ FF", "↑ Qb ↓ FF; ↓ effluent ↓ FF; prefilter RF ↓ FF"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "What is the formula for filtration fraction in the native kidney?",
+      options: [
+        { text: "FF = GFR / RPF.", correct: true,
+          explanation: "In the native kidney, FF = GFR / RPF (renal plasma flow). Normal FF is approximately 20%." },
+        { text: "FF = RPF / GFR.", correct: false,
+          explanation: "This is the inverse — the correct formula is GFR/RPF." },
+        { text: "FF = GFR × RPF.", correct: false,
+          explanation: "This is not the correct formula. FF is a ratio, not a product." }
+      ]
+    },
+    {
+      question: "What is the normal filtration fraction in the native kidney?",
+      options: [
+        { text: "Approximately 20%.", correct: true,
+          explanation: "Normal FF is ~20%: GFR ~125 mL/min divided by RPF ~600 mL/min." },
+        { text: "Approximately 50%.", correct: false,
+          explanation: "50% would be far too high — the kidney does not filter half of its plasma flow." },
+        { text: "Approximately 5%.", correct: false,
+          explanation: "5% is too low; normal FF is ~20%." }
+      ]
+    },
+    {
+      question: "What is the formula for filtration fraction in the CRRT circuit?",
+      options: [
+        { text: "FF = Q_UF / Q_Plasma.", correct: true,
+          explanation: "In CRRT, FF = ultrafiltration rate divided by plasma flow through the circuit. Q_Plasma = Q_b × (1 − Hct)." },
+        { text: "FF = Q_b / Q_UF.", correct: false,
+          explanation: "This is the inverse — the correct formula is Q_UF/Q_Plasma." },
+        { text: "FF = Q_UF × Q_b.", correct: false,
+          explanation: "This is not the correct formula. FF is a ratio, not a product." }
+      ]
+    },
+    {
+      question: "A patient on CRRT has Qb 200 mL/min, Hct 30%, dialysate 1000 mL/h, postfilter replacement 1000 mL/h, and net fluid removal 300 mL/h. What is the filtration fraction?",
+      options: [
+        { text: "Approximately 27%.", correct: true,
+          explanation: "Q_UF = 1000 + 1000 + 300 = 2300 mL/h. Q_Plasma = 200 × 60 × (1 − 0.30) = 8400 mL/h. FF = 2300/8400 ≈ 27%, above the target of < 20–25%." },
+        { text: "Approximately 15%.", correct: false,
+          explanation: "This value is too low; the actual FF is ~27%." },
+        { text: "Approximately 45%.", correct: false,
+          explanation: "This value is too high; the actual FF is ~27%." }
+      ]
+    },
+    {
+      question: "What is the target filtration fraction in the CRRT circuit?",
+      options: [
+        { text: "< 20–25%.", correct: true,
+          explanation: "Target CRRT FF is < 20–25%. Higher values are associated with hemoconcentration and increased filter clotting risk." },
+        { text: "> 40%.", correct: false,
+          explanation: "This would be excessively high and would promote filter clotting." },
+        { text: "Exactly 50%.", correct: false,
+          explanation: "This is far too high — the target is < 20–25%." }
+      ]
+    },
+    {
+      question: "Which maneuver will LOWER the filtration fraction in CRRT?",
+      options: [
+        { text: "Increase the blood flow rate.", correct: true,
+          explanation: "Increasing Qb increases Q_Plasma (the denominator), which lowers FF. This is one of several ways to reduce FF." },
+        { text: "Increase the effluent rate.", correct: false,
+          explanation: "Increasing effluent increases Q_UF (the numerator), which raises FF. This is the opposite of what you want if FF is high." },
+        { text: "Increase the net fluid removal rate.", correct: false,
+          explanation: "Increasing net UF raises Q_UF and increases FF." }
+      ]
+    },
+    {
+      question: "Which maneuver will RAISE the filtration fraction in CRRT?",
+      options: [
+        { text: "Increase the postfilter replacement fluid rate.", correct: true,
+          explanation: "Increasing the postfilter RF rate increases Q_UF (the numerator), raising FF. Switching to prefilter RF instead would lower FF." },
+        { text: "Switch from postfilter to prefilter replacement fluid.", correct: false,
+          explanation: "Prefilter replacement dilutes blood before the filter, lowering FF. This is the opposite of raising FF." },
+        { text: "Increase the blood flow rate.", correct: false,
+          explanation: "Increasing Qb raises Q_Plasma (the denominator), which lowers FF." }
+      ]
+    },
+    {
+      question: "How does the renal filtration fraction relate to CKD progression?",
+      options: [
+        { text: "High FF drives glomerular hypertension and contributes to CKD progression.", correct: true,
+          explanation: "High FF causes glomerular hypertension, which is a key driver of CKD progression. Reducing FF with ACEi/ARB is renoprotective." },
+        { text: "Low FF causes glomerular hypertension.", correct: false,
+          explanation: "Low FF does not cause glomerular hypertension — high FF does." },
+        { text: "FF has no relation to CKD progression.", correct: false,
+          explanation: "FF is directly related to CKD progression via glomerular hypertension." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Physiology / CRRT",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

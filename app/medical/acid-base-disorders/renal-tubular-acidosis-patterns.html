@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renal Tubular Acidosis — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --type1:#b91c1c; --type2:#b45309; --type3:#7c3aed; --type4:#1d4ed8; --normal:#065f46;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.8rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.type1.active{background:#fee2e2; border-color:var(--type1); color:#7f1d1d;}
+  .pill.type2.active{background:#ffedd5; border-color:var(--type2); color:#7c2d12;}
+  .pill.type3.active{background:#ede9fe; border-color:var(--type3); color:#4c1d95;}
+  .pill.type4.active{background:#dbeafe; border-color:var(--type4); color:#1e3a8a;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:580px; display:block;}
+
+  /* READOUT CARDS */
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.25rem; font-weight:800; letter-spacing:-.02em; line-height:1.15;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  /* URINE ANION GAP ANIMATION */
+  .uag-box{margin-top:22px; border-radius:16px; padding:22px 24px;
+    background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%); color:#e2e8f0; text-align:left;}
+  .uag-box h3{margin:0 0 4px; font-size:1.05rem; color:#f8fafc; display:flex; align-items:center; gap:8px;}
+  .uag-box h3::before{content:"⚗️"; font-size:1.1rem;}
+  .uag-box .uag-formula{font-family:"Courier New",monospace; font-size:1rem; font-weight:700;
+    background:#334155; display:inline-block; padding:8px 16px; border-radius:8px; margin:12px 0; color:#fbbf24;}
+  .uag-scale{position:relative; height:60px; margin:18px 0 12px;}
+  .uag-track{position:absolute; top:20px; left:0; right:0; height:20px; border-radius:10px;
+    background:linear-gradient(90deg,#dc2626 0%,#f59e0b 35%,#fbbf24 50%,#22c55e 65%,#16a34a 100%);}
+  .uag-zero{position:absolute; top:8px; left:50%; width:3px; height:44px; background:#fff;
+    border-radius:2px; transform:translateX(-50%); box-shadow:0 0 8px rgba(255,255,255,.5);}
+  .uag-zero-label{position:absolute; top:-4px; left:50%; transform:translateX(-50%);
+    font-size:.7rem; font-weight:800; color:#fff;}
+  .uag-marker{position:absolute; top:8px; width:0; height:0;
+    border-left:10px solid transparent; border-right:10px solid transparent;
+    border-top:14px solid #f8fafc; transition:left .6s cubic-bezier(.4,0,.2,1); transform:translateX(-50%);}
+  .uag-marker-label{position:absolute; top:34px; transform:translateX(-50%);
+    font-size:.75rem; font-weight:800; color:#f8fafc; transition:left .6s cubic-bezier(.4,0,.2,1); white-space:nowrap;}
+  .uag-labels{display:flex; justify-content:space-between; font-size:.68rem; color:#94a3b8; margin-top:4px;}
+  .uag-interp{margin-top:12px; padding:12px 16px; border-radius:10px;
+    background:rgba(255,255,255,.08); font-size:.85rem; line-height:1.55; color:#e2e8f0;}
+  .uag-interp strong{color:#fbbf24;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-rta { background-color:#fef2f2; box-shadow: inset 4px 0 0 var(--type1); }
+  tr.highlight-rta td { font-weight:600; color:#7f1d1d; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-1{background:#fee2e2; color:#991b1b;} .tag-2{background:#ffedd5; color:#9a3412;}
+  .tag-3{background:#ede9fe; color:#5b21b6;} .tag-4{background:#dbeafe; color:#1e40af;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Renal Tubular Acidosis (RTA)</h1>
+      <p>Animated nephron transport · Urine anion gap visualizer · Etiology &amp; treatment</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <section class="stage">
+    <h2>Interactive Nephron Transport Diagram</h2>
+    <p class="sub">Select an RTA type to see where the defect occurs and watch ion transport change in real time.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill type1" id="btnType1" onclick="setMode('type1')">Type 1 (Distal)</button>
+      <button class="pill type2" id="btnType2" onclick="setMode('type2')">Type 2 (Proximal)</button>
+      <button class="pill type3" id="btnType3" onclick="setMode('type3')">Type 3 (Mixed)</button>
+      <button class="pill type4" id="btnType4" onclick="setMode('type4')">Type 4 (Hyperkalemic)</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 660" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tissueBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fdf2f8"/><stop offset="100%" stop-color="#fce7f3"/>
+          </linearGradient>
+          <linearGradient id="lumenGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fefce8"/><stop offset="100%" stop-color="#fef9c3"/>
+          </linearGradient>
+          <linearGradient id="bloodGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff1f2"/><stop offset="100%" stop-color="#ffe4e6"/>
+          </linearGradient>
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="nucGlow">
+            <feGaussianBlur stdDeviation="1" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1000" height="660" fill="url(#tissueBg)"/>
+
+        <!-- ============================================= -->
+        <!-- NEPHRON OUTLINE                                -->
+        <!-- ============================================= -->
+        <!-- Glomerulus -->
+        <circle cx="140" cy="180" r="70" fill="#fce7f3" stroke="#db2777" stroke-width="3"/>
+        <circle cx="140" cy="180" r="55" fill="#fce7f3" stroke="#f9a8d4" stroke-width="1.5"/>
+        <path d="M 100 160 Q 140 130 180 160 Q 200 190 180 220 Q 140 240 100 220 Q 80 190 100 160 Z" fill="none" stroke="#e11d48" stroke-width="4"/>
+        <g fill="#4c1d95" opacity="0.8">
+          <circle cx="120" cy="160" r="4"/><circle cx="160" cy="160" r="4"/>
+          <circle cx="170" cy="200" r="4"/><circle cx="120" cy="200" r="4"/>
+          <circle cx="140" cy="180" r="4"/>
+        </g>
+        <text x="140" y="100" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#831843">Glomerulus</text>
+
+        <!-- Proximal Tubule -->
+        <path d="M 210 180 Q 280 130 350 170 Q 420 210 480 170" fill="none" stroke="#f59e0b" stroke-width="22" stroke-linecap="round"/>
+        <text x="350" y="110" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#92400e">Proximal Tubule</text>
+
+        <!-- Loop of Henle -->
+        <path d="M 480 170 Q 530 170 560 260 Q 580 340 580 400 Q 580 460 560 520 Q 530 590 480 590" fill="none" stroke="#3b82f6" stroke-width="18" stroke-linecap="round"/>
+        <text x="600" y="370" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#1e40af">Loop of Henle</text>
+
+        <!-- Distal Tubule -->
+        <path d="M 480 590 Q 420 590 390 540 Q 370 510 380 470" fill="none" stroke="#8b5cf6" stroke-width="18" stroke-linecap="round"/>
+        <text x="350" y="530" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#5b21b6">Distal Tubule</text>
+
+        <!-- Collecting Duct -->
+        <path d="M 380 470 Q 360 430 340 400 Q 320 370 300 350" fill="none" stroke="#64748b" stroke-width="18" stroke-linecap="round"/>
+        <text x="270" y="340" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#475569">Collecting Duct</text>
+
+        <!-- ============================================= -->
+        <!-- URINE LUMEN (right side)                       -->
+        <!-- ============================================= -->
+        <rect x="880" y="50" width="100" height="560" rx="12" fill="url(#lumenGrad)" stroke="#fcd34d" stroke-width="1.5"/>
+        <text x="930" y="80" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#92400e">Urine</text>
+
+        <!-- ============================================= -->
+        <!-- BLOOD (left side)                              -->
+        <!-- ============================================= -->
+        <rect x="20" y="50" width="100" height="560" rx="12" fill="url(#bloodGrad)" stroke="#fecdd3" stroke-width="1.5"/>
+        <text x="70" y="80" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#9f1239">Blood</text>
+
+        <!-- ============================================= -->
+        <!-- ION FLOW ANIMATIONS (Normal state)            -->
+        <!-- ============================================= -->
+
+        <!-- Proximal tubule HCO3- reabsorption (normal) -->
+        <g id="flow-proximal-normal">
+          <circle r="7" fill="#0d9488" opacity="0.9">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M 400 170 L 350 170 L 280 160 L 210 180"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="7" fill="#0d9488" opacity="0.9">
+            <animateMotion dur="3s" begin="1s" repeatCount="indefinite" path="M 400 170 L 350 170 L 280 160 L 210 180"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3s" begin="1s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="7" fill="#0d9488" opacity="0.9">
+            <animateMotion dur="3s" begin="2s" repeatCount="indefinite" path="M 400 170 L 350 170 L 280 160 L 210 180"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- Distal H+ secretion (normal) -->
+        <g id="flow-distal-normal">
+          <circle r="6" fill="#dc2626" opacity="0.9">
+            <animateMotion dur="2.5s" repeatCount="indefinite" path="M 380 470 L 420 490 L 480 540"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="6" fill="#dc2626" opacity="0.9">
+            <animateMotion dur="2.5s" begin="0.8s" repeatCount="indefinite" path="M 380 470 L 420 490 L 480 540"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="2.5s" begin="0.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="6" fill="#dc2626" opacity="0.9">
+            <animateMotion dur="2.5s" begin="1.6s" repeatCount="indefinite" path="M 380 470 L 420 490 L 480 540"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="2.5s" begin="1.6s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- Distal K+ secretion (normal) -->
+        <g id="flow-potassium-normal">
+          <circle r="6" fill="#7c3aed" opacity="0.9">
+            <animateMotion dur="3.2s" repeatCount="indefinite" path="M 360 480 L 340 520 L 380 540"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="6" fill="#7c3aed" opacity="0.9">
+            <animateMotion dur="3.2s" begin="1.1s" repeatCount="indefinite" path="M 360 480 L 340 520 L 380 540"/>
+            <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3.2s" begin="1.1s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- ============================================= -->
+        <!-- DEFECT OVERLAYS                                -->
+        <!-- ============================================= -->
+
+        <!-- TYPE 1: Distal H+ secretion defect -->
+        <g id="overlay-type1" style="display:none;">
+          <!-- Red X over distal H+ pump -->
+          <g transform="translate(380,470)">
+            <circle r="18" fill="none" stroke="#dc2626" stroke-width="3" opacity="0.8">
+              <animate attributeName="r" values="16;22;16" dur="1.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-12" y1="-12" x2="12" y2="12" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+            <line x1="12" y1="-12" x2="-12" y2="12" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <text x="380" y="450" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">H⁺ pump defect</text>
+          <!-- Urine pH stays high -->
+          <rect x="890" y="120" width="80" height="30" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+          <text x="930" y="140" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#991b1b">pH &gt; 5.5</text>
+        </g>
+
+        <!-- TYPE 2: Proximal HCO3- reabsorption defect -->
+        <g id="overlay-type2" style="display:none;">
+          <g transform="translate(350,170)">
+            <circle r="20" fill="none" stroke="#b45309" stroke-width="3" opacity="0.8">
+              <animate attributeName="r" values="18;24;18" dur="1.6s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.6s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-14" y1="-14" x2="14" y2="14" stroke="#b45309" stroke-width="4" stroke-linecap="round"/>
+            <line x1="14" y1="-14" x2="-14" y2="14" stroke="#b45309" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <text x="350" y="130" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#b45309">HCO₃⁻ reabsorption defect</text>
+          <!-- HCO3- spilling into urine -->
+          <g id="flow-hco3-waste">
+            <circle r="7" fill="#0d9488" opacity="0.9">
+              <animateMotion dur="3s" repeatCount="indefinite" path="M 400 170 L 480 170 L 560 260 L 580 400 L 600 500 L 650 550 L 750 580 L 880 580"/>
+              <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="7" fill="#0d9488" opacity="0.9">
+              <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 400 170 L 480 170 L 560 260 L 580 400 L 600 500 L 650 550 L 750 580 L 880 580"/>
+              <animate attributeName="opacity" values="0;0.95;0.95;0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          <text x="930" y="200" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#b45309">HCO₃⁻ in urine</text>
+        </g>
+
+        <!-- TYPE 3: Mixed defect (both) -->
+        <g id="overlay-type3" style="display:none;">
+          <g transform="translate(350,170)">
+            <circle r="20" fill="none" stroke="#7c3aed" stroke-width="3" opacity="0.8">
+              <animate attributeName="r" values="18;24;18" dur="1.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-14" y1="-14" x2="14" y2="14" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+            <line x1="14" y1="-14" x2="-14" y2="14" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <g transform="translate(380,470)">
+            <circle r="18" fill="none" stroke="#7c3aed" stroke-width="3" opacity="0.8">
+              <animate attributeName="r" values="16;22;16" dur="1.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-12" y1="-12" x2="12" y2="12" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+            <line x1="12" y1="-12" x2="-12" y2="12" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <text x="350" y="130" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#7c3aed">Combined defect</text>
+          <text x="380" y="450" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#7c3aed">H⁺ + HCO₃⁻</text>
+        </g>
+
+        <!-- TYPE 4: Aldosterone deficiency / resistance -->
+        <g id="overlay-type4" style="display:none;">
+          <g transform="translate(300,350)">
+            <circle r="22" fill="none" stroke="#1d4ed8" stroke-width="3" opacity="0.8">
+              <animate attributeName="r" values="20;26;20" dur="1.7s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.7s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-15" y1="-15" x2="15" y2="15" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round"/>
+            <line x1="15" y1="-15" x2="-15" y2="15" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <text x="300" y="320" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#1d4ed8">Aldosterone defect</text>
+          <text x="300" y="385" text-anchor="middle" font-family="Arial" font-size="9" fill="#1d4ed8">ENaC / ROMK down</text>
+          <!-- K+ retention in blood -->
+          <rect x="30" y="300" width="70" height="30" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+          <text x="65" y="320" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#1e3a8a">K⁺ high</text>
+        </g>
+
+        <!-- Ion Legend -->
+        <g transform="translate(30, 630)" font-family="Arial" font-size="10" fill="#475569">
+          <circle cx="8" cy="0" r="6" fill="#dc2626"/><text x="20" y="4" fill="#0f172a">H⁺</text>
+          <circle cx="70" cy="0" r="6" fill="#7c3aed"/><text x="82" y="4" fill="#0f172a">K⁺</text>
+          <circle cx="132" cy="0" r="6" fill="#0d9488"/><text x="144" y="4" fill="#0f172a">HCO₃⁻</text>
+          <circle cx="210" cy="0" r="6" fill="#2563eb"/><text x="222" y="4" fill="#0f172a">Na⁺</text>
+          <circle cx="280" cy="0" r="6" fill="#16a34a"/><text x="292" y="4" fill="#0f172a">Cl⁻</text>
+          <text x="360" y="4" font-size="9.5" fill="#94a3b8">Animated ion flow shows normal transport vs. defective transport</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Serum K⁺</div>
+        <div class="rc-value" id="rcKValue">—</div>
+        <div class="rc-sub" id="rcKSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Urine pH</div>
+        <div class="rc-value" id="rcPhValue">—</div>
+        <div class="rc-sub" id="rcPhSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Serum HCO₃⁻</div>
+        <div class="rc-value" id="rcHcoValue">—</div>
+        <div class="rc-sub" id="rcHcoSub">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Diagnosis</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+
+    <!-- URINE ANION GAP ANIMATION -->
+    <div class="uag-box">
+      <h3>Urine Anion Gap (UAG) — Animated Visualizer</h3>
+      <p style="margin:8px 0 0; font-size:.85rem; color:#cbd5e1; line-height:1.55;">
+        The urine anion gap estimates ammonium (NH₄⁺) excretion. In metabolic acidosis, the kidney should increase NH₄⁺ excretion. A <strong>negative UAG</strong> means the kidney is responding appropriately (extrarenal HCO₃⁻ loss, e.g., diarrhea). A <strong>positive UAG</strong> means the kidney is NOT excreting enough NH₄⁺ (RTA).
+      </p>
+      <div class="uag-formula">UAG = (Urine Na⁺ + Urine K⁺) − Urine Cl⁻</div>
+
+      <div class="uag-scale">
+        <div class="uag-track"></div>
+        <div class="uag-zero"></div>
+        <div class="uag-zero-label">0</div>
+        <div class="uag-marker" id="uagMarker" style="left:50%;"></div>
+        <div class="uag-marker-label" id="uagMarkerLabel" style="left:50%;">Normal</div>
+      </div>
+      <div class="uag-labels">
+        <span>← Negative (NH₄⁺ present)</span>
+        <span>Positive (NH₄⁺ absent) →</span>
+      </div>
+
+      <div class="uag-interp" id="uagInterp">
+        Select an RTA type above to see how the urine anion gap changes.
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Types of Renal Tubular Acidosis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Type 1 (Distal)</th>
+          <th>Type 2 (Proximal)</th>
+          <th>Type 3 (Mixed)</th>
+          <th>Type 4 (Hyperkalemic)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-rta">
+          <td><strong>Primary Defect</strong></td>
+          <td><span class="tag tag-1">Type 1</span> Impaired H⁺ secretion in distal tubule</td>
+          <td><span class="tag tag-2">Type 2</span> Impaired HCO₃⁻ reabsorption in proximal tubule</td>
+          <td><span class="tag tag-3">Type 3</span> Combined proximal + distal defect</td>
+          <td><span class="tag tag-4">Type 4</span> Aldosterone deficiency or resistance</td>
+        </tr>
+        <tr>
+          <td><strong>Serum K⁺</strong></td>
+          <td><strong>Low</strong> (hypokalemia)</td>
+          <td><strong>Low</strong> (hypokalemia)</td>
+          <td><strong>Low</strong> (hypokalemia)</td>
+          <td><strong>High</strong> (hyperkalemia)</td>
+        </tr>
+        <tr>
+          <td><strong>Urine pH</strong></td>
+          <td><strong>&gt; 5.5</strong> (cannot acidify)</td>
+          <td><strong>&lt; 5.5</strong> (can acidify when severe)</td>
+          <td>Variable</td>
+          <td><strong>&lt; 5.5</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Serum HCO₃⁻</strong></td>
+          <td>Often &lt; 15 mEq/L</td>
+          <td>Often 15–20 mEq/L</td>
+          <td>Variable</td>
+          <td>Mildly low (&gt; 15 mEq/L)</td>
+        </tr>
+        <tr>
+          <td><strong>Urine Anion Gap</strong></td>
+          <td><strong>Positive</strong> (impaired NH₄⁺ excretion)</td>
+          <td>Variable (can be negative early)</td>
+          <td>Positive</td>
+          <td><strong>Positive</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Key Etiologies</strong></td>
+          <td>Sjögren's, SLE, amphotericin B, lithium, ifosfamide</td>
+          <td>Multiple myeloma, tenofovir, acetazolamide, topiramate, cystinosis</td>
+          <td>Carbonic anhydrase II deficiency (rare)</td>
+          <td>Diabetes, NSAIDs, ACEi/ARB, spironolactone, trimethoprim</td>
+        </tr>
+        <tr>
+          <td><strong>Treatment</strong></td>
+          <td>Potassium citrate 1–3 mEq/kg/day</td>
+          <td>Potassium citrate 10–25 mEq/kg/day + vitamin D</td>
+          <td>Alkali therapy (higher doses)</td>
+          <td>Fludrocortisone, low-K⁺ diet, stop offending drugs</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A patient with Sjögren's syndrome presents with metabolic acidosis (HCO₃⁻ 14 mEq/L), hypokalemia (K⁺ 2.9 mEq/L), and a urine pH of 6.5. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Type 2 RTA</button>
+        <button class="opt" onclick="answer(this,true)">B. Type 1 RTA</button>
+        <button class="opt" onclick="answer(this,false)">C. Type 4 RTA</button>
+        <button class="opt" onclick="answer(this,false)">D. Diarrhea</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Type 1 (distal) RTA is characterized by the inability to acidify the urine (urine pH &gt; 5.5) despite systemic acidosis, hypokalemia, and a normal anion gap metabolic acidosis. Sjögren's syndrome is a classic autoimmune cause.</div>
+    </div>
+
+    <div class="q">
+      <p>2. A patient with HIV on tenofovir presents with proximal muscle weakness, glycosuria (normal serum glucose), and hypophosphatemia. Labs show HCO₃⁻ 18 mEq/L and K⁺ 3.0 mEq/L. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Type 1 RTA</button>
+        <button class="opt" onclick="answer(this,true)">B. Type 2 RTA (Fanconi syndrome)</button>
+        <button class="opt" onclick="answer(this,false)">C. Type 4 RTA</button>
+        <button class="opt" onclick="answer(this,false)">D. Diabetic ketoacidosis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Tenofovir is a well-known cause of proximal tubular toxicity (Fanconi syndrome), presenting with Type 2 RTA, glycosuria, phosphaturia, and hypokalemia. The normal serum glucose and hypophosphatemia distinguish this from diabetic ketoacidosis.</div>
+    </div>
+
+    <div class="q">
+      <p>3. A 62-year-old man with type 2 diabetes and CKD presents with persistent hyperkalemia (K⁺ 5.8 mEq/L) and mild metabolic acidosis (HCO₃⁻ 19 mEq/L). He is on lisinopril and spironolactone. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Type 1 RTA</button>
+        <button class="opt" onclick="answer(this,false)">B. Type 2 RTA</button>
+        <button class="opt" onclick="answer(this,true)">C. Type 4 RTA</button>
+        <button class="opt" onclick="answer(this,false)">D. Lactic acidosis</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Type 4 RTA is the most common RTA in adults and is characterized by <strong>hyperkalemia</strong> and a mild normal anion gap metabolic acidosis. It is caused by aldosterone deficiency or resistance. Diabetes, ACE inhibitors (lisinopril), and potassium-sparing diuretics (spironolactone) are classic contributors.</div>
+    </div>
+
+    <div class="q">
+      <p>4. In a patient with non-anion gap metabolic acidosis, the urine anion gap is calculated as (urine Na⁺ + urine K⁺) − urine Cl⁻. Which UAG result suggests RTA rather than diarrhea?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Negative UAG (−30 mEq/L)</button>
+        <button class="opt" onclick="answer(this,true)">B. Positive UAG (+25 mEq/L)</button>
+        <button class="opt" onclick="answer(this,false)">C. UAG of 0 mEq/L</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> A <strong>positive</strong> UAG (more unmeasured anions than cations) indicates that the kidney is not excreting enough ammonium (NH₄⁺) to handle the acid load, which is characteristic of RTA. A <strong>negative</strong> UAG indicates appropriate renal ammonium excretion, which is seen in extrarenal bicarbonate losses like diarrhea. The UAG estimates ammonium excretion indirectly in the setting of chronic metabolic acidosis.</div>
+    </div>
+
+    <div class="q">
+      <p>5. What is the first-line treatment for Type 1 (distal) RTA with hypokalemia?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Fludrocortisone</button>
+        <button class="opt" onclick="answer(this,true)">B. Potassium citrate</button>
+        <button class="opt" onclick="answer(this,false)">C. Furosemide</button>
+        <button class="opt" onclick="answer(this,false)">D. Sodium polystyrene sulfonate</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Type 1 RTA is treated with <strong>potassium citrate</strong> (1–3 mEq/kg/day) to correct both the acidosis and the hypokalemia. Sodium bicarbonate is an alternative if potassium is normal or high. Fludrocortisone is used in Type 4 RTA, and furosemide is used in some cases of hyperkalemia but is not first-line for Type 1.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      k: 'Normal (3.5–5.0)', kSub: 'Normokalemic',
+      ph: '4.5–5.5', phSub: 'Normal acidification',
+      hco: '22–26 mEq/L', hcoSub: 'Normal',
+      verdict: 'Normal acid–base status',
+      uagValue: 0, uagLabel: 'Normal',
+      uagColor: '#22c55e',
+      uagInterp: 'In the absence of acidosis, the UAG is close to zero. The kidney appropriately handles the daily acid load.'
+    },
+    type1: {
+      k: 'Low (< 3.5)', kSub: 'Hypokalemia',
+      ph: '> 5.5', phSub: 'Cannot acidify urine',
+      hco: '< 15 mEq/L', hcoSub: 'Severe acidosis',
+      verdict: 'Type 1 (Distal) RTA — H⁺ secretion defect',
+      uagValue: 35, uagLabel: 'Positive',
+      uagColor: '#dc2626',
+      uagInterp: '<strong>Positive UAG</strong> — the distal tubule cannot secrete H⁺, so ammonium (NH₄⁺) excretion is impaired. The kidney is NOT responding appropriately to the acidosis. This is the hallmark of Type 1 RTA.'
+    },
+    type2: {
+      k: 'Low (< 3.5)', kSub: 'Hypokalemia',
+      ph: '< 5.5', phSub: 'Can acidify when severe',
+      hco: '15–20 mEq/L', hcoSub: 'Moderate acidosis',
+      verdict: 'Type 2 (Proximal) RTA — HCO₃⁻ reabsorption defect',
+      uagValue: -10, uagLabel: 'Variable (can be negative)',
+      uagColor: '#f59e0b',
+      uagInterp: '<strong>Variable UAG</strong> — in Type 2 RTA, the distal tubule can still acidify the urine once the serum HCO₃⁻ falls below the proximal reabsorptive threshold. The UAG may be negative early in the disease (when the distal tubule is still functioning) and becomes positive as the disease progresses.'
+    },
+    type3: {
+      k: 'Low (< 3.5)', kSub: 'Hypokalemia',
+      ph: 'Variable', phSub: 'Mixed defect',
+      hco: 'Variable', hcoSub: 'Combined defect',
+      verdict: 'Type 3 (Mixed) RTA — Combined proximal + distal defect',
+      uagValue: 25, uagLabel: 'Positive',
+      uagColor: '#7c3aed',
+      uagInterp: '<strong>Positive UAG</strong> — because the distal H⁺ secretion defect is present, ammonium excretion is impaired, producing a positive UAG. Type 3 is extremely rare and is associated with carbonic anhydrase II deficiency.'
+    },
+    type4: {
+      k: 'High (> 5.0)', kSub: 'Hyperkalemia',
+      ph: '< 5.5', phSub: 'Can acidify urine',
+      hco: '> 15 mEq/L', hcoSub: 'Mild acidosis',
+      verdict: 'Type 4 RTA — Aldosterone deficiency / resistance',
+      uagValue: 20, uagLabel: 'Positive',
+      uagColor: '#1d4ed8',
+      uagInterp: '<strong>Positive UAG</strong> — aldosterone deficiency/resistance impairs both H⁺ and K⁺ secretion in the distal nephron. Ammonium excretion is reduced, producing a positive UAG. The hyperkalemia further suppresses ammonia production, worsening the acidosis.'
+    }
+  };
+
+  function setMode(mode) {
+    ['overlay-type1','overlay-type2','overlay-type3','overlay-type4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnType1','btnType2','btnType3','btnType4'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', type1:'btnType1', type2:'btnType2',
+      type3:'btnType3', type4:'btnType4'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode !== 'normal') {
+      const overlayId = 'overlay-' + mode;
+      const overlay = document.getElementById(overlayId);
+      if (overlay) overlay.style.display = 'block';
+    }
+
+    // Readout cards
+    document.getElementById('rcKValue').textContent = d.k;
+    document.getElementById('rcKValue').style.color = d.k.includes('Low') ? '#dc2626' : (d.k.includes('High') ? '#1d4ed8' : '#065f46');
+    document.getElementById('rcKSub').textContent = d.kSub;
+
+    document.getElementById('rcPhValue').textContent = d.ph;
+    document.getElementById('rcPhValue').style.color = d.ph.includes('> 5.5') ? '#dc2626' : (d.ph.includes('Variable') ? '#b45309' : '#065f46');
+    document.getElementById('rcPhSub').textContent = d.phSub;
+
+    document.getElementById('rcHcoValue').textContent = d.hco;
+    document.getElementById('rcHcoValue').style.color = d.hco.includes('< 15') ? '#dc2626' : (d.hco.includes('15–20') ? '#b45309' : '#065f46');
+    document.getElementById('rcHcoSub').textContent = d.hcoSub;
+
+    const verdict = document.getElementById('rcVerdict');
+    const verdictColor = mode === 'normal' ? '#065f46' : (d.uagColor);
+    verdict.style.borderColor = verdictColor;
+    verdict.style.background = verdictColor + '14';
+    verdict.style.color = verdictColor;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+
+    // UAG animation
+    const marker = document.getElementById('uagMarker');
+    const markerLabel = document.getElementById('uagMarkerLabel');
+    // Map UAG value (-50 to +50) to 0-100% position
+    const uagMin = -50, uagMax = 50;
+    const pct = ((d.uagValue - uagMin) / (uagMax - uagMin)) * 100;
+    marker.style.left = pct + '%';
+    markerLabel.style.left = pct + '%';
+    markerLabel.textContent = d.uagLabel + ' (' + d.uagValue + ')';
+    markerLabel.style.color = d.uagColor;
+
+    document.getElementById('uagInterp').innerHTML = d.uagInterp;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fibromuscular Dysplasia & PTRA — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --fmd:#1d4ed8; --aras:#b45309; --ptra:#065f46; --normal:#065f46;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .case-box{background:#fff; border-radius:18px; padding:20px 24px; margin-top:22px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border-left:6px solid var(--fmd);}
+  .case-box h2{margin:0 0 10px; font-size:1.05rem; color:#1e3a8a;}
+  .case-box p{margin:0 0 8px; font-size:.9rem; color:#334155;}
+  .case-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:12px;}
+  .case-stat{background:#f1f5f9; border-radius:10px; padding:10px 14px; border:1px solid #cbd5e1;}
+  .case-stat .cs-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#475569;}
+  .case-stat .cs-value{font-size:1rem; font-weight:800; color:#0f172a; margin-top:2px;}
+  .case-stat.warn{background:#fee2e2; border-color:#fca5a5;}
+  .case-stat.warn .cs-label{color:#991b1b;}
+  .case-stat.warn .cs-value{color:#7f1d1d;}
+  .case-stat.ok{background:#dcfce7; border-color:#86efac;}
+  .case-stat.ok .cs-label{color:#166534;}
+  .case-stat.ok .cs-value{color:#14532d;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:var(--normal); color:#065f46;}
+  .pill.fmd.active{background:#dbeafe; border-color:var(--fmd); color:#1e3a8a;}
+  .pill.aras.active{background:#ffedd5; border-color:var(--aras); color:#7c2d12;}
+  .pill.ptra.active{background:#d1fae5; border-color:var(--ptra); color:#065f46;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:600px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1100px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-ptra { background-color:#d1fae5; box-shadow: inset 4px 0 0 var(--ptra); }
+  tr.highlight-ptra td { font-weight:600; color:#065f46; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-ptra{background:#d1fae5; color:#065f46;}
+  .tag-acei{background:#ede9fe; color:#4c1d95;}
+  .tag-mra{background:#fef9c3; color:#713f12;}
+  .tag-aml{background:#dbeafe; color:#1e3a8a;}
+
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Fibromuscular Dysplasia &amp; PTRA</h1>
+      <p>Renal artery stenosis in a young woman · Interactive duplex &amp; angiography simulator</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE SUMMARY -->
+  <section class="case-box">
+    <h2>Case Vignette — 36-year-old woman, postpartum hypertension</h2>
+    <p>Developed hypertension (152/96) during the second trimester of her third pregnancy. BP remained elevated 6 months postpartum. Renal artery duplex showed elevated systolic velocities (230 cm/s) in the mid-right renal artery.</p>
+    <div class="case-grid">
+      <div class="case-stat"><div class="cs-label">Age / Sex</div><div class="cs-value">36-year-old woman</div></div>
+      <div class="case-stat"><div class="cs-label">BP at Presentation</div><div class="cs-value">152/96 mm Hg</div></div>
+      <div class="case-stat"><div class="cs-label">Serum Creatinine</div><div class="cs-value">0.8 mg/dL</div></div>
+      <div class="case-stat"><div class="cs-label">Urinalysis</div><div class="cs-value">Negative protein</div></div>
+      <div class="case-stat warn"><div class="cs-label">Duplex PSV (Right RA)</div><div class="cs-value">230 cm/s</div></div>
+      <div class="case-stat"><div class="cs-label">Antenatal Therapy</div><div class="cs-value">Labetalol</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section class="stage">
+    <h2>Interactive Renal Artery Duplex &amp; Angiography Simulator</h2>
+    <p class="sub">Toggle between states to compare the spectral Doppler waveform and angiographic appearance of FMD, atherosclerosis, and the result after PTRA.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill fmd" id="btnFmd" onclick="setMode('fmd')">FMD (String of Beads)</button>
+      <button class="pill aras" id="btnAras" onclick="setMode('aras')">Atherosclerotic RAS</button>
+      <button class="pill ptra" id="btnPtra" onclick="setMode('ptra')">Post-PTRA</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="aortaGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e5e7eb"/><stop offset="50%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#4b5563"/>
+          </linearGradient>
+          <linearGradient id="kidneyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#991b1b"/>
+          </linearGradient>
+          <linearGradient id="dopplerBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#1e293b"/>
+          </linearGradient>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="stenosisGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1200" height="620" fill="#fdfdfd"/>
+        <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Renal Artery Duplex Ultrasound — Spectral Doppler</text>
+
+        <!-- DOPPLER PANEL (top) -->
+        <g transform="translate(50, 50)">
+          <rect x="0" y="0" width="1100" height="260" rx="12" fill="url(#dopplerBg)" stroke="#334155" stroke-width="2"/>
+
+          <!-- Doppler grid -->
+          <g stroke="#1e293b" stroke-width="1" opacity="0.6">
+            <line x1="0" y1="65" x2="1100" y2="65"/>
+            <line x1="0" y1="130" x2="1100" y2="130"/>
+            <line x1="0" y1="195" x2="1100" y2="195"/>
+            <line x1="110" y1="0" x2="110" y2="260"/>
+            <line x1="220" y1="0" x2="220" y2="260"/>
+            <line x1="330" y1="0" x2="330" y2="260"/>
+            <line x1="440" y1="0" x2="440" y2="260"/>
+            <line x1="550" y1="0" x2="550" y2="260"/>
+            <line x1="660" y1="0" x2="660" y2="260"/>
+            <line x1="770" y1="0" x2="770" y2="260"/>
+            <line x1="880" y1="0" x2="880" y2="260"/>
+            <line x1="990" y1="0" x2="990" y2="260"/>
+          </g>
+
+          <!-- Baseline -->
+          <line x1="0" y1="130" x2="1100" y2="130" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+          <!-- Y-axis labels -->
+          <text x="20" y="30" font-family="monospace" font-size="10" fill="#64748b">cm/s</text>
+          <text x="20" y="65" font-family="monospace" font-size="9" fill="#64748b">+200</text>
+          <text x="20" y="130" font-family="monospace" font-size="9" fill="#64748b">0</text>
+          <text x="20" y="195" font-family="monospace" font-size="9" fill="#64748b">-200</text>
+
+          <!-- X-axis labels -->
+          <text x="1090" y="250" font-family="monospace" font-size="10" fill="#64748b">time →</text>
+
+          <!-- STATE: NORMAL WAVEFORM -->
+          <g id="wave-normal" style="display:block;">
+            <!-- Low-resistance waveform -->
+            <path d="M 110 130
+                     Q 130 80, 150 130
+                     Q 170 80, 190 130
+                     Q 210 80, 230 130
+                     Q 250 80, 270 130
+                     Q 290 80, 310 130
+                     Q 330 80, 350 130
+                     Q 370 80, 390 130
+                     Q 410 80, 430 130
+                     Q 450 80, 470 130
+                     Q 490 80, 510 130
+                     Q 530 80, 550 130
+                     Q 570 80, 590 130
+                     Q 610 80, 630 130
+                     Q 650 80, 670 130
+                     Q 690 80, 710 130
+                     Q 730 80, 750 130
+                     Q 770 80, 790 130
+                     Q 810 80, 830 130
+                     Q 850 80, 870 130
+                     Q 890 80, 910 130
+                     Q 930 80, 950 130
+                     Q 970 80, 990 130
+                     Q 1010 80, 1030 130
+                     Q 1050 80, 1070 130" 
+                  fill="none" stroke="#22c55e" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#22c55e">Normal PSV: ~120 cm/s</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Low-resistance renal artery waveform</text>
+          </g>
+
+          <!-- STATE: FMD WAVEFORM (tardus-parvus + high velocity) -->
+          <g id="wave-fmd" style="display:none;">
+            <path d="M 110 130
+                     Q 130 20, 150 130
+                     Q 170 20, 190 130
+                     Q 210 20, 230 130
+                     Q 250 20, 270 130
+                     Q 290 20, 310 130
+                     Q 330 20, 350 130
+                     Q 370 20, 390 130
+                     Q 410 20, 430 130
+                     Q 450 20, 470 130
+                     Q 490 20, 510 130
+                     Q 530 20, 550 130
+                     Q 570 20, 590 130
+                     Q 610 20, 630 130
+                     Q 650 20, 670 130
+                     Q 690 20, 710 130
+                     Q 730 20, 750 130
+                     Q 770 20, 790 130
+                     Q 810 20, 830 130
+                     Q 850 20, 870 130
+                     Q 890 20, 910 130
+                     Q 930 20, 950 130
+                     Q 970 20, 990 130
+                     Q 1010 20, 1030 130
+                     Q 1050 20, 1070 130" 
+                  fill="none" stroke="#3b82f6" stroke-width="2.5" filter="url(#softGlow)"/>
+            <!-- Highlight peak -->
+            <circle cx="150" cy="20" r="6" fill="#fbbf24" opacity="0.9">
+              <animate attributeName="r" values="5;8;5" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#3b82f6">FMD: PSV 230 cm/s ↑↑</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Tardus-parvus waveform — delayed systolic upstroke, low amplitude</text>
+          </g>
+
+          <!-- STATE: ARAS WAVEFORM -->
+          <g id="wave-aras" style="display:none;">
+            <path d="M 110 130
+                     Q 130 40, 150 130
+                     Q 170 40, 190 130
+                     Q 210 40, 230 130
+                     Q 250 40, 270 130
+                     Q 290 40, 310 130
+                     Q 330 40, 350 130
+                     Q 370 40, 390 130
+                     Q 410 40, 430 130
+                     Q 450 40, 470 130
+                     Q 490 40, 510 130
+                     Q 530 40, 550 130
+                     Q 570 40, 590 130
+                     Q 610 40, 630 130
+                     Q 650 40, 670 130
+                     Q 690 40, 710 130
+                     Q 730 40, 750 130
+                     Q 770 40, 790 130
+                     Q 810 40, 830 130
+                     Q 850 40, 870 130
+                     Q 890 40, 910 130
+                     Q 930 40, 950 130
+                     Q 970 40, 990 130
+                     Q 1010 40, 1030 130
+                     Q 1050 40, 1070 130" 
+                  fill="none" stroke="#f59e0b" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#f59e0b">Atherosclerotic RAS: PSV ~200 cm/s</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Damped waveform with prolonged systolic upstroke</text>
+          </g>
+
+          <!-- STATE: POST-PTRA WAVEFORM -->
+          <g id="wave-ptra" style="display:none;">
+            <path d="M 110 130
+                     Q 130 80, 150 130
+                     Q 170 80, 190 130
+                     Q 210 80, 230 130
+                     Q 250 80, 270 130
+                     Q 290 80, 310 130
+                     Q 330 80, 350 130
+                     Q 370 80, 390 130
+                     Q 410 80, 430 130
+                     Q 450 80, 470 130
+                     Q 490 80, 510 130
+                     Q 530 80, 550 130
+                     Q 570 80, 590 130
+                     Q 610 80, 630 130
+                     Q 650 80, 670 130
+                     Q 690 80, 710 130
+                     Q 730 80, 750 130
+                     Q 770 80, 790 130
+                     Q 810 80, 830 130
+                     Q 850 80, 870 130
+                     Q 890 80, 910 130
+                     Q 930 80, 950 130
+                     Q 970 80, 990 130
+                     Q 1010 80, 1030 130
+                     Q 1050 80, 1070 130" 
+                  fill="none" stroke="#22c55e" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#22c55e">Post-PTRA: Normalized PSV (~120 cm/s)</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Return of normal low-resistance waveform</text>
+          </g>
+        </g>
+
+        <!-- ANGIOGRAM PANEL (bottom) -->
+        <text x="600" y="345" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Digital Subtraction Angiography (DSA)</text>
+
+        <!-- AORTA -->
+        <rect x="575" y="370" width="50" height="230" rx="8" fill="url(#aortaGrad)"/>
+        <text x="600" y="615" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#475569">AORTA</text>
+
+        <!-- RIGHT KIDNEY -->
+        <g transform="translate(280, 490)">
+          <path d="M -80 -60 C -120 -30 -120 50 -80 70 C -40 90 40 80 60 50 C 75 25 75 -25 55 -50 C 35 -75 -30 -90 -80 -60 Z" fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="2.5" opacity="0.9"/>
+          <text x="-10" y="110" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#7f1d1d">RIGHT KIDNEY</text>
+        </g>
+
+        <!-- RIGHT RENAL ARTERY (base) -->
+        <g id="right-artery-base">
+          <path d="M 575 420 L 480 430 L 380 450" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 575 420 L 480 430 L 380 450" fill="none" stroke="#f87171" stroke-width="8" stroke-linecap="round"/>
+        </g>
+
+        <!-- FMD "STRING OF BEADS" overlay -->
+        <g id="fmd-beads" style="display:none;">
+          <!-- Beaded appearance: alternating stenosis and dilatation -->
+          <g fill="#fbbf24" filter="url(#stenosisGlow)">
+            <circle cx="540" cy="423" r="9"/>
+            <circle cx="500" cy="427" r="9"/>
+            <circle cx="460" cy="431" r="9"/>
+            <circle cx="420" cy="437" r="9"/>
+            <circle cx="380" cy="443" r="9"/>
+          </g>
+          <g fill="none" stroke="#dc2626" stroke-width="4">
+            <circle cx="520" cy="425" r="5"/>
+            <circle cx="480" cy="429" r="5"/>
+            <circle cx="440" cy="434" r="5"/>
+            <circle cx="400" cy="440" r="5"/>
+          </g>
+          <text x="460" y="380" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">"String of Beads"</text>
+          <text x="460" y="395" text-anchor="middle" font-family="Arial" font-size="10" fill="#3b82f6">Medial fibroplasia (FMD)</text>
+        </g>
+
+        <!-- Atherosclerotic stenosis overlay -->
+        <g id="aras-stenosis" style="display:none;">
+          <ellipse cx="500" cy="427" rx="14" ry="10" fill="#f59e0b" opacity="0.9" filter="url(#stenosisGlow)">
+            <animate attributeName="rx" values="12;18;12" dur="1.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <text x="500" y="400" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#b45309">Atherosclerotic Stenosis</text>
+          <text x="500" y="415" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">Focal, ostial/proximal</text>
+        </g>
+
+        <!-- Post-PTRA overlay -->
+        <g id="ptra-result" style="display:none;">
+          <!-- Dilated artery -->
+          <path d="M 575 420 L 480 430 L 380 450" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round" filter="url(#softGlow)"/>
+          <!-- Dilatation markers -->
+          <circle cx="540" cy="423" r="12" fill="none" stroke="#22c55e" stroke-width="2" stroke-dasharray="4 3">
+            <animate attributeName="r" values="12;18;12" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <text x="460" y="380" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#065f46">Post-PTRA</text>
+          <text x="460" y="395" text-anchor="middle" font-family="Arial" font-size="10" fill="#16a34a">Restored lumen, no stent</text>
+        </g>
+
+        <!-- Metadata -->
+        <g font-family="monospace" font-size="9" fill="#4b5563" opacity="0.7">
+          <text x="30" y="30">SIEMENS Acuson Sequoia</text>
+          <text x="30" y="42">Curved Array 4C1, 3.5 MHz</text>
+          <text x="30" y="54">PSV: 230 cm/s</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Peak Systolic Velocity (PSV)</div>
+        <div class="rc-value" id="rcPsvValue">—</div>
+        <div class="rc-sub" id="rcPsvSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Diagnosis</div>
+        <div class="rc-value" id="rcDxValue">—</div>
+        <div class="rc-sub" id="rcDxSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Treatment</div>
+        <div class="rc-value" id="rcTxValue">—</div>
+        <div class="rc-sub" id="rcTxSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Angiographic Pattern</div>
+        <div class="rc-note" id="rcAngioValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Interpretation</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: FMD vs. Atherosclerotic Renal Artery Stenosis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Fibromuscular Dysplasia (FMD)</th>
+          <th>Atherosclerotic RAS (ARAS)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Typical Patient</strong></td>
+          <td>Young–middle-aged women (20–50 y)</td>
+          <td>Older adults (>50 y), often with diffuse atherosclerosis</td>
+        </tr>
+        <tr>
+          <td><strong>Angiographic Pattern</strong></td>
+          <td><strong>"String of beads"</strong> — mid-to-distal renal artery</td>
+          <td><strong>Focal, ostial/proximal</strong> stenosis</td>
+        </tr>
+        <tr>
+          <td><strong>Duplex PSV</strong></td>
+          <td>Often markedly elevated (e.g., 230 cm/s in this case)</td>
+          <td>Elevated (typically 200–300 cm/s)</td>
+        </tr>
+        <tr>
+          <td><strong>Treatment of Choice</strong></td>
+          <td><strong>PTRA (balloon angioplasty alone)</strong></td>
+          <td>Medical therapy; PTRA/stent only in select cases</td>
+        </tr>
+        <tr>
+          <td><strong>Outcome after PTRA</strong></td>
+          <td>Hypertension cured in ~37%, improved in ~80%</td>
+          <td>Less responsive to revascularization</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 36-year-old woman has persistent postpartum hypertension. Renal duplex shows a PSV of 230 cm/s in the right renal artery. What is the most likely diagnosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Atherosclerotic renal artery stenosis</button>
+        <button class="opt" onclick="answer(this,true)">B. Fibromuscular dysplasia</button>
+        <button class="opt" onclick="answer(this,false)">C. Takayasu arteritis</button>
+        <button class="opt" onclick="answer(this,false)">D. Primary aldosteronism</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> FMD is the most common cause of renovascular hypertension in young women. The markedly elevated PSV (230 cm/s) and the mid-portion location are classic for FMD. Atherosclerotic RAS typically affects older patients and the ostial/proximal artery.</div>
+    </div>
+
+    <div class="q">
+      <p>2. What is the treatment of choice for renovascular hypertension due to FMD?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Lifelong ACE inhibitor therapy</button>
+        <button class="opt" onclick="answer(this,true)">B. Percutaneous transluminal renal angioplasty (PTRA)</button>
+        <button class="opt" onclick="answer(this,false)">C. Renal artery stenting</button>
+        <button class="opt" onclick="answer(this,false)">D. Surgical bypass</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> PTRA (balloon angioplasty alone, without stenting) is the treatment of choice for FMD. It is curative in a significant proportion of patients and avoids the need for lifelong antihypertensive medication. Stenting is reserved for procedural complications.</div>
+    </div>
+
+    <div class="q">
+      <p>3. Which angiographic finding is characteristic of FMD?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Focal ostial stenosis</button>
+        <button class="opt" onclick="answer(this,true)">B. "String of beads" appearance</button>
+        <button class="opt" onclick="answer(this,false)">C. Smooth tapered narrowing</button>
+        <button class="opt" onclick="answer(this,false)">D. Multiple microaneurysms</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The "string of beads" appearance reflects alternating areas of stenosis (from fibroplasia) and post-stenotic dilatation. It is the classic angiographic hallmark of medial fibroplasia, the most common type of FMD.</div>
+    </div>
+
+    <div class="q">
+      <p>4. Why should ACE inhibitors be used with caution in renal artery stenosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. They cause hyperkalemia in all patients</button>
+        <button class="opt" onclick="answer(this,true)">B. They dilate the efferent arteriole and can precipitate AKI in bilateral stenosis</button>
+        <button class="opt" onclick="answer(this,false)">C. They are contraindicated in pregnancy</button>
+        <button class="opt" onclick="answer(this,false)">D. They cause renal artery thrombosis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Angiotensin II constricts the efferent arteriole to maintain GFR when renal perfusion is low. ACE inhibitors block this compensation, causing efferent dilation and a precipitous drop in GFR — especially in bilateral RAS or a solitary kidney.</div>
+    </div>
+
+    <div class="q">
+      <p>5. What PSV threshold on renal duplex ultrasound suggests a hemodynamically significant stenosis (>60%)?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. ≥100 cm/s</button>
+        <button class="opt" onclick="answer(this,true)">B. ≥200 cm/s</button>
+        <button class="opt" onclick="answer(this,false)">C. ≥300 cm/s</button>
+        <button class="opt" onclick="answer(this,false)">D. ≥400 cm/s</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> A PSV of <strong>≥200 cm/s</strong> (or a renal-aortic ratio ≥3.5) is the standard duplex criterion for a hemodynamically significant stenosis (>60%). This patient's PSV of 230 cm/s clearly exceeds this threshold.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and vascular medicine</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      psv: '~120 cm/s',
+      psvSub: 'Normal',
+      dx: 'Normal renal artery',
+      dxSub: 'No stenosis',
+      tx: 'None required',
+      txSub: 'Routine follow-up',
+      angio: 'Smooth, uniform renal artery without beading or focal narrowing.',
+      verdict: 'Normal renal artery duplex and angiogram. No hemodynamically significant stenosis.',
+      color: '#065f46'
+    },
+    fmd: {
+      psv: '230 cm/s',
+      psvSub: 'Elevated — >60% stenosis',
+      dx: 'Fibromuscular Dysplasia (FMD)',
+      dxSub: 'Medial fibroplasia',
+      tx: 'PTRA (balloon angioplasty alone)',
+      txSub: 'Treatment of choice',
+      angio: '<strong>"String of beads"</strong> — alternating stenoses and post-stenotic dilatations in the mid-to-distal renal artery. Classic for medial fibroplasia.',
+      verdict: 'FMD ★ — most common cause of renovascular hypertension in young women. PTRA is the treatment of choice, with cure/improvement in the majority of patients.',
+      color: '#1d4ed8'
+    },
+    aras: {
+      psv: '~200 cm/s',
+      psvSub: 'Elevated — >60% stenosis',
+      dx: 'Atherosclerotic RAS (ARAS)',
+      dxSub: 'Focal ostial/proximal stenosis',
+      tx: 'Medical therapy (statin, ACEi/ARB, etc.)',
+      txSub: 'PTRA/stent in select cases',
+      angio: '<strong>Focal, ostial/proximal stenosis</strong> — often with calcification and diffuse aortic atherosclerosis. Less responsive to revascularization than FMD.',
+      verdict: 'Atherosclerotic RAS — typically in older patients with diffuse atherosclerosis. Medical therapy is first-line; revascularization is reserved for refractory hypertension or worsening renal function.',
+      color: '#b45309'
+    },
+    ptra: {
+      psv: '~120 cm/s',
+      psvSub: 'Normalized after PTRA',
+      dx: 'Post-PTRA (treated FMD)',
+      dxSub: 'Successful revascularization',
+      tx: 'Surveillance duplex',
+      txSub: 'Monitor for restenosis',
+      angio: '<strong>Restored lumen</strong> — the stenotic segment is dilated. No stent is placed for FMD unless a procedural complication occurs.',
+      verdict: 'Post-PTRA ★ — successful revascularization. Blood pressure typically improves or normalizes. Surveillance duplex is recommended to monitor for restenosis.',
+      color: '#065f46'
+    }
+  };
+
+  function setMode(mode) {
+    ['wave-normal','wave-fmd','wave-aras','wave-ptra'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    ['fmd-beads','aras-stenosis','ptra-result'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnFmd','btnAras','btnPtra'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', fmd:'btnFmd',
+      aras:'btnAras', ptra:'btnPtra'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode === 'normal') {
+      document.getElementById('wave-normal').style.display = 'block';
+    } else if (mode === 'fmd') {
+      document.getElementById('wave-fmd').style.display = 'block';
+      document.getElementById('fmd-beads').style.display = 'block';
+    } else if (mode === 'aras') {
+      document.getElementById('wave-aras').style.display = 'block';
+      document.getElementById('aras-stenosis').style.display = 'block';
+    } else if (mode === 'ptra') {
+      document.getElementById('wave-ptra').style.display = 'block';
+      document.getElementById('ptra-result').style.display = 'block';
+    }
+
+    document.getElementById('rcPsvValue').textContent = d.psv;
+    document.getElementById('rcPsvValue').style.color = d.color;
+    document.getElementById('rcPsvSub').textContent = d.psvSub;
+
+    document.getElementById('rcDxValue').textContent = d.dx;
+    document.getElementById('rcDxValue').style.color = d.color;
+    document.getElementById('rcDxSub').textContent = d.dxSub;
+
+    document.getElementById('rcTxValue').textContent = d.tx;
+    document.getElementById('rcTxValue').style.color = d.color;
+    document.getElementById('rcTxSub').textContent = d.txSub;
+
+    document.getElementById('rcAngioValue').innerHTML = d.angio;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>

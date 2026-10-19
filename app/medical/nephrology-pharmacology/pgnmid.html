@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PGNMID — Monoclonal Gammopathy of Renal Significance</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="podGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef9c3"/>
+            <stop offset="100%" stop-color="#fde047"/>
+          </radialGradient>
+          <linearGradient id="gbmGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fbcfe8"/>
+            <stop offset="100%" stop-color="#f9a8d4"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">GLOMERULAR + VASCULAR DISEASE WITH MONOCLONAL PROTEIN</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">60F · CKD (Cr 2.2 from 1.2) · UPCR 3.2 g/g (predominantly albumin) · Hematuria 20–30/hpf</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">IgG κ · κ/λ ratio 6.1 · Low C3 and C4 · Normal bone marrow</text>
+          </g>
+
+          <!-- Card 1: CKD & Proteinuria -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">RENAL PRESENTATION</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#991b1b">Glomerular Pattern</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34" font-weight="700">Creatinine</text>
+              <text x="50" y="-34" font-weight="800" fill="#dc2626">2.2 mg/dL</text>
+              <text x="-170" y="-10" font-weight="700">Proteinuria (UPCR)</text>
+              <text x="50" y="-10" font-weight="800" fill="#dc2626">3.2 g/g</text>
+              <text x="-170" y="14" font-weight="700">Hematuria</text>
+              <text x="50" y="14" font-weight="800" fill="#dc2626">20–30 /hpf</text>
+              <text x="-170" y="38" font-weight="700">Type of Protein</text>
+              <text x="50" y="38" font-weight="800" fill="#166534">Albumin</text>
+            </g>
+
+            <line x1="-150" y1="62" x2="150" y2="62" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">Nephrotic-Range + Nephritic Features</text>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">Indicates glomerular inflammation</text>
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#94a3b8">ruling out pure tubular disease</text>
+          </g>
+
+          <!-- Card 2: Complement & Marrow -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">COMPLEMENT & MARROW</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">Classical Pathway</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">Low C3 AND Low C4</text>
+            
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Monoclonal Ig activates classical</text>
+            <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">complement pathway</text>
+
+            <line x1="-150" y1="44" x2="150" y2="44" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="72" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Bone Marrow: Normal</text>
+            <text x="0" y="94" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">&lt; 10% plasma cells</text>
+            <text x="0" y="114" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">No myeloma-defining events</text>
+
+            <rect x="-170" y="130" width="340" height="32" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="1"/>
+            <text x="0" y="150" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">Diagnosis: MGRS</text>
+          </g>
+
+          <!-- Card 3: The Answer -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">DIAGNOSIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#166534">PGNMID</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34" font-weight="800" fill="#166534">Proliferative GN with</text>
+              <text x="-170" y="-14" font-weight="800" fill="#166534">Monoclonal Ig Deposition</text>
+              
+              <text x="-170" y="18">• Glomerular pattern</text>
+              <text x="-170" y="38">• Heavy albuminuria</text>
+              <text x="-170" y="58">• Hematuria</text>
+              <text x="-170" y="78">• Low C3/C4</text>
+              <text x="-170" y="98">• Monoclonal IgG κ</text>
+            </g>
+
+            <rect x="-170" y="120" width="340" height="40" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Answer: C</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — WHY PGNMID?
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#5b21b6">MECHANISM OF PGNMID</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">Monoclonal IgG deposits in the glomerulus and activates the classical complement pathway</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">This explains the nephrotic-range proteinuria, hematuria, and low C3/C4</text>
+          </g>
+
+          <!-- Central Diagram -->
+          <g transform="translate(700, 450)">
+            <!-- Glomerulus -->
+            <circle cx="0" cy="0" r="180" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-200" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">GLOMERULUS</text>
+
+            <!-- Capillary loops -->
+            <path d="M -100,-50 C -150,-100 -50,-150 0,-100 C 50,-50 150,-100 100,-50 C 50,0 100,100 0,100 C -100,100 -50,0 -100,-50" fill="none" stroke="#dc2626" stroke-width="3"/>
+            
+            <!-- Monoclonal IgG -->
+            <circle cx="-80" cy="-80" r="14" fill="#7c3aed"/>
+            <text x="-80" y="-76" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff">IgG</text>
+            
+            <circle cx="80" cy="-80" r="14" fill="#7c3aed"/>
+            <text x="80" y="-76" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff">IgG</text>
+
+            <circle cx="-100" cy="50" r="14" fill="#7c3aed"/>
+            <text x="-100" y="54" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff">IgG</text>
+
+            <circle cx="100" cy="50" r="14" fill="#7c3aed"/>
+            <text x="100" y="54" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff">IgG</text>
+
+            <!-- Complement activation -->
+            <g transform="translate(0, 120)">
+              <rect x="-180" y="-30" width="360" height="60" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+              <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">CLASSICAL PATHWAY ACTIVATION</text>
+              <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#dc2626">C1q → C4 → C3 consumption</text>
+            </g>
+
+            <!-- Arrows to damage -->
+            <path d="M -180,0 L -260,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+            <path d="M 180,0 L 260,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- Result Box Left -->
+            <g transform="translate(-380, 0)">
+              <rect x="-100" y="-60" width="200" height="120" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+              <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Glomerular Injury</text>
+              <text x="0" y="-6" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Proliferation + Inflammation</text>
+              <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Albuminuria + Hematuria</text>
+              <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">Low C3 / C4</text>
+            </g>
+
+            <!-- Result Box Right -->
+            <g transform="translate(380, 0)">
+              <rect x="-100" y="-60" width="200" height="120" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+              <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">MGRS</text>
+              <text x="0" y="-6" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Normal Bone Marrow</text>
+              <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">But Kidney is Damaged</text>
+              <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Treat the Clone</text>
+            </g>
+          </g>
+
+          <!-- Cards below -->
+          <g transform="translate(350, 760)">
+            <rect x="-290" y="-75" width="580" height="150" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">WHY LOW C3 AND C4?</text>
+            <line x1="-260" y1="-28" x2="260" y2="-28" stroke="#ddd6fe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-2">• Monoclonal IgG acts like immune complexes</text>
+              <text x="-260" y="20">• Activates the classical pathway (C1q, C4, C3)</text>
+              <text x="-260" y="42">• Both C3 and C4 are consumed → low levels</text>
+              <text x="-260" y="64" font-weight="800" fill="#dc2626">Low C4 is the key differentiator from C3G</text>
+            </g>
+          </g>
+
+          <g transform="translate(1050, 760)">
+            <rect x="-290" y="-75" width="580" height="150" rx="16" fill="#fff" stroke="#16a34a" stroke-width="4"/>
+            <text y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">WHY NORMAL BONE MARROW?</text>
+            <line x1="-260" y1="-28" x2="260" y2="-28" stroke="#bbf7d0" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-2">• &lt; 10% plasma cells = not myeloma</text>
+              <text x="-260" y="20">• No lytic lesions, hypercalcemia, or anemia</text>
+              <text x="-260" y="42">• But the kidney lesion is caused by the monoclonal Ig</text>
+              <text x="-260" y="64" font-weight="800" fill="#166534">This defines MGRS, not MGUS</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — DIFFERENTIAL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#155e75">WHY THE OTHER OPTIONS FAIL</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">Ruling out the tubular and infiltrative lesions</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">Albumin-predominant proteinuria + Low Complement = Glomerular disease</text>
+          </g>
+
+          <!-- Card A: Amyloid -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">A — AMYLOIDOSIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Typically presents with nephrotic syndrome</text>
+              <text x="-170" y="-10">• Usually λ light chain restriction</text>
+              <text x="-170" y="14">• Congo red positive on biopsy</text>
+              <text x="-170" y="38">• Complement levels are usually NORMAL</text>
+              <text x="-170" y="62">• Does not cause low C3/C4</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Normal complement rules it out</text>
+          </g>
+
+          <!-- Card B: Infiltration -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">B — PLASMA CELL INFILTRATION</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Interstitial disease, not glomerular</text>
+              <text x="-170" y="-10">• Does not cause heavy albuminuria</text>
+              <text x="-170" y="14">• Does not cause low complement</text>
+              <text x="-170" y="38">• Associated with multiple myeloma</text>
+              <text x="-170" y="62">• Marrow here is normal</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Wrong location and labs</text>
+          </g>
+
+          <!-- Card D: LCPT -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">D — LIGHT CHAIN PROXIMAL TUBULOPATHY</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Tubular disease (Fanconi syndrome)</text>
+              <text x="-170" y="-10">• Low-molecular-weight proteinuria</text>
+              <text x="-170" y="14">• NOT albumin-predominant</text>
+              <text x="-170" y="38">• Normal complement</text>
+              <text x="-170" y="62">• No significant hematuria</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Wrong protein type</text>
+          </g>
+
+          <!-- Card E: Cast Nephropathy -->
+          <g transform="translate(700, 780)">
+            <rect x="-400" y="-75" width="800" height="150" rx="16" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <text y="-45" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">E — MYELOMA CAST NEPHROPATHY</text>
+            <line x1="-370" y1="-28" x2="370" y2="-28" stroke="#fde68a" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-370" y="-2">• Tubular disease, not glomerular • Light chain predominant (not albumin) • Normal complement • Associated with myeloma (marrow is normal here)</text>
+              <text x="-370" y="22">• Presents as acute kidney injury, not chronic CKD with heavy albuminuria</text>
+            </g>
+            <rect x="-350" y="44" width="700" height="32" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Wrong location (tubular), wrong protein type (light chains), normal complement</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#713f12">MANAGEMENT OF PGNMID (MGRS)</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">The diagnosis of MGRS mandates clone-directed therapy</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">A normal bone marrow does not mean observation — treat the clone</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#ca8a04"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#ca8a04"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">1 — CONFIRM THE CLONE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#713f12">Hematologic Workup</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-30">• Serum free light chains</text>
+              <text x="-170" y="-6">• Repeat SPEP / IFE</text>
+              <text x="-170" y="18">• Urine IFE</text>
+              <text x="-170" y="42">• Bone marrow with flow cytometry</text>
+              <text x="-150" y="66">(to identify B-cell vs plasma-cell clone)</text>
+              <text x="-170" y="90">• Cytogenetics / FISH</text>
+            </g>
+
+            <rect x="-170" y="116" width="340" height="40" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Identify the clone phenotype</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">2 — EXCLUDE MYELOMA</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">Myeloma-Defining Events</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-30">• Calcium elevated? (No)</text>
+              <text x="-170" y="-6">• Anemia? (Hb 12.8 — no)</text>
+              <text x="-170" y="18">• Lytic bone lesions? (No)</text>
+              <text x="-170" y="42">• ≥ 60% plasma cells? (No)</text>
+              <text x="-170" y="66">• Cast nephropathy? (No)</text>
+            </g>
+
+            <rect x="-170" y="96" width="340" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">No myeloma-defining events</text>
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">→ MGRS, not myeloma</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">3 — TREAT THE CLONE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#166534">Clone-Directed Therapy</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-30" font-weight="800" fill="#166534">If B-cell clone:</text>
+              <text x="-140" y="-10">→ Rituximab</text>
+
+              <text x="-170" y="18" font-weight="800" fill="#166534">If plasma-cell clone:</text>
+              <text x="-140" y="38">→ Bortezomib-based regimen</text>
+
+              <text x="-170" y="64" font-weight="800" fill="#166534">If refractory:</text>
+              <text x="-140" y="84">→ Daratumumab (anti-CD38)</text>
+            </g>
+
+            <line x1="-150" y1="106" x2="150" y2="106" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="134" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">+ Supportive Care:</text>
+            <text x="0" y="154" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">RAAS, BP control, proteinuria reduction</text>
+          </g>
+
+          <!-- Bottom bar -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE MGUS TRAP</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">MGUS is a diagnosis of exclusion — it requires <tspan font-weight="800" fill="#dc2626">no attributable renal lesion</tspan></text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Once the monoclonal immunoglobulin causes kidney disease, it is <tspan font-weight="800" fill="#166534">MGRS and it is treated</tspan></text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">A normal bone marrow does not mean observation</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "PGNMID — Proliferative GN with Monoclonal Immunoglobulin Deposition",
+  subtitle: "MGRS with low C3/C4 and albumin-predominant proteinuria",
+  badge: "NEPHROLOGY · MGRS · PGNMID",
+  caseTitle: "Case: 60-year-old woman with CKD, heavy albuminuria, and monoclonal gammopathy",
+  caseDescription: "60F with CKD (Cr 2.2, baseline 1.2) and hypertension. Labs: UPCR 3.2 g/g (albumin predominant), hematuria (20-30 RBC/hpf). SPEP: IgG κ, κ/λ ratio 6.1. Low C3 and C4. Normal bone marrow. Ultrasound: echogenic normal-sized kidneys. Which monoclonal gammopathy-associated kidney lesion is compatible?",
+  labChips: [
+    { text: "CKD (Cr 2.2)", abnormal: true },
+    { text: "UPCR 3.2 g/g", abnormal: true },
+    { text: "Hematuria", abnormal: true },
+    { text: "IgG κ (ratio 6.1)", abnormal: true },
+    { text: "Low C3/C4", abnormal: true },
+    { text: "Normal bone marrow", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",             className: "opt1" },
+    { id: "opt2", label: "🟣 Why PGNMID?",          className: "opt2" },
+    { id: "opt3", label: "🔵 Why Not Others?",      className: "opt3" },
+    { id: "opt4", label: "🟡 Management",           className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — PGNMID",
+      infoRows: [
+        { k: "Diagnosis",   v: "PGNMID (MGRS)" },
+        { k: "Proteinuria", v: "3.2 g/g (albumin)" },
+        { k: "Hematuria",   v: "Present" },
+        { k: "Complement",  v: "Low C3 and C4" },
+        { k: "Marrow",      v: "Normal" },
+        { k: "Answer",      v: "C" }
+      ],
+      svgTitle: "The Case — Glomerular Disease with Monoclonal Protein",
+      svgSubtitle: "Nephrotic-range albuminuria, hematuria, low C3/C4, and a normal bone marrow",
+      bannerBg: "#dc2626",
+      bannerText1: "Albumin-predominant proteinuria + hematuria = glomerular disease, not tubular",
+      bannerText2: "Low C3 and C4 = classical complement pathway activation by the monoclonal Ig",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "Why this is PGNMID",
+      panel1List: [
+        "<strong>Nephrotic-range albuminuria</strong> — glomerular pattern, not tubular",
+        "<strong>Hematuria</strong> — indicates glomerular inflammation",
+        "<strong>Low C3 and C4</strong> — classical pathway activated by the monoclonal IgG",
+        "<strong>Normal bone marrow</strong> — excludes myeloma, defines MGRS",
+        "<strong>PGNMID</strong> — proliferative GN with monoclonal Ig deposition"
+      ],
+      panel2Title: "🧬 Why it is not myeloma",
+      panel2Tagline: "MGRS vs myeloma",
+      panel2List: [
+        "<strong>Marrow &lt; 10% plasma cells</strong> — not myeloma",
+        "<strong>No hypercalcemia, anemia, or lytic lesions</strong> — no myeloma-defining events",
+        "The kidney lesion <strong>is</strong> caused by the monoclonal Ig",
+        "This is <strong>MGRS</strong> — monoclonal gammopathy of renal significance",
+        "Treat the clone, not just observe"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The correct answer is C",
+      alertText: "<strong>PGNMID</strong> — the combination of low complement, albumin-predominant proteinuria, and hematuria in the setting of a monoclonal gammopathy points to a glomerular lesion driven by the monoclonal Ig."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Why PGNMID?",
+      infoRows: [
+        { k: "Mechanism",    v: "Monoclonal IgG deposits" },
+        { k: "Complement",   v: "Classical pathway" },
+        { k: "C3",           v: "Low" },
+        { k: "C4",           v: "Low" },
+        { k: "Proteinuria",  v: "Albumin-predominant" },
+        { k: "Hematuria",    v: "Present" }
+      ],
+      svgTitle: "Mechanism of PGNMID",
+      svgSubtitle: "Monoclonal IgG activates the classical complement pathway",
+      bannerBg: "#7c3aed",
+      bannerText1: "Monoclonal IgG deposits in the glomerulus and activates the classical complement pathway",
+      bannerText2: "This explains the low C3 and C4, the albuminuria, and the hematuria",
+      panel1Title: "🔬 The mechanism",
+      panel1Tagline: "Why the complement is low",
+      panel1List: [
+        "<strong>Monoclonal IgG</strong> (often IgG3-κ) deposits in the glomerulus",
+        "It activates the <strong>classical complement pathway</strong> (C1q → C4 → C3)",
+        "Both <strong>C3 and C4 are consumed</strong> → low serum levels",
+        "This is different from C3 glomerulopathy, where <strong>C4 is normal</strong>",
+        "The result is <strong>proliferative GN</strong> with albuminuria and hematuria"
+      ],
+      panel2Title: "🧬 Why it matters",
+      panel2Tagline: "The clinical implications",
+      panel2List: [
+        "The pattern is <strong>glomerular</strong>, not tubular",
+        "The protein is <strong>albumin</strong>, not light chains",
+        "The marrow is <strong>normal</strong>, so it is MGRS",
+        "The disease is <strong>driven by the clone</strong>",
+        "Treatment must target the <strong>underlying clone</strong>"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Low C4 is the clue",
+      alertText: "Low C4 distinguishes classical pathway activation (from immune complexes or monoclonal Ig) from alternative pathway activation (where C4 is normal)."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why Not Others?",
+      infoRows: [
+        { k: "Amyloidosis",     v: "Normal complement" },
+        { k: "Cast nephropathy", v: "Tubular, light chains" },
+        { k: "Light chain proximal tubulopathy", v: "Tubular, Fanconi" },
+        { k: "Plasma cell infiltration", v: "Interstitial, no albuminuria" },
+        { k: "PGNMID",         v: "Glomerular, low complement" },
+        { k: "Answer",         v: "C" }
+      ],
+      svgTitle: "Why the Other Options Fail",
+      svgSubtitle: "Ruling out the tubular and infiltrative lesions",
+      bannerBg: "#0891b2",
+      bannerText1: "Albumin-predominant proteinuria = glomerular disease",
+      bannerText2: "Light chain proteinuria = tubular disease",
+      panel1Title: "❌ Why each fails",
+      panel1Tagline: "The fatal flaws",
+      panel1List: [
+        "<strong>A — Amyloidosis:</strong> usually normal complement, Congo red positive, λ > κ",
+        "<strong>B — Plasma cell infiltration:</strong> interstitial disease, no albuminuria, no low complement",
+        "<strong>D — Light chain proximal tubulopathy:</strong> tubular disease (Fanconi), low-molecular-weight proteinuria, not albumin",
+        "<strong>E — Myeloma cast nephropathy:</strong> tubular disease, light chains, normal complement, associated with myeloma"
+      ],
+      panel2Title: "🧬 The key distinctions",
+      panel2Tagline: "Glomerular vs tubular",
+      panel2List: [
+        "Glomerular proteinuria = <strong>albumin</strong> (large amounts)",
+        "Tubular proteinuria = <strong>light chains</strong> or low-molecular-weight proteins",
+        "Glomerular disease often activates <strong>complement</strong>",
+        "Tubular disease does not cause <strong>low complement</strong>",
+        "Hematuria indicates <strong>glomerular inflammation</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The pattern is glomerular",
+      alertText: "Albumin-predominant proteinuria and hematuria mean the disease is in the <strong>glomerulus</strong>. The tubular diseases do not fit."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management",
+      infoRows: [
+        { k: "Diagnosis",       v: "MGRS" },
+        { k: "Step 1",          v: "Characterize the clone" },
+        { k: "Step 2",          v: "Exclude myeloma" },
+        { k: "Step 3",          v: "Clone-directed therapy" },
+        { k: "B-cell clone",    v: "Rituximab" },
+        { k: "Plasma-cell clone", v: "Bortezomib-based" }
+      ],
+      svgTitle: "Management of PGNMID (MGRS)",
+      svgSubtitle: "The diagnosis of MGRS mandates clone-directed therapy",
+      bannerBg: "#ca8a04",
+      bannerText1: "A normal bone marrow does not mean observation — treat the clone",
+      bannerText2: "Characterize the clone, exclude myeloma, then treat",
+      panel1Title: "✅ The management steps",
+      panel1Tagline: "From diagnosis to treatment",
+      panel1List: [
+        "<strong>1. Characterize the clone</strong> — serum free light chains, SPEP/IFE, bone marrow with flow cytometry",
+        "<strong>2. Exclude myeloma</strong> — no hypercalcemia, anemia, lytic lesions, or ≥60% plasma cells",
+        "<strong>3. Clone-directed therapy</strong> — B-cell clone → Rituximab; plasma-cell clone → Bortezomib-based regimen",
+        "<strong>Supportive care</strong> — RAAS, BP control, proteinuria reduction",
+        "<strong>Daratumumab</strong> for refractory disease"
+      ],
+      panel2Title: "🧬 The MGUS trap",
+      panel2Tagline: "Why observation is wrong",
+      panel2List: [
+        "MGUS is a diagnosis of <strong>exclusion</strong> — it requires no attributable renal lesion",
+        "Once the monoclonal Ig causes kidney disease, it is <strong>MGRS</strong>",
+        "MGRS is <strong>treated</strong>, regardless of clone size",
+        "A normal bone marrow does not mean observation",
+        "Delaying treatment allows progression to ESRD"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "<strong>PGNMID</strong> — the diagnosis is MGRS. The next step is clone-directed therapy, not observation."
+    }
+  },
+  comparison: {
+    title: "📊 Monoclonal Gammopathy-Associated Kidney Lesions",
+    sub: "Distinguishing glomerular from tubular and infiltrative lesions",
+    head: ["Lesion", "Proteinuria", "Complement", "Marrow"],
+    rows: [
+      { cells: ["PGNMID", "Albumin (nephrotic)", "Low C3/C4", "Normal"], hero: true },
+      { cells: ["AL Amyloidosis", "Albumin (nephrotic)", "Normal", "Clonal plasma cells"], hero: false },
+      { cells: ["Cast Nephropathy", "Light chains (tubular)", "Normal", "Myeloma"], hero: false },
+      { cells: ["Light Chain Proximal Tubulopathy", "Low-molecular-weight (tubular)", "Normal", "Clonal plasma cells"], hero: false },
+      { cells: ["Plasma Cell Infiltration", "Minimal", "Normal", "Myeloma"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 60F with CKD, albuminuria 3.2 g/g, hematuria, monoclonal IgG κ, low C3/C4, and a normal bone marrow. What is the most likely diagnosis?",
+      options: [
+        { text: "PGNMID (MGRS).", correct: true,
+          explanation: "The combination of albumin-predominant proteinuria, hematuria, low C3/C4, and a monoclonal Ig with normal marrow points to PGNMID." },
+        { text: "Amyloidosis.", correct: false,
+          explanation: "Amyloidosis usually has normal complement and Congo red positive deposits." },
+        { text: "Myeloma cast nephropathy.", correct: false,
+          explanation: "Cast nephropathy causes tubular proteinuria (light chains) and normal complement." }
+      ]
+    },
+    {
+      question: "Why are C3 and C4 both low in this patient?",
+      options: [
+        { text: "The monoclonal IgG activates the classical complement pathway.", correct: true,
+          explanation: "Classical pathway activation consumes both C3 and C4. Low C4 specifically points to the classical pathway." },
+        { text: "The monoclonal IgG activates the alternative pathway.", correct: false,
+          explanation: "Alternative pathway activation causes low C3 with a normal C4." },
+        { text: "The bone marrow is failing.", correct: false,
+          explanation: "The marrow is normal, and complement consumption is due to activation." }
+      ]
+    },
+    {
+      question: "What type of proteinuria is characteristic of a glomerular lesion like PGNMID?",
+      options: [
+        { text: "Albumin-predominant.", correct: true,
+          explanation: "Glomerular lesions cause albumin-predominant proteinuria." },
+        { text: "Light-chain-predominant.", correct: false,
+          explanation: "Light-chain proteinuria is characteristic of tubular lesions like cast nephropathy." },
+        { text: "Low-molecular-weight.", correct: false,
+          explanation: "Low-molecular-weight proteinuria is seen in tubular disease." }
+      ]
+    },
+    {
+      question: "Why is this patient's disease considered MGRS rather than MGUS?",
+      options: [
+        { text: "The monoclonal immunoglobulin is causing a renal lesion.", correct: true,
+          explanation: "MGRS requires a monoclonal gammopathy plus an attributable renal lesion. MGUS is defined by the absence of such a lesion." },
+        { text: "The κ/λ ratio is 6.1.", correct: false,
+          explanation: "An abnormal ratio alone does not define MGRS. The renal lesion is the key." },
+        { text: "The bone marrow is normal.", correct: false,
+          explanation: "A normal marrow is consistent with MGRS, but the definition rests on the renal lesion." }
+      ]
+    },
+    {
+      question: "Which finding would be most typical of myeloma cast nephropathy rather than PGNMID?",
+      options: [
+        { text: "Normal serum complement.", correct: true,
+          explanation: "Cast nephropathy does not activate complement. Low complement in a monoclonal gammopathy points to a glomerular lesion like PGNMID." },
+        { text: "Low C3 and C4.", correct: false,
+          explanation: "This suggests a complement-activating glomerular lesion, not cast nephropathy." },
+        { text: "Albumin-predominant proteinuria.", correct: false,
+          explanation: "Cast nephropathy causes light-chain proteinuria, not albumin-predominant." }
+      ]
+    },
+    {
+      question: "What is the first step in management of a patient with PGNMID?",
+      options: [
+        { text: "Characterize the clone with serum free light chains and bone marrow studies.", correct: true,
+          explanation: "You need to identify the clone phenotype (B-cell vs plasma-cell) before choosing therapy." },
+        { text: "Start high-dose prednisone.", correct: false,
+          explanation: "Steroids alone are not standard for MGRS. Clone-directed therapy is needed." },
+        { text: "Observe with annual creatinine monitoring.", correct: false,
+          explanation: "MGRS is treated, not observed." }
+      ]
+    },
+    {
+      question: "Which therapy is appropriate for a plasma-cell clone causing PGNMID?",
+      options: [
+        { text: "Bortezomib-based regimen.", correct: true,
+          explanation: "For plasma-cell clones, a bortezomib-based regimen is standard. Rituximab is preferred for CD20+ B-cell clones." },
+        { text: "Rituximab alone.", correct: false,
+          explanation: "Rituximab is used for B-cell clones, not plasma-cell clones." },
+        { text: "Observation.", correct: false,
+          explanation: "Observation is not appropriate for MGRS." }
+      ]
+    },
+    {
+      question: "Which finding on immunofluorescence is diagnostic of PGNMID?",
+      options: [
+        { text: "Granular deposition of a single heavy chain and a single light chain.", correct: true,
+          explanation: "This confirms monoclonality in the glomerular deposits. Often it is IgG3-κ." },
+        { text: "Linear IgG along the GBM.", correct: false,
+          explanation: "This is seen in anti-GBM disease." },
+        { text: "C3 dominant with minimal immunoglobulin.", correct: false,
+          explanation: "This defines C3 glomerulopathy." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / MGRS / PGNMID",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

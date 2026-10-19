@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recurrent IgA Nephropathy After Kidney Transplantation</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">RECURRENT IgA NEPHROPATHY AFTER TRANSPLANT</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">6 years post-transplant · hematuria + proteinuria + rising Cr</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Biopsy: mesangial IgA + C3 · mesangial electron-dense deposits</text>
+          </g>
+
+          <!-- Three clinical cards -->
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">CLINICAL PICTURE</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">Hematuria</text>
+            <text x="0" y="25" text-anchor="middle" font-size="24" font-weight="800" fill="#dc2626">+ Proteinuria</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#7f1d1d">1.8 g/day protein</text>
+            <text x="0" y="122" text-anchor="middle" font-size="15" fill="#7f1d1d">Cr 1.2 → 2.0 mg/dL</text>
+            <text x="0" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Gradual decline</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">BIOPSY FINDINGS</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">IgA + C3</text>
+            <text x="0" y="25" text-anchor="middle" font-size="20" font-weight="800" fill="#dc2626">mesangial deposits</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#7f1d1d">Mesangial hypercellularity</text>
+            <text x="0" y="122" text-anchor="middle" font-size="15" fill="#7f1d1d">Segmental sclerosis</text>
+            <text x="0" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Recurrent IgA nephropathy</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">NOT REJECTION</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="36" font-weight="800" fill="#16a34a">DSA−</text>
+            <text x="0" y="25" text-anchor="middle" font-size="24" font-weight="800" fill="#16a34a">C4d−</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#15803d">No donor-specific antibodies</text>
+            <text x="0" y="122" text-anchor="middle" font-size="15" fill="#15803d">No C4d deposition</text>
+            <text x="0" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Rules out AMR</text>
+          </g>
+
+          <!-- Key teaching -->
+          <g transform="translate(700, 790)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 THE KIDNEY IS INNOCENT — THE IMMUNE SYSTEM IS GUILTY</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">The recipient's immune system continues producing pathogenic Gd-IgA1</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ The new kidney receives the same immune complexes → recurrent disease</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Recurrent IgA nephropathy = persistent Gd-IgA1 production by the recipient</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — PATHOGENESIS
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">PATHOGENESIS OF IgA NEPHROPATHY</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">The four-hit hypothesis — the disease originates in the immune system, not the kidney</text>
+          </g>
+
+          <!-- Hit 1 -->
+          <g transform="translate(700, 240)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="18" font-weight="800" fill="#155e75">HIT 1 — ↑ Galactose-deficient IgA1 (Gd-IgA1)</text>
+            <text x="-580" y="10" font-size="16" fill="#0e7490">B cells produce IgA1 with abnormal O-glycosylation (galactose-deficient hinge region)</text>
+            <text x="-580" y="38" font-size="16" fill="#0e7490">This is a <tspan font-weight="800">systemic immune abnormality</tspan> — persists after transplantation</text>
+          </g>
+
+          <!-- Hit 2 -->
+          <g transform="translate(700, 390)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="18" font-weight="800" fill="#5b21b6">HIT 2 — Anti-glycan autoantibodies</text>
+            <text x="-580" y="10" font-size="16" fill="#6d28d9">IgG autoantibodies recognize Gd-IgA1 as a neoepitope</text>
+            <text x="-580" y="38" font-size="16" fill="#6d28d9">This forms <tspan font-weight="800">circulating immune complexes</tspan></text>
+          </g>
+
+          <!-- Hit 3 -->
+          <g transform="translate(700, 540)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="18" font-weight="800" fill="#713f12">HIT 3 — Mesangial deposition</text>
+            <text x="-580" y="10" font-size="16" fill="#a16207">Immune complexes deposit in the glomerular mesangium</text>
+            <text x="-580" y="38" font-size="16" fill="#a16207">The mesangium is a <tspan font-weight="800">passive bystander</tspan> — the new kidney is vulnerable to the same complexes</text>
+          </g>
+
+          <!-- Hit 4 -->
+          <g transform="translate(700, 690)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="18" font-weight="800" fill="#991b1b">HIT 4 — Complement activation and injury</text>
+            <text x="-580" y="10" font-size="16" fill="#7f1d1d">Mesangial IgA activates complement (C3) → inflammation → mesangial proliferation</text>
+            <text x="-580" y="38" font-size="16" fill="#7f1d1d">→ Hematuria, proteinuria, progressive sclerosis → <tspan font-weight="800">allograft failure</tspan></text>
+          </g>
+
+          <g transform="translate(700, 890)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">✅ ANSWER D — Recurrent IgA nephropathy is caused by persistent Gd-IgA1 production</text>
+            <text x="0" y="18" text-anchor="middle" font-size="16" fill="#15803d">Recurrence may cause progressive allograft injury</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DIFFERENTIAL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">LATE ALLOGRAFT DYSFUNCTION — DIFFERENTIAL</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Biopsy and serology distinguish these entities</text>
+          </g>
+
+          <!-- Recurrent IgA -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">RECURRENT IgA</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-95" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">IgA + C3</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">mesangial</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Timing:</text>
+              <text x="-100" y="0" font-weight="800" fill="#166534">Months–years</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Urine:</text>
+              <text x="-100" y="28" font-weight="800" fill="#166534">Hematuria + protein</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• IF:</text>
+              <text x="-100" y="56" font-weight="800" fill="#166534">Mesangial IgA/C3</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• EM:</text>
+              <text x="-100" y="84" font-weight="800" fill="#166534">Mesangial deposits</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• DSA:</text>
+              <text x="-100" y="112" font-weight="800" fill="#166534">Negative</text>
+              <text x="-180" y="140" font-weight="700" fill="#166534">• C4d:</text>
+              <text x="-100" y="140" font-weight="800" fill="#166534">Negative</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Treatment: RAS blockade,</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">immunosuppression, fish oil</text>
+          </g>
+
+          <!-- AMR -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">CHRONIC AMR</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">Antibody-mediated</text>
+
+            <circle cx="0" cy="-95" r="60" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">DSA+</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">cg + ptc</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• Timing:</text>
+              <text x="-100" y="0" font-weight="800" fill="#5b21b6">Years</text>
+              <text x="-180" y="28" font-weight="700" fill="#5b21b6">• Urine:</text>
+              <text x="-100" y="28" font-weight="800" fill="#5b21b6">Proteinuria</text>
+              <text x="-180" y="56" font-weight="700" fill="#5b21b6">• IF:</text>
+              <text x="-100" y="56" font-weight="800" fill="#5b21b6">Linear C4d (often)</text>
+              <text x="-180" y="84" font-weight="700" fill="#5b21b6">• EM:</text>
+              <text x="-100" y="84" font-weight="800" fill="#5b21b6">Subendothelial/GBM</text>
+              <text x="-180" y="112" font-weight="700" fill="#5b21b6">• DSA:</text>
+              <text x="-100" y="112" font-weight="800" fill="#5b21b6">POSITIVE</text>
+              <text x="-180" y="140" font-weight="700" fill="#5b21b6">• C4d:</text>
+              <text x="-100" y="140" font-weight="800" fill="#5b21b6">Often positive</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Treatment: PLEX, IVIG,</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">rituximab, eculizumab</text>
+          </g>
+
+          <!-- Other GN -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#0891b2"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">OTHER GN</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">De novo or recurrent</text>
+
+            <circle cx="0" cy="-95" r="60" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="18" font-weight="800" fill="#155e75">Various</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">patterns</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#155e75">• FSGS:</text>
+              <text x="-100" y="0" font-weight="800" fill="#155e75">Recurrent NS</text>
+              <text x="-180" y="28" font-weight="700" fill="#155e75">• MN:</text>
+              <text x="-100" y="28" font-weight="800" fill="#155e75">PLA2R, EXT1/2</text>
+              <text x="-180" y="56" font-weight="700" fill="#155e75">• MPGN:</text>
+              <text x="-100" y="56" font-weight="800" fill="#155e75">C3, immunoglobulins</text>
+              <text x="-180" y="84" font-weight="700" fill="#155e75">• IF:</text>
+              <text x="-100" y="84" font-weight="800" fill="#155e75">Pattern-specific</text>
+              <text x="-180" y="112" font-weight="700" fill="#155e75">• EM:</text>
+              <text x="-100" y="112" font-weight="800" fill="#155e75">Pattern-specific</text>
+              <text x="-180" y="140" font-weight="700" fill="#155e75">• DSA:</text>
+              <text x="-100" y="140" font-weight="800" fill="#155e75">Negative</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Treatment:</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#155e75">Disease-specific</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Mesangial IgA + C3 without DSA/C4d = recurrent IgA nephropathy</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Answer -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER D</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Recurrent IgA nephropathy is caused by persistent production of pathogenic galactose-deficient IgA1</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">and associated immune complexes; recurrence may cause progressive allograft injury</text>
+          </g>
+
+          <!-- Option cards -->
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Persistent Gd-IgA1 production causes recurrence</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Recurrence can cause progressive allograft injury</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Recurrent IgA nephropathy does NOT require DSA or C4d</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">IgA nephropathy is not antibody-mediated in the traditional sense</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Recurrence is NOT uncommon; it is a common cause of graft failure</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">IgA nephropathy recurs in up to 30–60% of grafts; can contribute to late graft failure</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Mesangial IgA deposits are NOT TCMR</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">TCMR shows tubulitis and interstitial inflammation; mesangial IgA is recurrent GN</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Tacrolimus does NOT completely prevent recurrence</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">IgA nephropathy recurs despite standard immunosuppression</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: D — Persistent Gd-IgA1 production causes recurrent IgA nephropathy</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Recurrent IgA Nephropathy After Kidney Transplantation",
+  subtitle: "The kidney is innocent — the immune system continues producing pathogenic Gd-IgA1",
+  badge: "TRANSPLANT NEPHROLOGY · GLOMERULAR DISEASE · IMMUNOLOGY",
+  caseTitle: "Case: 38-year-old man, 6 years post-transplant for IgA nephropathy",
+  caseDescription: "Original ESKD from IgA nephropathy. Now develops microscopic hematuria, increasing proteinuria (1.8 g/day), and declining allograft function (Cr 1.2 → 2.0). Biopsy: mesangial hypercellularity with segmental sclerosis; IF shows dominant granular mesangial IgA with C3; EM shows mesangial electron-dense deposits. DSA negative, C4d negative.",
+  labChips: [
+    { text: "Cr 2.0 mg/dL (baseline 1.2)", abnormal: true },
+    { text: "Urine protein 1.8 g/day", abnormal: true },
+    { text: "Microscopic hematuria", abnormal: true },
+    { text: "C3/C4 normal", abnormal: false },
+    { text: "DSA negative", abnormal: false },
+    { text: "C4d negative", abnormal: false },
+    { text: "Mesangial IgA + C3", abnormal: true },
+    { text: "Mesangial dense deposits", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Pathogenesis", className: "opt2" },
+    { id: "opt3", label: "🔵 Differential", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Recurrent IgA Nephropathy — The Case",
+      infoRows: [
+        { k: "Timing", v: "6 years post-transplant" },
+        { k: "Urine", v: "Hematuria + proteinuria" },
+        { k: "Biopsy", v: "Mesangial IgA + C3" },
+        { k: "DSA / C4d", v: "Both negative" },
+        { k: "Diagnosis", v: "Recurrent IgA nephropathy" }
+      ],
+      svgTitle: "Recurrent IgA Nephropathy After Kidney Transplantation",
+      svgSubtitle: "Hematuria + proteinuria + rising Cr · mesangial IgA/C3 deposits · DSA−/C4d−",
+      bannerBg: "#dc2626",
+      bannerText1: "Recurrent IgA nephropathy = persistent Gd-IgA1 production by the recipient",
+      bannerText2: "The new kidney receives the same immune complexes as the original",
+      panel1Title: "🧪 Reading the biopsy",
+      panel1Tagline: "What the findings show",
+      panel1List: [
+        "<strong>LM:</strong> mesangial hypercellularity with segmental sclerosis",
+        "<strong>IF:</strong> dominant granular mesangial IgA with C3 — the hallmark of IgA nephropathy",
+        "<strong>EM:</strong> mesangial electron-dense deposits — confirmatory",
+        "<strong>DSA negative:</strong> rules out antibody-mediated rejection",
+        "<strong>C4d negative:</strong> no evidence of complement deposition in peritubular capillaries"
+      ],
+      panel2Title: "🧬 The clinical context",
+      panel2Tagline: "Why this is recurrence",
+      panel2List: [
+        "<strong>Original disease:</strong> IgA nephropathy causing ESKD",
+        "<strong>6 years post-transplant:</strong> typical timing for recurrence",
+        "<strong>Hematuria + proteinuria + rising Cr:</strong> classic presentation",
+        "<strong>Serum C3/C4 normal:</strong> no systemic complement consumption",
+        "<strong>No DSA, no C4d:</strong> rules out antibody-mediated rejection",
+        "The biopsy findings confirm <strong>recurrent IgA nephropathy</strong>"
+      ],
+      alertIcon: "🧬",
+      alertTitle: "Board Pearl — The kidney is a bystander",
+      alertText: "In IgA nephropathy, the underlying problem is a <strong>systemic immune abnormality</strong> — abnormal Gd-IgA1 production by the recipient's B cells. The transplanted kidney is simply a new target for the same immune complexes."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Pathogenesis — The Four-Hit Hypothesis",
+      infoRows: [
+        { k: "Hit 1", v: "↑ Gd-IgA1 production" },
+        { k: "Hit 2", v: "Anti-glycan autoantibodies" },
+        { k: "Hit 3", v: "Mesangial deposition" },
+        { k: "Hit 4", v: "Complement activation" },
+        { k: "Key point", v: "Systemic, not renal" }
+      ],
+      svgTitle: "Pathogenesis of IgA Nephropathy — The Four-Hit Hypothesis",
+      svgSubtitle: "The disease originates in the immune system, not the kidney",
+      bannerBg: "#7c3aed",
+      bannerText1: "Gd-IgA1 persists after transplantation → the new kidney receives the same immune complexes",
+      bannerText2: "The kidney is a passive bystander — the immune system is the driver",
+      panel1Title: "🔬 The four hits",
+      panel1Tagline: "Step-by-step pathogenesis",
+      panel1List: [
+        "<strong>Hit 1:</strong> B cells produce <strong>galactose-deficient IgA1 (Gd-IgA1)</strong> — a systemic immune abnormality",
+        "<strong>Hit 2:</strong> IgG autoantibodies recognize Gd-IgA1 as a neoepitope → form <strong>circulating immune complexes</strong>",
+        "<strong>Hit 3:</strong> Immune complexes deposit in the <strong>glomerular mesangium</strong> — the kidney is a passive bystander",
+        "<strong>Hit 4:</strong> Mesangial IgA activates <strong>complement (C3)</strong> → inflammation → mesangial proliferation → sclerosis",
+        "The <strong>immune abnormality persists after transplantation</strong> → the new kidney is vulnerable"
+      ],
+      panel2Title: "🔬 Why the kidney is innocent",
+      panel2Tagline: "The transplant does not cure the disease",
+      panel2List: [
+        "The <strong>abnormal IgA1 is produced by the recipient's B cells</strong> — not by the kidney",
+        "The transplanted kidney has <strong>normal mesangial cells</strong> — it is not defective",
+        "The kidney is a <strong>passive recipient</strong> of the same circulating immune complexes that damaged the original kidneys",
+        "<strong>Recurrence is expected</strong> — not a failure of the transplant",
+        "This is why <strong>recurrence is common</strong> (30–60% on biopsy) and can cause progressive allograft injury"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Answer: D — Persistent Gd-IgA1 production",
+      alertText: "Recurrent IgA nephropathy is caused by <strong>persistent production of pathogenic galactose-deficient IgA1</strong> and associated immune complexes. <strong>Recurrence may cause progressive allograft injury.</strong>"
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Differential Diagnosis of Late Allograft Dysfunction",
+      infoRows: [
+        { k: "Recurrent IgA", v: "Mesangial IgA/C3, DSA−, C4d−" },
+        { k: "Chronic AMR", v: "DSA+, C4d+ often" },
+        { k: "Recurrent FSGS", v: "Podocyte foot process effacement" },
+        { k: "Recurrent MN", v: "Subepithelial deposits" },
+        { k: "De novo GN", v: "Variable patterns" }
+      ],
+      svgTitle: "Late Allograft Dysfunction — Differential Diagnosis",
+      svgSubtitle: "Biopsy and serology distinguish these entities",
+      bannerBg: "#0891b2",
+      bannerText1: "Mesangial IgA + C3 without DSA/C4d = recurrent IgA nephropathy",
+      bannerText2: "Chronic AMR would show DSA and often C4d positivity",
+      panel1Title: "❌ Chronic antibody-mediated rejection",
+      panel1Tagline: "The closest mimic",
+      panel1List: [
+        "Chronic AMR typically presents with <strong>proteinuria and declining graft function</strong> — similar to recurrent IgA",
+        "But chronic AMR has <strong>DSA positivity</strong> and often <strong>C4d deposition</strong> in peritubular capillaries",
+        "Biopsy shows <strong>transplant glomerulopathy (cg > 0)</strong> and <strong>peritubular capillary basement membrane multilayering</strong>",
+        "IF shows <strong>linear C4d</strong> along peritubular capillaries",
+        "This patient has <strong>negative DSA and negative C4d</strong> — ruling out chronic AMR"
+      ],
+      panel2Title: "❌ Other recurrent glomerulonephritides",
+      panel2Tagline: "Different biopsy patterns",
+      panel2List: [
+        "<strong>Recurrent FSGS</strong> — presents with nephrotic syndrome; EM shows podocyte foot process effacement; no IgA deposits",
+        "<strong>Recurrent membranous nephropathy</strong> — subepithelial deposits with IgG and C3; PLA2R or EXT1/EXT2 may be positive",
+        "<strong>Recurrent MPGN</strong> — subendothelial deposits; C3 may be low; different IF pattern",
+        "<strong>De novo GN</strong> — variable patterns; usually different from the original disease",
+        "This patient's biopsy shows <strong>mesangial IgA and C3</strong> — classic for recurrent IgA nephropathy"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — IF is the key discriminator",
+      alertText: "In late allograft dysfunction, the <strong>immunofluorescence pattern</strong> is critical. Mesangial IgA + C3 = IgA nephropathy. Linear C4d = chronic AMR. Subepithelial IgG = membranous. Podocyte effacement = FSGS."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "D — Persistent Gd-IgA1" },
+        { k: "Recurrence rate", v: "30–60% on biopsy" },
+        { k: "Mechanism", v: "Systemic immune abnormality" },
+        { k: "Biopsy", v: "Mesangial IgA + C3" },
+        { k: "Prognosis", v: "Can cause progressive injury" }
+      ],
+      svgTitle: "Answer Summary — Recurrent IgA Nephropathy",
+      svgSubtitle: "Persistent Gd-IgA1 production causes recurrence and progressive allograft injury",
+      bannerBg: "#ca8a04",
+      bannerText1: "D — Persistent production of pathogenic galactose-deficient IgA1 and immune complexes",
+      bannerText2: "Recurrence may cause progressive allograft injury",
+      panel1Title: "✅ The correct answer (D)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>The kidney is not the problem</strong> — it is a passive bystander",
+        "<strong>The immune system continues producing Gd-IgA1</strong> — a systemic abnormality",
+        "<strong>Gd-IgA1 + anti-glycan antibodies</strong> form circulating immune complexes",
+        "<strong>These complexes deposit in the new kidney's mesangium</strong>",
+        "<strong>Recurrence is common</strong> (30–60%) and can cause progressive allograft injury"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (DSA + C4d required):</strong> Recurrent IgA nephropathy is NOT antibody-mediated in this traditional sense — DSA and C4d are negative",
+        "<strong>B (Uncommon, cannot cause failure):</strong> Recurrence is COMMON (30–60%) and CAN cause progressive allograft failure",
+        "<strong>C (Mesangial IgA = TCMR):</strong> TCMR shows tubulitis and interstitial inflammation; mesangial IgA is recurrent GN",
+        "<strong>E (Prevented by tacrolimus):</strong> Standard immunosuppression does NOT prevent recurrence of IgA nephropathy"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "Recurrent IgA nephropathy is caused by <strong>persistent production of pathogenic galactose-deficient IgA1</strong> and associated immune complexes. <strong>Recurrence may cause progressive allograft injury.</strong>"
+    }
+  },
+  comparison: {
+    title: "📊 Late Allograft Dysfunction — Biopsy Patterns",
+    sub: "Immunofluorescence and electron microscopy distinguish these entities",
+    head: ["Diagnosis", "IF pattern", "EM findings", "DSA/C4d", "Treatment"],
+    rows: [
+      { cells: ["Recurrent IgA nephropathy (this patient)", "Mesangial IgA + C3", "Mesangial dense deposits", "Both negative", "RAS blockade, immunosuppression, fish oil"], hero: true },
+      { cells: ["Chronic AMR", "Linear C4d (often)", "Subendothelial/GBM deposits, ptcml", "DSA+, C4d+ often", "PLEX, IVIG, rituximab"], hero: false },
+      { cells: ["Recurrent FSGS", "Non-specific (IgM, C3)", "Podocyte foot process effacement", "Negative", "Plasmapheresis, rituximab"], hero: false },
+      { cells: ["Recurrent membranous", "Subepithelial IgG + C3", "Subepithelial deposits", "Negative", "Rituximab, CNI"], hero: false },
+      { cells: ["Recurrent MPGN", "Subendothelial C3 + Ig", "Subendothelial deposits", "Negative", "Disease-specific"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 38-year-old man, 6 years post-transplant for IgA nephropathy, develops hematuria, proteinuria, and rising creatinine. Biopsy shows mesangial IgA + C3 deposits. DSA and C4d are negative. What is the diagnosis?",
+      options: [
+        { text: "Recurrent IgA nephropathy caused by persistent production of pathogenic galactose-deficient IgA1 and associated immune complexes.", correct: true,
+          explanation: "The biopsy shows classic IgA nephropathy with mesangial IgA and C3 deposits. DSA and C4d are negative, ruling out AMR. The recurrence is due to persistent Gd-IgA1 production by the recipient's immune system." },
+        { text: "Chronic antibody-mediated rejection.", correct: false,
+          explanation: "Chronic AMR requires DSA positivity and/or C4d deposition. Both are negative in this patient." },
+        { text: "Acute T-cell–mediated rejection.", correct: false,
+          explanation: "TCMR shows tubulitis and interstitial inflammation, not mesangial IgA deposits." }
+      ]
+    },
+    {
+      question: "Why does IgA nephropathy recur after kidney transplantation?",
+      options: [
+        { text: "The underlying abnormality is a systemic immune defect — persistent production of galactose-deficient IgA1 by the recipient's B cells.", correct: true,
+          explanation: "IgA nephropathy is a systemic disease. The recipient's immune system continues to produce abnormal Gd-IgA1, which deposits in the new kidney. The kidney is a passive bystander." },
+        { text: "The transplanted kidney has a genetic defect that causes IgA deposition.", correct: false,
+          explanation: "The transplanted kidney is not genetically defective. The abnormality is in the recipient's immune system." },
+        { text: "Immunosuppression causes abnormal IgA production.", correct: false,
+          explanation: "Immunosuppression does not cause IgA nephropathy. The disease is due to the recipient's pre-existing immune abnormality." }
+      ]
+    },
+    {
+      question: "What is the approximate recurrence rate of IgA nephropathy after kidney transplantation?",
+      options: [
+        { text: "30–60% on biopsy.", correct: true,
+          explanation: "IgA nephropathy recurs in approximately 30–60% of grafts when assessed by biopsy. Many cases are subclinical, but some cause progressive allograft injury." },
+        { text: "Less than 5%.", correct: false,
+          explanation: "Recurrence is much more common than 5%. Up to 60% of grafts show recurrent IgA deposits on biopsy." },
+        { text: "100%.", correct: false,
+          explanation: "Recurrence is common but not universal. About 30–60% of grafts show recurrent deposits." }
+      ]
+    },
+    {
+      question: "Which biopsy finding confirms recurrent IgA nephropathy?",
+      options: [
+        { text: "Dominant granular mesangial IgA with C3 on immunofluorescence.", correct: true,
+          explanation: "Mesangial IgA with C3 is the hallmark of IgA nephropathy. EM shows mesangial electron-dense deposits. This pattern distinguishes it from other causes of graft dysfunction." },
+        { text: "Linear C4d along peritubular capillaries.", correct: false,
+          explanation: "Linear C4d suggests antibody-mediated rejection, not IgA nephropathy." },
+        { text: "Subepithelial IgG deposits.", correct: false,
+          explanation: "Subepithelial IgG deposits suggest membranous nephropathy, not IgA nephropathy." }
+      ]
+    },
+    {
+      question: "A transplant recipient with recurrent IgA nephropathy has negative DSA and negative C4d. What does this indicate?",
+      options: [
+        { text: "The recurrence is not antibody-mediated rejection — it is recurrent glomerulonephritis.", correct: true,
+          explanation: "IgA nephropathy is not typically DSA-mediated. Negative DSA and C4d rule out antibody-mediated rejection and support the diagnosis of recurrent IgA nephropathy." },
+        { text: "The patient definitely does not have recurrent disease.", correct: false,
+          explanation: "Negative DSA and C4d do not rule out recurrent IgA nephropathy — they rule out AMR. The biopsy confirms IgA nephropathy." },
+        { text: "The patient has chronic T-cell–mediated rejection.", correct: false,
+          explanation: "TCMR is diagnosed by tubulitis and interstitial inflammation, not by DSA/C4d status." }
+      ]
+    },
+    {
+      question: "Which of the following is NOT part of the four-hit hypothesis of IgA nephropathy?",
+      options: [
+        { text: "Donor-specific antibody production by the recipient.", correct: true,
+          explanation: "DSA production is not part of the four-hit hypothesis. The four hits are: (1) Gd-IgA1 production, (2) anti-glycan autoantibodies, (3) mesangial deposition, (4) complement activation." },
+        { text: "Increased production of galactose-deficient IgA1.", correct: false,
+          explanation: "This is Hit 1 of the four-hit hypothesis." },
+        { text: "Mesangial deposition of immune complexes.", correct: false,
+          explanation: "This is Hit 3 of the four-hit hypothesis." }
+      ]
+    },
+    {
+      question: "What is the appropriate treatment approach for recurrent IgA nephropathy after transplantation?",
+      options: [
+        { text: "RAS blockade, optimization of immunosuppression, and consideration of fish oil or tonsillectomy.", correct: true,
+          explanation: "Treatment focuses on RAS blockade (ACEi/ARB) to reduce proteinuria, optimizing immunosuppression, and considering adjuncts like fish oil. Tonsillectomy may be considered in some cases." },
+        { text: "Pulse methylprednisolone for acute rejection.", correct: false,
+          explanation: "Pulse steroids are used for TCMR. Recurrent IgA nephropathy is treated with RAS blockade and immunosuppression optimization." },
+        { text: "Immediate plasmapheresis and IVIG.", correct: false,
+          explanation: "PLEX and IVIG are used for antibody-mediated rejection, not for recurrent IgA nephropathy." }
+      ]
+    },
+    {
+      question: "Which of the following statements about recurrent IgA nephropathy is INCORRECT?",
+      options: [
+        { text: "Standard tacrolimus-based immunosuppression completely prevents recurrence.", correct: true,
+          explanation: "This statement is INCORRECT. Standard immunosuppression does NOT prevent recurrence of IgA nephropathy. Recurrence occurs in 30–60% of grafts despite immunosuppression." },
+        { text: "Recurrence can cause progressive allograft injury.", correct: false,
+          explanation: "This statement is TRUE. Recurrence can cause progressive allograft injury and contribute to late graft failure." },
+        { text: "The disease is caused by persistent production of Gd-IgA1.", correct: false,
+          explanation: "This statement is TRUE. Persistent Gd-IgA1 production is the underlying mechanism of recurrence." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Transplant Nephrology / Glomerular Disease / Immunology",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

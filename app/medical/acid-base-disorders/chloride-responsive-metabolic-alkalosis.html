@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chloride-Responsive Metabolic Alkalosis — NG Suction & Inadequate Replacement</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 170)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">CHLORIDE-RESPONSIVE METABOLIC ALKALOSIS</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">NG suction + inadequate replacement with 0.45% saline</text>
+            <text x="0" y="50" text-anchor="middle" font-size="16" fill="#991b1b">pH 7.55 · HCO₃⁻ 42 · urine Cl⁻ 6 · K⁺ 2.8</text>
+          </g>
+
+          <!-- Clinical context card -->
+          <g transform="translate(250, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">THE SETTING</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="32" font-weight="800" fill="#dc2626">NG Suction</text>
+            <line x1="-160" y1="15" x2="160" y2="15" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="50" text-anchor="middle" font-size="15" fill="#7f1d1d">Loss of HCl-rich gastric fluid</text>
+            <text x="0" y="75" text-anchor="middle" font-size="15" fill="#7f1d1d">Volume + chloride depletion</text>
+            <text x="0" y="100" text-anchor="middle" font-size="15" fill="#7f1d1d">No PPI → ongoing acid loss</text>
+            <text x="0" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">The driver of the alkalosis</text>
+          </g>
+
+          <!-- Urine Cl card -->
+          <g transform="translate(700, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">URINE CHLORIDE</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="48" font-weight="800" fill="#16a34a">6</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">mEq/L (low)</text>
+            <line x1="-160" y1="55" x2="160" y2="55" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="90" text-anchor="middle" font-size="15" fill="#15803d">Threshold: &lt; 20 mEq/L</text>
+            <text x="0" y="115" text-anchor="middle" font-size="15" fill="#15803d">= chloride-responsive</text>
+            <text x="0" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Confirms the diagnosis</text>
+          </g>
+
+          <!-- Inadequate replacement card -->
+          <g transform="translate(1150, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#ca8a04"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#ca8a04"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">THE TRAP</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="28" font-weight="800" fill="#713f12">0.45% NaCl</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="700" fill="#a16207">+ KCl 10 mEq/L</text>
+            <line x1="-160" y1="45" x2="160" y2="45" stroke="#fef3c7" stroke-width="3"/>
+            <text x="0" y="80" text-anchor="middle" font-size="15" fill="#a16207">Only 77 mEq/L Cl⁻</text>
+            <text x="0" y="105" text-anchor="middle" font-size="15" fill="#a16207">Gastric fluid has 120–160</text>
+            <text x="0" y="130" text-anchor="middle" font-size="15" fill="#a16207">Hypotonic — poor volume</text>
+            <text x="0" y="155" text-anchor="middle" font-size="14" font-weight="700" fill="#713f12">Perpetuates alkalosis</text>
+          </g>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 URINE Cl⁻ &lt; 20 = CHLORIDE-RESPONSIVE</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">The kidney is avidly reabsorbing Na⁺ and HCO₃⁻ to preserve volume</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ Paradoxical aciduria (urine pH 6.x) despite systemic alkalosis</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Low urine Cl + metabolic alkalosis = chloride-responsive</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — MECHANISM
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">MECHANISM OF CHLORIDE-RESPONSIVE ALKALOSIS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Volume depletion → kidney prioritizes Na⁺ reabsorption → H⁺ and HCO₃⁻ handling changes</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(700, 250)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#155e75">① GASTRIC HCl LOSS</text>
+            <text x="-580" y="15" font-size="16" fill="#0e7490">NG suction removes H⁺ and Cl⁻ → systemic alkalosis + hypochloremia</text>
+            <text x="-580" y="42" font-size="15" font-weight="700" fill="#155e75">Volume depletion also occurs (loss of saline-rich fluid)</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 400)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#5b21b6">② VOLUME DEPLETION</text>
+            <text x="-580" y="15" font-size="16" fill="#6d28d9">Kidney senses decreased effective circulating volume</text>
+            <text x="-580" y="42" font-size="15" font-weight="700" fill="#5b21b6">→ Avid Na⁺ reabsorption in proximal tubule and collecting duct</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(700, 550)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#713f12">③ PARADOXICAL ACIDURIA</text>
+            <text x="-580" y="15" font-size="16" fill="#a16207">To reabsorb Na⁺, the collecting duct secretes H⁺ (and K⁺) in exchange</text>
+            <text x="-580" y="42" font-size="15" font-weight="700" fill="#713f12">→ Urine pH becomes acidic (6.x) despite systemic alkalosis</text>
+          </g>
+
+          <!-- Step 4 -->
+          <g transform="translate(700, 700)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#991b1b">④ MAINTENANCE OF ALKALOSIS</text>
+            <text x="-580" y="15" font-size="16" fill="#7f1d1d">Hypokalemia (K⁺ 2.8) shifts H⁺ into cells and K⁺ out → worsens alkalosis</text>
+            <text x="-580" y="42" font-size="15" font-weight="700" fill="#991b1b">Low chloride prevents the kidney from excreting bicarbonate</text>
+          </g>
+
+          <g transform="translate(700, 850)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ SALINE CORRECTS THE ALKALOSIS</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#15803d">Restoring volume and chloride removes the stimulus for avid Na⁺/HCO₃⁻ reabsorption</text>
+            <text x="0" y="42" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">→ Kidney can excrete excess bicarbonate → alkalosis resolves</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — TREATMENT
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">TREATMENT — 0.9% NORMAL SALINE + KCl</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Correct the volume and chloride deficit, replete potassium, stop ongoing losses</text>
+          </g>
+
+          <!-- Saline -->
+          <g transform="translate(250, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">① NORMAL SALINE</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">0.9% NaCl</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="15" fill="#15803d">154 mEq/L Cl⁻</text>
+            <text x="0" y="55" text-anchor="middle" font-size="15" fill="#15803d">Restores volume + chloride</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Allows HCO₃⁻ excretion</text>
+          </g>
+
+          <!-- KCl -->
+          <g transform="translate(700, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">② POTASSIUM</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">KCl</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="15" fill="#6d28d9">Target K⁺ &gt; 4.0 mEq/L</text>
+            <text x="0" y="55" text-anchor="middle" font-size="15" fill="#6d28d9">Corrects hypokalemia</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Removes K⁺-driven alkalosis</text>
+          </g>
+
+          <!-- Acid suppression -->
+          <g transform="translate(1150, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#0891b2"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">③ ACID SUPPRESSION</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">PPI or H2 blocker</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="15" fill="#0e7490">Reduces gastric acid secretion</text>
+            <text x="0" y="55" text-anchor="middle" font-size="15" fill="#0e7490">Less HCl lost if NG continues</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">Prevents ongoing alkalosis</text>
+          </g>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 700)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#991b1b">WHY 0.45% SALINE IS THE WRONG CHOICE</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#7f1d1d">Contains only 77 mEq/L Cl⁻ — less than half of normal saline</text>
+            <text x="0" y="42" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">Hypotonic — does not restore volume effectively</text>
+          </g>
+
+          <g transform="translate(700, 880)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">Correct management: 0.9% saline + KCl + acid suppression + stop NG suction</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — CHLORIDE-RESPONSIVE vs RESISTANT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">METABOLIC ALKALOSIS — THE URINE Cl⁻ DIVIDE</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Urine chloride distinguishes chloride-responsive from chloride-resistant</text>
+          </g>
+
+          <!-- Chloride-responsive -->
+          <g transform="translate(350, 450)">
+            <rect x="-290" y="-200" width="580" height="400" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-200" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-145" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">CHLORIDE-RESPONSIVE</text>
+            <text x="0" y="-100" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Urine Cl⁻ &lt; 20 mEq/L</text>
+
+            <g font-size="15">
+              <text x="-260" y="-40" font-weight="800" fill="#166534">Causes</text>
+              <text x="-260" y="-10" font-weight="700" fill="#15803d">• Vomiting / NG suction</text>
+              <text x="-260" y="20" font-weight="700" fill="#15803d">• Diuretic use (remote)</text>
+              <text x="-260" y="50" font-weight="700" fill="#15803d">• Post-hypercapnia</text>
+              <text x="-260" y="80" font-weight="700" fill="#15803d">• Villous adenoma (but acidosis)</text>
+              <text x="-260" y="115" font-weight="800" fill="#166534">Treatment</text>
+              <text x="-260" y="145" font-weight="700" fill="#15803d">• 0.9% normal saline</text>
+              <text x="-260" y="175" font-weight="700" fill="#15803d">• KCl replacement</text>
+            </g>
+          </g>
+
+          <!-- Chloride-resistant -->
+          <g transform="translate(1050, 450)">
+            <rect x="-290" y="-200" width="580" height="400" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-200" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-145" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">CHLORIDE-RESISTANT</text>
+            <text x="0" y="-100" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">Urine Cl⁻ &gt; 20 mEq/L</text>
+
+            <g font-size="15">
+              <text x="-260" y="-40" font-weight="800" fill="#991b1b">Causes</text>
+              <text x="-260" y="-10" font-weight="700" fill="#7f1d1d">• Mineralocorticoid excess</text>
+              <text x="-260" y="20" font-weight="700" fill="#7f1d1d">• Severe hypokalemia</text>
+              <text x="-260" y="50" font-weight="700" fill="#7f1d1d">• Bartter / Gitelman</text>
+              <text x="-260" y="80" font-weight="700" fill="#7f1d1d">• Current diuretic use</text>
+              <text x="-260" y="115" font-weight="800" fill="#991b1b">Treatment</text>
+              <text x="-260" y="145" font-weight="700" fill="#7f1d1d">• Treat underlying cause</text>
+              <text x="-260" y="175" font-weight="700" fill="#7f1d1d">• K⁺-sparing diuretics</text>
+            </g>
+          </g>
+
+          <!-- Bottom banner -->
+          <g transform="translate(700, 760)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 URINE Cl⁻ IS THE KEY TEST</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">Low (&lt;20) = volume/chloride depletion → saline-responsive</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">High (&gt;20) = mineralocorticoid effect → saline-resistant</text>
+          </g>
+
+          <g transform="translate(700, 920)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">This patient: urine Cl⁻ 6 → chloride-responsive → treat with 0.9% saline + KCl</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Chloride-Responsive Metabolic Alkalosis — NG Suction & Inadequate Replacement",
+  subtitle: "Urine Cl⁻ < 20 = chloride-responsive → treat with 0.9% saline + KCl, not 0.45% saline",
+  badge: "NEPHROLOGY · ACID-BASE · FLUIDS & ELECTROLYTES",
+  caseTitle: "Case: 37-year-old woman with acute cholecystitis, NG suction, and 0.45% saline replacement",
+  caseDescription: "Admitted with acute cholecystitis treated by NG suction and IV 0.45% saline + KCl 10 mEq/L. Not on PPI. ECG normal. Labs: Na 138, K 2.8, Cl 85, HCO3 42, BUN 18, Cr 1.0. ABG: pH 7.55, pCO2 57, HCO3 43. Urine: Na 42, K 45, Cl 6, pH 6.x.",
+  labChips: [
+    { text: "Na⁺ 138 mEq/L", abnormal: false },
+    { text: "K⁺ 2.8 mEq/L", abnormal: true },
+    { text: "Cl⁻ 85 mEq/L", abnormal: true },
+    { text: "HCO₃⁻ 42 mEq/L", abnormal: true },
+    { text: "pH 7.55", abnormal: true },
+    { text: "pCO₂ 57 mm Hg", abnormal: true },
+    { text: "Urine Cl⁻ 6 mEq/L", abnormal: true },
+    { text: "Urine pH 6.x", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Mechanism", className: "opt2" },
+    { id: "opt3", label: "🔵 Treatment", className: "opt3" },
+    { id: "opt4", label: "🟡 Responsive vs Resistant", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Chloride-Responsive Metabolic Alkalosis",
+      infoRows: [
+        { k: "pH", v: "7.55 (alkalemia)" },
+        { k: "HCO₃⁻", v: "42 mEq/L (high)" },
+        { k: "pCO₂", v: "57 (compensation)" },
+        { k: "Anion gap", v: "11 (normal)" },
+        { k: "Urine Cl⁻", v: "6 mEq/L (low)" }
+      ],
+      svgTitle: "Chloride-Responsive Metabolic Alkalosis",
+      svgSubtitle: "NG suction + inadequate replacement with 0.45% saline",
+      bannerBg: "#dc2626",
+      bannerText1: "Low urine Cl⁻ + metabolic alkalosis = chloride-responsive",
+      bannerText2: "The 0.45% saline is the trap — inadequate chloride and volume",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the numbers tell you",
+      panel1List: [
+        "<strong>pH 7.55 and HCO₃⁻ 42</strong> — primary metabolic alkalosis",
+        "<strong>pCO₂ 57</strong> — respiratory compensation (hypoventilation)",
+        "<strong>Anion gap 11</strong> — normal, rules out high-AG acidosis",
+        "<strong>Urine Cl⁻ 6 mEq/L</strong> — <strong>chloride-responsive</strong> (threshold <20)",
+        "<strong>K⁺ 2.8</strong> — hypokalemia perpetuates the alkalosis",
+        "<strong>Urine pH 6.x</strong> — paradoxical aciduria, confirms volume depletion"
+      ],
+      panel2Title: "🧬 Why 0.45% saline is inadequate",
+      panel2Tagline: "The critical therapeutic error",
+      panel2List: [
+        "<strong>0.45% saline contains only 77 mEq/L Cl⁻</strong> — less than half of normal saline",
+        "Gastric fluid contains <strong>120–160 mEq/L Cl⁻</strong> — the replacement is hypochloremic",
+        "<strong>Hypotonic</strong> — does not effectively restore intravascular volume",
+        "<strong>KCl 10 mEq/L</strong> is inadequate for severe hypokalemia (K 2.8)",
+        "<strong>No acid suppression</strong> — ongoing gastric acid loss perpetuates the alkalosis"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Board Pearl — Match the fluid to the loss",
+      alertText: "For chloride-responsive metabolic alkalosis, the treatment is <strong>0.9% normal saline</strong> (154 mEq/L Cl⁻) + <strong>KCl replacement</strong>. Hypotonic fluids like 0.45% saline <strong>perpetuate the alkalosis</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Mechanism of Chloride-Responsive Alkalosis",
+      infoRows: [
+        { k: "Trigger", v: "Gastric HCl loss" },
+        { k: "Effect 1", v: "Volume depletion" },
+        { k: "Effect 2", v: "Chloride depletion" },
+        { k: "Effect 3", v: "Paradoxical aciduria" },
+        { k: "Maintenance", v: "Hypokalemia + low Cl⁻" }
+      ],
+      svgTitle: "Mechanism of Chloride-Responsive Alkalosis",
+      svgSubtitle: "Volume depletion → kidney prioritizes Na⁺ reabsorption → alkalosis maintained",
+      bannerBg: "#7c3aed",
+      bannerText1: "Volume depletion → avid Na⁺/HCO₃⁻ reabsorption → alkalosis cannot be corrected",
+      bannerText2: "Saline restores volume and chloride → allows bicarbonate excretion",
+      panel1Title: "🔬 Step by step",
+      panel1Tagline: "From gastric loss to alkalosis",
+      panel1List: [
+        "<strong>① Gastric HCl loss:</strong> NG suction removes H⁺ and Cl⁻ → systemic alkalosis + hypochloremia",
+        "<strong>② Volume depletion:</strong> kidney senses decreased effective circulating volume",
+        "<strong>③ Avid Na⁺ reabsorption:</strong> proximal tubule and collecting duct reabsorb Na⁺ (and HCO₃⁻)",
+        "<strong>④ Paradoxical aciduria:</strong> collecting duct secretes H⁺ in exchange for Na⁺ → urine pH 6.x",
+        "<strong>⑤ Hypokalemia:</strong> K⁺ shifts out of cells, H⁺ shifts in → worsens alkalosis",
+        "The alkalosis persists because <strong>low chloride and volume</strong> prevent bicarbonate excretion"
+      ],
+      panel2Title: "🔬 Why saline works",
+      panel2Tagline: "Correcting the underlying stimulus",
+      panel2List: [
+        "Saline restores <strong>volume</strong> → removes the stimulus for avid Na⁺/HCO₃⁻ reabsorption",
+        "Saline provides <strong>chloride</strong> → kidney can excrete bicarbonate as NaCl",
+        "Correcting hypokalemia removes the K⁺-driven intracellular shift",
+        "Result: <strong>alkalosis resolves</strong>",
+        "This is why it is called <strong>chloride-responsive</strong>"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Chloride is the key",
+      alertText: "In chloride-responsive alkalosis, the kidney is <strong>deprived of chloride</strong> and cannot excrete bicarbonate. Providing chloride as <strong>normal saline</strong> restores the ability to excrete bicarbonate."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Treatment — 0.9% Saline + KCl",
+      infoRows: [
+        { k: "Fluid", v: "0.9% normal saline" },
+        { k: "Chloride content", v: "154 mEq/L (highest)" },
+        { k: "Potassium", v: "KCl — target K⁺ > 4.0" },
+        { k: "Acid suppression", v: "PPI or H2 blocker" },
+        { k: "Stop", v: "NG suction if possible" }
+      ],
+      svgTitle: "Treatment — 0.9% Normal Saline + KCl",
+      svgSubtitle: "Correct volume and chloride, replete potassium, stop ongoing losses",
+      bannerBg: "#0891b2",
+      bannerText1: "0.9% saline (154 mEq/L Cl⁻) + KCl + acid suppression + stop NG suction",
+      bannerText2: "Do NOT use 0.45% saline — inadequate chloride and volume",
+      panel1Title: "✅ The correct management",
+      panel1Tagline: "Four components",
+      panel1List: [
+        "<strong>① 0.9% normal saline</strong> — provides 154 mEq/L Cl⁻, the highest of any crystalloid",
+        "<strong>② KCl replacement</strong> — target K⁺ > 4.0 mEq/L; hypokalemia perpetuates alkalosis",
+        "<strong>③ Acid suppression</strong> — PPI or H2 blocker to reduce gastric acid secretion if NG suction continues",
+        "<strong>④ Stop NG suction</strong> as soon as clinically feasible",
+        "Monitor: <strong>serum electrolytes, acid-base status, urine output</strong>"
+      ],
+      panel2Title: "❌ Why 0.45% saline fails",
+      panel2Tagline: "The wrong fluid",
+      panel2List: [
+        "<strong>0.45% saline contains only 77 mEq/L Cl⁻</strong> — less than half of normal saline",
+        "<strong>Gastric fluid contains 120–160 mEq/L Cl⁻</strong> — the replacement is inadequate",
+        "<strong>Hypotonic</strong> — does not effectively restore intravascular volume",
+        "<strong>KCl 10 mEq/L</strong> is insufficient for severe hypokalemia (K 2.8)",
+        "Result: <strong>the alkalosis persists</strong> and may worsen"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Pearl — Normal saline is the correct fluid",
+      alertText: "For chloride-responsive metabolic alkalosis, <strong>0.9% normal saline</strong> is the treatment of choice. It contains <strong>154 mEq/L of chloride</strong> — the highest of any crystalloid — and restores volume. Hypotonic fluids are inadequate."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Chloride-Responsive vs Resistant",
+      infoRows: [
+        { k: "Responsive", v: "Urine Cl⁻ < 20" },
+        { k: "Resistant", v: "Urine Cl⁻ > 20" },
+        { k: "This patient", v: "6 → responsive" },
+        { k: "Treatment", v: "Saline + KCl" },
+        { k: "Key test", v: "Urine chloride" }
+      ],
+      svgTitle: "Metabolic Alkalosis — The Urine Cl⁻ Divide",
+      svgSubtitle: "Urine chloride distinguishes chloride-responsive from chloride-resistant",
+      bannerBg: "#ca8a04",
+      bannerText1: "Low urine Cl⁻ (<20) = volume/chloride depletion → saline-responsive",
+      bannerText2: "High urine Cl⁻ (>20) = mineralocorticoid effect → saline-resistant",
+      panel1Title: "🔬 Chloride-responsive (urine Cl⁻ < 20)",
+      panel1Tagline: "Volume/chloride depletion",
+      panel1List: [
+        "<strong>Causes:</strong> vomiting, NG suction, remote diuretic use, post-hypercapnia",
+        "<strong>Mechanism:</strong> volume and chloride depletion → kidney avidly reabsorbs Na⁺/HCO₃⁻",
+        "<strong>Urine pH:</strong> acidic (paradoxical aciduria)",
+        "<strong>Treatment:</strong> 0.9% normal saline + KCl",
+        "<strong>This patient:</strong> urine Cl⁻ 6 → chloride-responsive"
+      ],
+      panel2Title: "🔬 Chloride-resistant (urine Cl⁻ > 20)",
+      panel2Tagline: "Mineralocorticoid excess",
+      panel2List: [
+        "<strong>Causes:</strong> primary aldosteronism, Cushing syndrome, renovascular disease, severe hypokalemia, Bartter/Gitelman, current diuretic use",
+        "<strong>Mechanism:</strong> mineralocorticoid effect → Na⁺ reabsorption with H⁺/K⁺ secretion",
+        "<strong>Urine pH:</strong> alkaline",
+        "<strong>Treatment:</strong> treat the underlying cause; K⁺-sparing diuretics; not saline",
+        "<strong>Contrast:</strong> this patient has low urine Cl⁻ → responsive"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Key concept — Urine Cl⁻ is the diagnostic test",
+      alertText: "In metabolic alkalosis, <strong>urine chloride</strong> is the key test. <strong>Low (<20)</strong> = volume/chloride depletion → give saline. <strong>High (>20)</strong> = mineralocorticoid effect → treat the underlying cause."
+    }
+  },
+  comparison: {
+    title: "📊 Metabolic Alkalosis — Chloride-Responsive vs Chloride-Resistant",
+    sub: "Urine chloride is the key diagnostic test",
+    head: ["Feature", "Chloride-Responsive", "Chloride-Resistant"],
+    rows: [
+      { cells: ["Urine Cl⁻", "< 20 mEq/L", "> 20 mEq/L"], hero: false },
+      { cells: ["Volume status", "Depleted", "Normal or expanded"], hero: false },
+      { cells: ["Causes", "Vomiting, NG suction, remote diuretics, post-hypercapnia", "Mineralocorticoid excess, severe hypokalemia, Bartter/Gitelman, current diuretics"], hero: false },
+      { cells: ["Urine pH", "Acidic (paradoxical aciduria)", "Alkaline"], hero: false },
+      { cells: ["Treatment", "0.9% normal saline + KCl", "Treat underlying cause; K⁺-sparing diuretics"], hero: true },
+      { cells: ["This patient", "✓ Urine Cl⁻ 6", "—"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 37-year-old woman with acute cholecystitis has been on NG suction and IV 0.45% saline + KCl 10 mEq/L. Labs: pH 7.55, HCO3 42, K 2.8, urine Cl 6, urine pH 6.x. What is the most appropriate management?",
+      options: [
+        { text: "Switch to 0.9% normal saline + KCl and consider acid suppression.", correct: true,
+          explanation: "This is chloride-responsive metabolic alkalosis (urine Cl < 20). Treatment is 0.9% normal saline (154 mEq/L Cl) + KCl. The 0.45% saline she is receiving is inadequate — only 77 mEq/L Cl and hypotonic. Acid suppression reduces ongoing gastric acid loss." },
+        { text: "Continue current therapy with 0.45% saline + KCl 10 mEq/L.", correct: false,
+          explanation: "This is inadequate. 0.45% saline has only 77 mEq/L Cl — less than half of normal saline — and does not correct the chloride deficit. KCl 10 mEq/L is also insufficient for K 2.8." },
+        { text: "Give acetazolamide to increase bicarbonate excretion.", correct: false,
+          explanation: "Acetazolamide is used for chloride-resistant alkalosis or when saline is contraindicated. In this patient with volume depletion, saline is the correct treatment." }
+      ]
+    },
+    {
+      question: "What urine chloride level defines chloride-responsive metabolic alkalosis?",
+      options: [
+        { text: "< 20 mEq/L.", correct: true,
+          explanation: "Urine chloride < 20 mEq/L indicates volume and chloride depletion — the hallmark of chloride-responsive metabolic alkalosis. Treatment is normal saline." },
+        { text: "> 20 mEq/L.", correct: false,
+          explanation: "Urine chloride > 20 mEq/L indicates chloride-resistant alkalosis (e.g., mineralocorticoid excess)." },
+        { text: "> 40 mEq/L.", correct: false,
+          explanation: "This is even more clearly chloride-resistant." }
+      ]
+    },
+    {
+      question: "Why does 0.45% saline perpetuate metabolic alkalosis in this patient?",
+      options: [
+        { text: "It contains only 77 mEq/L of chloride — inadequate to replace gastric chloride losses.", correct: true,
+          explanation: "Gastric fluid contains 120–160 mEq/L of chloride. 0.45% saline has only 77 mEq/L — less than half. The chloride deficit is not corrected, so the alkalosis persists." },
+        { text: "It contains too much sodium.", correct: false,
+          explanation: "The issue is inadequate chloride, not excess sodium." },
+        { text: "It is hypertonic and causes free water loss.", correct: false,
+          explanation: "0.45% saline is hypotonic, not hypertonic." }
+      ]
+    },
+    {
+      question: "What is paradoxical aciduria in metabolic alkalosis?",
+      options: [
+        { text: "Acidic urine despite systemic alkalosis, due to avid Na⁺ reabsorption with H⁺ secretion.", correct: true,
+          explanation: "In volume depletion, the kidney prioritizes Na⁺ reabsorption. In the collecting duct, Na⁺ is reabsorbed in exchange for H⁺ secretion, making the urine acidic despite systemic alkalosis." },
+        { text: "Alkaline urine despite systemic acidosis.", correct: false,
+          explanation: "This is the opposite — paradoxical aciduria refers to acidic urine in alkalosis." },
+        { text: "A normal physiologic response.", correct: false,
+          explanation: "Paradoxical aciduria is a sign of volume depletion and chloride-responsive alkalosis." }
+      ]
+    },
+    {
+      question: "Which fluid has the highest chloride content?",
+      options: [
+        { text: "0.9% normal saline (154 mEq/L).", correct: true,
+          explanation: "0.9% normal saline has 154 mEq/L of chloride — the highest of any commonly used crystalloid." },
+        { text: "Lactated Ringer's (109 mEq/L).", correct: false,
+          explanation: "LR has 109 mEq/L of chloride — lower than normal saline." },
+        { text: "0.45% saline (77 mEq/L).", correct: false,
+          explanation: "0.45% saline has only 77 mEq/L — half of normal saline." }
+      ]
+    },
+    {
+      question: "Why does hypokalemia worsen metabolic alkalosis?",
+      options: [
+        { text: "K⁺ shifts out of cells and H⁺ shifts in, raising intracellular pH and stimulating H⁺ secretion.", correct: true,
+          explanation: "Hypokalemia causes K⁺ to move out of cells and H⁺ to move in. The intracellular acidosis stimulates H⁺ secretion into the tubular lumen, which generates new bicarbonate and worsens the alkalosis." },
+        { text: "K⁺ directly stimulates bicarbonate excretion.", correct: false,
+          explanation: "Hypokalemia reduces bicarbonate excretion, not increases it." },
+        { text: "K⁺ has no effect on acid-base balance.", correct: false,
+          explanation: "Potassium has a significant effect on acid-base balance." }
+      ]
+    },
+    {
+      question: "What is the treatment for chloride-resistant metabolic alkalosis?",
+      options: [
+        { text: "Treat the underlying cause (e.g., mineralocorticoid excess) and consider K⁺-sparing diuretics.", correct: true,
+          explanation: "Chloride-resistant alkalosis is due to mineralocorticoid excess or other causes. Treatment targets the underlying cause, often with K⁺-sparing diuretics like spironolactone." },
+        { text: "0.9% normal saline.", correct: false,
+          explanation: "Saline is for chloride-responsive alkalosis. It is not effective in chloride-resistant alkalosis." },
+        { text: "Acetazolamide.", correct: false,
+          explanation: "Acetazolamide can be used but is not first-line; treating the underlying cause is key." }
+      ]
+    },
+    {
+      question: "In this patient, what is the expected response to 0.9% normal saline?",
+      options: [
+        { text: "Correction of alkalosis as the kidney excretes excess bicarbonate.", correct: true,
+          explanation: "Restoring volume and chloride removes the stimulus for avid Na⁺/HCO₃⁻ reabsorption, allowing the kidney to excrete excess bicarbonate and correct the alkalosis." },
+        { text: "Worsening of alkalosis.", correct: false,
+          explanation: "Saline corrects the alkalosis — it does not worsen it." },
+        { text: "No change in acid-base status.", correct: false,
+          explanation: "Saline is the definitive treatment and corrects the alkalosis." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Acid-Base / Fluids & Electrolytes",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

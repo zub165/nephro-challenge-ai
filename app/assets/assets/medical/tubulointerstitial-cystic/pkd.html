@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADPKD Cyst Infection — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --adpkd:#1d4ed8; --cystinf:#dc2626; --pyelo:#b45309; --stone:#7c3aed; --hemorrhage:#0d9488;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .case-box{background:#fff; border-radius:18px; padding:20px 24px; margin-top:22px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border-left:6px solid var(--cystinf);}
+  .case-box h2{margin:0 0 10px; font-size:1.05rem; color:#991b1b;}
+  .case-box p{margin:0 0 8px; font-size:.9rem; color:#334155;}
+  .case-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; margin-top:12px;}
+  .case-stat{background:#f1f5f9; border-radius:10px; padding:10px 14px; border:1px solid #cbd5e1;}
+  .case-stat .cs-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#475569;}
+  .case-stat .cs-value{font-size:1rem; font-weight:800; color:#0f172a; margin-top:2px;}
+  .case-stat.warn{background:#fee2e2; border-color:#fca5a5;}
+  .case-stat.warn .cs-label{color:#991b1b;}
+  .case-stat.warn .cs-value{color:#7f1d1d;}
+  .case-stat.ok{background:#dcfce7; border-color:#86efac;}
+  .case-stat.ok .cs-label{color:#166534;}
+  .case-stat.ok .cs-value{color:#14532d;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.adpkd.active{background:#dbeafe; border-color:var(--adpkd); color:#1e3a8a;}
+  .pill.cystinf.active{background:#fee2e2; border-color:var(--cystinf); color:#7f1d1d;}
+  .pill.pyelo.active{background:#ffedd5; border-color:var(--pyelo); color:#7c2d12;}
+  .pill.stone.active{background:#ede9fe; border-color:var(--stone); color:#4c1d95;}
+  .pill.hemorrhage.active{background:#ccfbf1; border-color:var(--hemorrhage); color:#134e4a;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:620px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1100px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-cystinf { background-color:#fee2e2; box-shadow: inset 4px 0 0 var(--cystinf); }
+  tr.highlight-cystinf td { font-weight:600; color:#7f1d1d; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-cyst{background:#fee2e2; color:#7f1d1d;}
+  .tag-pyelo{background:#ffedd5; color:#7c2d12;}
+  .tag-stone{background:#ede9fe; color:#4c1d95;}
+  .tag-hem{background:#ccfbf1; color:#134e4a;}
+  .tag-tumor{background:#fef9c3; color:#713f12;}
+
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>ADPKD — Acute Flank Pain &amp; Fever</h1>
+      <p>Cyst infection vs. pyelonephritis · Antibiotic selection</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE SUMMARY -->
+  <section class="case-box">
+    <h2>Case Vignette — 45-year-old woman with ADPKD</h2>
+    <p>1-day history of right flank pain, fever, chills. No prior ADPKD complications. Kidneys enlarged and cystic (15.5 cm and 16 cm). eGFR 58. Temperature 101°F, BP 108/80. Right flank tenderness. Urinalysis: numerous WBCs and gram-negative rods.</p>
+    <div class="case-grid">
+      <div class="case-stat warn"><div class="cs-label">Temperature</div><div class="cs-value">101°F</div></div>
+      <div class="case-stat"><div class="cs-label">BP</div><div class="cs-value">108/80 mm Hg</div></div>
+      <div class="case-stat warn"><div class="cs-label">Flank Pain</div><div class="cs-value">Right-sided</div></div>
+      <div class="case-stat warn"><div class="cs-label">Urinalysis</div><div class="cs-value">WBCs + gram-negative rods</div></div>
+      <div class="case-stat"><div class="cs-label">eGFR</div><div class="cs-value">58 mL/min/1.73m²</div></div>
+      <div class="case-stat warn"><div class="cs-label">Kidney Size</div><div class="cs-value">15.5 / 16 cm (enlarged)</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section class="stage">
+    <h2>Interactive ADPKD Kidney Diagram</h2>
+    <p class="sub">Toggle between complications of ADPKD that cause acute flank pain and fever.</p>
+
+    <div class="toggle-bar">
+      <button class="pill adpkd active" id="btnAdpkd" onclick="setMode('adpkd')">ADPKD (Baseline)</button>
+      <button class="pill cystinf" id="btnCystInf" onclick="setMode('cystinf')">Cyst Infection ★</button>
+      <button class="pill pyelo" id="btnPyelo" onclick="setMode('pyelo')">Pyelonephritis</button>
+      <button class="pill stone" id="btnStone" onclick="setMode('stone')">Nephrolithiasis</button>
+      <button class="pill hemorrhage" id="btnHem" onclick="setMode('hemorrhage')">Cyst Hemorrhage</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1200 640" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="kidneyGrad" cx="40%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#991b1b"/>
+          </radialGradient>
+          <radialGradient id="cystGrad" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="infectedCystGrad" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#fbbf24"/><stop offset="60%" stop-color="#dc2626"/><stop offset="100%" stop-color="#7f1d1d"/>
+          </radialGradient>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="infectionGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1200" height="640" fill="#fdfdfd"/>
+        <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">ADPKD Kidney — Complications</text>
+
+        <!-- RIGHT KIDNEY (viewer left) -->
+        <g transform="translate(300, 340)">
+          <!-- Kidney outline -->
+          <path d="M -130 -120 C -190 -60 -190 80 -120 140 C -50 200 100 180 150 100 C 190 40 190 -40 150 -100 C 110 -160 -50 -190 -130 -120 Z" 
+                fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="3" opacity="0.9"/>
+          <text x="0" y="180" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7f1d1d">RIGHT KIDNEY</text>
+
+          <!-- Cysts -->
+          <g id="cysts-right">
+            <circle cx="-90" cy="-60" r="35" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-30" cy="-80" r="40" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="40" cy="-70" r="38" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="100" cy="-40" r="32" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-80" cy="30" r="30" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="0" cy="20" r="45" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="80" cy="40" r="35" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-40" cy="90" r="28" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="60" cy="100" r="30" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+          </g>
+        </g>
+
+        <!-- LEFT KIDNEY (viewer right) -->
+        <g transform="translate(900, 340)">
+          <path d="M 130 -120 C 190 -60 190 80 120 140 C 50 200 -100 180 -150 100 C -190 40 -190 -40 -150 -100 C -110 -160 50 -190 130 -120 Z" 
+                fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="3" opacity="0.9"/>
+          <text x="0" y="180" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7f1d1d">LEFT KIDNEY</text>
+
+          <g id="cysts-left">
+            <circle cx="90" cy="-60" r="35" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="30" cy="-80" r="40" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-40" cy="-70" r="38" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-100" cy="-40" r="32" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="80" cy="30" r="30" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="0" cy="20" r="45" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-80" cy="40" r="35" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="40" cy="90" r="28" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+            <circle cx="-60" cy="100" r="30" fill="url(#cystGrad)" stroke="#991b1b" stroke-width="1.5" opacity="0.85"/>
+          </g>
+        </g>
+
+        <!-- ============================================ -->
+        <!-- OVERLAYS                                     -->
+        <!-- ============================================ -->
+
+        <!-- CYST INFECTION: inflamed cyst with bacteria -->
+        <g id="overlay-cystinf" style="display:none;">
+          <!-- Inflamed cyst on right kidney -->
+          <circle cx="-30" cy="-80" r="55" fill="none" stroke="#dc2626" stroke-width="6" opacity="0.8" filter="url(#infectionGlow)">
+            <animate attributeName="r" values="50;65;50" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="-30" cy="-80" r="40" fill="url(#infectedCystGrad)" stroke="#7f1d1d" stroke-width="2"/>
+          <!-- Bacteria -->
+          <g fill="#166534" opacity="0.9">
+            <ellipse cx="-50" cy="-100" rx="6" ry="3"/>
+            <ellipse cx="-20" cy="-110" rx="6" ry="3"/>
+            <ellipse cx="0" cy="-90" rx="6" ry="3"/>
+            <ellipse cx="-40" cy="-70" rx="6" ry="3"/>
+            <ellipse cx="-10" cy="-60" rx="6" ry="3"/>
+          </g>
+          <text x="0" y="230" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">INFECTED CYST</text>
+          <text x="0" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#dc2626">Fever, flank pain, ± positive urine culture</text>
+        </g>
+
+        <!-- PYELONEPHRITIS: ascending infection from bladder -->
+        <g id="overlay-pyelo" style="display:none;">
+          <!-- Bladder -->
+          <ellipse cx="600" cy="580" rx="60" ry="35" fill="#fecaca" stroke="#991b1b" stroke-width="2"/>
+          <text x="600" y="585" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#7f1d1d">BLADDER</text>
+          <!-- Ureters -->
+          <path d="M 570 560 Q 500 450 400 400" stroke="#dc2626" stroke-width="6" fill="none" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite"/>
+          </path>
+          <path d="M 630 560 Q 700 450 800 400" stroke="#dc2626" stroke-width="6" fill="none" stroke-dasharray="6 4">
+            <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite"/>
+          </path>
+          <!-- Inflammation in right kidney -->
+          <circle cx="-30" cy="-80" r="60" fill="#fbbf24" opacity="0.4" filter="url(#infectionGlow)">
+            <animate attributeName="r" values="55;70;55" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <text x="0" y="230" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7c2d12">PYELONEPHRITIS</text>
+          <text x="0" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#b45309">Ascending infection, positive urine culture</text>
+        </g>
+
+        <!-- NEPHROLITHIASIS: stone in collecting system -->
+        <g id="overlay-stone" style="display:none;">
+          <!-- Stone -->
+          <polygon points="-30,-40 -20,-55 -5,-50 -10,-35 -25,-30" fill="#fbbf24" stroke="#78350f" stroke-width="2" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="1.5s" repeatCount="indefinite"/>
+          </polygon>
+          <text x="0" y="230" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#4c1d95">NEPHROLITHIASIS</text>
+          <text x="0" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#7c3aed">Stones cause obstruction, flank pain, hematuria</text>
+        </g>
+
+        <!-- CYST HEMORRHAGE: bleeding into cyst -->
+        <g id="overlay-hem" style="display:none;">
+          <!-- Hemorrhagic cyst -->
+          <circle cx="-30" cy="-80" r="40" fill="#7f1d1d" stroke="#450a0a" stroke-width="2" opacity="0.9"/>
+          <circle cx="-30" cy="-80" r="30" fill="#991b1b" opacity="0.7"/>
+          <text x="0" y="230" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#134e4a">CYST HEMORRHAGE</text>
+          <text x="0" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#0d9488">Sudden flank pain, may have hematuria</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Likely Diagnosis</div>
+        <div class="rc-value" id="rcDxValue">—</div>
+        <div class="rc-sub" id="rcDxSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Urinalysis</div>
+        <div class="rc-value" id="rcUaValue">—</div>
+        <div class="rc-sub" id="rcUaSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Best Next Step</div>
+        <div class="rc-value" id="rcNextValue">—</div>
+        <div class="rc-sub" id="rcNextSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Antibiotic Choice</div>
+        <div class="rc-note" id="rcAbxValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Clinical Bottom Line</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Acute Flank Pain &amp; Fever in ADPKD</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Complication</th>
+          <th>Urinalysis</th>
+          <th>Imaging</th>
+          <th>Treatment</th>
+          <th>Key Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-cystinf">
+          <td><strong>Cyst Infection</strong> <span class="tag tag-cyst">Correct</span></td>
+          <td>WBCs, bacteria (if communicating)</td>
+          <td>CT/MRI; PET if inconclusive</td>
+          <td><strong>Lipophilic antibiotics</strong> (ciprofloxacin, TMP-SMX, clindamycin) for 4–6 weeks</td>
+          <td>Fever, flank pain in ADPKD; urine culture may be negative if cyst does not communicate</td>
+        </tr>
+        <tr>
+          <td><strong>Pyelonephritis</strong> <span class="tag tag-pyelo">Distractor</span></td>
+          <td>WBCs, WBC casts, bacteria</td>
+          <td>CT if severe or no improvement</td>
+          <td>Fluoroquinolones or IV cephalosporins; 7–14 days</td>
+          <td>Ascending infection; responds to standard UTI antibiotics</td>
+        </tr>
+        <tr>
+          <td><strong>Nephrolithiasis</strong> <span class="tag tag-stone">Distractor</span></td>
+          <td>Hematuria, ± WBCs</td>
+          <td>CT non-contrast (gold standard)</td>
+          <td>Analgesia, hydration; intervention if obstructive</td>
+          <td>Colicky flank pain, hematuria, history of stones</td>
+        </tr>
+        <tr>
+          <td><strong>Cyst Hemorrhage</strong> <span class="tag tag-hem">Distractor</span></td>
+          <td>Hematuria (often gross)</td>
+          <td>CT or MRI</td>
+          <td>Conservative; hydration, analgesia</td>
+          <td>Sudden severe flank pain, may have visible hematuria</td>
+        </tr>
+        <tr>
+          <td><strong>Renal Cell Carcinoma</strong> <span class="tag tag-tumor">Distractor</span></td>
+          <td>Hematuria, ± WBCs</td>
+          <td>CT/MRI with contrast</td>
+          <td>Surgical resection</td>
+          <td>Weight loss, hematuria, mass on imaging</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A 45-year-old woman with ADPKD presents with fever, right flank pain, and urinalysis showing WBCs and gram-negative rods. What is the best next step?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. CT scan of the abdomen</button>
+        <button class="opt" onclick="answer(this,false)">B. PET scan of the abdomen</button>
+        <button class="opt" onclick="answer(this,true)">C. Ciprofloxacin orally</button>
+        <button class="opt" onclick="answer(this,false)">D. Ceftriaxone IV</button>
+        <button class="opt" onclick="answer(this,false)">E. Surgical consultation</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> The patient has a urinary tract infection likely involving the kidney (pyelonephritis or cyst infection). <strong>Ciprofloxacin</strong> is the best choice because it is a fluoroquinolone that <strong>penetrates renal cysts</strong> well, unlike beta-lactams (ceftriaxone). It also covers gram-negative rods. She is stable, so oral therapy is appropriate.</div>
+    </div>
+
+    <div class="q">
+      <p>2. Why is ciprofloxacin preferred over ceftriaxone in ADPKD with suspected cyst infection?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Ceftriaxone has no gram-negative coverage</button>
+        <button class="opt" onclick="answer(this,true)">B. Ciprofloxacin penetrates renal cysts; ceftriaxone does not</button>
+        <button class="opt" onclick="answer(this,false)">C. Ciprofloxacin is safer in renal failure</button>
+        <button class="opt" onclick="answer(this,false)">D. Ceftriaxone causes more allergic reactions</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> In ADPKD, cyst infections are difficult to treat because many antibiotics do not penetrate the cyst wall. <strong>Fluoroquinolones</strong> (ciprofloxacin, levofloxacin) are lipophilic and achieve good concentrations in cyst fluid. Beta-lactams such as ceftriaxone do not penetrate cysts well.</div>
+    </div>
+
+    <div class="q">
+      <p>3. What is the recommended duration of antibiotic therapy for renal cyst infection in ADPKD?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. 3–5 days</button>
+        <button class="opt" onclick="answer(this,false)">B. 7–10 days</button>
+        <button class="opt" onclick="answer(this,true)">C. 4–6 weeks</button>
+        <button class="opt" onclick="answer(this,false)">D. 3 months</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Cyst infections in ADPKD require <strong>prolonged therapy (4–6 weeks)</strong> because the cyst environment is poorly penetrated and infections are difficult to eradicate. Shorter courses risk relapse.</div>
+    </div>
+
+    <div class="q">
+      <p>4. When is imaging (CT or MRI) indicated in ADPKD with suspected cyst infection?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Always, before starting antibiotics</button>
+        <button class="opt" onclick="answer(this,true)">B. When the diagnosis is unclear, or the patient does not improve on appropriate antibiotics</button>
+        <button class="opt" onclick="answer(this,false)">C. Only if there is gross hematuria</button>
+        <button class="opt" onclick="answer(this,false)">D. Never — treat empirically</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> Imaging is not required before starting antibiotics in a stable patient with a clear urinary source. However, if the diagnosis is uncertain, the patient fails to improve after 48–72 hours, or complications (abscess, obstruction) are suspected, CT or MRI should be obtained. PET/CT is useful when CT is inconclusive.</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which of the following is a common cause of acute flank pain in ADPKD that is NOT infectious?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Cyst infection</button>
+        <button class="opt" onclick="answer(this,true)">B. Cyst hemorrhage</button>
+        <button class="opt" onclick="answer(this,false)">C. Pyelonephritis</button>
+        <button class="opt" onclick="answer(this,false)">D. Perinephric abscess</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> <strong>Cyst hemorrhage</strong> is a common non-infectious cause of acute flank pain in ADPKD. It presents with sudden severe pain, often with gross hematuria, and is usually managed conservatively. Cyst infection and pyelonephritis are infectious causes.</div>
+    </div>
+
+    <div class="q">
+      <p>6. In a patient with ADPKD and suspected cyst infection, which imaging modality is most sensitive for detecting infected cysts?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Ultrasound</button>
+        <button class="opt" onclick="answer(this,false)">B. CT with contrast</button>
+        <button class="opt" onclick="answer(this,true)">C. PET/CT with FDG</button>
+        <button class="opt" onclick="answer(this,false)">D. MRI without contrast</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> <strong>PET/CT with FDG</strong> is the most sensitive imaging modality for detecting infected cysts in ADPKD. It can identify increased metabolic activity in the cyst wall. CT and MRI may show cyst wall thickening or debris but are less specific. PET is particularly useful when CT is inconclusive.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and infectious disease</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    adpkd: {
+      dx: 'ADPKD (baseline)',
+      dxSub: 'No acute complication',
+      ua: 'Normal',
+      uaSub: 'No WBCs or bacteria',
+      next: 'Routine monitoring',
+      nextSub: 'BP control, renal function',
+      abx: 'Not indicated.',
+      verdict: 'Baseline ADPKD — no acute infection. Management focuses on blood pressure control, hydration, and monitoring renal function.',
+      color: '#1e3a8a'
+    },
+    cystinf: {
+      dx: 'Cyst Infection',
+      dxSub: 'Most likely in this case',
+      ua: 'WBCs, gram-negative rods',
+      uaSub: 'If cyst communicates with collecting system',
+      next: 'Start empiric antibiotics after cultures',
+      nextSub: 'Do not delay for imaging if stable',
+      abx: '<strong>Ciprofloxacin</strong> is preferred — it is a lipophilic fluoroquinolone that <strong>penetrates renal cysts</strong>. Treat for 4–6 weeks. Ceftriaxone IV does NOT penetrate cysts well.',
+      verdict: 'Cyst Infection ★ — The best next step is to start empiric antibiotics. Ciprofloxacin orally is the best choice because it penetrates cysts and covers gram-negative rods. She is stable, so oral therapy is appropriate.',
+      color: '#dc2626'
+    },
+    pyelo: {
+      dx: 'Pyelonephritis',
+      dxSub: 'Ascending infection',
+      ua: 'WBCs, WBC casts, bacteria',
+      uaSub: 'Classic urinary infection',
+      next: 'Antibiotics',
+      nextSub: 'Fluoroquinolone or IV cephalosporin',
+      abx: 'Ciprofloxacin or ceftriaxone. However, in ADPKD, cyst penetration is a consideration — ciprofloxacin is preferred if cyst infection is suspected.',
+      verdict: 'Pyelonephritis — Standard antibiotics are appropriate. In ADPKD, always consider concomitant cyst infection, which requires lipophilic antibiotics and prolonged therapy.',
+      color: '#b45309'
+    },
+    stone: {
+      dx: 'Nephrolithiasis',
+      dxSub: 'Stone disease',
+      ua: 'Hematuria, ± WBCs',
+      uaSub: 'No bacteria',
+      next: 'CT non-contrast',
+      nextSub: 'Gold standard for stones',
+      abx: 'Not indicated unless infected.',
+      verdict: 'Nephrolithiasis — Presents with colicky flank pain and hematuria. CT non-contrast is the diagnostic test of choice. Treatment depends on stone size and obstruction.',
+      color: '#7c3aed'
+    },
+    hemorrhage: {
+      dx: 'Cyst Hemorrhage',
+      dxSub: 'Bleeding into cyst',
+      ua: 'Hematuria (often gross)',
+      uaSub: 'No bacteria',
+      next: 'Conservative management',
+      nextSub: 'Hydration, analgesia',
+      abx: 'Not indicated.',
+      verdict: 'Cyst Hemorrhage — A non-infectious cause of acute flank pain in ADPKD. Managed conservatively with hydration and analgesia. Imaging (CT/MRI) can confirm the diagnosis.',
+      color: '#0d9488'
+    }
+  };
+
+  function setMode(mode) {
+    ['overlay-cystinf','overlay-pyelo','overlay-stone','overlay-hem'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnAdpkd','btnCystInf','btnPyelo','btnStone','btnHem'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      adpkd:'btnAdpkd', cystinf:'btnCystInf', pyelo:'btnPyelo',
+      stone:'btnStone', hemorrhage:'btnHem'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode === 'cystinf') {
+      document.getElementById('overlay-cystinf').style.display = 'block';
+    } else if (mode === 'pyelo') {
+      document.getElementById('overlay-pyelo').style.display = 'block';
+    } else if (mode === 'stone') {
+      document.getElementById('overlay-stone').style.display = 'block';
+    } else if (mode === 'hemorrhage') {
+      document.getElementById('overlay-hem').style.display = 'block';
+    }
+
+    document.getElementById('rcDxValue').textContent = d.dx;
+    document.getElementById('rcDxValue').style.color = d.color;
+    document.getElementById('rcDxSub').textContent = d.dxSub;
+
+    document.getElementById('rcUaValue').textContent = d.ua;
+    document.getElementById('rcUaValue').style.color = d.color;
+    document.getElementById('rcUaSub').textContent = d.uaSub;
+
+    document.getElementById('rcNextValue').textContent = d.next;
+    document.getElementById('rcNextValue').style.color = d.color;
+    document.getElementById('rcNextSub').textContent = d.nextSub;
+
+    document.getElementById('rcAbxValue').innerHTML = d.abx;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('adpkd');
+</script>
+</body>
+</html>

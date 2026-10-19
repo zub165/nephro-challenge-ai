@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRRT Filtration Fraction — CVVHDF with Predilution + Postdilution</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; border-left:4px solid var(--opt1);}
+  .stat-card:nth-child(1){border-left-color:#dc2626;}
+  .stat-card:nth-child(2){border-left-color:#7c3aed;}
+  .stat-card:nth-child(3){border-left-color:#0891b2;}
+  .stat-card:nth-child(4){border-left-color:#16a34a;}
+  .stat-card .k{font-size:.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat-card .v{font-size:1rem; font-weight:800; color:var(--ink);}
+  .stat-card .sub{font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:290px;
+    max-width:calc(100% - 40px); transition:all .3s ease;
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800; color:#0f172a;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>CRRT Filtration Fraction — CVVHDF with Predilution + Postdilution</h1>
+      <p>Why this patient's filter keeps clotting despite normal settings</p>
+    </div>
+    <div class="badge">Renal Replacement Therapy</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>75-kg patient with septic shock and AKI on CVVHDF — recurrent filter clotting</h2>
+      <p>Nephrologist suspects excessive hemoconcentration. Calculate the filtration fraction using the provided formulas.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip">Qb 180 mL/min</span>
+      <span class="lab-chip">Hct 35%</span>
+      <span class="lab-chip">Q_pre 1,000 mL/h</span>
+      <span class="lab-chip">Q_post 1,500 mL/h</span>
+      <span class="lab-chip">Dialysate 2,000 mL/h</span>
+      <span class="lab-chip">Net UF 150 mL/h</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="k">Plasma Flow (Qp)</div>
+      <div class="v">7,020 mL/h</div>
+      <div class="sub">10,800 × (1 − 0.35)</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Filtration Fraction</div>
+      <div class="v" style="color:#dc2626;">≈ 33%</div>
+      <div class="sub">Target: < 25%</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Diagnosis</div>
+      <div class="v">Excessive Hemoconcentration</div>
+      <div class="sub">Explains recurrent filter clotting</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Fix</div>
+      <div class="v">↑ Qb or ↑ Predilution</div>
+      <div class="sub">Dilutes blood before filter</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- DIAGRAM 1 — THE CALCULATION -->
+      <g id="diagram-opt1">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">STEP-BY-STEP CALCULATION</text>
+
+        <!-- Step 1 -->
+        <g transform="translate(180, 230)">
+          <rect x="-135" y="-70" width="270" height="140" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">STEP 1</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">Convert Qb to mL/h</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">180 × 60 = 10,800</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">mL/h</text>
+        </g>
+
+        <path d="M 320 230 L 400 230" stroke="#dc2626" stroke-width="3" fill="none"/>
+
+        <!-- Step 2 -->
+        <g transform="translate(540, 230)">
+          <rect x="-135" y="-70" width="270" height="140" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">STEP 2</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">Calculate Qp</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">10,800 × 0.65 = 7,020</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">mL/h</text>
+        </g>
+
+        <path d="M 680 230 L 760 230" stroke="#dc2626" stroke-width="3" fill="none"/>
+
+        <!-- Step 3 -->
+        <g transform="translate(920, 230)">
+          <rect x="-135" y="-70" width="270" height="140" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">STEP 3</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">Calculate FF</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">2,650 / 8,020 = 33%</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Filtration fraction</text>
+        </g>
+
+        <!-- Formula box -->
+        <g transform="translate(600, 420)">
+          <rect x="-480" y="-60" width="960" height="120" rx="16" fill="#0f172a" stroke="#0f172a" stroke-width="3"/>
+          <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fef3c7">FF = (Q_pre + Q_post + Q_net UF) / (Q_p + Q_pre) × 100</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">= (1,000 + 1,500 + 150) / (7,020 + 1,000) × 100</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fef3c7">= 2,650 / 8,020 × 100 ≈ 33%</text>
+        </g>
+
+        <text x="600" y="560" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Normal FF in CRRT: target &lt; 25% to prevent hemoconcentration and filter clotting</text>
+        <text x="600" y="590" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">This patient: FF ≈ 33% → exceeds target → explains recurrent clotting</text>
+      </g>
+
+      <!-- DIAGRAM 2 — ANATOMY OF THE FORMULA -->
+      <g id="diagram-opt2" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">UNDERSTANDING THE FORMULA COMPONENTS</text>
+
+        <!-- Predilution -->
+        <g transform="translate(200, 240)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">Q_pre (Predilution)</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">💧</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">1,000 mL/h</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Added BEFORE filter</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Dilutes blood → ↓ Hct</text>
+          <text x="0" y="70" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#5b21b6">Protective effect</text>
+        </g>
+
+        <text x="360" y="245" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#7c3aed">+</text>
+
+        <!-- Postdilution -->
+        <g transform="translate(520, 240)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">Q_post (Postdilution)</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">💧</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">1,500 mL/h</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Added AFTER filter</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">No protective effect</text>
+          <text x="0" y="70" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#5b21b6">Contributes to numerator</text>
+        </g>
+
+        <text x="680" y="245" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#7c3aed">+</text>
+
+        <!-- Net UF -->
+        <g transform="translate(840, 240)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">Q_net UF</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">💧</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">150 mL/h</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">Net fluid removed</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="10" fill="#5b21b6">from patient</text>
+          <text x="0" y="70" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#5b21b6">Also in numerator</text>
+        </g>
+
+        <!-- Denominator explanation -->
+        <g transform="translate(600, 490)">
+          <rect x="-450" y="-65" width="900" height="130" rx="16" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">DENOMINATOR = Q_p + Q_pre</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">Q_p = plasma flow rate (7,020 mL/h) · Q_pre = predilution fluid (1,000 mL/h)</text>
+          <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">Q_pre appears in BOTH numerator and denominator — its net effect is protective</text>
+        </g>
+
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#5b21b6">Postdilution adds volume to numerator but NOT denominator → raises FF</text>
+      </g>
+
+      <!-- DIAGRAM 3 — WHY FILTER CLOTS -->
+      <g id="diagram-opt3" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">HEMOCONCENTRATION AT THE FILTER</text>
+
+        <g transform="translate(200, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">Before Filter</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">🩸</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">Hct 35%</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Normal oncotic pressure</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Normal clotting factors</text>
+        </g>
+
+        <path d="M 355 260 L 445 260" stroke="#0891b2" stroke-width="3" fill="none"/>
+
+        <g transform="translate(600, 260)">
+          <rect x="-150" y="-100" width="300" height="200" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">Inside Filter</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">🔥</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">Hct increases</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">Fluid removed → blood concentrated</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#155e75">↑ Oncotic pressure → clotting cascade</text>
+        </g>
+
+        <path d="M 755 260 L 845 260" stroke="#0891b2" stroke-width="3" fill="none"/>
+
+        <g transform="translate(1000, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">After Filter</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">💥</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">Thrombin activation</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#7f1d1d">Fibrin deposition</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">→ Filter CLOTS</text>
+        </g>
+
+        <g transform="translate(600, 490)">
+          <rect x="-450" y="-65" width="900" height="130" rx="16" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">WHY FF > 25% CAUSES CLOTTING</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">When FF exceeds 25%, the fraction of plasma ultrafiltered at the filter is too high</text>
+          <text x="0" y="26" text-anchor="middle" font-family="Arial" font-size="12" fill="#cffafe">Blood leaving the filter is hemoconcentrated → promotes thrombus formation in the fibers</text>
+        </g>
+
+        <text x="600" y="640" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#155e75">Target FF 20–25% · Anything higher → hemoconcentration → shortened filter life</text>
+      </g>
+
+      <!-- DIAGRAM 4 — MANAGEMENT -->
+      <g id="diagram-opt4" style="display:none">
+        <text x="600" y="105" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">HOW TO LOWER THE FILTRATION FRACTION</text>
+
+        <g transform="translate(220, 250)">
+          <rect x="-160" y="-100" width="320" height="200" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Option 1: ↑ Qb</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">⬆️</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">Increase blood flow</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">180 → 250 mL/min</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Raises Q_p → lowers FF</text>
+          <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">Preferred first step</text>
+        </g>
+
+        <text x="395" y="255" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#ca8a04">or</text>
+
+        <g transform="translate(580, 250)">
+          <rect x="-160" y="-100" width="320" height="200" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Option 2: ↑ Q_pre</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">💧</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">Shift to predilution</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Convert post → pre</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Dilutes blood before filter</text>
+          <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">Most protective</text>
+        </g>
+
+        <text x="755" y="255" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#ca8a04">or</text>
+
+        <g transform="translate(940, 250)">
+          <rect x="-160" y="-100" width="320" height="200" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Option 3: ↓ Q_post</text>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="24">⬇️</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" fill="#713f12">Reduce postdilution</text>
+          <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">1,500 → 1,000 mL/h</text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="10" fill="#713f12">Reduces numerator → lowers FF</text>
+          <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">May reduce clearance</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-450" y="-75" width="900" height="150" rx="16" fill="#ca8a04" stroke="#713f12" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">PRACTICAL APPROACH FOR THIS PATIENT</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#fef9c3">1. First: Increase Qb from 180 → 220–250 mL/min (if hemodynamics allow)</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="12" fill="#fef9c3">2. Second: Convert some postdilution to predilution (shift ~500 mL/h)</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fef3c7">Target FF: 20–25% · Recheck daily</text>
+        </g>
+
+        <text x="600" y="650" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#713f12">Increasing Qb alone may drop FF from 33% → 24% (target range)</text>
+      </g>
+
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-540" y="-30" width="1080" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount">0</span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+var TABS = [
+  { id: "opt1", label: "🔴 The Calculation" },
+  { id: "opt2", label: "🟣 Formula Anatomy" },
+  { id: "opt3", label: "🔵 Why Filters Clot" },
+  { id: "opt4", label: "🟡 How to Fix It" }
+];
+
+var MODES = {
+  opt1: {
+    panelClass: "highlight-opt1",
+    infoTitle: "🔴 Filtration Fraction = 33%",
+    infoRows: [
+      { k: "Qb (mL/h)", v: "10,800" },
+      { k: "Qp (mL/h)", v: "7,020" },
+      { k: "Numerator", v: "2,650" },
+      { k: "Denominator", v: "8,020" },
+      { k: "FF", v: "33% (target < 25%)" }
+    ],
+    svgTitle: "Filtration Fraction Calculation — Step by Step",
+    svgSubtitle: "Qp = 7,020 · FF = 2,650 / 8,020 × 100 = 33% · Exceeds target < 25%",
+    bannerBg: "#dc2626",
+    bannerText1: "🔴 Filtration Fraction ≈ 33% — Markedly Elevated",
+    bannerText2: "Target FF < 25% · This patient: 33% → excessive hemoconcentration → filter clotting",
+    panel1Title: "🔴 The Calculation",
+    panel1Tagline: "Three-step approach",
+    panel1List: [
+      "<strong>Step 1 — Convert Qb:</strong> 180 mL/min × 60 = 10,800 mL/h",
+      "<strong>Step 2 — Calculate Qp:</strong> 10,800 × (1 − 0.35) = 7,020 mL/h",
+      "<strong>Step 3 — FF formula:</strong> (Q_pre + Q_post + Q_net UF) / (Q_p + Q_pre) × 100",
+      "<strong>Numerator:</strong> 1,000 + 1,500 + 150 = 2,650",
+      "<strong>Denominator:</strong> 7,020 + 1,000 = 8,020",
+      "<strong>FF:</strong> 2,650 / 8,020 × 100 ≈ <strong>33%</strong>"
+    ],
+    panel2Title: "🔴 Clinical Interpretation",
+    panel2Tagline: "Why it matters",
+    panel2List: [
+      "<strong>Target FF:</strong> 20–25% — enough clearance without hemoconcentration",
+      "<strong>This patient:</strong> FF 33% — well above target → excessive hemoconcentration",
+      "<strong>Consequence:</strong> Blood leaving the filter is concentrated → promotes clotting",
+      "<strong>Result:</strong> Repeated filter clotting — exactly what happened here",
+      "<strong>Next step:</strong> Lower FF by increasing Qb or converting post to predilution"
+    ],
+    alertIcon: "🔴",
+    alertTitle: "Board Pearl — FF ≈ 33%, Target is < 25%",
+    alertText: "Filtration fraction in CVVHDF with predilution + postdilution is calculated as <strong>(Q_pre + Q_post + Q_net UF) / (Q_p + Q_pre) × 100</strong>. This patient's FF of 33% exceeds the target of 20–25%, explaining recurrent filter clotting."
+  },
+  opt2: {
+    panelClass: "highlight-opt2",
+    infoTitle: "🟣 Formula Anatomy",
+    infoRows: [
+      { k: "Q_pre", v: "Predilution fluid (protective)" },
+      { k: "Q_post", v: "Postdilution fluid (contributes)" },
+      { k: "Q_net UF", v: "Net fluid removal" },
+      { k: "Q_p", v: "Plasma flow rate" }
+    ],
+    svgTitle: "Understanding the Formula Components",
+    svgSubtitle: "Q_pre appears in both numerator and denominator — its net effect is protective",
+    bannerBg: "#7c3aed",
+    bannerText1: "🟣 Formula Anatomy — Predilution Protects, Postdilution Doesn't",
+    bannerText2: "Predilution dilutes blood before the filter · Postdilution adds only to numerator",
+    panel1Title: "🟣 Component Breakdown",
+    panel1Tagline: "Every term explained",
+    panel1List: [
+      "<strong>Q_pre (predilution):</strong> Fluid added BEFORE the filter — dilutes blood, lowers Hct, protects filter",
+      "<strong>Q_post (postdilution):</strong> Fluid added AFTER the filter — no protective effect on hemoconcentration",
+      "<strong>Q_net UF:</strong> Net fluid removed from the patient",
+      "<strong>Q_p (plasma flow):</strong> Qb × 60 × (1 − Hct) — the plasma fraction of blood flow",
+      "<strong>Denominator (Q_p + Q_pre):</strong> Effective plasma flow entering the filter after predilution"
+    ],
+    panel2Title: "🟣 Why Q_pre Appears Twice",
+    panel2Tagline: "The protective mechanism",
+    panel2List: [
+      "<strong>Numerator:</strong> Q_pre adds to total fluid being processed",
+      "<strong>Denominator:</strong> Q_pre dilutes the plasma → higher effective flow → lower FF",
+      "<strong>Net effect:</strong> Predilution reduces FF more than postdilution",
+      "<strong>Example:</strong> Shifting 500 mL/h from post to pre lowers FF by ~2%",
+      "<strong>Trade-off:</strong> Predilution lowers solute clearance slightly but protects filter"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Board Pearl — Predilution Protects the Filter",
+    alertText: "In CVVHDF with predilution + postdilution, <strong>Q_pre appears in both numerator and denominator</strong>, so increasing predilution lowers FF more effectively than removing postdilution. Predilution is protective because it dilutes blood before the filter."
+  },
+  opt3: {
+    panelClass: "highlight-opt3",
+    infoTitle: "🔵 Why Filters Clot",
+    infoRows: [
+      { k: "FF > 25%", v: "Hemoconcentration" },
+      { k: "Effect", v: "↑ Oncotic pressure" },
+      { k: "Result", v: "Clotting cascade activation" },
+      { k: "Outcome", v: "Filter thrombosis" }
+    ],
+    svgTitle: "Hemoconcentration at the Filter — Why FF > 25% Clots",
+    svgSubtitle: "High FF concentrates blood at the filter → ↑ oncotic pressure → clotting cascade → thrombosis",
+    bannerBg: "#0891b2",
+    bannerText1: "🔵 Hemoconcentration — The Link Between High FF and Filter Clotting",
+    bannerText2: "When FF > 25%, blood leaving the filter is too concentrated → promotes clot formation",
+    panel1Title: "🔵 Mechanism",
+    panel1Tagline: "From physiology to thrombosis",
+    panel1List: [
+      "<strong>FF definition:</strong> Fraction of plasma flow removed as ultrafiltrate across the filter",
+      "<strong>Normal FF:</strong> 20% of plasma is filtered — leaves 80% as concentrated blood",
+      "<strong>FF 33%:</strong> One-third of plasma is removed → blood leaving filter is very concentrated",
+      "<strong>Oncotic pressure:</strong> Rises sharply in the filter as protein concentration increases",
+      "<strong>Clotting cascade:</strong> Activated by stasis, hemoconcentration, and contact with foreign surfaces"
+    ],
+    panel2Title: "🔵 Consequences",
+    panel2Tagline: "Why this matters clinically",
+    panel2List: [
+      "<strong>Filter clotting:</strong> Repeated circuit loss → interrupted therapy → poor clearance",
+      "<strong>Blood loss:</strong> Clotted filters contain blood — loss of 100–200 mL per event",
+      "<strong>Nursing burden:</strong> Frequent circuit changes → ↑ workload",
+      "<strong>Subtherapeutic dosing:</strong> Interruptions reduce total clearance",
+      "<strong>Solution:</strong> Lower FF to < 25% by adjusting prescription or using anticoagulation"
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Board Pearl — FF > 25% → Filter Clotting",
+    alertText: "When FF exceeds 25%, hemoconcentration at the filter promotes <strong>clotting cascade activation</strong> and filter thrombosis. The fix is to lower FF: <strong>increase Qb or shift postdilution to predilution</strong>."
+  },
+  opt4: {
+    panelClass: "highlight-opt4",
+    infoTitle: "🟡 How to Lower FF",
+    infoRows: [
+      { k: "Best option", v: "↑ Qb" },
+      { k: "Alternative", v: "↑ Predilution" },
+      { k: "Trade-off", v: "↓ Clearance with predilution" },
+      { k: "Target FF", v: "20–25%" }
+    ],
+    svgTitle: "How to Lower the Filtration Fraction",
+    svgSubtitle: "Increase Qb · Shift postdilution to predilution · Reduce postdilution · Target FF 20–25%",
+    bannerBg: "#ca8a04",
+    bannerText1: "🟡 Management — Lower FF to < 25%",
+    bannerText2: "Increase Qb first · Then shift post → pre · Recheck daily",
+    panel1Title: "🟡 Management Options",
+    panel1Tagline: "Stepwise approach",
+    panel1List: [
+      "<strong>1. Increase Qb (first-line):</strong> 180 → 220–250 mL/min if hemodynamics allow — raises Q_p → lowers FF",
+      "<strong>2. Convert post to predilution:</strong> Shift ~500 mL/h from post to pre — dilutes blood before filter",
+      "<strong>3. Reduce Q_post:</strong> Lower postdilution fluid — reduces numerator, lowers FF",
+      "<strong>4. Reduce Q_net UF:</strong> Only if clinically tolerated — lowers numerator",
+      "<strong>5. Anticoagulation:</strong> Regional citrate or heparin can prolong filter life even if FF is high"
+    ],
+    panel2Title: "🟡 Practical Targets",
+    panel2Tagline: "What to aim for",
+    panel2List: [
+      "<strong>Target FF:</strong> 20–25%",
+      "<strong>Increase Qb:</strong> From 180 to 250 mL/min lowers FF from 33% to ~24%",
+      "<strong>Predilution fraction:</strong> Aim for 30–50% of replacement as predilution",
+      "<strong>Monitor:</strong> Recalculate FF after each prescription change",
+      "<strong>Filter life:</strong> Target > 24h; clotting before this indicates prescription or anticoagulation issue"
+    ],
+    alertIcon: "🟡",
+    alertTitle: "Board Pearl — Lower FF by Increasing Qb or Predilution",
+    alertText: "To lower FF in CVVHDF: <strong>increase Qb first</strong>, then <strong>shift postdilution to predilution</strong>. Target FF 20–25%. Anticoagulation (regional citrate) can prolong filter life if high FF persists."
+  }
+};
+
+var QUIZ = [
+  {
+    question: "What is the plasma flow rate (Qp) in this patient?",
+    options: [
+      { text: "A. 6,480 mL/h", correct: false, explanation: "That would be 10,800 × 0.60 (Hct 40%). Recalculate with Hct 35%: 10,800 × 0.65 = 7,020." },
+      { text: "B. 7,020 mL/h", correct: true, explanation: "Qp = Qb × 60 × (1 − Hct) = 180 × 60 × (1 − 0.35) = 10,800 × 0.65 = <strong>7,020 mL/h</strong>." },
+      { text: "C. 10,800 mL/h", correct: false, explanation: "10,800 mL/h is Qb converted to mL/h — but Qp is plasma flow, calculated as Qb × (1 − Hct) = 7,020 mL/h." }
+    ]
+  },
+  {
+    question: "What is the filtration fraction for this patient?",
+    options: [
+      { text: "A. 22%", correct: false, explanation: "22% would be below the target. Numerator here is 2,650, denominator 8,020 → 33%." },
+      { text: "B. 28%", correct: false, explanation: "28% would be within target but is incorrect. Recalculate: 2,650 / 8,020 × 100 = 33%." },
+      { text: "C. 33%", correct: true, explanation: "FF = (1,000 + 1,500 + 150) / (7,020 + 1,000) × 100 = 2,650 / 8,020 × 100 ≈ <strong>33%</strong>. This exceeds the target < 25%." }
+    ]
+  },
+  {
+    question: "Why does this patient's filter keep clotting?",
+    options: [
+      { text: "A. Insufficient anticoagulation only", correct: false, explanation: "Anticoagulation is part of the picture, but the primary cause here is <strong>elevated FF (33%)</strong> leading to hemoconcentration. The prescription itself is the problem." },
+      { text: "B. Excessive hemoconcentration from high filtration fraction", correct: true, explanation: "FF of 33% (target < 25%) means blood leaving the filter is over-concentrated → ↑ oncotic pressure → clotting cascade activation → filter thrombosis." },
+      { text: "C. Low blood flow rate", correct: false, explanation: "Blood flow is 180 mL/min, which is on the lower end but not the primary problem. The issue is the ratio of fluids to plasma flow (FF)." }
+    ]
+  },
+  {
+    question: "Which prescription change would MOST effectively lower the filtration fraction?",
+    options: [
+      { text: "A. Increase postdilution from 1,500 to 2,000 mL/h", correct: false, explanation: "Increasing postdilution fluid ADDS to the numerator without diluting the plasma entering the filter — this would <strong>raise</strong> FF, not lower it." },
+      { text: "B. Increase Qb from 180 to 250 mL/min", correct: true, explanation: "Increasing Qb raises Q_p (plasma flow) → denominator increases → <strong>FF falls</strong>. This is the most direct and physiologically sound way to lower FF." },
+      { text: "C. Decrease dialysate flow from 2,000 to 1,500 mL/h", correct: false, explanation: "Dialysate flow does NOT appear in the FF formula for CVVHDF. It affects clearance but not hemoconcentration at the filter." }
+    ]
+  },
+  {
+    question: "What is the target filtration fraction in CRRT?",
+    options: [
+      { text: "A. < 15%", correct: false, explanation: "Too low — would result in inadequate clearance. Target is 20–25%." },
+      { text: "B. 20–25%", correct: true, explanation: "Target FF in CRRT is <strong>20–25%</strong>. This balances adequate clearance with prevention of hemoconcentration and filter clotting." },
+      { text: "C. > 30%", correct: false, explanation: "FF > 25% causes hemoconcentration and filter clotting. Target is 20–25%." }
+    ]
+  },
+  {
+    question: "Why does predilution lower FF more effectively than postdilution?",
+    options: [
+      { text: "A. Predilution adds fluid after the filter", correct: false, explanation: "Postdilution adds fluid AFTER the filter. Predilution adds fluid BEFORE the filter." },
+      { text: "B. Predilution dilutes the blood before it enters the filter, appearing in both numerator and denominator", correct: true, explanation: "Predilution dilutes blood before the filter, so Q_pre appears in <strong>both numerator and denominator</strong> of the FF formula — its net effect is to lower FF. Postdilution only appears in the numerator." },
+      { text: "C. Predilution reduces dialysate flow", correct: false, explanation: "Predilution does not affect dialysate flow — it affects the composition and flow of blood entering the filter." }
+    ]
+  },
+  {
+    question: "What happens to the solute clearance if you shift from postdilution to predilution?",
+    options: [
+      { text: "A. It increases significantly", correct: false, explanation: "Predilution slightly <strong>decreases</strong> solute clearance because the blood entering the filter is more dilute." },
+      { text: "B. It decreases slightly", correct: true, explanation: "Predilution dilutes solutes in the blood before the filter, which slightly reduces the concentration gradient → modest reduction in clearance. The trade-off is <strong>longer filter life</strong>." },
+      { text: "C. It is unchanged", correct: false, explanation: "It does change — predilution slightly reduces clearance but protects the filter from clotting." }
+    ]
+  },
+  {
+    question: "Which anticoagulation strategy is preferred in a CRRT patient with high FF and bleeding risk?",
+    options: [
+      { text: "A. Systemic heparin", correct: false, explanation: "Systemic heparin increases bleeding risk and is avoided in patients with coagulopathy or active bleeding." },
+      { text: "B. Regional citrate anticoagulation", correct: true, explanation: "Regional citrate is preferred when bleeding risk is high — it anticoagulates the circuit only (via calcium chelation) and is reversed at the return limb. It also prolongs filter life even if FF is high." },
+      { text: "C. No anticoagulation", correct: false, explanation: "No anticoagulation would lead to even faster clotting. Citrate is preferred when bleeding risk limits heparin use." }
+    ]
+  }
+];
+
+function buildTabs() {
+  var html = "";
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    html += '<button class="tab ' + t.id + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }
+  document.getElementById("tabs").innerHTML = html;
+}
+
+function buildQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  var grid = document.getElementById("quizGrid");
+  var html = "";
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="q" data-q="' + i + '">';
+    html += '<p>' + (i + 1) + '. ' + q.question + '</p>';
+    html += '<div class="opts">';
+    for (var j = 0; j < q.options.length; j++) {
+      var o = q.options[j];
+      html += '<button class="opt" data-q="' + i + '" data-o="' + j + '">' + o.text + '</button>';
+    }
+    html += '</div>';
+    html += '<div class="explain"></div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+
+  var buttons = grid.querySelectorAll(".opt");
+  for (var k = 0; k < buttons.length; k++) {
+    buttons[k].addEventListener("click", handleAnswer);
+  }
+}
+
+function handleAnswer(e) {
+  var btn = e.currentTarget;
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-o"), 10);
+  var q = QUIZ[qi];
+  var opt = q.options[oi];
+  var box = btn.closest(".q");
+
+  var allOpts = box.querySelectorAll(".opt");
+  for (var i = 0; i < allOpts.length; i++) {
+    allOpts[i].classList.remove("correct", "wrong");
+  }
+  btn.classList.add(opt.correct ? "correct" : "wrong");
+
+  var explain = box.querySelector(".explain");
+  if (opt.correct) {
+    explain.className = "explain show correct-explain";
+    explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+  } else {
+    explain.className = "explain show wrong-explain";
+    explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+  }
+}
+
+function setMode(mode) {
+  var d = MODES[mode];
+  if (!d) return;
+
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    var el = document.getElementById("tab" + t.id);
+    if (el) el.classList.remove("active");
+  }
+  var activeEl = document.getElementById("tab" + mode);
+  if (activeEl) activeEl.classList.add("active");
+
+  var optIds = ["opt1", "opt2", "opt3", "opt4"];
+  for (var j = 0; j < optIds.length; j++) {
+    var dg = document.getElementById("diagram-" + optIds[j]);
+    if (dg) dg.style.display = "none";
+  }
+  var target = document.getElementById("diagram-" + mode);
+  if (target) target.style.display = "block";
+
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  document.getElementById("banner-bg").setAttribute("fill", d.bannerBg);
+  document.getElementById("banner-text-1").textContent = d.bannerText1;
+  document.getElementById("banner-text-2").textContent = d.bannerText2;
+
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass + (panel.classList.contains("collapsed") ? " collapsed" : "");
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+
+  var infoHtml = "";
+  for (var m = 0; m < d.infoRows.length; m++) {
+    var r = d.infoRows[m];
+    infoHtml += '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }
+  document.getElementById("infoBody").innerHTML = infoHtml;
+
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  var p1 = "";
+  for (var n = 0; n < d.panel1List.length; n++) {
+    p1 += "<li>" + d.panel1List[n] + "</li>";
+  }
+  document.getElementById("panel1-list").innerHTML = p1;
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  var p2 = "";
+  for (var p = 0; p < d.panel2List.length; p++) {
+    p2 += "<li>" + d.panel2List[p] + "</li>";
+  }
+  document.getElementById("panel2-list").innerHTML = p2;
+
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById("infoPanel");
+  var btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildTabs();
+  buildQuiz();
+  setMode("opt1");
+});
+</script>
+</body>
+</html>

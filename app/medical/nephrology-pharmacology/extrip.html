@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EXTRIP Recommendations — Blood Purification in Toxicology</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --rec:#dc2626; --sug:#ca8a04; --against:#0891b2; --neutral:#7c3aed;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.55; font-size:16px;
+    overflow-x:hidden;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  /* ---------- header ---------- */
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;
+    animation:slideDown .6s cubic-bezier(.4,0,.2,1);}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  /* ---------- stats ---------- */
+  .stats-strip{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+  .stat{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 18px; min-width:130px; flex:1;
+    animation:statPop .5s cubic-bezier(.34,1.56,.64,1) backwards;
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .stat:nth-child(1){animation-delay:.05s;}
+  .stat:nth-child(2){animation-delay:.12s;}
+  .stat:nth-child(3){animation-delay:.19s;}
+  .stat:nth-child(4){animation-delay:.26s;}
+  .stat:hover{transform:translateY(-3px); box-shadow:0 6px 16px rgba(15,23,42,.1);}
+  .stat .k{font-size:.68rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat .v{font-size:1.5rem; font-weight:800; color:var(--ink); line-height:1.1;}
+  .stat .v.red{color:var(--rec);}
+  .stat .v.amber{color:var(--sug);}
+  .stat .v.cyan{color:var(--against);}
+
+  /* ---------- search ---------- */
+  .search-bar{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;
+    animation:slideDown .7s cubic-bezier(.4,0,.2,1);}
+  .search-bar input{flex:1; min-width:200px; padding:11px 16px; border:1px solid var(--line);
+    border-radius:10px; font-size:.9rem; font-family:inherit; color:var(--ink);
+    transition:border-color .2s, box-shadow .2s;}
+  .search-bar input:focus{outline:none; border-color:var(--rec);
+    box-shadow:0 0 0 3px rgba(220,38,38,.12);}
+  .search-bar select{padding:11px 14px; border:1px solid var(--line); border-radius:10px;
+    font-size:.85rem; font-family:inherit; background:#fff; color:var(--ink); cursor:pointer;
+    transition:border-color .2s;}
+  .search-bar select:focus{outline:none; border-color:var(--rec);}
+
+  /* ---------- substance grid ---------- */
+  .substance-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:12px; margin-bottom:20px;}
+  .substance-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; cursor:pointer;
+    border-left:5px solid var(--line);
+    transition:transform .22s cubic-bezier(.34,1.56,.64,1),
+               box-shadow .22s ease, border-color .22s ease;
+    animation:cardFadeIn .45s cubic-bezier(.4,0,.2,1) backwards;
+    position:relative; overflow:hidden;}
+  .substance-card::before{content:""; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(220,38,38,.08) 50%, transparent 70%);
+    transform:translateX(-100%); transition:transform .6s ease;}
+  .substance-card:hover::before{transform:translateX(100%);}
+  .substance-card:hover{transform:translateY(-4px) scale(1.015);
+    box-shadow:0 8px 22px rgba(15,23,42,.12); border-color:#94a3b8;}
+  .substance-card.active{border-left-color:var(--rec);
+    box-shadow:0 6px 20px rgba(220,38,38,.15);}
+  .substance-card h3{margin:0 0 6px; font-size:.92rem; font-weight:800;}
+  .substance-card .tag{font-size:.68rem; font-weight:800; padding:2px 9px;
+    border-radius:999px; text-transform:uppercase; letter-spacing:.04em;}
+  .tag.rec{background:#fef2f2; color:#991b1b;}
+  .tag.sug{background:#fef9c3; color:#713f12;}
+  .tag.against{background:#cffafe; color:#155e75;}
+  .tag.neutral{background:#f5f3ff; color:#5b21b6;}
+  .substance-card .meta{font-size:.72rem; color:var(--muted); margin-top:6px;}
+
+  /* ---------- detail panel ---------- */
+  .detail-panel{background:#fff; border-radius:16px; padding:24px 26px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); display:none;}
+  .detail-panel.show{display:block;
+    animation:panelReveal .45s cubic-bezier(.4,0,.2,1);}
+  .detail-header{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:16px;}
+  .detail-header h2{margin:0; font-size:1.25rem; font-weight:800;}
+  .detail-header .badges{display:flex; gap:6px; flex-wrap:wrap;}
+  .badge-pill{font-size:.7rem; font-weight:800; padding:4px 12px;
+    border-radius:999px; text-transform:uppercase; letter-spacing:.04em;
+    animation:pillPop .4s cubic-bezier(.34,1.56,.64,1) backwards;}
+  .badge-pill.rec{background:#dc2626; color:#fff;}
+  .badge-pill.sug{background:#ca8a04; color:#fff;}
+  .badge-pill.against{background:#0891b2; color:#fff;}
+  .badge-pill.neutral{background:#7c3aed; color:#fff;}
+
+  .detail-body{font-size:.88rem; color:#334155; line-height:1.7;}
+  .detail-body h4{margin:18px 0 8px; font-size:.95rem; font-weight:800; color:var(--ink);}
+  .detail-body h4:first-of-type{margin-top:0;}
+  .detail-body ul{margin:0 0 12px; padding-left:20px;}
+  .detail-body ul li{margin-bottom:5px;
+    animation:listSlide .35s cubic-bezier(.4,0,.2,1) backwards;}
+  .detail-body ul li:nth-child(1){animation-delay:.03s;}
+  .detail-body ul li:nth-child(2){animation-delay:.08s;}
+  .detail-body ul li:nth-child(3){animation-delay:.13s;}
+  .detail-body ul li:nth-child(4){animation-delay:.18s;}
+  .detail-body ul li:nth-child(5){animation-delay:.23s;}
+  .detail-body ul li strong{color:var(--ink);}
+  .detail-body .rec-box,.detail-body .sug-box,
+  .detail-body .against-box,.detail-body .neutral-box{
+    padding:12px 16px; border-radius:0 8px 8px 0; margin:0 0 12px; font-size:.85rem;
+    animation:boxSlide .45s cubic-bezier(.4,0,.2,1) backwards;}
+  .detail-body .rec-box{background:#fef2f2; border-left:4px solid var(--rec);}
+  .detail-body .sug-box{background:#fef9c3; border-left:4px solid var(--sug);}
+  .detail-body .against-box{background:#cffafe; border-left:4px solid var(--against);}
+  .detail-body .neutral-box{background:#f5f3ff; border-left:4px solid var(--neutral);}
+
+  .level{display:inline-block; font-size:.68rem; font-weight:800; padding:2px 8px;
+    border-radius:6px; margin-left:6px; vertical-align:middle;}
+  .level-1{background:#fee2e2; color:#991b1b;}
+  .level-2{background:#fef9c3; color:#713f12;}
+  .level-3{background:#cffafe; color:#155e75;}
+  .level-4{background:#f1f5f9; color:#475569;}
+
+  .empty-state{text-align:center; padding:48px 20px; color:var(--muted); font-size:.9rem;}
+  .empty-state .icon{font-size:2.5rem; margin-bottom:12px;
+    animation:pulse 1.8s ease-in-out infinite;}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    animation:slideDown .8s cubic-bezier(.4,0,.2,1);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);
+    animation:cardFadeIn .4s cubic-bezier(.4,0,.2,1) backwards;
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .q:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.06);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8; transform:translateX(3px);}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;
+    animation:correctPop .4s cubic-bezier(.34,1.56,.64,1);}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;
+    animation:shake .4s cubic-bezier(.36,.07,.19,.97);}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:boxSlide .35s cubic-bezier(.4,0,.2,1);}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- footer ---------- */
+  .footer{margin-top:24px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  /* ---------- keyframes ---------- */
+  @keyframes slideDown{
+    0%{opacity:0; transform:translateY(-16px);}
+    100%{opacity:1; transform:translateY(0);}
+  }
+  @keyframes cardFadeIn{
+    0%{opacity:0; transform:translateY(12px) scale(.97);}
+    100%{opacity:1; transform:translateY(0) scale(1);}
+  }
+  @keyframes panelReveal{
+    0%{opacity:0; transform:translateY(10px);}
+    100%{opacity:1; transform:translateY(0);}
+  }
+  @keyframes statPop{
+    0%{opacity:0; transform:scale(.85);}
+    100%{opacity:1; transform:scale(1);}
+  }
+  @keyframes pillPop{
+    0%{opacity:0; transform:scale(.7);}
+    100%{opacity:1; transform:scale(1);}
+  }
+  @keyframes boxSlide{
+    0%{opacity:0; transform:translateX(-14px);}
+    100%{opacity:1; transform:translateX(0);}
+  }
+  @keyframes listSlide{
+    0%{opacity:0; transform:translateX(-8px);}
+    100%{opacity:1; transform:translateX(0);}
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:.55; transform:scale(1.12);}
+  }
+  @keyframes correctPop{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.04);}
+    100%{transform:scale(1);}
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+  }
+
+  @media(max-width:600px){
+    .substance-grid{grid-template-columns:1fr;}
+    .detail-panel{padding:18px;}
+    .stats-strip{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>EXTRIP Recommendations</h1>
+      <p>Extracorporeal Treatments in Poisoning Workgroup — Evidence-based guidance for blood purification in toxicology</p>
+    </div>
+    <div class="badge">Clinical Reference</div>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat"><div class="k">Substances Reviewed</div><div class="v" id="statTotal">0</div></div>
+    <div class="stat"><div class="k">ECTR Recommended</div><div class="v red" id="statRec">0</div></div>
+    <div class="stat"><div class="k">ECTR Suggested</div><div class="v amber" id="statSug">0</div></div>
+    <div class="stat"><div class="k">ECTR Not Recommended</div><div class="v cyan" id="statAgainst">0</div></div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search substances or drug names (e.g., phenobarbital, lithium, methanol)…" oninput="filterSubstances()">
+    <select id="filterSelect" onchange="filterSubstances()">
+      <option value="all">All recommendations</option>
+      <option value="rec">ECTR recommended</option>
+      <option value="sug">ECTR suggested</option>
+      <option value="against">ECTR not recommended</option>
+      <option value="neutral">Neutral / individualised</option>
+    </select>
+  </div>
+
+  <div class="substance-grid" id="substanceGrid"></div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <h2 id="detailTitle"></h2>
+      <div class="badges" id="detailBadges"></div>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>EXTRIP Workgroup</strong> · Extracorporeal Treatments in Poisoning · Educational reference only · Not a substitute for clinical judgement
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================================
+   EXTRIP RECOMMENDATIONS DATA — all substances with keywords for search
+   ============================================================================ */
+const EXTRIP = [
+  {
+    id: "acetaminophen",
+    name: "Acetaminophen",
+    keywords: ["paracetamol", "APAP", "tylenol", "NAC", "acetylcysteine"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR reserved for excessively large overdoses with mitochondrial dysfunction.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is suggested</strong> in patients with excessively large acetaminophen overdoses who display features of <strong>mitochondrial dysfunction</strong> — early altered mental status and severe metabolic acidosis prior to hepatic failure. <span class="level level-1">1D</span>
+      </div>
+      <h4>Specific Indications</h4>
+      <ul>
+        <li>APAP concentration <strong>&gt; 1000 mg/L</strong> if NAC is <em>not</em> administered <span class="level level-1">1D</span></li>
+        <li>Signs of mitochondrial dysfunction <em>and</em> APAP <strong>&gt; 700 mg/L</strong> if NAC is <em>not</em> administered <span class="level level-1">1D</span></li>
+        <li>Signs of mitochondrial dysfunction <em>and</em> APAP <strong>&gt; 900 mg/L</strong> if NAC <em>is</em> administered <span class="level level-1">1D</span></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (HD)</strong> is the preferred ECTR modality <span class="level level-1">1D</span></li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li><strong>N-acetylcysteine (NAC) is the mainstay of treatment.</strong> ECTR is not warranted in most cases of APAP poisoning.</li>
+      </ul>
+    `
+  },
+  {
+    id: "barbiturates",
+    name: "Barbiturates",
+    keywords: ["phenobarbital", "phenobarb", "phenobarbitone", "secobarbital", "pentobarbital", "amobarbital", "butalbital", "long-acting barbiturate", "short-acting barbiturate"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR restricted to severe long-acting barbiturate poisoning. IHD preferred; continue MDAC during ECTR.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe long-acting barbiturate poisoning</strong> — provided at least one specific indication is present. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li><strong>Prolonged coma</strong></li>
+        <li><strong>Respiratory depression requiring mechanical ventilation</strong></li>
+        <li><strong>Shock</strong> (refractory hypotension)</li>
+        <li><strong>Persistent toxicity</strong> despite multiple-dose activated charcoal (MDAC)</li>
+        <li><strong>Increasing or persistently elevated serum barbiturate concentrations</strong> despite MDAC</li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> is the preferred ECTR <span class="level level-1">1D</span></li>
+        <li><strong>Continue MDAC during ECTR</strong> to interrupt enterohepatic recirculation</li>
+      </ul>
+      <h4>Cessation</h4>
+      <ul>
+        <li>ECTR can be stopped when <strong>clinical improvement is apparent</strong></li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <ul>
+        <li><strong>Phenobarbital</strong> (long-acting): <strong>dialyzable</strong></li>
+        <li>Short-acting barbiturates: <strong>moderately dialyzable</strong></li>
+      </ul>
+    `
+  },
+  {
+    id: "baclofen",
+    name: "Baclofen",
+    keywords: ["lioresal", "gaba-b agonist"],
+    category: "against",
+    modality: "IHD (only in kidney impairment)",
+    level: "Weak",
+    summary: "ECTR not recommended for acute poisoning; suggested for toxicity from therapeutic baclofen in kidney impairment.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is suggested against</strong> in addition to standard care for <strong>acute baclofen poisoning</strong> in patients with normal kidney function. <span class="level level-2">Weak</span>
+      </div>
+      <div class="sug-box">
+        <strong>ECTR is suggested</strong> in toxicity from <strong>therapeutic baclofen in kidney impairment</strong>, especially in the presence of <strong>coma requiring mechanical ventilation</strong>. <span class="level level-2">Weak</span>
+      </div>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> is the most efficient ECTR for baclofen.</li>
+      </ul>
+    `
+  },
+  {
+    id: "beta-blockers",
+    name: "β-adrenergic antagonists",
+    keywords: ["beta blocker", "propranolol", "atenolol", "sotalol", "metoprolol", "bisoprolol"],
+    category: "against",
+    modality: "IHD (atenolol, sotalol only)",
+    level: "Strong",
+    summary: "ECTR strongly recommended against for propranolol. Atenolol and sotalol are dialyzable in kidney impairment.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is recommended against</strong> in patients severely poisoned with <strong>propranolol</strong>. <span class="level level-1">Strong</span>
+      </div>
+      <div class="sug-box">
+        <strong>ECTR is suggested</strong> in severe poisoning with <strong>atenolol</strong> or <strong>sotalol</strong> when kidney impairment is present and standard care fails.
+      </div>
+      <h4>Dialyzability</h4>
+      <ul>
+        <li><strong>Propranolol:</strong> non-dialyzable</li>
+        <li><strong>Atenolol:</strong> dialyzable</li>
+        <li><strong>Sotalol:</strong> dialyzable</li>
+      </ul>
+    `
+  },
+  {
+    id: "calcium-channel-blockers",
+    name: "Calcium channel blockers",
+    keywords: ["CCB", "amlodipine", "diltiazem", "verapamil", "nifedipine"],
+    category: "against",
+    modality: "—",
+    level: "Strong",
+    summary: "ECTR recommended against — standard care plus vasopressors and high-dose insulin should be used.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is recommended against</strong> in addition to standard care for patients severely poisoned with <strong>amlodipine</strong>, <strong>diltiazem</strong>, or <strong>verapamil</strong>. <span class="level level-1">Strong</span>
+      </div>
+      <h4>Key Point</h4>
+      <ul>
+        <li>CCBs are highly protein-bound with large volumes of distribution — not amenable to extracorporeal removal.</li>
+        <li>Standard care includes <strong>IV calcium</strong>, <strong>vasopressors</strong>, <strong>high-dose insulin</strong>, and <strong>lipid emulsion</strong> in refractory cases.</li>
+      </ul>
+    `
+  },
+  {
+    id: "carbamazepine",
+    name: "Carbamazepine",
+    keywords: ["tegretol", "CBZ", "anticonvulsant"],
+    category: "sug",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR recommended for refractory seizures or dysrhythmias. Suggested for severe poisoning with coma.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="sug-box">
+        <strong>ECTR is suggested</strong> in <strong>severe carbamazepine poisoning</strong>. <span class="level level-2">2D</span>
+      </div>
+      <h4>Specific Indications</h4>
+      <ul>
+        <li><strong>Multiple seizures refractory to treatment</strong> — ECTR recommended <span class="level level-1">1D</span></li>
+        <li><strong>Life-threatening dysrhythmias</strong> — ECTR recommended <span class="level level-1">1D</span></li>
+        <li><strong>Prolonged coma</strong> or <strong>respiratory depression</strong> — ECTR suggested</li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> is preferred.</li>
+      </ul>
+    `
+  },
+  {
+    id: "digoxin",
+    name: "Digoxin",
+    keywords: ["digitalis", "digifab", "Fab", "cardiac glycoside"],
+    category: "against",
+    modality: "—",
+    level: "1D",
+    summary: "ECTR not indicated. Fab fragments (DigiFab) are the definitive treatment.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is recommended against</strong> when <strong>Fab fragments are available</strong>. <span class="level level-1">1D</span><br><br>
+        <strong>ECTR is suggested against</strong> when Fab fragments are <em>unavailable</em>. <span class="level level-2">2D</span>
+      </div>
+      <h4>Key Point</h4>
+      <ul>
+        <li><strong>Digoxin-specific antibody Fab fragments (DigiFab)</strong> are the definitive treatment.</li>
+        <li>ECTR does not effectively remove digoxin or the digoxin-Fab complex.</li>
+      </ul>
+    `
+  },
+  {
+    id: "ethylene-glycol",
+    name: "Ethylene glycol",
+    keywords: ["antifreeze", "EG", "fomepizole", "glycolate", "oxalate"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR recommended for severe poisoning with acidemia, kidney impairment, or anion gap elevation.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe ethylene glycol poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li><strong>Acidemia (pH &lt; 7.15)</strong></li>
+        <li><strong>Seizures</strong> or <strong>coma</strong></li>
+        <li><strong>Impaired kidney function</strong></li>
+        <li><strong>Anion gap &gt; 24 mmol/L</strong></li>
+        <li><strong>Ethylene glycol concentration &gt; 50 mg/dL</strong></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> preferred; <strong>CRRT</strong> acceptable.</li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li>Administer <strong>fomepizole</strong> immediately — do not delay for ECTR.</li>
+      </ul>
+    `
+  },
+  {
+    id: "gabapentin-pregabalin",
+    name: "Gabapentin / Pregabalin",
+    keywords: ["neurontin", "lyrica", "gabapentinoid"],
+    category: "against",
+    modality: "IHD (kidney impairment only)",
+    level: "Weak",
+    summary: "ECTR suggested against for acute poisoning in normal kidney function; dialyzable in kidney impairment.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is suggested against</strong> in gabapentinoid poisoning in patients with <strong>normal kidney function</strong>. <span class="level level-2">Weak</span>
+      </div>
+      <div class="sug-box">
+        <strong>ECTR is suggested</strong> in poisoning with <strong>decreased kidney function</strong> and <strong>coma requiring mechanical ventilation</strong>.
+      </div>
+      <h4>Dialyzability</h4>
+      <ul>
+        <li>Gabapentin: <strong>dialyzable</strong></li>
+        <li>Pregabalin: <strong>dialyzable</strong></li>
+      </ul>
+    `
+  },
+  {
+    id: "isoniazid",
+    name: "Isoniazid",
+    keywords: ["INH", "tuberculosis", "pyridoxine", "vitamin B6"],
+    category: "against",
+    modality: "—",
+    level: "Weak",
+    summary: "ECTR suggested against when pyridoxine is available.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is suggested against</strong> in isoniazid poisoning. <span class="level level-2">Weak</span>
+      </div>
+      <h4>Exception</h4>
+      <ul>
+        <li>If <strong>standard-dose pyridoxine cannot be administered</strong>, ECTR is suggested <em>only</em> for <strong>seizures refractory to benzodiazepines</strong>.</li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li><strong>Pyridoxine (vitamin B6)</strong> is the definitive treatment for INH-induced seizures.</li>
+      </ul>
+    `
+  },
+  {
+    id: "lithium",
+    name: "Lithium",
+    keywords: ["Li", "bipolar", "lithium carbonate", "lithobid"],
+    category: "rec",
+    modality: "Hemodialysis (IHD preferred; CRRT acceptable)",
+    level: "1D",
+    summary: "ECTR recommended in severe lithium poisoning. Continue until Li < 1.0 mEq/L or clinical improvement.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe lithium poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications — Recommended (1D)</h4>
+      <ul>
+        <li>Kidney function impaired <em>and</em> <strong>[Li⁺] &gt; 4.0 mEq/L</strong></li>
+        <li><strong>Decreased LOC</strong>, <strong>seizures</strong>, or <strong>life-threatening dysrhythmias</strong> — irrespective of [Li⁺]</li>
+      </ul>
+      <h4>Indications — Suggested (2D)</h4>
+      <ul>
+        <li><strong>[Li⁺] &gt; 5.0 mEq/L</strong></li>
+        <li><strong>Significant confusion</strong></li>
+        <li>Expected time to reduce [Li⁺] to &lt; 1.0 mEq/L is <strong>&gt; 36 hours</strong></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Hemodialysis (IHD)</strong> preferred <span class="level level-1">1D</span></li>
+        <li><strong>CRRT</strong> is an acceptable alternative <span class="level level-1">1D</span></li>
+      </ul>
+      <h4>Cessation</h4>
+      <ul>
+        <li>Continue until <strong>clinical improvement</strong> or <strong>[Li⁺] &lt; 1.0 mEq/L</strong> <span class="level level-1">1D</span></li>
+        <li>Minimum of <strong>6 hours</strong> if [Li⁺] not readily measurable</li>
+      </ul>
+    `
+  },
+  {
+    id: "metformin",
+    name: "Metformin",
+    keywords: ["glucophage", "MALA", "biguanide", "lactic acidosis"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1C",
+    summary: "ECTR recommended in severe metformin poisoning with lactate > 20 mmol/L or pH ≤ 7.0.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe metformin poisoning</strong>. <span class="level level-1">1C</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li><strong>Lactate concentration &gt; 20 mmol/L</strong></li>
+        <li><strong>Blood pH ≤ 7.0</strong></li>
+        <li><strong>Shock</strong> refractory to fluids and vasopressors</li>
+        <li><strong>Impaired kidney function</strong> with metformin accumulation</li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> preferred; CRRT if IHD unavailable.</li>
+      </ul>
+    `
+  },
+  {
+    id: "methanol",
+    name: "Methanol",
+    keywords: ["wood alcohol", "methyl alcohol", "formate", "fomepizole"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR recommended for severe poisoning with acidemia, seizures, coma, vision deficits.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe methanol poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li><strong>Acidemia (pH &lt; 7.15)</strong></li>
+        <li><strong>Seizures</strong> or <strong>coma</strong></li>
+        <li><strong>Vision deficits</strong></li>
+        <li><strong>Impaired kidney function</strong></li>
+        <li><strong>Anion gap &gt; 24 mmol/L</strong></li>
+        <li><strong>Methanol concentration &gt; 70 mg/dL</strong></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> preferred.</li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li>Administer <strong>fomepizole</strong> immediately.</li>
+        <li>Correct acidosis with bicarbonate. Consider <strong>folinic acid</strong>.</li>
+      </ul>
+    `
+  },
+  {
+    id: "methotrexate",
+    name: "Methotrexate",
+    keywords: ["MTX", "glucarpidase", "leucovorin", "rheumatrex"],
+    category: "against",
+    modality: "—",
+    level: "1D",
+    summary: "ECTR recommended against when glucarpidase is available.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is recommended against</strong> when <strong>glucarpidase is administered</strong>. <span class="level level-1">1D</span>
+      </div>
+      <div class="against-box">
+        <strong>ECTR is suggested against</strong> when <strong>glucarpidase is not administered</strong>. <span class="level level-2">2D</span>
+      </div>
+      <h4>Key Point</h4>
+      <ul>
+        <li><strong>Glucarpidase</strong> is the definitive treatment — rapidly hydrolyses methotrexate.</li>
+        <li>Use <strong>leucovorin</strong> rescue alongside.</li>
+      </ul>
+    `
+  },
+  {
+    id: "phenytoin",
+    name: "Phenytoin",
+    keywords: ["dilantin", "fosphenytoin", "hydantoin"],
+    category: "neutral",
+    modality: "Intermittent hemodialysis",
+    level: "3D",
+    summary: "ECTR reasonable in select severe cases. Suggested for prolonged coma or incapacitating ataxia.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="neutral-box">
+        <strong>ECTR would be reasonable</strong> in select cases of severe phenytoin poisoning. <span class="level level-3">Neutral, 3D</span>
+      </div>
+      <h4>Specific Indications</h4>
+      <ul>
+        <li><strong>Prolonged coma</strong> — ECTR suggested <span class="level level-3">3D</span></li>
+        <li><strong>Incapacitating ataxia</strong> present or expected — ECTR suggested <span class="level level-3">3D</span></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> preferred <span class="level level-1">1D</span></li>
+        <li><strong>Hemoperfusion</strong> is an acceptable alternative</li>
+      </ul>
+    `
+  },
+  {
+    id: "quinine-chloroquine",
+    name: "Quinine / Chloroquine",
+    keywords: ["malaria", "quinine", "chloroquine", "hydroxychloroquine", "cinchonism"],
+    category: "against",
+    modality: "—",
+    level: "Strong",
+    summary: "ECTR recommended against for chloroquine and quinine poisoning.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is recommended against</strong> for patients severely poisoned with <strong>chloroquine</strong> or <strong>quinine</strong>. <span class="level level-1">Strong</span>
+      </div>
+      <h4>Clinical Context</h4>
+      <ul>
+        <li>Large volume of distribution and high tissue binding — not amenable to extracorporeal removal.</li>
+        <li>Management focuses on <strong>cardiovascular support</strong>, <strong>sodium bicarbonate</strong>, and <strong>high-dose diazepam</strong> for chloroquine toxicity.</li>
+      </ul>
+    `
+  },
+  {
+    id: "salicylates",
+    name: "Salicylates",
+    keywords: ["aspirin", "ASA", "acetylsalicylic acid", "methyl salicylate", "oil of wintergreen"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR recommended in severe salicylate poisoning. IHD preferred.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe salicylate poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li><strong>Salicylate concentration &gt; 7.2 mmol/L (100 mg/dL)</strong> — regardless of symptoms <span class="level level-1">1D</span></li>
+        <li><strong>Salicylate concentration &gt; 6.5 mmol/L (90 mg/dL)</strong> <span class="level level-2">2D</span></li>
+        <li><strong>Altered mental status</strong></li>
+        <li><strong>Severe metabolic acidosis</strong></li>
+        <li><strong>Hypoglycemia</strong> or <strong>coagulopathy</strong></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>Intermittent hemodialysis (IHD)</strong> preferred.</li>
+      </ul>
+    `
+  },
+  {
+    id: "thallium",
+    name: "Thallium",
+    keywords: ["rodenticide", "Prussian blue", "heavy metal", "Tl"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR recommended in severe thallium poisoning. Initiate within 24–48 h.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe thallium poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li>Thallium exposure <strong>highly suspected</strong> <span class="level level-2">2D</span></li>
+        <li><strong>Serum thallium concentration &gt; 1.0 mg/L</strong> <span class="level level-2">2D</span></li>
+      </ul>
+      <h4>Timing</h4>
+      <ul>
+        <li>Initiate ECTR as soon as possible, ideally <strong>within 24–48 hours</strong> <span class="level level-1">1D</span></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>IHD</strong> preferred after acute ingestion; <strong>hemoperfusion</strong> or <strong>CRRT</strong> are valid alternatives.</li>
+      </ul>
+      <h4>Cessation</h4>
+      <ul>
+        <li>Continue until serum thallium is <strong>&lt; 0.1 mg/L for a minimum of 72 hours</strong></li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li>Administer <strong>Prussian blue</strong> to interrupt enterohepatic recirculation.</li>
+      </ul>
+    `
+  },
+  {
+    id: "theophylline",
+    name: "Theophylline",
+    keywords: ["aminophylline", "methylxanthine", "asthma"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1C",
+    summary: "ECTR recommended in severe theophylline poisoning. Concentration > 100 mg/L acute.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe theophylline poisoning</strong>. <span class="level level-1">1C</span>
+      </div>
+      <h4>Indications</h4>
+      <ul>
+        <li><strong>Theophylline concentration &gt; 100 mg/L</strong> in acute exposure <span class="level level-1">1C</span></li>
+        <li><strong>Seizures</strong> <span class="level level-1">1D</span></li>
+        <li><strong>Life-threatening dysrhythmias</strong></li>
+        <li><strong>Shock</strong> refractory to standard care</li>
+      </ul>
+      <h4>Suggested Indications</h4>
+      <ul>
+        <li><strong>Theophylline concentration &gt; 60 mg/L</strong> in chronic exposure with toxicity</li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>IHD</strong> preferred; combine with MDAC if airway protected.</li>
+      </ul>
+    `
+  },
+  {
+    id: "tricyclic-antidepressants",
+    name: "Tricyclic antidepressants",
+    keywords: ["TCA", "amitriptyline", "nortriptyline", "imipramine", "desipramine", "doxepin"],
+    category: "against",
+    modality: "—",
+    level: "1D",
+    summary: "ECTR not recommended in severe TCA poisoning. Not dialyzable.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="against-box">
+        <strong>ECTR is not recommended</strong> in <strong>severe TCA poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Key Point</h4>
+      <ul>
+        <li>TCAs are <strong>not dialyzable</strong> — large volume of distribution, high protein binding.</li>
+        <li><strong>Sodium bicarbonate</strong> is the mainstay for TCA-induced cardiotoxicity (wide QRS).</li>
+        <li>Use <strong>benzodiazepines</strong> for seizures and <strong>lipid emulsion</strong> for refractory collapse.</li>
+      </ul>
+    `
+  },
+  {
+    id: "valproic-acid",
+    name: "Valproic acid",
+    keywords: ["VPA", "depakote", "divalproex", "valproate"],
+    category: "rec",
+    modality: "Intermittent hemodialysis",
+    level: "1D",
+    summary: "ECTR recommended in severe VPA poisoning. Concentration > 1300 mg/L, cerebral edema, or shock.",
+    detail: `
+      <h4>General Recommendation</h4>
+      <div class="rec-box">
+        <strong>ECTR is recommended</strong> in <strong>severe valproic acid (VPA) poisoning</strong>. <span class="level level-1">1D</span>
+      </div>
+      <h4>Indications — Recommended (1D)</h4>
+      <ul>
+        <li><strong>VPA concentration &gt; 1300 mg/L</strong></li>
+        <li><strong>Cerebral edema</strong></li>
+        <li><strong>Shock</strong></li>
+      </ul>
+      <h4>Indications — Suggested (2D)</h4>
+      <ul>
+        <li><strong>VPA concentration &gt; 900 mg/L with toxicity</strong></li>
+      </ul>
+      <h4>Preferred Modality</h4>
+      <ul>
+        <li><strong>IHD</strong> preferred.</li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li>Consider <strong>L-carnitine</strong> for hyperammonemia.</li>
+        <li>Monitor for rebound after ECTR cessation.</li>
+      </ul>
+    `
+  }
+];
+
+/* ============================================================================
+   QUIZ DATA
+   ============================================================================ */
+const QUIZ = [
+  {
+    question: "A patient with severe phenobarbital poisoning is intubated for respiratory failure and remains in a prolonged coma. Which EXTRIP recommendation applies?",
+    options: [
+      { text: "A. ECTR is recommended against in barbiturate poisoning", correct: false, explanation: "ECTR is <strong>recommended</strong> in severe long-acting barbiturate poisoning — not against. Phenobarbital is the prototype long-acting barbiturate." },
+      { text: "B. ECTR is recommended — IHD is preferred", correct: true, explanation: "EXTRIP recommends ECTR in severe long-acting barbiturate poisoning (prolonged coma, ventilation, shock, or rising levels despite MDAC). <strong>IHD is preferred</strong>, and MDAC should be continued during ECTR." },
+      { text: "C. Urinary alkalinization is the preferred ECTR", correct: false, explanation: "Urinary alkalinization is <strong>no longer recommended</strong> for phenobarbital. MDAC is first-line, and hemodialysis is preferred for severe cases." }
+    ]
+  },
+  {
+    question: "Which lithium concentration in a patient with impaired kidney function meets EXTRIP 1D criteria for ECTR?",
+    options: [
+      { text: "A. [Li⁺] > 1.5 mEq/L", correct: false, explanation: "Too low. In impaired kidney function, the threshold is [Li⁺] > 4.0 mEq/L for a 1D recommendation." },
+      { text: "B. [Li⁺] > 4.0 mEq/L", correct: true, explanation: "In impaired kidney function, <strong>[Li⁺] > 4.0 mEq/L</strong> is a 1D indication. Decreased LOC, seizures, or dysrhythmias are also 1D regardless of level." },
+      { text: "C. [Li⁺] > 10 mEq/L", correct: false, explanation: "This is far above the threshold. 4.0 mEq/L (with kidney impairment) is already a 1D indication." }
+    ]
+  },
+  {
+    question: "A patient with severe theophylline poisoning has a concentration of 120 mg/L after acute ingestion. What is the EXTRIP recommendation?",
+    options: [
+      { text: "A. ECTR is recommended — IHD preferred", correct: true, explanation: "Acute theophylline > 100 mg/L is a <strong>1C recommendation for ECTR</strong>. IHD is preferred. Seizures and life-threatening dysrhythmias are also indications." },
+      { text: "B. ECTR is recommended against", correct: false, explanation: "Theophylline is dialyzable and ECTR is recommended in severe poisoning. It is not recommended against." },
+      { text: "C. ECTR is only indicated if seizures occur", correct: false, explanation: "Seizures are one indication, but a concentration > 100 mg/L in acute exposure is itself a 1C indication." }
+    ]
+  },
+  {
+    question: "Which of the following poisons has an EXTRIP recommendation AGAINST extracorporeal treatment?",
+    options: [
+      { text: "A. Methanol", correct: false, explanation: "Methanol has a 1D recommendation FOR ECTR when severe (acidemia, seizures, coma, vision deficits, anion gap > 24)." },
+      { text: "B. Tricyclic antidepressants", correct: true, explanation: "TCAs are <strong>not dialyzable</strong> — EXTRIP recommends against ECTR (1D). Treatment focuses on sodium bicarbonate, benzodiazepines, and lipid emulsion." },
+      { text: "C. Salicylates", correct: false, explanation: "Salicylates have a 1D recommendation FOR ECTR when severe (concentration > 100 mg/dL regardless of symptoms)." }
+    ]
+  },
+  {
+    question: "What is the EXTRIP recommendation for digoxin toxicity when Fab fragments are available?",
+    options: [
+      { text: "A. ECTR is recommended — IHD preferred", correct: false, explanation: "ECTR does not effectively remove digoxin. Fab fragments (DigiFab) are the definitive treatment." },
+      { text: "B. ECTR is recommended against — Fab is definitive", correct: true, explanation: "When <strong>Fab fragments are available</strong>, EXTRIP recommends <strong>against ECTR</strong> (1D). Fab is the definitive treatment and ECTR is not indicated." },
+      { text: "C. ECTR and Fab should be given together", correct: false, explanation: "There is no role for combined therapy — Fab alone is definitive. ECTR does not remove the digoxin-Fab complex effectively." }
+    ]
+  },
+  {
+    question: "In metformin poisoning, which finding is an indication for ECTR per EXTRIP?",
+    options: [
+      { text: "A. Lactate > 5 mmol/L", correct: false, explanation: "The threshold is <strong>lactate > 20 mmol/L</strong> — not > 5. Lactate > 5 alone is common and does not trigger ECTR." },
+      { text: "B. Lactate > 20 mmol/L or pH ≤ 7.0", correct: true, explanation: "EXTRIP gives a <strong>1C recommendation</strong> for ECTR when lactate > 20 mmol/L or pH ≤ 7.0. IHD is preferred and corrects both acidosis and removes metformin." },
+      { text: "C. Any metformin level above therapeutic range", correct: false, explanation: "Metformin levels are not routinely used. ECTR is driven by clinical severity (lactate, pH, shock)." }
+    ]
+  },
+  {
+    question: "Which statement about EXTRIP recommendations for salicylates is correct?",
+    options: [
+      { text: "A. ECTR is recommended at > 100 mg/dL regardless of symptoms", correct: true, explanation: "Salicylate concentration > 7.2 mmol/L (<strong>100 mg/dL</strong>) is a <strong>1D indication for ECTR</strong> — regardless of signs or symptoms. IHD is preferred." },
+      { text: "B. ECTR is only indicated when pH < 7.0", correct: false, explanation: "Acidosis is a supporting feature, but the concentration threshold alone (100 mg/dL) is sufficient for a 1D recommendation." },
+      { text: "C. Urinary alkalinization replaces ECTR", correct: false, explanation: "Alkalinization is a useful adjunct but does <strong>not</strong> replace ECTR in severe salicylate poisoning." }
+    ]
+  },
+  {
+    question: "What is the EXTRIP recommendation for ECTR in propranolol poisoning?",
+    options: [
+      { text: "A. Recommended — IHD preferred", correct: false, explanation: "Propranolol is <strong>non-dialyzable</strong> — ECTR does not help. It is recommended against." },
+      { text: "B. Recommended against — strong recommendation", correct: true, explanation: "EXTRIP <strong>strongly recommends against ECTR</strong> for propranolol poisoning. It is highly protein-bound and lipophilic, with a large volume of distribution." },
+      { text: "C. Conditional — only if shock develops", correct: false, explanation: "There is no conditional recommendation for propranolol — ECTR is recommended against regardless of presentation." }
+    ]
+  }
+];
+
+/* ============================================================================
+   RENDER ENGINE
+   ============================================================================ */
+let activeId = null;
+
+function getCategoryLabel(cat) {
+  return { rec: "Recommended", sug: "Suggested", against: "Not recommended", neutral: "Individualised" }[cat];
+}
+
+function renderGrid(filtered) {
+  const grid = document.getElementById("substanceGrid");
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="icon">🔍</div>
+      <p>No substances match your search.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map((s, i) => `
+    <div class="substance-card ${s.id === activeId ? 'active' : ''}"
+         style="animation-delay:${Math.min(i * 0.04, 0.5)}s"
+         onclick="showDetail('${s.id}')">
+      <h3>${s.name}</h3>
+      <span class="tag ${s.category}">${getCategoryLabel(s.category)}</span>
+      <div class="meta">${s.modality} · Level ${s.level}</div>
+    </div>
+  `).join("");
+}
+
+function filterSubstances() {
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const cat = document.getElementById("filterSelect").value;
+  const filtered = EXTRIP.filter(s => {
+    const haystack = (s.name + " " + s.summary + " " + (s.keywords || []).join(" ")).toLowerCase();
+    const matchesSearch = !q || haystack.includes(q);
+    const matchesCat = cat === "all" || s.category === cat;
+    return matchesSearch && matchesCat;
+  });
+  renderGrid(filtered);
+}
+
+function showDetail(id) {
+  const s = EXTRIP.find(x => x.id === id);
+  if (!s) return;
+  activeId = id;
+
+  document.querySelectorAll(".substance-card").forEach(c => c.classList.remove("active"));
+  document.querySelectorAll(".substance-card").forEach(c => {
+    if (c.querySelector("h3").textContent === s.name) c.classList.add("active");
+  });
+
+  const panel = document.getElementById("detailPanel");
+  document.getElementById("detailTitle").textContent = s.name;
+  document.getElementById("detailBadges").innerHTML = `
+    <span class="badge-pill ${s.category}" style="animation-delay:.05s">${getCategoryLabel(s.category)}</span>
+    <span class="badge-pill" style="background:#0f172a;color:#fff;animation-delay:.12s">${s.modality}</span>
+  `;
+  document.getElementById("detailBody").innerHTML = s.detail;
+  panel.classList.remove("show");
+  void panel.offsetWidth;
+  panel.classList.add("show");
+
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updateStats() {
+  document.getElementById("statTotal").textContent = EXTRIP.length;
+  document.getElementById("statRec").textContent = EXTRIP.filter(s => s.category === "rec").length;
+  document.getElementById("statSug").textContent = EXTRIP.filter(s => s.category === "sug").length;
+  document.getElementById("statAgainst").textContent = EXTRIP.filter(s => s.category === "against").length;
+}
+
+/* ============================================================================
+   QUIZ ENGINE
+   ============================================================================ */
+function renderQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  const grid = document.getElementById("quizGrid");
+  grid.innerHTML = QUIZ.map((q, qi) => `
+    <div class="q" data-q="${qi}" style="animation-delay:${qi * 0.06}s">
+      <p>${qi + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map((o, oi) => `
+          <button class="opt" data-q="${qi}" data-o="${oi}">${o.text}</button>
+        `).join("")}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join("");
+
+  grid.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const qi = parseInt(btn.dataset.q, 10);
+      const oi = parseInt(btn.dataset.o, 10);
+      const q = QUIZ[qi];
+      const opt = q.options[oi];
+      const box = btn.closest(".q");
+
+      box.querySelectorAll(".opt").forEach(b => b.classList.remove("correct", "wrong"));
+      btn.classList.add(opt.correct ? "correct" : "wrong");
+
+      const explain = box.querySelector(".explain");
+      if (opt.correct) {
+        explain.className = "explain show correct-explain";
+        explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+      } else {
+        explain.className = "explain show wrong-explain";
+        explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+      }
+    });
+  });
+}
+
+/* ============================================================================
+   INIT
+   ============================================================================ */
+updateStats();
+renderGrid(EXTRIP);
+renderQuiz();
+</script>
+</body>
+</html>

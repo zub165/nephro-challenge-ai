@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adrenal Vein Sampling: Selectivity and Lateralization</title>
+<style>
+:root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+  --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+*{box-sizing:border-box;}
+body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+.wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.top h1{margin:0;font-size:1.6rem;font-weight:800;}
+.top .sub{margin:4px 0 0;color:var(--muted);font-size:.95rem;}
+.badge{background:#0f172a;color:#fff;border-radius:999px;padding:6px 12px;font-size:.75rem;font-weight:700;white-space:nowrap;}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.case-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px;}
+.card p{margin:0 0 8px;font-size:.92rem;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:600;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.stat .n{font-size:1.2rem;font-weight:800;}
+.stat .l{font-size:.78rem;color:var(--muted);}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.tab{font:inherit;font-weight:700;font-size:.85rem;text-align:left;cursor:pointer;background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--ink);transition:all .2s ease;}
+.tab small{display:block;font-weight:500;color:var(--muted);font-size:.74rem;margin-top:2px;}
+.tab.active[data-mode="opt1"]{border-color:var(--opt1);background:#fef2f2;}
+.tab.active[data-mode="opt2"]{border-color:var(--opt2);background:#f5f3ff;}
+.tab.active[data-mode="opt3"]{border-color:var(--opt3);background:#ecfeff;}
+.tab.active[data-mode="opt4"]{border-color:var(--opt4);background:#fefce8;}
+.stage{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);overflow:hidden;}
+.stage-head h2{margin:0;font-size:1.1rem;font-weight:800;}
+.stage-head p{margin:2px 0 8px;color:var(--muted);font-size:.9rem;}
+.stage svg{width:100%;height:auto;display:block;}
+.diagram{display:none;}
+.diagram.show{display:inline;}
+text{font-family:"Inter","Segoe UI",system-ui,sans-serif;}
+
+/* DRAGGABLE INFO PANEL */
+.info-float{position:absolute;top:80px;right:20px;background:rgba(255,255,255,.98);border-radius:12px;border:2px solid var(--line);box-shadow:0 8px 24px rgba(15,23,42,.15);width:290px;max-width:calc(100% - 40px);overflow:hidden;z-index:100;transition:border-color .2s ease,box-shadow .2s ease;touch-action:none;}
+.info-float.highlight-opt1{border-color:var(--opt1);}
+.info-float.highlight-opt2{border-color:var(--opt2);}
+.info-float.highlight-opt3{border-color:var(--opt3);}
+.info-float.highlight-opt4{border-color:var(--opt4);}
+.info-float.dragging{box-shadow:0 12px 32px rgba(15,23,42,.25);transition:none;cursor:grabbing;}
+.info-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:grab;user-select:none;background:#fef2f2;transition:background .2s ease;gap:8px;}
+.info-header:active{cursor:grabbing;}
+.info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+.info-float.highlight-opt3 .info-header{background:#cffafe;}
+.info-float.highlight-opt4 .info-header{background:#fef9c3;}
+.grip{display:inline-flex;gap:2px;flex-shrink:0;margin-right:6px;opacity:.5;}
+.grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+.info-header h4{margin:0;font-size:.82rem;font-weight:800;color:#0f172a;flex:1;display:flex;align-items:center;pointer-events:none;}
+.toggle-btn{font:inherit;font-size:.72rem;color:var(--muted);background:rgba(0,0,0,.06);border:none;padding:3px 8px;border-radius:999px;font-weight:700;flex-shrink:0;cursor:pointer;}
+.info-body{padding:12px 14px 14px;max-height:500px;transition:max-height .3s ease,padding .3s ease;overflow:hidden;}
+.info-float.collapsed .info-body{max-height:0;padding:0 14px;}
+.info-float .row{display:flex;justify-content:space-between;padding:8px 0;font-size:.78rem;border-bottom:1px solid var(--line);gap:8px;}
+.info-float .row:last-child{border:none;}
+.info-float .k{color:var(--muted);font-weight:600;flex-shrink:0;}
+.info-float .v{font-weight:800;color:#0f172a;text-align:right;word-break:break-word;max-width:170px;}
+.reset-pos{position:absolute;top:20px;right:20px;background:#0f172a;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;opacity:0;transition:opacity .2s;z-index:50;pointer-events:none;}
+.reset-pos.visible{opacity:.85;pointer-events:auto;}
+.reset-pos:hover{opacity:1;}
+
+/* ANIMATIONS */
+@keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+.pulse-block{animation:pulseBlock 1.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+.flow-anim{stroke-dasharray:8 6;animation:flowDash 1.4s linear infinite;}
+@keyframes pulseNode{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.65;transform:scale(1.08);}}
+.pulse-node{animation:pulseNode 1.8s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes drift{0%{transform:translate(0,0);opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{transform:translate(120px,0);opacity:0;}}
+.drift{animation:drift 3.6s linear infinite;}
+@media (prefers-reduced-motion:reduce){.pulse-block,.flow-anim,.pulse-node,.drift{animation:none;}}
+
+/* TABLE */
+.table-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);overflow-x:auto;}
+.table-section h2{margin:0 0 8px;font-size:1.05rem;font-weight:800;}
+.drug-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:640px;}
+.drug-table th{text-align:left;padding:8px 10px;background:#f8fafc;border-bottom:2px solid var(--line);font-weight:800;}
+.drug-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+.drug-table tr.hero td{background:#f5f3ff;font-weight:600;}
+
+/* PANELS */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.panel h3{margin:0;font-size:1rem;font-weight:800;}
+.panel .tag{margin:2px 0 10px;color:var(--muted);font-size:.85rem;}
+.panel ul{margin:0;padding-left:18px;}
+.panel li{margin-bottom:6px;font-size:.92rem;}
+
+/* ALERT */
+.alert{border-radius:14px;padding:14px 16px;margin-bottom:14px;border:1px solid;display:flex;gap:12px;align-items:flex-start;}
+.alert .ico{font-size:1.3rem;}
+.alert .ttl{font-weight:800;margin-bottom:2px;}
+.alert .txt{font-size:.92rem;}
+.alert.opt1{background:#fef2f2;border-color:#fecaca;}
+.alert.opt2{background:#f5f3ff;border-color:#ddd6fe;}
+.alert.opt3{background:#ecfeff;border-color:#a5f3fc;}
+.alert.opt4{background:#fefce8;border-color:#fde68a;}
+
+/* QUIZ */
+.quiz{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05);}
+.quiz h2{margin:0 0 4px;font-size:1.05rem;font-weight:800;}
+.quiz .qsub{margin:0 0 12px;color:var(--muted);font-size:.85rem;}
+.qitem{border-top:1px solid var(--line);padding:12px 0;}
+.qitem:first-child{border-top:none;}
+.qtext{font-weight:700;margin-bottom:8px;}
+.qopts{display:flex;flex-direction:column;gap:6px;}
+.qopt{font:inherit;text-align:left;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--ink);}
+.qopt:hover{border-color:#94a3b8;}
+.qopt.correct{background:#dcfce7;border-color:#22c55e;}
+.qopt.wrong{background:#fee2e2;border-color:#ef4444;}
+.qexp{display:none;margin-top:8px;font-size:.9rem;background:#f8fafc;border-radius:10px;padding:10px 12px;}
+.qexp.show{display:block;}
+
+.footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:18px;}
+
+@media (max-width:860px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .tabs{grid-template-columns:repeat(2,1fr);}
+  .panels{grid-template-columns:1fr;}
+  .info-float{position:relative;top:auto;right:auto;margin:0 0 12px;width:100%;max-width:100%;}
+  .reset-pos{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>Adrenal Vein Sampling: Selectivity and Lateralization</h1>
+    <p class="sub">How the cortisol index confirms cannulation and the aldosterone-to-cortisol ratio shows which side produces excess aldosterone</p>
+  </div>
+  <span class="badge">Nephrology · Hypertension</span>
+</header>
+
+<section class="card">
+  <div class="case-title">Clinical context</div>
+  <p>A 51-year-old woman has resistant hypertension, spontaneous hypokalemia, suppressed renin, and confirmed primary aldosteronism. CT shows bilateral adrenal nodules, so adrenal vein sampling (AVS) is performed during a continuous cosyntropin infusion.</p>
+  <div class="chips">
+    <span class="chip">Right SI 10</span>
+    <span class="chip">Left SI 8</span>
+    <span class="chip">Right A/C 12</span>
+    <span class="chip">Left A/C 2</span>
+    <span class="chip">LI 6</span>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat"><div class="n">10 and 8</div><div class="l">Cortisol index, both sides ≥5</div></div>
+  <div class="stat"><div class="n">12 vs 2</div><div class="l">Aldosterone-to-cortisol ratios</div></div>
+  <div class="stat"><div class="n">6</div><div class="l">Lateralization index, ≥4 supports lateralization</div></div>
+  <div class="stat"><div class="n">Right</div><div class="l">Side of aldosterone excess</div></div>
+</section>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-mode="opt1" role="tab" aria-selected="true">Selectivity<small>Cortisol index confirms cannulation</small></button>
+  <button class="tab" data-mode="opt2" role="tab" aria-selected="false">A/C ratio<small>Corrects for cortisol</small></button>
+  <button class="tab" data-mode="opt3" role="tab" aria-selected="false">Lateralization<small>LI 6, unilateral right</small></button>
+  <button class="tab" data-mode="opt4" role="tab" aria-selected="false">Next steps<small>Management after AVS</small></button>
+</nav>
+
+<section class="stage" id="stage">
+  <div class="stage-head">
+    <h2 id="svgTitle"></h2>
+    <p id="svgSubtitle"></p>
+  </div>
+
+  <svg viewBox="0 0 900 520" role="img" aria-labelledby="svgTitle">
+    <defs>
+      <linearGradient id="gVein" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/>
+      </linearGradient>
+      <linearGradient id="gAdrenal" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fef3c7"/><stop offset="1" stop-color="#fde68a"/>
+      </linearGradient>
+      <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+      </marker>
+      <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+      </marker>
+    </defs>
+
+    <!-- ===== DIAGRAM 1: Selectivity ===== -->
+    <g id="diagram-opt1" class="diagram">
+      <rect x="360" y="60" width="180" height="70" rx="12" fill="url(#gVein)" stroke="#2563eb" stroke-width="2"/>
+      <text x="450" y="92" text-anchor="middle" font-size="14" font-weight="800" fill="#1e3a8a">Inferior vena cava</text>
+      <text x="450" y="116" text-anchor="middle" font-size="13" fill="#1e3a8a">Cortisol 15</text>
+
+      <line x1="400" y1="130" x2="200" y2="230" stroke="#2563eb" stroke-width="3" class="flow-anim" marker-end="url(#arrowGray)"/>
+      <line x1="500" y1="130" x2="700" y2="230" stroke="#2563eb" stroke-width="3" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+      <rect x="60" y="230" width="280" height="150" rx="14" fill="url(#gAdrenal)" stroke="#ca8a04" stroke-width="2"/>
+      <text x="200" y="258" text-anchor="middle" font-size="15" font-weight="800" fill="#854d0e">Right adrenal vein</text>
+      <text x="200" y="284" text-anchor="middle" font-size="13" fill="#713f12">Cortisol 150</text>
+      <text x="200" y="308" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">SI = 10 (≥5, selective)</text>
+      <rect x="100" y="330" width="200" height="20" rx="6" fill="#16a34a" class="pulse-block"/>
+
+      <rect x="560" y="230" width="280" height="150" rx="14" fill="url(#gAdrenal)" stroke="#ca8a04" stroke-width="2"/>
+      <text x="700" y="258" text-anchor="middle" font-size="15" font-weight="800" fill="#854d0e">Left adrenal vein</text>
+      <text x="700" y="284" text-anchor="middle" font-size="13" fill="#713f12">Cortisol 120</text>
+      <text x="700" y="308" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">SI = 8 (≥5, selective)</text>
+      <rect x="600" y="330" width="200" height="20" rx="6" fill="#16a34a" class="pulse-block"/>
+
+      <rect x="40" y="410" width="820" height="90" rx="12" fill="#ecfdf5" stroke="#16a34a"/>
+      <text x="60" y="440" font-size="15" font-weight="800" fill="#166534">Both veins are selectively cannulated</text>
+      <text x="60" y="466" font-size="14" fill="#14532d">SI = adrenal vein cortisol / IVC cortisol. A value ≥5 confirms the catheter sampled adrenal blood.</text>
+    </g>
+
+    <!-- ===== DIAGRAM 2: A/C ratio ===== -->
+    <g id="diagram-opt2" class="diagram">
+      <text x="450" y="60" text-anchor="middle" font-size="15" font-weight="800" fill="#4c1d95">Aldosterone-to-cortisol (A/C) ratio</text>
+
+      <text x="150" y="100" font-size="14" font-weight="800" fill="#4c1d95">Right A/C</text>
+      <rect x="150" y="115" width="500" height="36" rx="8" fill="#e2e8f0"/>
+      <rect x="150" y="115" width="480" height="36" rx="8" fill="#7c3aed" opacity=".7" class="pulse-block"/>
+      <text x="660" y="139" font-size="14" font-weight="800" fill="#4c1d95">12</text>
+
+      <text x="150" y="190" font-size="14" font-weight="800" fill="#4c1d95">Left A/C</text>
+      <rect x="150" y="205" width="500" height="36" rx="8" fill="#e2e8f0"/>
+      <rect x="150" y="205" width="80" height="36" rx="8" fill="#7c3aed" opacity=".5"/>
+      <text x="660" y="229" font-size="14" font-weight="800" fill="#4c1d95">2</text>
+
+      <rect x="40" y="290" width="820" height="200" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+      <text x="60" y="322" font-size="15" font-weight="800" fill="#4c1d95">Calculation</text>
+      <text x="60" y="352" font-size="14" fill="#4c1d95">Right: aldosterone 1,800 / cortisol 150 = 12</text>
+      <text x="60" y="378" font-size="14" fill="#4c1d95">Left: aldosterone 240 / cortisol 120 = 2</text>
+      <text x="60" y="414" font-size="15" font-weight="800" fill="#4c1d95">Correcting for cortisol shows the right side produces far more aldosterone.</text>
+      <text x="60" y="446" font-size="13" fill="#6b21a8">Absolute aldosterone values alone are not enough, because dilution affects them.</text>
+    </g>
+
+    <!-- ===== DIAGRAM 3: Lateralization ===== -->
+    <g id="diagram-opt3" class="diagram">
+      <text x="450" y="60" text-anchor="middle" font-size="15" font-weight="800" fill="#155e75">Lateralization index (LI)</text>
+      <rect x="250" y="90" width="400" height="90" rx="14" fill="#ecfeff" stroke="#0891b2" stroke-width="2"/>
+      <text x="450" y="124" text-anchor="middle" font-size="15" font-weight="800" fill="#155e75">LI = higher A/C / lower A/C</text>
+      <text x="450" y="152" text-anchor="middle" font-size="14" fill="#155e75">12 / 2 = 6</text>
+
+      <line x1="450" y1="180" x2="450" y2="220" stroke="#0891b2" stroke-width="3" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+      <rect x="180" y="220" width="250" height="110" rx="14" fill="#ecfdf5" stroke="#16a34a" stroke-width="2"/>
+      <text x="305" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">LI ≥4</text>
+      <text x="305" y="276" text-anchor="middle" font-size="13" fill="#14532d">Unilateral aldosterone</text>
+      <text x="305" y="300" text-anchor="middle" font-size="13" fill="#14532d">production supported</text>
+
+      <rect x="470" y="220" width="250" height="110" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="595" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">LI below 4</text>
+      <text x="595" y="276" text-anchor="middle" font-size="13" fill="#7f1d1d">Bilateral or</text>
+      <text x="595" y="300" text-anchor="middle" font-size="13" fill="#7f1d1d">indeterminate pattern</text>
+
+      <rect x="40" y="370" width="820" height="120" rx="12" fill="#fefce8" stroke="#ca8a04"/>
+      <text x="60" y="402" font-size="14" font-weight="800" fill="#854d0e">Which side?</text>
+      <text x="60" y="428" font-size="14" fill="#713f12">The higher A/C ratio is on the right, so the right adrenal is the source.</text>
+      <text x="60" y="452" font-size="14" fill="#713f12">An LI of 2 would be below the threshold and would not support unilateral secretion.</text>
+    </g>
+
+    <!-- ===== DIAGRAM 4: Next steps ===== -->
+    <g id="diagram-opt4" class="diagram">
+      <text x="450" y="60" text-anchor="middle" font-size="15" font-weight="800" fill="#854d0e">Pathway after AVS</text>
+      <line x1="110" y1="150" x2="790" y2="150" stroke="#ca8a04" stroke-width="4" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+      <g font-size="14" font-weight="700">
+        <circle cx="110" cy="150" r="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="110" y="195" text-anchor="middle" fill="#854d0e">Confirm selectivity</text>
+        <text x="110" y="215" text-anchor="middle" font-size="13" fill="#854d0e">SI ≥5 both sides</text>
+
+        <circle cx="300" cy="150" r="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="300" y="195" text-anchor="middle" fill="#854d0e">Calculate A/C</text>
+        <text x="300" y="215" text-anchor="middle" font-size="13" fill="#854d0e">and LI</text>
+
+        <circle cx="490" cy="150" r="18" fill="#dcfce7" stroke="#16a34a" stroke-width="2" class="pulse-block"/>
+        <text x="490" y="195" text-anchor="middle" fill="#166534">Lateralized (LI 6)</text>
+        <text x="490" y="215" text-anchor="middle" font-size="13" fill="#166534">consider surgery</text>
+
+        <circle cx="680" cy="150" r="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="680" y="195" text-anchor="middle" fill="#854d0e">Post-op monitoring</text>
+        <text x="680" y="215" text-anchor="middle" font-size="13" fill="#854d0e">potassium and BP</text>
+      </g>
+
+      <rect x="60" y="260" width="780" height="200" rx="14" fill="#fefce8" stroke="#ca8a04"/>
+      <text x="90" y="292" font-size="15" font-weight="800" fill="#854d0e">Key points</text>
+      <text x="90" y="320" font-size="14" fill="#713f12">Correct hypokalemia before testing, since it can affect aldosterone measurements.</text>
+      <text x="90" y="344" font-size="14" fill="#713f12">Surgical candidates usually have lateralized disease and a suitable clinical picture.</text>
+      <text x="90" y="368" font-size="14" fill="#713f12">If lateralization is not clear, medical therapy with a mineralocorticoid antagonist is often used.</text>
+      <text x="90" y="392" font-size="14" fill="#713f12">Decisions should be made by the endocrinology and surgery team.</text>
+      <text x="90" y="430" font-size="14" font-weight="700" fill="#854d0e">Post-operative potassium and blood pressure should be checked closely.</text>
+    </g>
+  </svg>
+
+  <div class="info-float" id="infoPanel">
+    <div class="info-header" id="infoHeader">
+      <h4><span class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></span><span id="infoTitle"></span></h4>
+      <button class="toggle-btn" id="toggleBtn" type="button">▲ Hide</button>
+    </div>
+    <div class="info-body" id="infoBody"></div>
+  </div>
+  <button class="reset-pos" id="resetPos" type="button">Reset position</button>
+</section>
+
+<section class="table-section">
+  <h2>Adrenal vein sampling results</h2>
+  <table class="drug-table">
+    <thead>
+      <tr><th>Measure</th><th>Right</th><th>Left</th><th>Threshold</th><th>Interpretation</th></tr>
+    </thead>
+    <tbody>
+      <tr class="hero"><td>Cortisol index (SI)</td><td>10</td><td>8</td><td>5 or more</td><td>Both sides selectively cannulated</td></tr>
+      <tr><td>Aldosterone / cortisol</td><td>12</td><td>2</td><td>Compare sides</td><td>Right is much higher</td></tr>
+      <tr><td>Lateralization index (LI)</td><td colspan="2" style="text-align:center">6</td><td>4 or more</td><td>Supports unilateral right-sided production</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="panels">
+  <article class="panel">
+    <h3 id="p1Title"></h3>
+    <p class="tag" id="p1Tag"></p>
+    <ul id="p1List"></ul>
+  </article>
+  <article class="panel">
+    <h3 id="p2Title"></h3>
+    <p class="tag" id="p2Tag"></p>
+    <ul id="p2List"></ul>
+  </article>
+</section>
+
+<section class="alert opt1" id="alertBox">
+  <div class="ico" id="alertIcon"></div>
+  <div>
+    <div class="ttl" id="alertTitle"></div>
+    <div class="txt" id="alertText"></div>
+  </div>
+</section>
+
+<section class="quiz">
+  <h2>Quiz</h2>
+  <p class="qsub">Select an answer to see the explanation.</p>
+  <div id="quizList"></div>
+</section>
+
+<div class="footer">Teaching template · Content for educational use. Use local AVS protocols and endocrinology and surgery review for management decisions.</div>
+
+</div>
+
+<script>
+var TABS = ["opt1", "opt2", "opt3", "opt4"];
+
+var MODES = {
+  opt1: {
+    infoTitle: "🔴 Selectivity", panelClass: "highlight-opt1",
+    svgTitle: "Cortisol index confirms both adrenal veins were sampled",
+    svgSubtitle: "SI = adrenal vein cortisol / IVC cortisol; 5 or more means selective cannulation",
+    infoRows: [
+      { k: "Right SI", v: "10 (selective)" },
+      { k: "Left SI", v: "8 (selective)" },
+      { k: "Threshold", v: "5 or more on both sides" },
+      { k: "Purpose", v: "Confirms correct sampling" }
+    ],
+    p1Title: "What SI measures", p1Tag: "Confirming the catheter position",
+    p1List: [
+      "SI compares cortisol in the adrenal vein with cortisol in the IVC.",
+      "A value of 5 or more means the catheter sampled adrenal venous blood.",
+      "Both veins here meet the threshold, so the samples are valid."
+    ],
+    p2Title: "Why it matters", p2Tag: "Interpreting the results",
+    p2List: [
+      "A failed cannulation would make the aldosterone values unreliable.",
+      "This patient's SI of 10 (right) and 8 (left) rules out a failed left vein.",
+      "Only then can the A/C ratio and LI be interpreted."
+    ],
+    alertIcon: "🔴", alertClass: "opt1", alertTitle: "Board Pearl",
+    alertText: "<strong>SI of 5 or more on both sides</strong> confirms selective cannulation before lateralization is interpreted."
+  },
+  opt2: {
+    infoTitle: "🟣 A/C ratio", panelClass: "highlight-opt2",
+    svgTitle: "Aldosterone-to-cortisol ratio corrects for dilution",
+    svgSubtitle: "Right A/C 12 versus left A/C 2",
+    infoRows: [
+      { k: "Right A/C", v: "12 (1,800 / 150)" },
+      { k: "Left A/C", v: "2 (240 / 120)" },
+      { k: "Higher side", v: "Right" },
+      { k: "Why use it", v: "Corrects for cortisol" }
+    ],
+    p1Title: "The calculation", p1Tag: "Cortisol-corrected aldosterone",
+    p1List: [
+      "Each aldosterone value is divided by the cortisol measured in the same sample.",
+      "This corrects for differences in dilution between the two samples.",
+      "The right A/C of 12 is much higher than the left A/C of 2."
+    ],
+    p2Title: "Why absolute values are not enough", p2Tag: "Avoid the common trap",
+    p2List: [
+      "The right aldosterone (1,800) is high, but so is its cortisol (150).",
+      "Without correcting for cortisol, dilution could explain the difference.",
+      "The ratio, not the absolute value, supports lateralization."
+    ],
+    alertIcon: "🟣", alertClass: "opt2", alertTitle: "Board Pearl",
+    alertText: "<strong>Always correct aldosterone for cortisol</strong> before judging lateralization. An absolute value alone cannot prove unilateral secretion."
+  },
+  opt3: {
+    infoTitle: "🔵 Lateralization index", panelClass: "highlight-opt3",
+    svgTitle: "LI of 6 supports unilateral right-sided aldosterone production",
+    svgSubtitle: "LI = higher A/C ratio / lower A/C ratio; 4 or more supports lateralization",
+    infoRows: [
+      { k: "LI", v: "6 (12 / 2)" },
+      { k: "Threshold", v: "4 or more" },
+      { k: "Source", v: "Right adrenal" },
+      { k: "Conclusion", v: "Unilateral right" }
+    ],
+    p1Title: "Interpreting the LI", p1Tag: "Lateralization",
+    p1List: [
+      "The LI is the higher A/C ratio divided by the lower A/C ratio.",
+      "An LI of 4 or more supports unilateral aldosterone production.",
+      "Here the LI of 6 supports right-sided aldosterone production."
+    ],
+    p2Title: "Traps to avoid", p2Tag: "Common errors",
+    p2List: [
+      "The LI is not the ratio of absolute aldosterone values.",
+      "An LI of 2 would be below threshold and would not support unilateral secretion.",
+      "Lateralization is read from the higher ratio, which here is on the right."
+    ],
+    alertIcon: "🔵", alertClass: "opt3", alertTitle: "Board Pearl",
+    alertText: "<strong>LI of 4 or more</strong> with a valid SI on both sides supports unilateral aldosterone production from the higher-ratio side."
+  },
+  opt4: {
+    infoTitle: "🟡 Next steps", panelClass: "highlight-opt4",
+    svgTitle: "Pathway after lateralization",
+    svgSubtitle: "Confirm, decide on treatment, and monitor after any surgery",
+    infoRows: [
+      { k: "Before testing", v: "Correct hypokalemia" },
+      { k: "If lateralized", v: "Consider surgery" },
+      { k: "If not clear", v: "Medical therapy often used" },
+      { k: "After surgery", v: "Monitor potassium and BP" }
+    ],
+    p1Title: "Before and during", p1Tag: "Preparing for the decision",
+    p1List: [
+      "Correct hypokalemia before testing, since it can affect aldosterone levels.",
+      "Confirm selectivity and lateralization with the protocol used at your center.",
+      "Review the results with endocrinology and surgery."
+    ],
+    p2Title: "After the decision", p2Tag: "Treatment and follow-up",
+    p2List: [
+      "Lateralized disease may be treated with adrenalectomy.",
+      "If lateralization is unclear, a mineralocorticoid antagonist is often used.",
+      "Check potassium and blood pressure closely after treatment."
+    ],
+    alertIcon: "🟡", alertClass: "opt4", alertTitle: "Board Pearl",
+    alertText: "The <strong>lateralization result</strong> guides whether surgery or medical therapy is the next step. Team review is essential."
+  }
+};
+
+var QUIZ = [
+  { q: "What is the cortisol index (SI) for the right adrenal vein?",
+    o: ["10", "2", "0.5"], a: 0,
+    e: "SI = right adrenal cortisol / IVC cortisol = 150 / 15 = <strong>10</strong>, which is 5 or more, so the right vein is selectively sampled.",
+    w: { 1: "2 is not the calculated SI. Divide right cortisol (150) by IVC cortisol (15).",
+         2: "0.5 would mean adrenal cortisol is lower than IVC cortisol. The correct right SI is 10." } },
+  { q: "Is the left adrenal vein selectively cannulated?",
+    o: ["Yes, SI = 8", "No, SI is below 5", "Cannot be determined"], a: 0,
+    e: "Left SI = 120 / 15 = <strong>8</strong>, which meets the threshold of 5 or more.",
+    w: { 1: "The left SI is 8, which is above 5. Recheck the calculation: 120 / 15 = 8.",
+         2: "The SI can be calculated directly from the values given. Left SI is 8." } },
+  { q: "What is the aldosterone-to-cortisol ratio on the right?",
+    o: ["12", "2", "1,800"], a: 0,
+    e: "Right A/C = 1,800 / 150 = <strong>12</strong>.",
+    w: { 1: "2 is the left A/C ratio (240 / 120). The right A/C is 12.",
+         2: "1,800 is the absolute aldosterone value. The ratio corrects it for cortisol." } },
+  { q: "What is the lateralization index (LI)?",
+    o: ["6", "2", "7.5"], a: 0,
+    e: "LI = higher A/C / lower A/C = 12 / 2 = <strong>6</strong>.",
+    w: { 1: "2 is the lower A/C ratio, which is the left side. The LI uses the higher divided by the lower, giving 6.",
+         2: "7.5 is not the calculated LI. Divide 12 by 2." } },
+  { q: "Which LI threshold supports unilateral aldosterone production?",
+    o: ["4 or more", "2 or less", "Any value above 1"], a: 0,
+    e: "An LI of <strong>4 or more</strong> supports unilateral aldosterone production, in this question's definition.",
+    w: { 1: "An LI of 2 or less is below threshold and does not support unilateral secretion.",
+         2: "Any value above 1 is not the threshold. Use 4 or more." } },
+  { q: "Why should aldosterone be corrected for cortisol?",
+    o: ["To account for dilution between sampled veins", "To make the values larger", "Because cortisol causes aldosterone production"], a: 0,
+    e: "Cortisol in the same sample reflects dilution, so the <strong>ratio corrects for it</strong> and allows fair side-to-side comparison.",
+    w: { 1: "Correction does not make values larger. It corrects for dilution.",
+         2: "Cortisol does not cause aldosterone production in this context. The correction is for dilution." } },
+  { q: "Which side is the source of excess aldosterone in this patient?",
+    o: ["Right", "Left", "Both equally"], a: 0,
+    e: "The right A/C is 12 and the left is 2, so the <strong>right adrenal</strong> is the source of excess aldosterone.",
+    w: { 1: "The left A/C is 2, much lower than the right. The left side is not the source.",
+         2: "Both sides are not equal. The right A/C is far higher, which is why the LI is 6." } }
+];
+
+var currentMode = "opt1";
+var stage = document.getElementById("stage");
+var panel = document.getElementById("infoPanel");
+var header = document.getElementById("infoHeader");
+var resetBtn = document.getElementById("resetPos");
+var toggleBtn = document.getElementById("toggleBtn");
+var moved = false;
+
+function setMode(mode) {
+  currentMode = mode;
+  var m = MODES[mode];
+  TABS.forEach(function (t) {
+    var g = document.getElementById("diagram-" + t);
+    if (g) g.classList.toggle("show", t === mode);
+  });
+  document.querySelectorAll(".tab").forEach(function (b) {
+    var on = b.getAttribute("data-mode") === mode;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", String(on));
+  });
+  document.getElementById("svgTitle").textContent = m.svgTitle;
+  document.getElementById("svgSubtitle").textContent = m.svgSubtitle;
+  panel.classList.remove("highlight-opt1", "highlight-opt2", "highlight-opt3", "highlight-opt4");
+  panel.classList.add(m.panelClass);
+  document.getElementById("infoTitle").textContent = m.infoTitle;
+  document.getElementById("infoBody").innerHTML = m.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + "</span></div>";
+  }).join("");
+  document.getElementById("p1Title").textContent = m.p1Title;
+  document.getElementById("p1Tag").textContent = m.p1Tag;
+  document.getElementById("p1List").innerHTML = m.p1List.map(function (li) { return "<li>" + li + "</li>"; }).join("");
+  document.getElementById("p2Title").textContent = m.p2Title;
+  document.getElementById("p2Tag").textContent = m.p2Tag;
+  document.getElementById("p2List").innerHTML = m.p2List.map(function (li) { return "<li>" + li + "</li>"; }).join("");
+  document.getElementById("alertBox").className = "alert " + m.alertClass;
+  document.getElementById("alertIcon").textContent = m.alertIcon;
+  document.getElementById("alertTitle").textContent = m.alertTitle;
+  document.getElementById("alertText").innerHTML = m.alertText;
+}
+
+function togglePanel(e) {
+  e.stopPropagation();
+  var collapsed = panel.classList.toggle("collapsed");
+  toggleBtn.textContent = collapsed ? "▼ Show" : "▲ Hide";
+}
+
+function resetPosition() {
+  panel.style.left = "";
+  panel.style.bottom = "";
+  panel.style.top = "80px";
+  panel.style.right = "20px";
+  moved = false;
+  resetBtn.classList.remove("visible");
+}
+
+(function () {
+  var dragging = false, offX = 0, offY = 0;
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function start(x, y) {
+    var sRect = stage.getBoundingClientRect();
+    var pRect = panel.getBoundingClientRect();
+    if (!moved) {
+      panel.style.left = (pRect.left - sRect.left) + "px";
+      panel.style.top = (pRect.top - sRect.top) + "px";
+      panel.style.right = "auto";
+      moved = true;
+    }
+    offX = x - pRect.left;
+    offY = y - pRect.top;
+    dragging = true;
+    panel.classList.add("dragging");
+    resetBtn.classList.add("visible");
+  }
+  function move(x, y) {
+    if (!dragging) return;
+    var sRect = stage.getBoundingClientRect();
+    var nx = clamp(x - sRect.left - offX, 8, stage.clientWidth - panel.offsetWidth - 8);
+    var ny = clamp(y - sRect.top - offY, 8, stage.clientHeight - panel.offsetHeight - 8);
+    panel.style.left = nx + "px";
+    panel.style.top = ny + "px";
+  }
+  function end() { dragging = false; panel.classList.remove("dragging"); }
+
+  header.addEventListener("mousedown", function (e) {
+    if (e.target === toggleBtn) return;
+    e.preventDefault();
+    start(e.clientX, e.clientY);
+  });
+  document.addEventListener("mousemove", function (e) { move(e.clientX, e.clientY); });
+  document.addEventListener("mouseup", end);
+  header.addEventListener("touchstart", function (e) {
+    if (e.target === toggleBtn) return;
+    start(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  document.addEventListener("touchmove", function (e) {
+    if (dragging) move(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  document.addEventListener("touchend", end);
+})();
+
+function buildQuiz() {
+  var list = document.getElementById("quizList");
+  list.innerHTML = QUIZ.map(function (item, qi) {
+    var opts = item.o.map(function (o, oi) {
+      return '<button class="qopt" type="button" data-q="' + qi + '" data-o="' + oi + '">' + o + "</button>";
+    }).join("");
+    return '<div class="qitem"><div class="qtext">' + (qi + 1) + ". " + item.q + '</div><div class="qopts">' + opts +
+      '</div><div class="qexp" id="qexp-' + qi + '"></div></div>';
+  }).join("");
+
+  list.addEventListener("click", function (e) {
+    var btn = e.target.closest(".qopt");
+    if (!btn) return;
+    var qi = +btn.getAttribute("data-q");
+    var oi = +btn.getAttribute("data-o");
+    var item = QUIZ[qi];
+    list.querySelectorAll('.qopt[data-q="' + qi + '"]').forEach(function (b) {
+      b.classList.remove("correct", "wrong");
+    });
+    if (oi === item.a) btn.classList.add("correct");
+    else btn.classList.add("wrong");
+    var box = document.getElementById("qexp-" + qi);
+    box.innerHTML = (oi === item.a) ? item.e : item.w[oi];
+    box.classList.add("show");
+  });
+}
+
+toggleBtn.addEventListener("click", togglePanel);
+resetBtn.addEventListener("click", resetPosition);
+document.querySelectorAll(".tab").forEach(function (b) {
+  b.addEventListener("click", function () { setMode(b.getAttribute("data-mode")); });
+});
+
+function init() { buildQuiz(); setMode("opt1"); }
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+</script>
+</body>
+</html>

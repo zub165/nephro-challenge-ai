@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bartter Syndrome Type III — Gitelman-Like Phenotype</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+  .lab-chip.pos{background:#f5f3ff; border-color:#ddd6fe; color:#5b21b6;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">CLCNKB MUTATION — BARTTER TYPE III</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">Hypokalemia · metabolic alkalosis · hypomagnesemia · hypocalciuria</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Genetic testing confirms ClC-Kb chloride channel mutation</text>
+          </g>
+
+          <!-- Three cards -->
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">HYPOKALEMIA</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">2.6</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mEq/L</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">Urine K 48 mEq/L</text>
+            <text x="0" y="112" text-anchor="middle" font-size="15" fill="#7f1d1d">Renal potassium wasting</text>
+            <text x="0" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Muscle weakness</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ALKALOSIS</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">34</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">HCO₃⁻ mEq/L</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">Cl⁻ 94 mEq/L</text>
+            <text x="0" y="112" text-anchor="middle" font-size="15" fill="#7f1d1d">Hypochloremic</text>
+            <text x="0" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Metabolic alkalosis</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">LOW Mg & Ca</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="40" font-weight="800" fill="#dc2626">Mg 1.0</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mg/dL</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">Urine Ca/Cr 0.05</text>
+            <text x="0" y="112" text-anchor="middle" font-size="15" fill="#7f1d1d">Hypocalciuria</text>
+            <text x="0" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Gitelman-like!</text>
+          </g>
+
+          <!-- Key teaching -->
+          <g transform="translate(700, 780)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 CLCNKB MUTATION = BARTTER TYPE III</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">ClC-Kb is expressed in BOTH the TAL and the DCT</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ Can produce a Gitelman-like phenotype (hypomagnesemia + hypocalciuria)</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Bartter type III can look like Gitelman — always confirm with genetics</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — SALT-WASTING TUBULOPATHIES
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">SALT-WASTING TUBULOPATHIES — COMPARISON</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Loop diuretic-like vs thiazide diuretic-like phenotypes</text>
+          </g>
+
+          <!-- Bartter -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#dc2626"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">BARTTER SYNDROME</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">"Loop diuretic-like"</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">TAL defect</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">NKCC2/ROMK</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#991b1b">• K⁺:</text>
+              <text x="-100" y="0" font-weight="800" fill="#991b1b">↓ Low</text>
+              <text x="-180" y="28" font-weight="700" fill="#991b1b">• HCO₃⁻:</text>
+              <text x="-100" y="28" font-weight="800" fill="#991b1b">↑ High</text>
+              <text x="-180" y="56" font-weight="700" fill="#991b1b">• Mg:</text>
+              <text x="-100" y="56" font-weight="800" fill="#991b1b">Normal/low</text>
+              <text x="-180" y="84" font-weight="700" fill="#991b1b">• Urine Ca:</text>
+              <text x="-100" y="84" font-weight="800" fill="#991b1b">↑ High</text>
+              <text x="-180" y="112" font-weight="700" fill="#991b1b">• BP:</text>
+              <text x="-100" y="112" font-weight="800" fill="#991b1b">Normal/low</text>
+              <text x="-180" y="140" font-weight="700" fill="#991b1b">• Renin/Aldo:</text>
+              <text x="-100" y="140" font-weight="800" fill="#991b1b">↑ Elevated</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="85" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Neonatal (I, II) or classic (III)</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">CLCNKB = type III</text>
+          </g>
+
+          <!-- Gitelman -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">GITELMAN SYNDROME</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">"Thiazide diuretic-like"</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">DCT defect</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">NCC</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• K⁺:</text>
+              <text x="-100" y="0" font-weight="800" fill="#5b21b6">↓ Low</text>
+              <text x="-180" y="28" font-weight="700" fill="#5b21b6">• HCO₃⁻:</text>
+              <text x="-100" y="28" font-weight="800" fill="#5b21b6">↑ High</text>
+              <text x="-180" y="56" font-weight="700" fill="#5b21b6">• Mg:</text>
+              <text x="-100" y="56" font-weight="800" fill="#5b21b6">↓↓ Very low</text>
+              <text x="-180" y="84" font-weight="700" fill="#5b21b6">• Urine Ca:</text>
+              <text x="-100" y="84" font-weight="800" fill="#5b21b6">↓ Low</text>
+              <text x="-180" y="112" font-weight="700" fill="#5b21b6">• BP:</text>
+              <text x="-100" y="112" font-weight="800" fill="#5b21b6">Normal/low</text>
+              <text x="-180" y="140" font-weight="700" fill="#5b21b6">• Renin/Aldo:</text>
+              <text x="-100" y="140" font-weight="800" fill="#5b21b6">↑ Elevated</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="85" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Adolescent/adult onset</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">SLC12A3 mutation</text>
+          </g>
+
+          <!-- This patient -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">THIS PATIENT</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ Bartter III (CLCNKB)</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">CLCNKB</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">ClC-Kb</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• K⁺:</text>
+              <text x="-100" y="0" font-weight="800" fill="#166534">↓ 2.6</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• HCO₃⁻:</text>
+              <text x="-100" y="28" font-weight="800" fill="#166534">↑ 34</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Mg:</text>
+              <text x="-100" y="56" font-weight="800" fill="#166534">↓ 1.0</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Urine Ca:</text>
+              <text x="-100" y="84" font-weight="800" fill="#166534">↓ 0.05</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• BP:</text>
+              <text x="-100" y="112" font-weight="800" fill="#166534">112/70</text>
+              <text x="-180" y="140" font-weight="700" fill="#166534">• Renin/Aldo:</text>
+              <text x="-100" y="140" font-weight="800" fill="#166534">↑ Elevated</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="85" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Genetics confirm</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">CLCNKB (Bartter III)</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">CLCNKB (Bartter III) can mimic Gitelman — hypomagnesemia + hypocalciuria</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DIFFERENTIAL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DIFFERENTIAL DIAGNOSIS OF HYPOKALEMIA + ALKALOSIS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">BP and renin/aldosterone distinguish these entities</text>
+          </g>
+
+          <!-- This patient -->
+          <g transform="translate(200, 500)">
+            <rect x="-165" y="-300" width="330" height="600" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-165" y="-300" width="330" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-165" y="-245" width="330" height="25" fill="#16a34a"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">BARTTER III</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-105" r="55" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">Low BP</text>
+            <text x="0" y="-78" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">+ ↑ Renin</text>
+
+            <g font-size="14">
+              <text x="-140" y="-30" font-weight="700" fill="#166534">• BP:</text>
+              <text x="-80" y="-30" font-weight="800" fill="#166534">Normal/low</text>
+              <text x="-140" y="0" font-weight="700" fill="#166534">• K⁺:</text>
+              <text x="-80" y="0" font-weight="800" fill="#166534">↓ Low</text>
+              <text x="-140" y="30" font-weight="700" fill="#166534">• HCO₃⁻:</text>
+              <text x="-80" y="30" font-weight="800" fill="#166534">↑ High</text>
+              <text x="-140" y="60" font-weight="700" fill="#166534">• Renin:</text>
+              <text x="-80" y="60" font-weight="800" fill="#166534">↑ Elevated</text>
+              <text x="-140" y="90" font-weight="700" fill="#166534">• Aldo:</text>
+              <text x="-80" y="90" font-weight="800" fill="#166534">↑ Elevated</text>
+              <text x="-140" y="120" font-weight="700" fill="#166534">• Mg:</text>
+              <text x="-80" y="120" font-weight="800" fill="#166534">↓ 1.0</text>
+              <text x="-140" y="150" font-weight="700" fill="#166534">• Urine Ca:</text>
+              <text x="-80" y="150" font-weight="800" fill="#166534">↓ Low</text>
+            </g>
+          </g>
+
+          <!-- Liddle / AME -->
+          <g transform="translate(533, 500)">
+            <rect x="-165" y="-300" width="330" height="600" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-165" y="-300" width="330" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-165" y="-245" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">LIDDLE / AME</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Hypertensive group</text>
+
+            <circle cx="0" cy="-105" r="55" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">High BP</text>
+            <text x="0" y="-78" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">+ ↓ Renin</text>
+
+            <g font-size="14">
+              <text x="-140" y="-30" font-weight="700" fill="#991b1b">• BP:</text>
+              <text x="-80" y="-30" font-weight="800" fill="#991b1b">↑ HIGH</text>
+              <text x="-140" y="0" font-weight="700" fill="#991b1b">• K⁺:</text>
+              <text x="-80" y="0" font-weight="800" fill="#991b1b">↓ Low</text>
+              <text x="-140" y="30" font-weight="700" fill="#991b1b">• HCO₃⁻:</text>
+              <text x="-80" y="30" font-weight="800" fill="#991b1b">↑ High</text>
+              <text x="-140" y="60" font-weight="700" fill="#991b1b">• Renin:</text>
+              <text x="-80" y="60" font-weight="800" fill="#991b1b">↓ SUPPRESSED</text>
+              <text x="-140" y="90" font-weight="700" fill="#991b1b">• Aldo:</text>
+              <text x="-80" y="90" font-weight="800" fill="#991b1b">↓ SUPPRESSED</text>
+              <text x="-140" y="120" font-weight="700" fill="#991b1b">• Mg:</text>
+              <text x="-80" y="120" font-weight="800" fill="#991b1b">Normal</text>
+              <text x="-140" y="150" font-weight="700" fill="#991b1b">• Urine Ca:</text>
+              <text x="-80" y="150" font-weight="800" fill="#991b1b">Variable</text>
+            </g>
+          </g>
+
+          <!-- Gordon / other -->
+          <g transform="translate(866, 500)">
+            <rect x="-165" y="-300" width="330" height="600" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-165" y="-300" width="330" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-165" y="-245" width="330" height="25" fill="#7c3aed"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">GORDON</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">Hypertension + hyperK</text>
+
+            <circle cx="0" cy="-105" r="55" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">High BP</text>
+            <text x="0" y="-78" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">+ ↓ Renin</text>
+
+            <g font-size="14">
+              <text x="-140" y="-30" font-weight="700" fill="#5b21b6">• BP:</text>
+              <text x="-80" y="-30" font-weight="800" fill="#5b21b6">↑ HIGH</text>
+              <text x="-140" y="0" font-weight="700" fill="#5b21b6">• K⁺:</text>
+              <text x="-80" y="0" font-weight="800" fill="#5b21b6">↑ HIGH</text>
+              <text x="-140" y="30" font-weight="700" fill="#5b21b6">• HCO₃⁻:</text>
+              <text x="-80" y="30" font-weight="800" fill="#5b21b6">↓ Low</text>
+              <text x="-140" y="60" font-weight="700" fill="#5b21b6">• Renin:</text>
+              <text x="-80" y="60" font-weight="800" fill="#5b21b6">↓ Suppressed</text>
+              <text x="-140" y="90" font-weight="700" fill="#5b21b6">• Aldo:</text>
+              <text x="-80" y="90" font-weight="800" fill="#5b21b6">↓ Low</text>
+              <text x="-140" y="120" font-weight="700" fill="#5b21b6">• Mg:</text>
+              <text x="-80" y="120" font-weight="800" fill="#5b21b6">Normal</text>
+              <text x="-140" y="150" font-weight="700" fill="#5b21b6">• Urine Ca:</text>
+              <text x="-80" y="150" font-weight="800" fill="#5b21b6">Variable</text>
+            </g>
+          </g>
+
+          <!-- PHA I -->
+          <g transform="translate(1200, 500)">
+            <rect x="-165" y="-300" width="330" height="600" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-165" y="-300" width="330" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-165" y="-245" width="330" height="25" fill="#0891b2"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">PHA I</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">Aldosterone resistance</text>
+
+            <circle cx="0" cy="-105" r="55" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-100" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">Low BP</text>
+            <text x="0" y="-78" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">+ ↑ Renin</text>
+
+            <g font-size="14">
+              <text x="-140" y="-30" font-weight="700" fill="#155e75">• BP:</text>
+              <text x="-80" y="-30" font-weight="800" fill="#155e75">↓ Low</text>
+              <text x="-140" y="0" font-weight="700" fill="#155e75">• K⁺:</text>
+              <text x="-80" y="0" font-weight="800" fill="#155e75">↑ HIGH</text>
+              <text x="-140" y="30" font-weight="700" fill="#155e75">• HCO₃⁻:</text>
+              <text x="-80" y="30" font-weight="800" fill="#155e75">↓ Low</text>
+              <text x="-140" y="60" font-weight="700" fill="#155e75">• Renin:</text>
+              <text x="-80" y="60" font-weight="800" fill="#155e75">↑ Elevated</text>
+              <text x="-140" y="90" font-weight="700" fill="#155e75">• Aldo:</text>
+              <text x="-80" y="90" font-weight="800" fill="#155e75">↑ Elevated</text>
+              <text x="-140" y="120" font-weight="700" fill="#155e75">• Mg:</text>
+              <text x="-80" y="120" font-weight="800" fill="#155e75">Normal</text>
+              <text x="-140" y="150" font-weight="700" fill="#155e75">• Urine Ca:</text>
+              <text x="-80" y="150" font-weight="800" fill="#155e75">Variable</text>
+            </g>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Hypokalemia + alkalosis: BP and renin/aldosterone are the key differentiators</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Answer -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER A</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Classic Bartter syndrome type III, which can have a Gitelman-like phenotype</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">CLCNKB mutation confirmed by genetic testing</text>
+          </g>
+
+          <!-- Option cards -->
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Bartter syndrome type III (CLCNKB)</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">ClC-Kb is expressed in TAL and DCT → Gitelman-like phenotype possible</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Gitelman syndrome (SLC12A3)</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Genetic testing shows CLCNKB, not SLC12A3. Phenotype overlaps but mutation is different.</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Gordon syndrome</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Causes hypertension, HYPERkalemia, and acidosis — opposite of this patient</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Liddle syndrome</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Causes hypertension with SUPPRESSED renin/aldosterone. This patient is normotensive with elevated renin/aldosterone.</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Apparent mineralocorticoid excess</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Causes hypertension with SUPPRESSED renin/aldosterone. This patient is normotensive with elevated renin/aldosterone.</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: A — Bartter type III (CLCNKB) with Gitelman-like phenotype</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Bartter Syndrome Type III — Gitelman-Like Phenotype",
+  subtitle: "CLCNKB mutation can mimic Gitelman syndrome with hypomagnesemia and hypocalciuria",
+  badge: "NEPHROLOGY · GENETICS · ELECTROLYTES",
+  caseTitle: "Case: 39-year-old woman with fatigue, muscle weakness, and recurrent hypokalemia",
+  caseDescription: "Hypokalemia (K 2.6), metabolic alkalosis (HCO3 34), hypomagnesemia (Mg 1.0), hypocalciuria (urine Ca/Cr 0.05), elevated renin and aldosterone, normal BP. Genetic testing reveals a pathogenic mutation in CLCNKB, encoding the ClC-Kb chloride channel.",
+  labChips: [
+    { text: "Na⁺ 140 mEq/L", abnormal: false },
+    { text: "K⁺ 2.6 mEq/L", abnormal: true },
+    { text: "Cl⁻ 94 mEq/L", abnormal: true },
+    { text: "HCO₃⁻ 34 mEq/L", abnormal: true },
+    { text: "Mg 1.0 mg/dL", abnormal: true },
+    { text: "Urine K 48 mEq/L", abnormal: true },
+    { text: "Urine Ca/Cr 0.05", abnormal: true },
+    { text: "BP 112/70 mmHg", abnormal: false },
+    { text: "Renin: elevated", abnormal: true },
+    { text: "Aldosterone: elevated", abnormal: true },
+    { text: "CLCNKB mutation", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Bartter vs Gitelman", className: "opt2" },
+    { id: "opt3", label: "🔵 Differential", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Bartter Type III with Gitelman Features",
+      infoRows: [
+        { k: "K⁺", v: "2.6 mEq/L (low)" },
+        { k: "HCO₃⁻", v: "34 mEq/L (high)" },
+        { k: "Mg", v: "1.0 mg/dL (low)" },
+        { k: "Urine Ca/Cr", v: "0.05 (low)" },
+        { k: "Gene", v: "CLCNKB (ClC-Kb)" }
+      ],
+      svgTitle: "CLCNKB Mutation — Bartter Type III with Gitelman-Like Phenotype",
+      svgSubtitle: "Hypokalemia · alkalosis · hypomagnesemia · hypocalciuria · elevated renin/aldosterone",
+      bannerBg: "#dc2626",
+      bannerText1: "CLCNKB mutation = Bartter type III, but the phenotype can be Gitelman-like",
+      bannerText2: "ClC-Kb is expressed in both TAL and DCT — so features can overlap",
+      panel1Title: "🧪 Reading the labs",
+      panel1Tagline: "What the numbers tell you",
+      panel1List: [
+        "<strong>K⁺ 2.6</strong> — hypokalemia from renal potassium wasting (urine K 48)",
+        "<strong>HCO₃⁻ 34</strong> — metabolic alkalosis with hypochloremia (Cl 94)",
+        "<strong>Mg 1.0</strong> — hypomagnesemia (more characteristic of Gitelman)",
+        "<strong>Urine Ca/Cr 0.05</strong> — hypocalciuria (also more Gitelman-like)",
+        "<strong>Elevated renin/aldosterone</strong> — secondary to volume depletion from salt wasting",
+        "<strong>Normal BP (112/70)</strong> — rules out hypertensive causes"
+      ],
+      panel2Title: "🧬 The genetics",
+      panel2Tagline: "CLCNKB = Bartter type III",
+      panel2List: [
+        "<strong>CLCNKB</strong> encodes the <strong>ClC-Kb chloride channel</strong>",
+        "Mutations cause <strong>Bartter syndrome type III</strong>",
+        "ClC-Kb is expressed in <strong>both the TAL and the DCT</strong>",
+        "This is why CLCNKB mutations can produce a phenotype that overlaps with Gitelman syndrome",
+        "<strong>Key point:</strong> The genetic diagnosis is Bartter type III, even though the phenotype looks Gitelman-like"
+      ],
+      alertIcon: "🧬",
+      alertTitle: "Board Pearl — Genetics vs phenotype",
+      alertText: "CLCNKB mutations cause <strong>Bartter type III</strong>, but the phenotype can be <strong>Gitelman-like</strong> (hypomagnesemia + hypocalciuria). Always confirm with genetic testing when the clinical picture is ambiguous."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Bartter vs Gitelman — Overlap and Distinction",
+      infoRows: [
+        { k: "Bartter defect", v: "TAL (NKCC2/ROMK/CLCNKB)" },
+        { k: "Gitelman defect", v: "DCT (NCC/SLC12A3)" },
+        { k: "Bartter urine Ca", v: "High (hypercalciuria)" },
+        { k: "Gitelman urine Ca", v: "Low (hypocalciuria)" },
+        { k: "CLCNKB", v: "Bartter III, can mimic Gitelman" }
+      ],
+      svgTitle: "Bartter vs Gitelman — Two Salt-Wasting Tubulopathies",
+      svgSubtitle: "Classically distinguished by urine calcium and magnesium — but CLCNKB blurs the line",
+      bannerBg: "#7c3aed",
+      bannerText1: "Bartter: TAL defect, hypercalciuria, normal/high Mg",
+      bannerText2: "Gitelman: DCT defect, hypocalciuria, hypomagnesemia",
+      panel1Title: "🧪 Bartter syndrome — the TAL defect",
+      panel1Tagline: "Loop diuretic-like",
+      panel1List: [
+        "Caused by defects in <strong>NKCC2, ROMK, CLCNKB, or CLCNKA/BSND</strong>",
+        "Affects the <strong>thick ascending limb (TAL)</strong> — mimics loop diuretics",
+        "Classically: <strong>hypercalciuria</strong> (high urine Ca)",
+        "<strong>Hypomagnesemia</strong> is variable — often normal or mildly low",
+        "Presents in <strong>infancy/childhood</strong> with polyuria, polydipsia, dehydration",
+        "Types: I (NKCC2), II (ROMK), III (CLCNKB), IV (BSND), V (CaSR)"
+      ],
+      panel2Title: "🧪 Gitelman syndrome — the DCT defect",
+      panel2Tagline: "Thiazide diuretic-like",
+      panel2List: [
+        "Caused by defects in <strong>NCC (SLC12A3)</strong>",
+        "Affects the <strong>distal convoluted tubule (DCT)</strong> — mimics thiazide diuretics",
+        "Classically: <strong>hypocalciuria</strong> (low urine Ca)",
+        "<strong>Hypomagnesemia</strong> is the hallmark",
+        "Presents in <strong>adolescence/adulthood</strong> with fatigue, cramps, weakness",
+        "<strong>CLCNKB mutations (Bartter III)</strong> can produce a Gitelman-like phenotype because ClC-Kb is expressed in both TAL and DCT"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Genetics trumps phenotype",
+      alertText: "When the phenotype is ambiguous (hypomagnesemia + hypocalciuria in a patient with Bartter genetics), <strong>genetic testing</strong> is the definitive answer."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Differential Diagnosis of Hypokalemia + Alkalosis",
+      infoRows: [
+        { k: "This patient", v: "Normal BP, ↑ renin/aldo" },
+        { k: "Liddle", v: "High BP, ↓ renin/aldo" },
+        { k: "AME", v: "High BP, ↓ renin/aldo" },
+        { k: "Gordon", v: "High BP, ↑ K⁺" },
+        { k: "Key test", v: "BP + renin/aldosterone" }
+      ],
+      svgTitle: "Differential Diagnosis of Hypokalemia with Metabolic Alkalosis",
+      svgSubtitle: "BP and renin/aldosterone distinguish these entities",
+      bannerBg: "#0891b2",
+      bannerText1: "Hypokalemia + alkalosis: BP and renin/aldosterone are the key differentiators",
+      bannerText2: "This patient: normal BP, elevated renin and aldosterone → salt-wasting tubulopathy",
+      panel1Title: "🧪 Normotensive with elevated renin/aldosterone",
+      panel1Tagline: "The salt-wasting group",
+      panel1List: [
+        "<strong>Bartter syndrome</strong> — TAL defect, hypercalciuria, variable Mg",
+        "<strong>Gitelman syndrome</strong> — DCT defect, hypocalciuria, hypomagnesemia",
+        "<strong>CLCNKB (Bartter III)</strong> — can look like either",
+        "<strong>Loop diuretic abuse</strong> — similar to Bartter, urine diuretic screen positive",
+        "<strong>Thiazide diuretic abuse</strong> — similar to Gitelman, urine diuretic screen positive",
+        "<strong>Surreptitious vomiting</strong> — low urine Cl (<20), not seen here (urine Cl 90)"
+      ],
+      panel2Title: "🧪 Hypertensive with suppressed renin/aldosterone",
+      panel2Tagline: "The hypertensive group",
+      panel2List: [
+        "<strong>Liddle syndrome</strong> — ENaC gain-of-function; high BP, ↓ renin/aldo",
+        "<strong>Apparent mineralocorticoid excess (AME)</strong> — 11β-HSD2 deficiency; high BP, ↓ renin/aldo",
+        "<strong>Gordon syndrome</strong> — NCC gain-of-function; high BP, ↑ K⁺, acidosis",
+        "<strong>Primary aldosteronism</strong> — high BP, ↓ renin, ↑ aldosterone (but not considered here)",
+        "<strong>Key point:</strong> This patient has normal BP with elevated renin/aldosterone → rules out the hypertensive group"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — BP and renin/aldosterone sort it out",
+      alertText: "In any patient with hypokalemia and metabolic alkalosis, check <strong>BP and renin/aldosterone</strong>. Normal BP + elevated renin/aldo → salt-wasting tubulopathy. High BP + suppressed renin/aldo → Liddle or AME."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "A — Bartter type III" },
+        { k: "Gene", v: "CLCNKB (ClC-Kb)" },
+        { k: "Phenotype", v: "Gitelman-like" },
+        { k: "Key finding", v: "Hypomagnesemia + hypocalciuria" },
+        { k: "Diagnosis", v: "Confirmed by genetics" }
+      ],
+      svgTitle: "Answer Summary — Bartter Type III with Gitelman-Like Phenotype",
+      svgSubtitle: "CLCNKB mutation confirmed by genetic testing",
+      bannerBg: "#ca8a04",
+      bannerText1: "A — Classic Bartter syndrome type III, which can have a Gitelman-like phenotype",
+      bannerText2: "CLCNKB mutation confirmed; phenotype overlaps with Gitelman due to ClC-Kb expression in TAL and DCT",
+      panel1Title: "✅ The correct answer (A)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>CLCNKB mutation</strong> — genetic testing confirms Bartter type III",
+        "<strong>Hypokalemia + metabolic alkalosis</strong> — classic for Bartter/Gitelman",
+        "<strong>Hypomagnesemia (Mg 1.0)</strong> — Gitelman-like feature",
+        "<strong>Hypocalciuria (urine Ca/Cr 0.05)</strong> — Gitelman-like feature",
+        "<strong>Normal BP with elevated renin/aldosterone</strong> — salt-wasting tubulopathy",
+        "The phenotype is <strong>Gitelman-like</strong>, but the genotype is <strong>Bartter type III</strong>"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>B (Gitelman, SLC12A3):</strong> The genetics show CLCNKB, not SLC12A3",
+        "<strong>C (Gordon syndrome):</strong> Causes hypertension, hyperkalemia, and acidosis — opposite of this patient",
+        "<strong>D (Liddle syndrome):</strong> Causes hypertension with suppressed renin/aldosterone — this patient is normotensive with elevated renin/aldo",
+        "<strong>E (AME):</strong> Causes hypertension with suppressed renin/aldosterone — this patient is normotensive with elevated renin/aldo"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: A",
+      alertText: "Classic <strong>Bartter syndrome type III</strong> (CLCNKB mutation), which can have a <strong>Gitelman-like phenotype</strong> with hypomagnesemia and hypocalciuria. ClC-Kb is expressed in both TAL and DCT, explaining the overlap."
+    }
+  },
+  comparison: {
+    title: "📊 Salt-Wasting Tubulopathies — Bartter vs Gitelman vs CLCNKB",
+    sub: "Classic features, with emphasis on the CLCNKB overlap",
+    head: ["Feature", "Bartter (classic)", "Gitelman", "CLCNKB (Bartter III)"],
+    rows: [
+      { cells: ["Defect", "TAL (NKCC2/ROMK/CLCNKB)", "DCT (NCC)", "TAL + DCT (ClC-Kb)"], hero: false },
+      { cells: ["Urine Ca", "High (hypercalciuria)", "Low (hypocalciuria)", "Variable — can be LOW"], hero: false },
+      { cells: ["Serum Mg", "Normal or mildly low", "Very low", "Low (Gitelman-like)"], hero: false },
+      { cells: ["BP", "Normal/low", "Normal/low", "Normal/low"], hero: false },
+      { cells: ["Renin/Aldo", "Elevated", "Elevated", "Elevated"], hero: false },
+      { cells: ["Onset", "Infancy/childhood", "Adolescence/adulthood", "Variable"], hero: false },
+      { cells: ["Gene", "NKCC2, ROMK, CLCNKB, BSND", "SLC12A3", "CLCNKB"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 39-year-old woman has hypokalemia (K 2.6), metabolic alkalosis (HCO3 34), hypomagnesemia (Mg 1.0), hypocalciuria (urine Ca/Cr 0.05), elevated renin/aldosterone, and normal BP. Genetic testing shows a CLCNKB mutation. What is the diagnosis?",
+      options: [
+        { text: "Classic Bartter syndrome type III, which can have a Gitelman-like phenotype.", correct: true,
+          explanation: "CLCNKB mutations cause Bartter type III. ClC-Kb is expressed in both the TAL and DCT, so the phenotype can overlap with Gitelman syndrome — including hypomagnesemia and hypocalciuria." },
+        { text: "Gitelman syndrome caused by an SLC12A3 mutation.", correct: false,
+          explanation: "The genetics show CLCNKB, not SLC12A3. The phenotype is Gitelman-like, but the genotype is Bartter type III." },
+        { text: "Liddle syndrome caused by increased ENaC activity.", correct: false,
+          explanation: "Liddle syndrome causes hypertension with suppressed renin and aldosterone. This patient is normotensive with elevated renin/aldosterone." }
+      ]
+    },
+    {
+      question: "What is the genetic defect in Bartter syndrome type III?",
+      options: [
+        { text: "CLCNKB, encoding the ClC-Kb chloride channel.", correct: true,
+          explanation: "CLCNKB encodes the ClC-Kb chloride channel. Mutations cause Bartter syndrome type III, which can have a Gitelman-like phenotype." },
+        { text: "SLC12A3, encoding the NCC cotransporter.", correct: false,
+          explanation: "SLC12A3 mutations cause Gitelman syndrome, not Bartter type III." },
+        { text: "SCNN1B, encoding the ENaC beta subunit.", correct: false,
+          explanation: "SCNN1B mutations cause Liddle syndrome or PHA I, not Bartter type III." }
+      ]
+    },
+    {
+      question: "Which finding best distinguishes this patient's CLCNKB mutation from classic Gitelman syndrome?",
+      options: [
+        { text: "Genetic testing showing CLCNKB rather than SLC12A3.", correct: true,
+          explanation: "The phenotype can be identical (hypokalemia, alkalosis, hypomagnesemia, hypocalciuria), but the genotype distinguishes them: CLCNKB = Bartter III, SLC12A3 = Gitelman." },
+        { text: "The presence of hypomagnesemia.", correct: false,
+          explanation: "Hypomagnesemia is seen in both Gitelman and this Gitelman-like form of Bartter III." },
+        { text: "The presence of hypocalciuria.", correct: false,
+          explanation: "Hypocalciuria is seen in both Gitelman and this Gitelman-like form of Bartter III." }
+      ]
+    },
+    {
+      question: "What is the mechanism of hypokalemia in Bartter syndrome?",
+      options: [
+        { text: "Impaired salt reabsorption in the TAL leads to increased distal Na⁺ delivery and K⁺ wasting.", correct: true,
+          explanation: "When TAL salt reabsorption is impaired, more Na⁺ reaches the collecting duct. This increases ENaC-mediated Na⁺ reabsorption, creating a lumen-negative potential that drives K⁺ secretion." },
+        { text: "Direct inhibition of ROMK channels in the TAL.", correct: false,
+          explanation: "ROMK mutations can cause Bartter type II, but the mechanism of hypokalemia is via increased distal Na⁺ delivery, not direct ROMK inhibition in the TAL." },
+        { text: "Excess aldosterone secretion from an adrenal adenoma.", correct: false,
+          explanation: "This would cause hypertension with suppressed renin. This patient has elevated renin and normal BP." }
+      ]
+    },
+    {
+      question: "A patient with hypokalemia, metabolic alkalosis, and hypomagnesemia has a urine Ca/Cr ratio of 0.25 (high). Which diagnosis is most likely?",
+      options: [
+        { text: "Bartter syndrome.", correct: true,
+          explanation: "A high urine Ca/Cr ratio (hypercalciuria) is characteristic of Bartter syndrome (TAL defect). Gitelman syndrome typically has hypocalciuria." },
+        { text: "Gitelman syndrome.", correct: false,
+          explanation: "Gitelman syndrome typically has hypocalciuria (low urine Ca/Cr). This patient has hypercalciuria, suggesting Bartter." },
+        { text: "Liddle syndrome.", correct: false,
+          explanation: "Liddle syndrome causes hypertension, not normal BP. It does not typically affect urine calcium." }
+      ]
+    },
+    {
+      question: "Which of the following is NOT a feature of Gitelman syndrome?",
+      options: [
+        { text: "Hypercalciuria.", correct: true,
+          explanation: "Gitelman syndrome causes HYPOcalciuria (low urine calcium), not hypercalciuria. Hypercalciuria is seen in Bartter syndrome." },
+        { text: "Hypomagnesemia.", correct: false,
+          explanation: "Hypomagnesemia is a hallmark of Gitelman syndrome." },
+        { text: "Hypokalemic metabolic alkalosis.", correct: false,
+          explanation: "This is a classic feature of Gitelman syndrome." }
+      ]
+    },
+    {
+      question: "A patient with Bartter syndrome has a CLCNKB mutation. What is the expected phenotype?",
+      options: [
+        { text: "Variable — can range from classic Bartter to Gitelman-like, depending on the specific mutation.", correct: true,
+          explanation: "CLCNKB mutations (Bartter type III) have a variable phenotype. Some patients present with classic Bartter features, while others have a Gitelman-like picture with hypomagnesemia and hypocalciuria." },
+        { text: "Always identical to classic Bartter with hypercalciuria.", correct: false,
+          explanation: "The phenotype is variable. CLCNKB mutations can produce a Gitelman-like picture." },
+        { text: "Always identical to Gitelman syndrome.", correct: false,
+          explanation: "The phenotype is variable — it can be classic Bartter, Gitelman-like, or intermediate." }
+      ]
+    },
+    {
+      question: "What is the treatment for Bartter and Gitelman syndromes?",
+      options: [
+        { text: "Potassium and magnesium supplementation, plus NSAIDs or aldosterone antagonists.", correct: true,
+          explanation: "Treatment focuses on replacing potassium and magnesium losses. NSAIDs (like indomethacin) reduce prostaglandin-mediated salt wasting. Aldosterone antagonists (spironolactone) can help. Potassium-sparing diuretics may also be used." },
+        { text: "High-dose loop diuretics.", correct: false,
+          explanation: "Loop diuretics would worsen the salt wasting and hypokalemia. They are contraindicated." },
+        { text: "Fludrocortisone.", correct: false,
+          explanation: "Fludrocortisone would worsen the hypokalemia and alkalosis by increasing ENaC activity." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Genetics / Electrolytes",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

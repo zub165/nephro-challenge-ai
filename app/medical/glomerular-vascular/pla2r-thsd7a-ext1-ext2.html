@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preoperative Vascular Mapping — What It Does and Doesn't Do</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#16a34a;}
+  .compare-table th:nth-child(3){background:#dc2626;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — WHAT MAPPING DOES
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">PREOPERATIVE VASCULAR MAPPING</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">Duplex ultrasound of arteries and veins before access surgery</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Goal: help the surgeon plan the best possible access</text>
+          </g>
+
+          <!-- Four benefit cards -->
+          <g transform="translate(250, 480)">
+            <rect x="-200" y="-160" width="400" height="320" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-160" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">1. VESSEL SIZING</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="40" font-weight="800" fill="#dc2626">📏</text>
+            <text x="0" y="25" text-anchor="middle" font-size="17" fill="#7f1d1d">Measures arterial and</text>
+            <text x="0" y="52" text-anchor="middle" font-size="17" fill="#7f1d1d">venous diameters</text>
+            <line x1="-160" y1="80" x2="160" y2="80" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="115" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">Finds best caliber vessels</text>
+          </g>
+
+          <g transform="translate(700, 480)">
+            <rect x="-200" y="-160" width="400" height="320" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-160" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">2. STENOSIS / THROMBOSIS</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="40" font-weight="800" fill="#dc2626">🚫</text>
+            <text x="0" y="25" text-anchor="middle" font-size="17" fill="#7f1d1d">Detects veins to</text>
+            <text x="0" y="52" text-anchor="middle" font-size="17" fill="#7f1d1d">avoid</text>
+            <line x1="-160" y1="80" x2="160" y2="80" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="115" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">Prevents failed cannulation sites</text>
+          </g>
+
+          <g transform="translate(1150, 480)">
+            <rect x="-200" y="-160" width="400" height="320" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-160" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">3. DEEP VEINS</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="40" font-weight="800" fill="#dc2626">🔍</text>
+            <text x="0" y="25" text-anchor="middle" font-size="17" fill="#7f1d1d">Visualizes veins not</text>
+            <text x="0" y="52" text-anchor="middle" font-size="17" fill="#7f1d1d">palpable on exam</text>
+            <line x1="-160" y1="80" x2="160" y2="80" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="115" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">Expands surgical options</text>
+          </g>
+
+          <!-- Bottom line: what it increases -->
+          <g transform="translate(700, 780)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#166534">✅ MAPPING INCREASES AVF PLACEMENT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#15803d">More suitable vessels identified → more fistulas created</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" fill="#15803d">Placement rate rises from ~32% to ~58% with routine mapping</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Mapping helps the surgeon plan — it does NOT change biology of maturation</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — WHAT MAPPING INCREASES (AVF PLACEMENT)
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <!-- Top -->
+          <g transform="translate(700, 160)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="26" font-weight="800" fill="#5b21b6">① MAPPING → MORE AVFs PLACED</text>
+            <text x="0" y="15" text-anchor="middle" font-size="18" fill="#6d28d9">Ultrasound reveals vessels the surgeon would not have found by exam alone</text>
+            <text x="0" y="48" text-anchor="middle" font-size="20" font-weight="800" fill="#5b21b6">Better planning → higher AVF creation rate</text>
+          </g>
+
+          <line x1="700" y1="240" x2="700" y2="290" stroke="#7c3aed" stroke-width="8" marker-end="url(#arrowAccent2)"/>
+
+          <!-- Before/After comparison -->
+          <g transform="translate(700, 480)">
+            <rect x="-620" y="-170" width="1240" height="340" rx="22" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+
+            <!-- Before -->
+            <g transform="translate(-350, 0)">
+              <rect x="-220" y="-110" width="440" height="220" rx="18" fill="#f1f5f9" stroke="#64748b" stroke-width="3"/>
+              <text x="0" y="-75" text-anchor="middle" font-size="20" font-weight="800" fill="#334155">WITHOUT MAPPING</text>
+              <text x="0" y="-20" text-anchor="middle" font-size="52" font-weight="800" fill="#64748b">32%</text>
+              <text x="0" y="20" text-anchor="middle" font-size="17" font-weight="700" fill="#475569">AVF placement rate</text>
+              <text x="0" y="55" text-anchor="middle" font-size="15" fill="#64748b">Based on physical exam</text>
+              <text x="0" y="80" text-anchor="middle" font-size="15" fill="#64748b">and surgeon judgment</text>
+            </g>
+
+            <!-- Arrow -->
+            <line x1="-100" y1="0" x2="100" y2="0" stroke="#16a34a" stroke-width="8" marker-end="url(#arrowGreen)"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="15" font-weight="800" fill="#16a34a">MAPPING</text>
+
+            <!-- After -->
+            <g transform="translate(350, 0)">
+              <rect x="-220" y="-110" width="440" height="220" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+              <text x="0" y="-75" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">WITH MAPPING</text>
+              <text x="0" y="-20" text-anchor="middle" font-size="52" font-weight="800" fill="#16a34a">58%</text>
+              <text x="0" y="20" text-anchor="middle" font-size="17" font-weight="700" fill="#15803d">AVF placement rate</text>
+              <text x="0" y="55" text-anchor="middle" font-size="15" fill="#15803d">Duplex ultrasound</text>
+              <text x="0" y="80" text-anchor="middle" font-size="15" fill="#15803d">before surgery</text>
+            </g>
+          </g>
+
+          <line x1="700" y1="670" x2="700" y2="720" stroke="#16a34a" stroke-width="8" marker-end="url(#arrowGreen)"/>
+
+          <!-- Answer -->
+          <g transform="translate(700, 830)">
+            <rect x="-620" y="-80" width="1240" height="160" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#166534">✅ ANSWER D IS CORRECT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#15803d">Preoperative vascular mapping INCREASES placement of arteriovenous fistulas</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" fill="#15803d">(Not all patients get AVFs — the question was which statement is INCORRECT)</text>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Mapping → more AVFs placed · The INCORRECT answer was C (nonmaturation)</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — WHAT MAPPING DOES NOT DO (NONMATURATION)
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <!-- Top: the claim vs reality -->
+          <g transform="translate(700, 160)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="26" font-weight="800" fill="#155e75">② DOES MAPPING REDUCE NONMATURATION?</text>
+            <text x="0" y="15" text-anchor="middle" font-size="18" fill="#0e7490">Many assumed it would — but the highest-level evidence says no</text>
+            <text x="0" y="48" text-anchor="middle" font-size="20" font-weight="800" fill="#155e75">Cochrane review: no significant reduction in nonmaturation</text>
+          </g>
+
+          <line x1="700" y1="240" x2="700" y2="290" stroke="#0891b2" stroke-width="8" marker-end="url(#arrowAccent3)"/>
+
+          <!-- Cochrane data -->
+          <g transform="translate(700, 480)">
+            <rect x="-620" y="-170" width="1240" height="340" rx="22" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-130" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">COCHRANE SYSTEMATIC REVIEW — RCT DATA</text>
+
+            <!-- RR card -->
+            <g transform="translate(-350, 20)">
+              <rect x="-220" y="-100" width="440" height="200" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+              <text x="0" y="-60" text-anchor="middle" font-size="18" font-weight="800" fill="#155e75">Maturation at 6 months</text>
+              <text x="0" y="-5" text-anchor="middle" font-size="44" font-weight="800" fill="#0e7490">RR 1.11</text>
+              <text x="0" y="35" text-anchor="middle" font-size="16" font-weight="700" fill="#155e75">95% CI 0.98 – 1.25</text>
+              <text x="0" y="70" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">Crosses 1.0 → NOT significant</text>
+            </g>
+
+            <!-- Interpretation -->
+            <g transform="translate(350, 20)">
+              <rect x="-220" y="-100" width="440" height="200" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text x="0" y="-60" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">Interpretation</text>
+              <text x="0" y="-15" text-anchor="middle" font-size="17" fill="#7f1d1d">No statistically significant</text>
+              <text x="0" y="12" text-anchor="middle" font-size="17" fill="#7f1d1d">difference in fistula maturation</text>
+              <text x="0" y="45" text-anchor="middle" font-size="17" fill="#7f1d1d">with vs. without mapping</text>
+              <text x="0" y="75" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">The claim is NOT supported</text>
+            </g>
+          </g>
+
+          <line x1="700" y1="670" x2="700" y2="720" stroke="#dc2626" stroke-width="8" marker-end="url(#arrowAccent1)"/>
+
+          <!-- Answer -->
+          <g transform="translate(700, 830)">
+            <rect x="-620" y="-80" width="1240" height="160" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#991b1b">❌ ANSWER C IS THE INCORRECT STATEMENT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#7f1d1d">"It reduces the frequency of arteriovenous fistula nonmaturation"</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">Mapping does NOT reliably reduce nonmaturation</text>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Plan ≠ Biology · Mapping helps place the fistula, not necessarily mature it</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- All four options -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#0f172a"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">THE ANSWER — SORTING TRUE FROM FALSE</text>
+            <text x="0" y="25" text-anchor="middle" font-size="17" fill="#cbd5e1">A, B, and D are true statements · C is the INCORRECT statement</text>
+          </g>
+
+          <!-- A -->
+          <g transform="translate(700, 320)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">TRUE — Identifies the most suitable location for access surgery</text>
+            <text x="-500" y="18" font-size="15" fill="#15803d">Ultrasound measures vessels and helps plan the surgical site</text>
+          </g>
+
+          <!-- B -->
+          <g transform="translate(700, 445)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">TRUE — Identifies veins with stenosis or thrombosis to avoid</text>
+            <text x="-500" y="18" font-size="15" fill="#15803d">Mapping detects venous pathology that would cause failure</text>
+          </g>
+
+          <!-- C — the incorrect answer -->
+          <g transform="translate(700, 570)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="4"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ INCORRECT — "Reduces the frequency of AVF nonmaturation"</text>
+            <text x="-500" y="18" font-size="15" fill="#7f1d1d">Cochrane: no significant reduction (RR 1.11, 95% CI 0.98–1.25)</text>
+          </g>
+
+          <!-- D -->
+          <g transform="translate(700, 695)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">TRUE — Increases placement of arteriovenous fistulas</text>
+            <text x="-500" y="18" font-size="15" fill="#15803d">Placement rate rises from ~32% to ~58% with routine mapping</text>
+          </g>
+
+          <!-- The teaching point -->
+          <g transform="translate(700, 860)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 THE KEY TEACHING POINT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">Mapping helps the surgeon PLAN and PLACE — it does not change MATURATION BIOLOGY</text>
+            <text x="0" y="42" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">Placement rate ✓ · Nonmaturation rate ✗</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Preoperative Vascular Mapping — What It Does and Doesn't Do",
+  subtitle: "It increases AVF placement — but it does NOT reduce nonmaturation",
+  badge: "VASCULAR ACCESS · NEPHROLOGY · SURGERY",
+  caseTitle: "Question: Which statement about preoperative vascular mapping is INCORRECT?",
+  caseDescription: "Preoperative duplex ultrasound mapping measures arterial and venous diameters, identifies stenosis or thrombosis, and visualizes deep veins not palpable on exam. It helps the surgeon plan access. But does it reduce AVF nonmaturation? The highest-level evidence says no.",
+  labChips: [
+    { text: "✔ A: Identifies suitable location", abnormal: false },
+    { text: "✔ B: Identifies stenosis/thrombosis", abnormal: false },
+    { text: "✘ C: Reduces nonmaturation", abnormal: true },
+    { text: "✔ D: Increases AVF placement", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 What Mapping Does", className: "opt1" },
+    { id: "opt2", label: "🟣 AVF Placement ↑", className: "opt2" },
+    { id: "opt3", label: "🔵 Nonmaturation ✗", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 What Preoperative Vascular Mapping Does",
+      infoRows: [
+        { k: "Modality", v: "Duplex ultrasound" },
+        { k: "Measures", v: "Arterial + venous diameters" },
+        { k: "Detects", v: "Stenosis, thrombosis" },
+        { k: "Reveals", v: "Deep veins not palpable" },
+        { k: "Net effect", v: "↑ AVF placement rate" }
+      ],
+      svgTitle: "Preoperative Vascular Mapping — The Four Benefits",
+      svgSubtitle: "Duplex ultrasound assesses vessels before access surgery",
+      bannerBg: "#dc2626",
+      bannerText1: "Mapping helps the surgeon find vessels and plan the best access",
+      bannerText2: "It increases AVF placement — but does NOT change maturation biology",
+      panel1Title: "📏 What mapping measures",
+      panel1Tagline: "Arteries and veins",
+      panel1List: [
+        "<strong>Arterial diameter</strong> — adequate inflow is essential for fistula maturation",
+        "<strong>Venous diameter</strong> — larger veins are more likely to mature into usable fistulas",
+        "<strong>Stenosis</strong> — narrowed segments that would impair flow and cause failure",
+        "<strong>Thrombosis</strong> — occluded segments that cannot be used for access",
+        "<strong>Deep veins</strong> — not palpable on physical exam but suitable for access"
+      ],
+      panel2Title: "🎯 What mapping is used for",
+      panel2Tagline: "Surgical planning",
+      panel2List: [
+        "Identify the <strong>most suitable location</strong> for access surgery",
+        "Detect veins that should be <strong>avoided</strong> due to stenosis or thrombosis",
+        "Reveal <strong>deep veins</strong> not apparent on physical examination",
+        "Increase the likelihood of <strong>successfully creating an AVF</strong>",
+        "Help choose between <strong>AVF, AVG, or catheter</strong> when vessels are marginal"
+      ],
+      alertIcon: "🧭",
+      alertTitle: "Board Pearl — Mapping is a planning tool",
+      alertText: "Preoperative vascular mapping <strong>increases AVF placement</strong> by identifying usable vessels. But the biology of fistula maturation (vessel remodeling, neointimal hyperplasia) is <strong>not</strong> reliably changed by imaging alone."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Mapping Increases AVF Placement",
+      infoRows: [
+        { k: "Claim", v: "↑ AVF placement rate" },
+        { k: "Without mapping", v: "~32% placed" },
+        { k: "With mapping", v: "~58% placed" },
+        { k: "Mechanism", v: "Finds hidden usable vessels" },
+        { k: "Verdict", v: "TRUE statement ✓" }
+      ],
+      svgTitle: "Mapping Increases Placement of Arteriovenous Fistulas",
+      svgSubtitle: "Multiple studies show a substantial increase in AVF creation when mapping is routine",
+      bannerBg: "#7c3aed",
+      bannerText1: "Placement rate rises from ~32% to ~58% with routine preoperative mapping",
+      bannerText2: "Some series show 34% → 64% — the direction is consistent",
+      panel1Title: "📈 The evidence for increased placement",
+      panel1Tagline: "Consistent across studies",
+      panel1List: [
+        "One study showed AVF placement rose from <strong>32% to 58%</strong> after routine mapping",
+        "Another reported an increase from <strong>34% to 64%</strong>",
+        "Routine mapping changes surgical decision-making — more patients get fistulas",
+        "Deep veins identified by ultrasound would otherwise be missed",
+        "This is a <strong>TRUE</strong> statement about preoperative vascular mapping"
+      ],
+      panel2Title: "🧠 Why mapping works for planning",
+      panel2Tagline: "Information asymmetry",
+      panel2List: [
+        "Physical exam is <strong>limited</strong> to superficial, palpable veins",
+        "Many suitable veins are <strong>deep</strong> and cannot be felt",
+        "Mapping provides <strong>objective measurements</strong> instead of estimates",
+        "The surgeon can plan the <strong>best site</strong> and avoid problem vessels",
+        "More AVFs are created — and more patients avoid catheters"
+      ],
+      alertIcon: "✅",
+      alertTitle: "This statement is TRUE",
+      alertText: "\"It increases placement of arteriovenous fistulas\" is a <strong>correct</strong> statement about preoperative vascular mapping — but it was not the INCORRECT answer the question asked for."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Mapping Does NOT Reduce Nonmaturation",
+      infoRows: [
+        { k: "Claim tested", v: "↓ AVF nonmaturation" },
+        { k: "Evidence", v: "Cochrane review of RCTs" },
+        { k: "Result", v: "RR 1.11 (0.98–1.25)" },
+        { k: "Interpretation", v: "NOT statistically significant" },
+        { k: "Verdict", v: "INCORRECT statement ✗" }
+      ],
+      svgTitle: "Mapping Does NOT Reduce AVF Nonmaturation",
+      svgSubtitle: "Cochrane meta-analysis of randomized trials found no significant benefit",
+      bannerBg: "#0891b2",
+      bannerText1: "RR 1.11 (95% CI 0.98–1.25) — crosses 1.0, so not significant",
+      bannerText2: "Preoperative imaging did not improve fistula maturation at 6 months",
+      panel1Title: "📊 What the Cochrane review found",
+      panel1Tagline: "Randomized trial data",
+      panel1List: [
+        "Systematic review of RCTs comparing preoperative vessel imaging to standard care",
+        "Fistula maturation at 6 months: <strong>RR 1.11, 95% CI 0.98–1.25</strong>",
+        "The confidence interval <strong>crosses 1.0</strong> → no statistically significant difference",
+        "Some individual studies suggested benefit, but the pooled analysis does not confirm it",
+        "High rates of AVF nonmaturation <strong>persist</strong> even with mapping"
+      ],
+      panel2Title: "🧬 Why planning ≠ maturation",
+      panel2Tagline: "Biology is not imaging",
+      panel2List: [
+        "Maturation depends on <strong>vessel remodeling</strong> — a biological process",
+        "Neointimal hyperplasia and inadequate dilation can cause failure regardless of vessel size on ultrasound",
+        "Mapping identifies <strong>anatomically suitable</strong> vessels but cannot predict <strong>functional remodeling</strong>",
+        "Patient factors (age, diabetes, BP, medications) influence maturation independently",
+        "<strong>Correct statement:</strong> Mapping increases placement — but not maturation"
+      ],
+      alertIcon: "❌",
+      alertTitle: "This statement is INCORRECT — the answer to the question",
+      alertText: "\"It reduces the frequency of arteriovenous fistula nonmaturation\" is <strong>not supported</strong> by the highest-level evidence. This is the <strong>incorrect statement</strong> the question asked you to identify."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Question asks", v: "Which is INCORRECT?" },
+        { k: "Correct answer", v: "C — Nonmaturation claim" },
+        { k: "A, B, D", v: "TRUE statements" },
+        { k: "C", v: "INCORRECT statement" },
+        { k: "Teaching point", v: "Placement ≠ Maturation" }
+      ],
+      svgTitle: "Answer Summary — Sorting True from False",
+      svgSubtitle: "A, B, and D are true · C is the incorrect statement",
+      bannerBg: "#ca8a04",
+      bannerText1: "The INCORRECT statement is C — Mapping does NOT reduce AVF nonmaturation",
+      bannerText2: "Key distinction: placement rate (↑) vs maturation rate (unchanged)",
+      panel1Title: "✅ The true statements (A, B, D)",
+      panel1Tagline: "What mapping really does",
+      panel1List: [
+        "<strong>A:</strong> Identifies the most suitable location for access surgery — TRUE",
+        "<strong>B:</strong> Identifies veins with stenosis or thrombosis to avoid — TRUE",
+        "<strong>D:</strong> Increases placement of arteriovenous fistulas — TRUE",
+        "All three reflect the well-established planning benefits of mapping",
+        "None of these claim to affect fistula <strong>maturation</strong>"
+      ],
+      panel2Title: "❌ The incorrect statement (C)",
+      panel2Tagline: "The answer to the question",
+      panel2List: [
+        "<strong>C:</strong> \"It reduces the frequency of arteriovenous fistula nonmaturation\" — INCORRECT",
+        "Cochrane review found <strong>no significant reduction</strong> in nonmaturation (RR 1.11, 95% CI 0.98–1.25)",
+        "Mapping improves <strong>planning</strong>, not <strong>biology</strong>",
+        "This is the classic exam trap: distinguishing <strong>placement</strong> from <strong>maturation</strong>",
+        "<strong>Answer to the question: C</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C — the INCORRECT statement",
+      alertText: "Preoperative vascular mapping <strong>increases AVF placement</strong> but does <strong>not</strong> reduce the frequency of AVF nonmaturation. This is the statement that is incorrect."
+    }
+  },
+  comparison: {
+    title: "📊 Preoperative Vascular Mapping — Claim vs. Evidence",
+    sub: "Each of the four statements tested against the literature",
+    head: ["Statement", "Verdict", "Evidence", "Clinical meaning"],
+    rows: [
+      { cells: ["A: Identifies most suitable location", "TRUE ✓", "Widely established", "Improves surgical planning"], hero: false },
+      { cells: ["B: Identifies stenosis or thrombosis", "TRUE ✓", "Widely established", "Avoids failed cannulation sites"], hero: false },
+      { cells: ["C: Reduces AVF nonmaturation", "INCORRECT ✗", "Cochrane RR 1.11 (0.98–1.25)", "The answer — not supported by RCT evidence"], hero: true },
+      { cells: ["D: Increases AVF placement", "TRUE ✓", "32% → 58%; 34% → 64%", "More patients get fistulas"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "Which of the following statements about preoperative vascular mapping is INCORRECT?",
+      options: [
+        { text: "It reduces the frequency of arteriovenous fistula nonmaturation.", correct: true,
+          explanation: "A Cochrane systematic review of RCTs found no significant improvement in fistula maturation at 6 months (RR 1.11, 95% CI 0.98–1.25). Mapping increases AVF placement but does not reliably reduce nonmaturation." },
+        { text: "It identifies the most suitable location for access surgery.", correct: false,
+          explanation: "This is TRUE. Mapping measures vessel diameters and helps the surgeon plan the surgical site." },
+        { text: "It increases placement of arteriovenous fistulas.", correct: false,
+          explanation: "This is TRUE. Studies show AVF placement rates increase from ~32% to ~58% with routine mapping." }
+      ]
+    },
+    {
+      question: "What is the primary purpose of preoperative vascular mapping before access surgery?",
+      options: [
+        { text: "To identify suitable vessels and plan the best surgical site.", correct: true,
+          explanation: "Mapping uses duplex ultrasound to measure arterial and venous diameters, detect stenosis/thrombosis, and reveal deep veins not palpable on exam — all to help the surgeon plan." },
+        { text: "To guarantee that the arteriovenous fistula will mature.", correct: false,
+          explanation: "No imaging can guarantee maturation. Mapping does not reduce nonmaturation." },
+        { text: "To replace the need for physical examination.", correct: false,
+          explanation: "Mapping is an adjunct to physical examination, not a replacement." }
+      ]
+    },
+    {
+      question: "What did the Cochrane systematic review conclude about preoperative vessel imaging and fistula maturation?",
+      options: [
+        { text: "No significant difference in maturation at 6 months (RR 1.11, 95% CI 0.98–1.25).", correct: true,
+          explanation: "The confidence interval crosses 1.0, meaning the result is not statistically significant. Mapping did not improve maturation rates." },
+        { text: "Mapping significantly improved maturation (RR 0.60, 95% CI 0.45–0.75).", correct: false,
+          explanation: "The actual RR was 1.11 with CI crossing 1.0 — not significant." },
+        { text: "Mapping doubled the maturation rate.", correct: false,
+          explanation: "No — the review found no significant benefit for maturation." }
+      ]
+    },
+    {
+      question: "Preoperative vascular mapping increases which of the following?",
+      options: [
+        { text: "Arteriovenous fistula placement rate.", correct: true,
+          explanation: "Mapping increases AVF placement from ~32% to ~58% (one study) or 34% to 64% (another). More patients receive fistulas instead of catheters." },
+        { text: "Arteriovenous fistula maturation rate.", correct: false,
+          explanation: "Mapping does not reliably improve maturation. Planning ≠ biology." },
+        { text: "The frequency of AVF nonmaturation.", correct: false,
+          explanation: "This is the opposite — mapping does not reduce nonmaturation either." }
+      ]
+    },
+    {
+      question: "Why might mapping increase AVF placement but not maturation?",
+      options: [
+        { text: "Mapping identifies anatomically suitable vessels but cannot predict biological remodeling.", correct: true,
+          explanation: "Maturation depends on vessel remodeling, neointimal hyperplasia, and patient factors — not just vessel size on ultrasound. Planning ≠ biology." },
+        { text: "Because ultrasound is inaccurate for vessel measurement.", correct: false,
+          explanation: "Ultrasound is accurate for measurement. The issue is that anatomy alone does not determine maturation." },
+        { text: "Because surgeons ignore the mapping results.", correct: false,
+          explanation: "Surgeons routinely use mapping — but the biology of maturation still limits success." }
+      ]
+    },
+    {
+      question: "Which patient factor most strongly influences AVF maturation independently of preoperative mapping?",
+      options: [
+        { text: "Vessel remodeling biology (neointimal hyperplasia, dilation capacity).", correct: true,
+          explanation: "Maturation requires adequate vessel dilation and remodeling. Neointimal hyperplasia and poor dilation cause failure regardless of preoperative vessel size on ultrasound." },
+        { text: "The type of ultrasound machine used.", correct: false,
+          explanation: "Machine type does not determine biological maturation." },
+        { text: "Whether the mapping was done on the same day as surgery.", correct: false,
+          explanation: "Timing of mapping does not affect maturation biology." }
+      ]
+    },
+    {
+      question: "A patient has a deep vein identified on ultrasound that is not palpable. What is the practical value of this finding?",
+      options: [
+        { text: "It expands surgical options and may allow AVF creation where exam alone would have suggested a graft.", correct: true,
+          explanation: "Deep veins not palpable on exam can still be suitable for access. Mapping identifies them and increases the chances of creating an AVF instead of a graft." },
+        { text: "It has no value — deep veins cannot be used for access.", correct: false,
+          explanation: "Deep veins can be used for access if adequate in caliber. Mapping reveals them." },
+        { text: "It guarantees the fistula will mature.", correct: false,
+          explanation: "Finding a deep vein improves the odds of placement but does not guarantee maturation." }
+      ]
+    },
+    {
+      question: "What is the key teaching point of this question?",
+      options: [
+        { text: "Preoperative mapping increases AVF placement but does not reduce nonmaturation.", correct: true,
+          explanation: "The distinction is between planning (placement) and biology (maturation). Mapping helps the surgeon plan but does not change the biological process of maturation." },
+        { text: "Preoperative mapping is not useful.", correct: false,
+          explanation: "Mapping IS useful — it increases placement and helps planning. It just does not reduce nonmaturation." },
+        { text: "Ultrasound is inferior to physical examination.", correct: false,
+          explanation: "Ultrasound is superior to exam alone for assessing vessel anatomy. It reveals veins exam cannot detect." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Vascular Access / Nephrology / Surgery",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

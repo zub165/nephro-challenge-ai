@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Berden Classification — ANCA-Associated GN</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; border-left:4px solid var(--opt1);}
+  .stat-card:nth-child(1){border-left-color:#dc2626;}
+  .stat-card:nth-child(2){border-left-color:#7c3aed;}
+  .stat-card:nth-child(3){border-left-color:#0891b2;}
+  .stat-card:nth-child(4){border-left-color:#16a34a;}
+  .stat-card .k{font-size:.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat-card .v{font-size:1rem; font-weight:800; color:var(--ink);}
+  .stat-card .sub{font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); position:relative; min-height:700px;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.98);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(15,23,42,.15);
+    width:290px; max-width:calc(100% - 40px);
+    overflow:hidden; z-index:100;
+    transition:border-color .2s ease, box-shadow .2s ease;
+    touch-action:none;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-float.dragging{box-shadow:0 12px 32px rgba(15,23,42,.25); transition:none; cursor:grabbing;}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:grab; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-header:active{cursor:grabbing;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-shrink:0; margin-right:6px; opacity:.5;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569; display:block;}
+
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800; color:#0f172a;
+    flex:1; display:flex; align-items:center; pointer-events:none;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px;
+    border-radius:999px; font-weight:700; flex-shrink:0;
+    cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .reset-pos{position:absolute; top:20px; right:20px;
+    background:#0f172a; color:#fff; border:none; border-radius:8px;
+    padding:6px 12px; font-size:.72rem; font-weight:700; cursor:pointer;
+    font-family:inherit; opacity:0; transition:opacity .2s;
+    z-index:50; pointer-events:none;}
+  .reset-pos.visible{opacity:.85;pointer-events:auto;}
+  .reset-pos:hover{opacity:1;}
+
+  /* Comparison table */
+  .berden-section{
+    background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .berden-section h3{margin:0 0 6px; font-size:1.1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .berden-section .subtitle{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+
+  .berden-table{width:100%; border-collapse:collapse; font-size:.88rem;
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .berden-table thead th{
+    padding:13px 14px; text-align:left; font-weight:800; font-size:.78rem;
+    text-transform:uppercase; letter-spacing:.06em; color:#fff;
+    border-right:1px solid rgba(255,255,255,.1);}
+  .berden-table thead th:last-child{border-right:none;}
+  .berden-table thead th.col-class{background:#0f172a;}
+  .berden-table thead th.col-focal{background:#16a34a;}
+  .berden-table thead th.col-cres{background:#dc2626;}
+  .berden-table thead th.col-mixed{background:#ca8a04;}
+  .berden-table thead th.col-scler{background:#7c3aed;}
+  .berden-table tbody td{
+    padding:13px 14px; border-bottom:1px solid var(--line);
+    border-right:1px solid var(--line); vertical-align:top;
+    font-size:.88rem; line-height:1.55;}
+  .berden-table tbody td:last-child{border-right:none;}
+  .berden-table tbody tr:last-child td{border-bottom:none;}
+  .berden-table tbody tr:nth-child(even){background:#f8fafc;}
+  .berden-table tbody tr:hover{background:#f1f5f9;}
+  .berden-table .param{font-weight:800; color:#0f172a; background:#f8fafc;}
+  .berden-table .highlight-row{background:#fef3c7 !important;}
+  .berden-table .highlight-row td{
+    border-top:3px solid #ca8a04; border-bottom:3px solid #ca8a04; font-weight:600;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    display:flex; gap:16px; align-items:flex-start;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0; line-height:1;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes pulseBlock {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: .8; }
+  }
+  .pulse-block { animation: pulseBlock 1.6s ease-in-out infinite; transform-origin: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Berden Classification — ANCA-Associated GN</h1>
+      <p>Histopathologic classification based on the percentage of normal, crescentic, and sclerotic glomeruli</p>
+    </div>
+    <div class="badge">Nephropathology</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>66-year-old man with rapidly progressive kidney dysfunction</h2>
+      <p>Baseline creatinine 1.0 → current <strong>5.6 mg/dL</strong>. <strong>MPO-ANCA strongly positive</strong>. Anti-GBM negative. Urine: dysmorphic RBCs + RBC casts. Biopsy: <strong>pauci-immune necrotizing crescentic GN</strong>.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">Cr 1.0 → 5.6</span>
+      <span class="lab-chip pos">MPO-ANCA +</span>
+      <span class="lab-chip pos">Anti-GBM −</span>
+      <span class="lab-chip abn">RBC casts</span>
+      <span class="lab-chip abn">Pauci-immune</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="k">Answer</div>
+      <div class="v">D — Sclerotic</div>
+      <div class="sub">60% globally sclerotic</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Total glomeruli</div>
+      <div class="v">20</div>
+      <div class="sub">Sampled in biopsy</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Sclerotic</div>
+      <div class="v">12 / 20 = 60%</div>
+      <div class="sub">≥ 50% → Sclerotic class</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Prognosis</div>
+      <div class="v">Worst of 4</div>
+      <div class="sub">Lowest renal survival</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab opt1 active" id="tabopt1" onclick="setMode('opt1')">🔴 Sclerotic Class ✓</button>
+    <button class="tab opt2" id="tabopt2" onclick="setMode('opt2')">🟣 Other Classes</button>
+    <button class="tab opt3" id="tabopt3" onclick="setMode('opt3')">🔵 Berden Table</button>
+    <button class="tab opt4" id="tabopt4" onclick="setMode('opt4')">🟡 Clinical Impact</button>
+  </div>
+
+  <section class="stage" id="stage">
+    <button class="reset-pos" id="resetPos" onclick="resetPanelPosition()">
+      ⟲ Reset panel position
+    </button>
+
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="shadow">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+          <feOffset dx="0" dy="2" result="offset"/>
+          <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+          <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="600" y="40" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="68" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b"></text>
+
+      <!-- DIAGRAM 1 — SCLEROTIC CLASS -->
+      <g id="diagram-opt1">
+        <text x="600" y="120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#7f1d1d">
+          SCLEROTIC CLASS — 60% OF GLOMERULI ARE GLOBALLY SCLEROTIC
+        </text>
+
+        <!-- Pie chart representation -->
+        <g transform="translate(350, 400)">
+          <!-- Base circle (background) -->
+          <circle r="180" fill="#f1f5f9" stroke="#334155" stroke-width="4"/>
+
+          <!-- Sclerotic slice: 60% = 216° — start at top, go clockwise -->
+          <path d="M 0 0 L 0 -180 A 180 180 0 0 1 156.5 89.3 Z"
+                fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="30" y="-40" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#fff">60%</text>
+          <text x="60" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">SCLEROTIC</text>
+
+          <!-- Crescentic slice: 20% = 72° -->
+          <path d="M 0 0 L 156.5 89.3 A 180 180 0 0 1 105.8 145.6 Z"
+                fill="#dc2626" stroke="#991b1b" stroke-width="3"/>
+          <text x="150" y="125" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">20%</text>
+
+          <!-- Normal slice: 10% = 36° -->
+          <path d="M 0 0 L 105.8 145.6 A 180 180 0 0 1 56.2 171 Z"
+                fill="#16a34a" stroke="#065f46" stroke-width="3"/>
+          <text x="95" y="175" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">10%</text>
+
+          <!-- Other slice: 10% -->
+          <path d="M 0 0 L 56.2 171 A 180 180 0 0 1 0 180 Z"
+                fill="#94a3b8" stroke="#475569" stroke-width="3"/>
+          <text x="20" y="180" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">10%</text>
+        </g>
+
+        <!-- Legend -->
+        <g transform="translate(700, 260)">
+          <rect x="-80" y="-30" width="500" height="280" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <text x="170" y="0" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">GLOMERULI BREAKDOWN</text>
+
+          <rect x="-50" y="30" width="20" height="20" rx="4" fill="#7c3aed"/>
+          <text x="-20" y="45" font-family="Arial" font-size="13" fill="#0f172a">Globally sclerotic</text>
+          <text x="360" y="45" text-anchor="end" font-family="Arial" font-size="13" font-weight="800" fill="#7c3aed">12 / 20 = 60%</text>
+
+          <rect x="-50" y="80" width="20" height="20" rx="4" fill="#dc2626"/>
+          <text x="-20" y="95" font-family="Arial" font-size="13" fill="#0f172a">Cellular crescents</text>
+          <text x="360" y="95" text-anchor="end" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">4 / 20 = 20%</text>
+
+          <rect x="-50" y="130" width="20" height="20" rx="4" fill="#16a34a"/>
+          <text x="-20" y="145" font-family="Arial" font-size="13" fill="#0f172a">Normal glomeruli</text>
+          <text x="360" y="145" text-anchor="end" font-family="Arial" font-size="13" font-weight="800" fill="#16a34a">2 / 20 = 10%</text>
+
+          <rect x="-50" y="180" width="20" height="20" rx="4" fill="#94a3b8"/>
+          <text x="-20" y="195" font-family="Arial" font-size="13" fill="#0f172a">Other (partial)</text>
+          <text x="360" y="195" text-anchor="end" font-family="Arial" font-size="13" font-weight="800" fill="#64748b">2 / 20 = 10%</text>
+
+          <rect x="-50" y="230" width="20" height="20" rx="4" fill="#ca8a04"/>
+          <text x="-20" y="245" font-family="Arial" font-size="13" font-weight="800" fill="#0f172a">Sclerotic ≥ 50% → SCLEROTIC CLASS</text>
+        </g>
+
+        <g transform="translate(600, 700)">
+          <rect x="-540" y="-30" width="1080" height="60" rx="12" fill="#7c3aed"/>
+          <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">
+            ANSWER: D — Sclerotic class (60% globally sclerotic ≥ 50% threshold)
+          </text>
+          <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#ede9fe">
+            Worst renal prognosis of the 4 Berden classes — lowest response to immunosuppression
+          </text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 2 — OTHER CLASSES -->
+      <g id="diagram-opt2" style="display:none">
+        <text x="600" y="120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">
+          THE FOUR BERDEN CLASSES
+        </text>
+
+        <!-- Focal -->
+        <g transform="translate(180, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">Focal Class</text>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">≥ 50% NORMAL glomeruli</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="22">✅</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">Best prognosis</text>
+          <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">1-yr renal survival ~90%</text>
+        </g>
+
+        <!-- Crescentic -->
+        <g transform="translate(440, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7f1d1d">Crescentic Class</text>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">≥ 50% cellular CRESCENTS</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="22">⚠️</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Intermediate prognosis</text>
+          <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">1-yr renal survival ~80%</text>
+        </g>
+
+        <!-- Mixed -->
+        <g transform="translate(720, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">Mixed Class</text>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">&lt; 50% each category</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="22">🔄</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Variable prognosis</text>
+          <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">Depends on dominant pattern</text>
+        </g>
+
+        <!-- Sclerotic -->
+        <g transform="translate(1000, 260)">
+          <rect x="-140" y="-100" width="280" height="200" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+          <text x="0" y="-70" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">Sclerotic Class</text>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">≥ 50% GLOBALLY SCLEROTIC</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="22">🚨</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Worst prognosis</text>
+          <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">1-yr renal survival ~50%</text>
+        </g>
+
+        <!-- Highlight current case -->
+        <g transform="translate(600, 560)">
+          <rect x="-500" y="-100" width="1000" height="200" rx="16" fill="#7c3aed" stroke="#5b21b6" stroke-width="4"/>
+          <text x="0" y="-60" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">
+            THIS PATIENT: SCLEROTIC CLASS
+          </text>
+          <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-size="14" fill="#ede9fe">
+            Total glomeruli: 20 · Normal: 2 (10%) · Crescents: 4 (20%)
+          </text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="14" fill="#ede9fe">
+            Globally sclerotic: 12 (60%) · Other: 2 (10%)
+          </text>
+          <text x="0" y="55" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fef3c7">
+            60% ≥ 50% → SCLEROTIC CLASS
+          </text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 3 — BERDEN TABLE -->
+      <g id="diagram-opt3" style="display:none">
+        <text x="600" y="120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">
+          BERDEN CLASSIFICATION — COMPLETE TABLE
+        </text>
+
+        <g transform="translate(600, 400)">
+          <rect x="-540" y="-230" width="1080" height="460" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+
+          <!-- Header row -->
+          <rect x="-520" y="-210" width="1040" height="50" rx="8" fill="#0f172a"/>
+          <text x="-420" y="-178" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">CLASS</text>
+          <text x="-140" y="-178" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">DEFINITION</text>
+          <text x="180" y="-178" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">% GLOMERULI</text>
+          <text x="430" y="-178" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">PROGNOSIS</text>
+
+          <!-- Row 1: Focal -->
+          <text x="-420" y="-125" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Focal</text>
+          <text x="-140" y="-125" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">≥ 50% normal</text>
+          <text x="180" y="-125" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">≥ 50% normal</text>
+          <text x="430" y="-125" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#16a34a">Best (1-yr ~90%)</text>
+
+          <!-- Row 2: Crescentic -->
+          <line x1="-520" y1="-100" x2="520" y2="-100" stroke="#e2e8f0" stroke-width="1"/>
+          <text x="-420" y="-70" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Crescentic</text>
+          <text x="-140" y="-70" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">≥ 50% crescents</text>
+          <text x="180" y="-70" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">≥ 50% cellular crescents</text>
+          <text x="430" y="-70" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">Intermediate</text>
+
+          <!-- Row 3: Mixed -->
+          <line x1="-520" y1="-45" x2="520" y2="-45" stroke="#e2e8f0" stroke-width="1"/>
+          <text x="-420" y="-15" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">Mixed</text>
+          <text x="-140" y="-15" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">&lt; 50% each</text>
+          <text x="180" y="-15" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">&lt; 50% normal, &lt; 50% crescents, &lt; 50% sclerotic</text>
+          <text x="430" y="-15" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#ca8a04">Variable</text>
+
+          <!-- Row 4: Sclerotic (highlighted) -->
+          <rect x="-520" y="10" width="1040" height="70" fill="#fef3c7"/>
+          <line x1="-520" y1="10" x2="520" y2="10" stroke="#ca8a04" stroke-width="2"/>
+          <line x1="-520" y1="80" x2="520" y2="80" stroke="#ca8a04" stroke-width="2"/>
+          <text x="-420" y="50" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Sclerotic</text>
+          <text x="-140" y="50" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">≥ 50% globally sclerotic</text>
+          <text x="180" y="50" text-anchor="middle" font-family="Arial" font-size="12" fill="#0f172a">≥ 50% globally sclerotic</text>
+          <text x="430" y="50" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7c3aed">Worst (1-yr ~50%)</text>
+
+          <!-- Arrow pointing to Sclerotic -->
+          <text x="-540" y="50" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#dc2626">→</text>
+          <text x="-580" y="55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">THIS</text>
+          <text x="-580" y="70" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">CASE</text>
+        </g>
+      </g>
+
+      <!-- DIAGRAM 4 — CLINICAL IMPACT -->
+      <g id="diagram-opt4" style="display:none">
+        <text x="600" y="120" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#713f12">
+          CLINICAL IMPACT — SCLEROTIC CLASS
+        </text>
+
+        <g transform="translate(300, 320)">
+          <rect x="-230" y="-150" width="460" height="300" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-115" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">PROGNOSIS</text>
+          <text x="-200" y="-70" text-anchor="start" font-family="Arial" font-size="13" fill="#5b21b6">• Worst renal survival of 4 classes</text>
+          <text x="-200" y="-42" text-anchor="start" font-family="Arial" font-size="13" fill="#5b21b6">• 1-year kidney survival ~50%</text>
+          <text x="-200" y="-14" text-anchor="start" font-family="Arial" font-size="13" fill="#5b21b6">• 5-year ESRD risk very high</text>
+          <text x="-200" y="14" text-anchor="start" font-family="Arial" font-size="13" fill="#5b21b6">• Poorer response to immunosuppression</text>
+          <text x="-200" y="42" text-anchor="start" font-family="Arial" font-size="13" fill="#5b21b6">• Sclerotic glomeruli cannot recover</text>
+          <text x="0" y="115" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">→ Plan for dialysis early</text>
+        </g>
+
+        <g transform="translate(900, 320)">
+          <rect x="-230" y="-150" width="460" height="300" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-115" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">MANAGEMENT</text>
+          <text x="-200" y="-70" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">1. Immunosuppression still considered</text>
+          <text x="-200" y="-42" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">2. Rituximab OR cyclophosphamide</text>
+          <text x="-200" y="-14" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">3. High-dose glucocorticoids</text>
+          <text x="-200" y="14" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">4. Plasma exchange if severe</text>
+          <text x="-200" y="42" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">5. Dialysis planning early</text>
+          <text x="-200" y="70" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">6. Transplant evaluation if progresses</text>
+        </g>
+
+        <g transform="translate(600, 640)">
+          <rect x="-560" y="-70" width="1120" height="140" rx="16" fill="#7c3aed"/>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">KEY POINTS</text>
+          <text x="-520" y="0" text-anchor="start" font-family="Arial" font-size="13" fill="#ede9fe">🔹 Sclerotic class = ≥ 50% globally sclerotic glomeruli on biopsy</text>
+          <text x="-520" y="25" text-anchor="start" font-family="Arial" font-size="13" fill="#ede9fe">🔹 Worst prognosis of the four Berden classes</text>
+          <text x="20" y="0" text-anchor="start" font-family="Arial" font-size="13" fill="#ede9fe">🔹 Irreversible scarring — immunosuppression halts further damage</text>
+          <text x="20" y="25" text-anchor="start" font-family="Arial" font-size="13" font-weight="800" fill="#fef3c7">🔹 Early dialysis planning is essential</text>
+        </g>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" id="infoHeader">
+        <h4 id="infoTitle">
+          <span class="grip" aria-hidden="true"><span></span><span></span><span></span></span>
+          Sclerotic Class
+        </h4>
+        <span class="toggle-btn" id="toggleBtn" onclick="togglePanel(event)">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section class="berden-section">
+    <h3>📊 Berden Classification — Complete Comparison</h3>
+    <p class="subtitle">Four classes based on the percentage of normal, crescentic, and globally sclerotic glomeruli</p>
+
+    <div style="overflow-x:auto;">
+      <table class="berden-table">
+        <thead>
+          <tr>
+            <th class="col-class">Class</th>
+            <th class="col-focal">Focal</th>
+            <th class="col-cres">Crescentic</th>
+            <th class="col-mixed">Mixed</th>
+            <th class="col-scler">Sclerotic</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="param">Definition</td>
+            <td>≥ 50% normal glomeruli</td>
+            <td>≥ 50% cellular crescents</td>
+            <td>&lt; 50% each category</td>
+            <td><strong>≥ 50% globally sclerotic</strong></td>
+          </tr>
+          <tr>
+            <td class="param">Typical ANCA</td>
+            <td>PR3 or MPO</td>
+            <td>PR3 or MPO</td>
+            <td>PR3 or MPO</td>
+            <td>Often MPO-ANCA</td>
+          </tr>
+          <tr>
+            <td class="param">1-year renal survival</td>
+            <td>~90%</td>
+            <td>~80%</td>
+            <td>~70%</td>
+            <td><strong>~50%</strong></td>
+          </tr>
+          <tr>
+            <td class="param">5-year ESRD risk</td>
+            <td>Low</td>
+            <td>Moderate</td>
+            <td>Moderate–high</td>
+            <td><strong>Very high</strong></td>
+          </tr>
+          <tr>
+            <td class="param">Response to treatment</td>
+            <td>Excellent</td>
+            <td>Good</td>
+            <td>Variable</td>
+            <td><strong>Poorer</strong></td>
+          </tr>
+          <tr>
+            <td class="param">Key clinical point</td>
+            <td>Best prognosis</td>
+            <td>Reversible if treated early</td>
+            <td>Depends on dominant pattern</td>
+            <td><strong>Plan for dialysis early</strong></td>
+          </tr>
+          <tr class="highlight-row">
+            <td class="param">This case (60% sclerotic)</td>
+            <td>✗ Only 10% normal</td>
+            <td>✗ Only 20% crescents</td>
+            <td>✗ Sclerosis exceeds 50%</td>
+            <td><strong>✓ 60% globally sclerotic</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount">0</span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+</div>
+
+<script>
+var TABS = ["opt1", "opt2", "opt3", "opt4"];
+
+var MODES = {
+  opt1: {
+    panelClass: "highlight-opt1",
+    infoTitle: "🔴 Sclerotic Class",
+    svgTitle: "Sclerotic Class — 60% Globally Sclerotic",
+    svgSubtitle: "12 of 20 glomeruli globally sclerotic (60%) — exceeds the 50% threshold",
+    infoRows: [
+      { k: "Answer", v: "D" },
+      { k: "Total glomeruli", v: "20" },
+      { k: "Normal", v: "2 (10%)" },
+      { k: "Cellular crescents", v: "4 (20%)" },
+      { k: "Globally sclerotic", v: "12 (60%)" },
+      { k: "Class", v: "Sclerotic (≥ 50%)" }
+    ],
+    panel1Title: "🔴 Why Sclerotic Class",
+    panel1Tagline: "Applying the Berden criteria",
+    panel1List: [
+      "<strong>Berden definition:</strong> Sclerotic class = ≥ 50% globally sclerotic glomeruli",
+      "<strong>This patient:</strong> 12 of 20 glomeruli are globally sclerotic = <strong>60%</strong>",
+      "<strong>60% ≥ 50%</strong> → Sclerotic class",
+      "<strong>Focal class excluded:</strong> Requires ≥ 50% normal — only 10% here",
+      "<strong>Crescentic class excluded:</strong> Requires ≥ 50% crescents — only 20% here",
+      "<strong>Mixed class excluded:</strong> Requires < 50% sclerotic — 60% here"
+    ],
+    panel2Title: "🔴 Clinical Significance",
+    panel2Tagline: "Worst of the four classes",
+    panel2List: [
+      "<strong>Prognosis:</strong> Worst renal survival — 1-year kidney survival ~50%",
+      "<strong>Why:</strong> Sclerotic glomeruli are irreversibly scarred",
+      "<strong>Response to treatment:</strong> Poorer than focal or crescentic classes",
+      "<strong>Treatment still indicated:</strong> Immunosuppression halts further damage",
+      "<strong>Dialysis planning:</strong> Discuss early — ESRD risk is high",
+      "<strong>Transplant:</strong> Consider evaluation if progression continues"
+    ],
+    alertIcon: "🔴",
+    alertTitle: "Board Pearl — Answer is D",
+    alertText: "Sclerotic class = <strong>≥ 50% globally sclerotic glomeruli</strong>. This patient has 12/20 (60%) sclerotic → Sclerotic class. Worst prognosis of the four Berden classes with the lowest response to immunosuppression."
+  },
+  opt2: {
+    panelClass: "highlight-opt2",
+    infoTitle: "🟣 The Four Berden Classes",
+    svgTitle: "The Four Berden Classes Compared",
+    svgSubtitle: "Focal (best) → Crescentic → Mixed → Sclerotic (worst)",
+    infoRows: [
+      { k: "Focal", v: "≥ 50% normal" },
+      { k: "Crescentic", v: "≥ 50% crescents" },
+      { k: "Mixed", v: "< 50% each" },
+      { k: "Sclerotic", v: "≥ 50% sclerotic" }
+    ],
+    panel1Title: "🟣 Why Other Classes Don't Fit",
+    panel1Tagline: "Excluding each category",
+    panel1List: [
+      "<strong>Focal class:</strong> Requires ≥ 50% normal glomeruli — this patient has only 2/20 = 10% normal",
+      "<strong>Crescentic class:</strong> Requires ≥ 50% cellular crescents — this patient has only 4/20 = 20%",
+      "<strong>Mixed class:</strong> Requires < 50% normal AND < 50% crescents AND < 50% sclerotic — here sclerosis is 60%",
+      "<strong>Sclerotic class:</strong> Requires ≥ 50% globally sclerotic — this patient has 12/20 = 60%",
+      "<strong>Answer:</strong> Sclerotic class"
+    ],
+    panel2Title: "🟣 Renal Survival by Class",
+    panel2Tagline: "Prognosis ranking",
+    panel2List: [
+      "<strong>Focal class:</strong> 1-year renal survival ~90% — best prognosis",
+      "<strong>Crescentic class:</strong> 1-year renal survival ~80% — intermediate",
+      "<strong>Mixed class:</strong> 1-year renal survival ~70% — variable",
+      "<strong>Sclerotic class:</strong> 1-year renal survival ~50% — worst prognosis",
+      "<strong>Clinical relevance:</strong> Class guides intensity of treatment and dialysis planning"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Board Pearl — Class Determines Prognosis",
+    alertText: "The Berden class predicts renal survival. Focal > Crescentic > Mixed > Sclerotic. This patient with 60% sclerosis falls into the <strong>Sclerotic class</strong> — worst prognosis, early dialysis planning recommended."
+  },
+  opt3: {
+    panelClass: "highlight-opt3",
+    infoTitle: "🔵 Berden Classification Table",
+    svgTitle: "Berden Classification — Complete Reference",
+    svgSubtitle: "Four classes, definitions, and prognosis",
+    infoRows: [
+      { k: "Focal", v: "≥ 50% normal · ~90% 1-yr" },
+      { k: "Crescentic", v: "≥ 50% crescents · ~80% 1-yr" },
+      { k: "Mixed", v: "< 50% each · ~70% 1-yr" },
+      { k: "Sclerotic", v: "≥ 50% sclerotic · ~50% 1-yr" },
+      { k: "This case", v: "60% sclerotic → Sclerotic" }
+    ],
+    panel1Title: "🔵 How to Apply the Berden Classification",
+    panel1Tagline: "Step-by-step",
+    panel1List: [
+      "<strong>Step 1:</strong> Count total glomeruli sampled on biopsy",
+      "<strong>Step 2:</strong> Count normal glomeruli → % normal",
+      "<strong>Step 3:</strong> Count cellular crescents → % crescents",
+      "<strong>Step 4:</strong> Count globally sclerotic → % sclerotic",
+      "<strong>Step 5:</strong> Apply thresholds: ≥ 50% of any category determines class",
+      "<strong>This case:</strong> 60% sclerotic → Sclerotic class"
+    ],
+    panel2Title: "🔵 Key Thresholds",
+    panel2Tagline: "Memorize these",
+    panel2List: [
+      "<strong>Focal:</strong> ≥ 50% normal glomeruli",
+      "<strong>Crescentic:</strong> ≥ 50% cellular crescents",
+      "<strong>Mixed:</strong> No single category ≥ 50%",
+      "<strong>Sclerotic:</strong> ≥ 50% globally sclerotic",
+      "<strong>Priority order:</strong> If multiple thresholds met, class is determined by the dominant category"
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Board Pearl — Memorize the 50% Thresholds",
+    alertText: "The Berden classification uses <strong>≥ 50% thresholds</strong>: Focal = normal, Crescentic = crescents, Sclerotic = sclerotic. Mixed = none of the above. This patient is Sclerotic (60% sclerotic)."
+  },
+  opt4: {
+    panelClass: "highlight-opt4",
+    infoTitle: "🟡 Clinical Impact",
+    svgTitle: "Clinical Impact — Sclerotic Class",
+    svgSubtitle: "Worst prognosis, poorer treatment response, early dialysis planning",
+    infoRows: [
+      { k: "Prognosis", v: "Worst of 4 classes" },
+      { k: "1-yr renal survival", v: "~50%" },
+      { k: "Treatment response", v: "Poorer" },
+      { k: "Dialysis planning", v: "Early" },
+      { k: "Transplant", v: "Consider if progresses" }
+    ],
+    panel1Title: "🟡 Prognosis",
+    panel1Tagline: "Why sclerotic class is worst",
+    panel1List: [
+      "<strong>1-year renal survival:</strong> ~50% (vs ~90% focal)",
+      "<strong>5-year ESRD risk:</strong> Very high",
+      "<strong>Reason:</strong> Sclerotic glomeruli are irreversibly scarred",
+      "<strong>Immunosuppression:</strong> Can halt further damage but cannot recover sclerotic glomeruli",
+      "<strong>Dialysis planning:</strong> Discuss early — access placement and modality selection"
+    ],
+    panel2Title: "🟡 Management",
+    panel2Tagline: "What to do",
+    panel2List: [
+      "<strong>Induction:</strong> Rituximab OR cyclophosphamide + high-dose glucocorticoids",
+      "<strong>Plasma exchange:</strong> Consider if severe (pulmonary hemorrhage, dialysis-dependent)",
+      "<strong>Maintenance:</strong> Rituximab or azathioprine + low-dose steroids",
+      "<strong>Dialysis:</strong> Plan vascular access early",
+      "<strong>Transplant:</strong> Consider evaluation once in remission",
+      "<strong>Monitoring:</strong> ANCA titers, creatinine, urinalysis"
+    ],
+    alertIcon: "🟡",
+    alertTitle: "Board Pearl — Sclerotic Class Needs Early Planning",
+    alertText: "Sclerotic class has the <strong>worst renal prognosis</strong> (1-yr survival ~50%). Even with immunosuppression, recovery is limited. <strong>Early dialysis planning</strong> and transplant evaluation should be part of the care plan."
+  }
+};
+
+function setMode(mode) {
+  var d = MODES[mode];
+  if (!d) return;
+
+  for (var i = 0; i < TABS.length; i++) {
+    var t = document.getElementById("tab" + TABS[i]);
+    if (t) t.classList.remove("active");
+  }
+  var at = document.getElementById("tab" + mode);
+  if (at) at.classList.add("active");
+
+  for (var j = 0; j < TABS.length; j++) {
+    var dg = document.getElementById("diagram-" + TABS[j]);
+    if (dg) dg.style.display = "none";
+  }
+  var target = document.getElementById("diagram-" + mode);
+  if (target) target.style.display = "block";
+
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass +
+    (panel.classList.contains("collapsed") ? " collapsed" : "") +
+    (panel.classList.contains("dragging") ? " dragging" : "");
+
+  document.getElementById("infoTitle").innerHTML =
+    '<span class="grip" aria-hidden="true"><span></span><span></span><span></span></span>' +
+    d.infoTitle;
+
+  var html = "";
+  for (var m = 0; m < d.infoRows.length; m++) {
+    var r = d.infoRows[m];
+    html += '<div class="row"><span class="k">' + r.k +
+            '</span><span class="v">' + r.v + '</span></div>';
+  }
+  document.getElementById("infoBody").innerHTML = html;
+
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  document.getElementById("panel1-list").innerHTML =
+    d.panel1List.map(function(li){ return "<li>" + li + "</li>"; }).join("");
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  document.getElementById("panel2-list").innerHTML =
+    d.panel2List.map(function(li){ return "<li>" + li + "</li>"; }).join("");
+
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById("infoPanel");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  document.getElementById("toggleBtn").textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+
+(function () {
+  "use strict";
+  var panel = document.getElementById("infoPanel");
+  var handle = document.getElementById("infoHeader");
+  var stage = document.getElementById("stage");
+  var resetBtn = document.getElementById("resetPos");
+  var isDragging = false, dragOffsetX = 0, dragOffsetY = 0;
+  var DEFAULT_TOP = 80, DEFAULT_RIGHT = 20;
+
+  function getPointer(e) {
+    if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+  }
+
+  function onDown(e) {
+    if (e.target.closest(".toggle-btn")) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    isDragging = true;
+    var rect = panel.getBoundingClientRect();
+    var stageRect = stage.getBoundingClientRect();
+    var pointer = getPointer(e);
+    dragOffsetX = pointer.x - rect.left;
+    dragOffsetY = pointer.y - rect.top;
+    panel.style.right = "auto";
+    panel.style.left = (rect.left - stageRect.left + stage.scrollLeft) + "px";
+    panel.style.top  = (rect.top  - stageRect.top  + stage.scrollTop)  + "px";
+    panel.classList.add("dragging");
+    resetBtn.classList.add("visible");
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!isDragging) return;
+    var pointer = getPointer(e);
+    var stageRect = stage.getBoundingClientRect();
+    var newLeft = pointer.x - dragOffsetX - stageRect.left + stage.scrollLeft;
+    var newTop  = pointer.y - dragOffsetY - stageRect.top  + stage.scrollTop;
+    var maxLeft = stage.clientWidth  - panel.offsetWidth  - 8;
+    var maxTop  = stage.clientHeight - panel.offsetHeight - 8;
+    if (newLeft < 8) newLeft = 8;
+    if (newTop  < 8) newTop  = 8;
+    if (newLeft > maxLeft) newLeft = maxLeft;
+    if (newTop  > maxTop)  newTop  = maxTop;
+    panel.style.left = newLeft + "px";
+    panel.style.top  = newTop  + "px";
+    e.preventDefault();
+  }
+
+  function onUp() {
+    if (!isDragging) return;
+    isDragging = false;
+    panel.classList.remove("dragging");
+  }
+
+  handle.addEventListener("mousedown", onDown);
+  handle.addEventListener("touchstart", onDown, { passive: false });
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("touchmove", onMove, { passive: false });
+  document.addEventListener("mouseup", onUp);
+  document.addEventListener("touchend", onUp);
+
+  window.resetPanelPosition = function () {
+    panel.style.left = "auto";
+    panel.style.top = DEFAULT_TOP + "px";
+    panel.style.right = DEFAULT_RIGHT + "px";
+    resetBtn.classList.remove("visible");
+  };
+})();
+
+var QUIZ = [
+  {
+    question: "Which Berden class best describes this biopsy?",
+    options: [
+      { text: "A. Focal class", correct: false, explanation: "Focal class requires ≥ 50% <strong>normal</strong> glomeruli. This patient has only 2/20 = 10% normal." },
+      { text: "B. Crescentic class", correct: false, explanation: "Crescentic class requires ≥ 50% <strong>cellular crescents</strong>. This patient has only 4/20 = 20%." },
+      { text: "C. Mixed class", correct: false, explanation: "Mixed class requires < 50% normal AND < 50% crescents AND < 50% sclerotic. Here sclerosis is 60% — exceeds 50%." },
+      { text: "D. Sclerotic class", correct: true, explanation: "Sclerotic class = <strong>≥ 50% globally sclerotic</strong> glomeruli. This patient has 12/20 = <strong>60%</strong> globally sclerotic → Sclerotic class." },
+      { text: "E. Membranoproliferative class", correct: false, explanation: "Membranoproliferative GN is not part of the Berden classification for ANCA-associated GN." }
+    ]
+  },
+  {
+    question: "What percentage of glomeruli are globally sclerotic in this patient?",
+    options: [
+      { text: "A. 10%", correct: false, explanation: "10% corresponds to the normal glomeruli (2/20). The sclerotic fraction is 12/20." },
+      { text: "B. 20%", correct: false, explanation: "20% corresponds to the cellular crescents (4/20). The sclerotic fraction is 12/20." },
+      { text: "C. 60%", correct: true, explanation: "12 of 20 glomeruli are globally sclerotic = <strong>60%</strong>." }
+    ]
+  },
+  {
+    question: "Why is the Sclerotic class significant?",
+    options: [
+      { text: "A. It has the best prognosis of the four classes", correct: false, explanation: "Focal class has the best prognosis (~90% 1-year renal survival). Sclerotic class has the worst (~50%)." },
+      { text: "B. It has the worst renal prognosis and lowest response to immunosuppression", correct: true, explanation: "Sclerotic class has the <strong>worst renal survival (~50% at 1 year)</strong> because sclerotic glomeruli are irreversibly scarred." },
+      { text: "C. It never requires dialysis", correct: false, explanation: "Sclerotic class has the <strong>highest</strong> risk of progression to ESRD. Early dialysis planning is recommended." }
+    ]
+  },
+  {
+    question: "What ANCA specificity is most commonly associated with the Sclerotic class?",
+    options: [
+      { text: "A. PR3-ANCA (c-ANCA)", correct: false, explanation: "PR3-ANCA is more commonly associated with focal or crescentic classes." },
+      { text: "B. MPO-ANCA (p-ANCA)", correct: true, explanation: "Sclerotic class is more commonly associated with <strong>MPO-ANCA</strong> — consistent with this patient's strongly positive MPO-ANCA." },
+      { text: "C. Anti-GBM antibodies", correct: false, explanation: "Anti-GBM is a separate disease (Goodpasture) and was negative in this patient." }
+    ]
+  },
+  {
+    question: "How many normal glomeruli are required for the Focal class?",
+    options: [
+      { text: "A. ≥ 25%", correct: false, explanation: "The threshold is 50%, not 25%." },
+      { text: "B. ≥ 50%", correct: true, explanation: "Focal class = <strong>≥ 50% normal glomeruli</strong>. This patient has only 10% normal — excluded." },
+      { text: "C. ≥ 75%", correct: false, explanation: "The threshold is 50%, not 75%." }
+    ]
+  },
+  {
+    question: "Which class of Berden classification has the best renal prognosis?",
+    options: [
+      { text: "A. Focal class", correct: true, explanation: "Focal class has the best prognosis — 1-year renal survival ~90%, because ≥ 50% of glomeruli are normal." },
+      { text: "B. Crescentic class", correct: false, explanation: "Crescentic class has intermediate prognosis (~80% 1-year renal survival)." },
+      { text: "C. Sclerotic class", correct: false, explanation: "Sclerotic class has the worst prognosis (~50% 1-year renal survival)." }
+    ]
+  },
+  {
+    question: "Which condition must be excluded when a patient presents with rapidly progressive GN and a positive ANCA?",
+    options: [
+      { text: "A. Anti-GBM disease", correct: true, explanation: "Anti-GBM disease can coexist with ANCA (double-positive disease) and causes rapidly progressive GN. This patient's anti-GBM was negative." },
+      { text: "B. Membranous nephropathy", correct: false, explanation: "Membranous nephropathy typically presents with nephrotic syndrome, not rapidly progressive GN." },
+      { text: "C. Minimal change disease", correct: false, explanation: "Minimal change disease presents with nephrotic syndrome, not crescentic GN." }
+    ]
+  },
+  {
+    question: "Which immunosuppressive regimen is first-line for ANCA-associated vasculitis?",
+    options: [
+      { text: "A. Rituximab OR cyclophosphamide + high-dose glucocorticoids", correct: true, explanation: "Rituximab and cyclophosphamide are both first-line for induction of remission in ANCA-associated vasculitis. High-dose glucocorticoids are added." },
+      { text: "B. Methotrexate + low-dose prednisone", correct: false, explanation: "Methotrexate is used for maintenance in mild disease, not for induction of severe crescentic GN." },
+      { text: "C. Azathioprine alone", correct: false, explanation: "Azathioprine is used for maintenance, not induction of remission." }
+    ]
+  }
+];
+
+function buildQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  var grid = document.getElementById("quizGrid");
+  var html = "";
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="q" data-q="' + i + '">';
+    html += '<p>' + (i + 1) + '. ' + q.question + '</p>';
+    html += '<div class="opts">';
+    for (var j = 0; j < q.options.length; j++) {
+      var o = q.options[j];
+      html += '<button class="opt" data-q="' + i + '" data-o="' + j + '">' + o.text + '</button>';
+    }
+    html += '</div>';
+    html += '<div class="explain"></div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+  var buttons = grid.querySelectorAll(".opt");
+  for (var k = 0; k < buttons.length; k++) {
+    buttons[k].addEventListener("click", handleAnswer);
+  }
+}
+
+function handleAnswer(e) {
+  var btn = e.currentTarget;
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-o"), 10);
+  var q = QUIZ[qi];
+  var opt = q.options[oi];
+  var box = btn.closest(".q");
+  var allOpts = box.querySelectorAll(".opt");
+  for (var i = 0; i < allOpts.length; i++) {
+    allOpts[i].classList.remove("correct", "wrong");
+  }
+  btn.classList.add(opt.correct ? "correct" : "wrong");
+  var explain = box.querySelector(".explain");
+  if (opt.correct) {
+    explain.className = "explain show correct-explain";
+    explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+  } else {
+    explain.className = "explain show wrong-explain";
+    explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildQuiz();
+  setMode("opt1");
+});
+</script>
+</body>
+</html>

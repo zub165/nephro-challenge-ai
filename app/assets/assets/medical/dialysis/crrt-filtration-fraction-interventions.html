@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRRT — Filtration Fraction & Interventions</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9; --a1:#dc2626; --a2:#7c3aed; --a3:#0891b2; --a4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px;}
+  
+  /* Header */
+  header.top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  h1{margin:0; font-size:1.4rem; font-weight:800;}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:6px 12px; border-radius:99px; font-weight:700;}
+  
+  /* Case Strip */
+  .case-strip{background:#fff; border-radius:12px; padding:16px; border-left:5px solid var(--a1); box-shadow:0 1px 3px rgba(0,0,0,.05); margin-bottom:14px;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .chip{background:#f1f5f9; padding:4px 8px; border-radius:6px; font-size:.75rem; font-weight:700; border:1px solid var(--line);}
+  .chip.abn{background:#fef2f2; color:#991b1b; border-color:#fecaca;}
+  
+  /* Tabs */
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 16px; border-radius:8px; font-size:.85rem; font-weight:700; cursor:pointer; color:var(--muted); transition:all .2s;}
+  .tab.active{background:#f0fdf4; border-color:#16a34a; color:#166534;}
+  
+  /* Stage */
+  .stage{background:#fff; border-radius:12px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.05); display:grid; grid-template-columns:1fr 320px; gap:16px; align-items:start;}
+  @media(max-width:1000px){ .stage{grid-template-columns:1fr;} }
+  .diagram-col{min-width:0; display:flex; justify-content:center; align-items:center; padding:10px;}
+  
+  /* Info Panel */
+  .info-float{background:#fff; border-radius:10px; border:1px solid var(--line); box-shadow:0 4px 12px rgba(0,0,0,.08);}
+  .info-header{display:flex; justify-content:space-between; padding:12px; background:#fef2f2; cursor:pointer; border-radius:10px 10px 0 0;}
+  .info-header h4{margin:0; font-size:.85rem;}
+  .info-body{padding:12px; max-height:500px; overflow:hidden; transition:max-height .3s;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 12px;}
+  .row{display:flex; justify-content:space-between; padding:8px 0; font-size:.8rem; border-bottom:1px solid var(--line);}
+  .row:last-child{border:0;}
+  .k{color:var(--muted); font-weight:600;}
+  .v{font-weight:800; text-align:right;}
+
+  /* Panels */
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:768px){ .panels{grid-template-columns:1fr;} }
+  .panel{background:#fff; border-radius:12px; padding:16px; border-top:4px solid var(--a1); box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .panel h3{margin:0 0 4px; font-size:1rem;}
+  .panel .tagline{font-size:.8rem; color:var(--muted); margin:0 0 10px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.6;}
+
+  /* Alert */
+  .alert{background:var(--a1); color:#fff; border-radius:12px; padding:16px; margin-top:14px; display:flex; gap:12px; align-items:center;}
+  .alert .icon{font-size:2rem;}
+  .alert h3{margin:0 0 4px; font-size:1rem;}
+  .alert p{margin:0; font-size:.85rem;}
+
+  /* Quiz */
+  .quiz{background:#fff; border-radius:12px; padding:20px; margin-top:14px; box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .quiz h3{margin:0 0 14px; font-size:1rem;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:768px){ .quiz-grid{grid-template-columns:1fr;} }
+  .q{background:#f8fafc; padding:14px; border-radius:8px; border:1px solid var(--line);}
+  .q p{margin:0 0 10px; font-weight:700; font-size:.85rem;}
+  .opts{display:flex; flex-direction:column; gap:6px;}
+  .opt{background:#fff; border:1px solid var(--line); padding:8px 12px; border-radius:6px; font-size:.8rem; cursor:pointer; text-align:left;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; margin-top:8px; padding:8px; font-size:.78rem; border-left:3px solid #cbd5e1; background:#fff;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-color:#16a34a;}
+  .explain.wrong-explain{border-color:#ef4444;}
+
+  /* Footer */
+  .footer{margin-top:16px; padding:16px; background:#0f172a; border-radius:12px; color:#94a3b8; text-align:center; font-size:.8rem;}
+  .footer-gift{font-size:1rem; font-weight:800; color:#fbbf24; margin-bottom:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>CRRT — Filtration Fraction & Interventions</h1>
+    <div class="badge">CRITICAL CARE NEPHROLOGY</div>
+  </header>
+
+  <div class="case-strip">
+    <h2>Clinical Scenario: Recurrent Clotting</h2>
+    <p>A 70-year-old on CVVH with postfilter replacement clotted the circuit at 6 hours. He has no anticoagulation.</p>
+    <div class="labs">
+      <span class="chip">Qb: 150 mL/min</span>
+      <span class="chip">Hct: 30%</span>
+      <span class="chip">Postfilter RF: 2,500 mL/h</span>
+      <span class="chip">Net UF: 200 mL/h</span>
+      <span class="chip abn">FF = ?</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('opt1')">🔴 The Calculation</button>
+    <button class="tab" onclick="setMode('opt2')">🟣 The Math Error</button>
+    <button class="tab" onclick="setMode('opt3')">🔵 Fixing High FF</button>
+    <button class="tab" onclick="setMode('opt4')">🟡 Modality Differences</button>
+  </div>
+
+  <section class="stage">
+    <div class="diagram-col" id="diagram-col"></div>
+    <aside class="info-col">
+      <div class="info-float" id="infoPanel">
+        <div class="info-header" onclick="togglePanel(event)">
+          <h4 id="infoTitle"></h4>
+          <span id="toggleBtn" style="font-size:.75rem; font-weight:700; color:var(--muted);">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <div class="panels">
+    <div class="panel one"><h3 id="p1t"></h3><p class="tagline" id="p1tag"></p><ul id="p1list"></ul></div>
+    <div class="panel two"><h3 id="p2t"></h3><p class="tagline" id="p2tag"></p><ul id="p2list"></ul></div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div><h3 id="alertTitle"></h3><p id="alertText"></p></div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by Dr. Malik</div>
+    <div>Teaching Animation Template · Critical Care Nephrology</div>
+  </footer>
+</div>
+
+<script>
+const CONFIG = {
+  opt1: {
+    title: "🔴 The Calculation",
+    panel1Title: "🧮 Step-by-Step Math",
+    panel1Tagline: "Converting to standard units",
+    panel1List: [
+      "<strong>Step 1:</strong> Qb = 150 mL/min × 60 = 9,000 mL/h.",
+      "<strong>Step 2:</strong> Q_plasma = 9,000 × (1 - 0.30) = 6,300 mL/h.",
+      "<strong>Step 3:</strong> Q_UF = 2,500 (RF) + 200 (Net) = 2,700 mL/h.",
+      "<strong>Step 4:</strong> FF = 2,700 / 6,300 = 0.428."
+    ],
+    panel2Title: "⚠️ Interpretation",
+    panel2Tagline: "High FF = Clotting",
+    panel2List: [
+      "The calculated FF is <strong>43%</strong>.",
+      "Target FF for CRRT is <strong>&lt; 25%</strong>.",
+      "At 43%, the blood becomes severely hemoconcentrated within the filter.",
+      "Proteins and cells pack together, promoting protein deposition and clot formation."
+    ],
+    alertIcon: "🩸",
+    alertTitle: "The Math is Clear",
+    alertText: "FF = 43%. This is dangerously high and explains the recurrent circuit clotting.",
+    infoRows: [
+      {k:"Qb", v:"9000 mL/h"},
+      {k:"Q_plasma", v:"6300 mL/h"},
+      {k:"Q_UF", v:"2700 mL/h"},
+      {k:"Calculated FF", v:"43%"}
+    ]
+  },
+  opt2: {
+    title: "🟣 The Math Error in the Exam",
+    panel1Title: "🔍 Why Option C is 29%",
+    panel1Tagline: "Reverse-engineering the error",
+    panel1List: [
+      "If you divide Q_UF (2700) by total blood flow (9000), you get <strong>30%</strong>.",
+      "If you use a slightly different hematocrit, you might get <strong>29%</strong>.",
+      "<strong>The exam authors forgot to account for the hematocrit</strong> in their calculation.",
+      "Option C gives a mathematically wrong FF (29%), but the intervention is correct."
+    ],
+    panel2Title: "💡 How to Answer",
+    panel2Tagline: "Test-taking strategy",
+    panel2List: [
+      "<strong>Option B</strong> has the correct math (43%) but a lethal intervention (decreasing Qb <em>increases</em> FF).",
+      "<strong>Option C</strong> has the wrong math (29%) but the correct intervention (increase Qb or switch to predilution).",
+      "In flawed questions, pick the option with the <strong>safest clinical action</strong>.",
+      "The intended answer is <strong>C</strong>."
+    ],
+    alertIcon: "📝",
+    alertTitle: "Acknowledge the flaw",
+    alertText: "The math is 43%. Option C's 29% is an error by the question writer, but it's the only option that suggests the correct clinical fix.",
+    infoRows: [
+      {k:"Actual FF", v:"43%"},
+      {k:"Option C FF", v:"29% (incorrect)"},
+      {k:"Option C Fix", v:"Increase Qb/Predilution (Correct)"},
+      {k:"Intended Answer", v:"C"}
+    ]
+  },
+  opt3: {
+    title: "🔵 Fixing High FF",
+    panel1Title: "🛠️ Correct Interventions",
+    panel1Tagline: "Lowering hemoconcentration",
+    panel1List: [
+      "<strong>Increase Qb:</strong> More plasma flow through the filter dilutes the fraction (lower FF).",
+      "<strong>Switch to Predilution:</strong> Add replacement fluid <em>before</em> the filter to dilute the blood before ultrafiltration occurs.",
+      "<strong>Reduce Postfilter RF:</strong> Decrease the convective clearance rate.",
+      "<strong>Switch Modality:</strong> Use CVVHD or CVVHDF to shift clearance to diffusion (dialysate), lowering FF."
+    ],
+    panel2Title: "🚫 What NOT to do",
+    panel2Tagline: "Dangerous interventions",
+    panel2List: [
+      "<strong>Do NOT decrease Qb:</strong> This lowers the denominator, increasing FF and worsening clotting.",
+      "<strong>Do NOT increase postfilter RF:</strong> This increases the numerator (Q_UF), increasing FF and worsening clotting.",
+      "<strong>Do NOT ignore it:</strong> At 43% FF, the filter is destined to fail."
+    ],
+    alertIcon: "🎯",
+    alertTitle: "The Fix",
+    alertText: "Increase blood flow or shift to predilution to reduce hemoconcentration.",
+    infoRows: [
+      {k:"Fix 1", v:"Increase Qb"},
+      {k:"Fix 2", v:"Shift to predilution"},
+      {k:"Fix 3", v:"Reduce postfilter RF"},
+      {k:"Avoid", v:"Decreasing Qb"}
+    ]
+  },
+  opt4: {
+    title: "🟡 Modality Differences",
+    panel1Title: "💧 CVVH vs CVVHD vs CVVHDF",
+    panel1Tagline: "How they handle fluid",
+    panel1List: [
+      "<strong>CVVH (Convection):</strong> High Q_UF (RF + net). Highest risk of high FF.",
+      "<strong>CVVHD (Diffusion):</strong> Effluent is dialysate + net. FF is only (net / Q_plasma) — very low.",
+      "<strong>CVVHDF (Both):</strong> Effluent is dialysate + RF + net. FF is (RF + net) / Q_plasma.",
+      "If CVVH causes high FF, switching to CVVHD or CVVHDF can maintain clearance while lowering FF."
+    ],
+    panel2Title: "📐 Effluent vs FF",
+    panel2Tagline: "They are not the same",
+    panel2List: [
+      "<strong>Effluent rate</strong> = total fluid leaving the filter (used for dosing, e.g., 25–35 mL/kg/h).",
+      "<strong>Filtration Fraction</strong> = only the portion of plasma water removed (causing hemoconcentration).",
+      "In CVVHD, the effluent rate is high, but the FF is low."
+    ],
+    alertIcon: "🔄",
+    alertTitle: "Modality Swap",
+    alertText: "If CVVH keeps clotting despite fixes, switch to CVVHD or CVVHDF.",
+    infoRows: [
+      {k:"CVVH", v:"High FF risk"},
+      {k:"CVVHD", v:"Low FF (dialysate)"},
+      {k:"CVVHDF", v:"Combination"}
+    ]
+  }
+};
+
+const SVG_1 = `
+<svg viewBox="0 0 800 400" style="width:100%; height:auto;">
+  <rect width="800" height="400" fill="#fdfdfd" rx="12"/>
+  <g transform="translate(100, 100)">
+    <rect x="-60" y="-30" width="120" height="60" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#155e75">Qb</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#0e7490">150 mL/min</text>
+  </g>
+  <text x="180" y="95" font-family="Arial" font-weight="800" font-size="18" fill="#dc2626">×</text>
+  <g transform="translate(300, 100)">
+    <rect x="-60" y="-30" width="120" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#991b1b">(1 - Hct)</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">0.70</text>
+  </g>
+  <text x="380" y="95" font-family="Arial" font-weight="800" font-size="18" fill="#dc2626">=</text>
+  <g transform="translate(500, 100)">
+    <rect x="-80" y="-30" width="160" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#166534">Q_plasma</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">6300 mL/h</text>
+  </g>
+
+  <g transform="translate(100, 250)">
+    <rect x="-80" y="-30" width="160" height="60" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#713f12">Q_UF</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#a16207">2700 mL/h</text>
+  </g>
+  <line x1="280" y1="250" x2="420" y2="250" stroke="#dc2626" stroke-width="4" marker-end="url(#arr4)"/>
+  <text x="350" y="240" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#991b1b">÷</text>
+  
+  <g transform="translate(550, 250)">
+    <rect x="-100" y="-40" width="200" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+    <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">FF</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#dc2626">43%</text>
+  </g>
+</svg>
+`;
+
+const SVG_2 = `
+<svg viewBox="0 0 800 400" style="width:100%; height:auto;">
+  <rect width="800" height="400" fill="#fdfdfd" rx="12"/>
+  <rect x="100" y="50" width="600" height="300" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+  <text x="400" y="90" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#991b1b">The Math Error in Option C</text>
+  
+  <text x="400" y="140" text-anchor="middle" font-family="Arial" font-weight="700" font-size="16" fill="#0f172a">Correct Calculation:</text>
+  <text x="400" y="170" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#166534">2700 / 6300 = 43%</text>
+  
+  <text x="400" y="220" text-anchor="middle" font-family="Arial" font-weight="700" font-size="16" fill="#0f172a">Incorrect Calculation (Exam Author):</text>
+  <text x="400" y="250" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#dc2626">2700 / 9000 ≈ 29%</text>
+  
+  <text x="400" y="300" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#991b1b">(They divided by total blood flow, ignoring Hematocrit)</text>
+</svg>
+`;
+
+const SVG_3 = `
+<svg viewBox="0 0 800 400" style="width:100%; height:auto;">
+  <rect width="800" height="400" fill="#fdfdfd" rx="12"/>
+  <g transform="translate(400, 80)">
+    <rect x="-120" y="-30" width="240" height="60" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#991b1b">High FF (43%)</text>
+    <line x1="0" y1="30" x2="0" y2="70" stroke="#dc2626" stroke-width="4"/>
+  </g>
+  <g transform="translate(400, 120)">
+    <rect x="-150" y="-20" width="300" height="40" rx="8" fill="#fff" stroke="#475569" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">Fix 1: Increase Qb</text>
+    <line x1="-70" y1="20" x2="-70" y2="60" stroke="#16a34a" stroke-width="3"/>
+    <line x1="70" y1="20" x2="70" y2="60" stroke="#16a34a" stroke-width="3"/>
+  </g>
+  <g transform="translate(400, 200)">
+    <rect x="-150" y="-20" width="300" height="40" rx="8" fill="#fff" stroke="#475569" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#0f172a">Fix 2: Shift to Predilution</text>
+    <line x1="-70" y1="20" x2="-70" y2="60" stroke="#16a34a" stroke-width="3"/>
+    <line x1="70" y1="20" x2="70" y2="60" stroke="#16a34a" stroke-width="3"/>
+  </g>
+  <g transform="translate(200, 300)">
+    <rect x="-120" y="-30" width="240" height="60" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#166534">Lower local FF</text>
+  </g>
+  <g transform="translate(600, 300)">
+    <rect x="-120" y="-30" width="240" height="60" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#166534">Extends filter life</text>
+  </g>
+</svg>
+`;
+
+const SVG_4 = `
+<svg viewBox="0 0 800 400" style="width:100%; height:auto;">
+  <rect width="800" height="400" fill="#fdfdfd" rx="12"/>
+  
+  <g transform="translate(200, 150)">
+    <rect x="-120" y="-60" width="240" height="120" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">CVVH</text>
+    <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">Effluent = RF + Net</text>
+    <text x="0" y="25" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#dc2626">High FF</text>
+  </g>
+
+  <g transform="translate(600, 150)">
+    <rect x="-120" y="-60" width="240" height="120" rx="10" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+    <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#155e75">CVVHD</text>
+    <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="12" fill="#0e7490">Effluent = Dialysate + Net</text>
+    <text x="0" y="25" text-anchor="middle" font-family="Arial" font-weight="800" font-size="14" fill="#16a34a">Low FF</text>
+  </g>
+
+  <g transform="translate(400, 300)">
+    <rect x="-150" y="-40" width="300" height="80" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+    <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#5b21b6">CVVHDF</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#6d28d9">Effluent = RF + Dialysate + Net</text>
+    <text x="0" y="35" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#dc2626">Moderate FF</text>
+  </g>
+</svg>
+`;
+
+const QUIZ = [
+  { question: "Calculate FF: Qb 150 mL/min, Hct 30%, Postfilter RF 2500 mL/h, Net UF 200 mL/h.", options: [ { text: "≈ 43%", correct: true, explanation: "Qb = 9000 mL/h. Q_plasma = 6300. Q_UF = 2700. 2700 / 6300 = 43%." }, { text: "≈ 29%", correct: false, explanation: "This is a common miscalculation if you divide by total blood flow (9000) instead of plasma flow (6300)." }, { text: "≈ 15%", correct: false, explanation: "This is incorrect." } ] },
+  { question: "Why does a high FF cause circuit clotting?", options: [ { text: "It causes severe hemoconcentration and protein deposition in the filter.", correct: true, explanation: "As plasma water is removed, proteins and cells pack together, promoting clot formation." }, { text: "It increases the transmembrane pressure.", correct: false, explanation: "While TMP can rise, the primary driver of clotting is hemoconcentration." }, { text: "It lowers the pH of the blood.", correct: false, explanation: "FF does not directly change pH." } ] },
+  { question: "Which intervention LOWERS the filtration fraction?", options: [ { text: "Increasing blood flow (Qb)", correct: true, explanation: "Increasing Qb increases Q_plasma (the denominator), lowering FF." }, { text: "Increasing postfilter replacement fluid", correct: false, explanation: "This increases Q_UF (the numerator) and raises FF." }, { text: "Decreasing blood flow (Qb)", correct: false, explanation: "This decreases Q_plasma, raising FF." } ] },
+  { question: "Shifting replacement fluid from postfilter to predilution:", options: [ { text: "Dilutes the blood before the filter, lowering local FF.", correct: true, explanation: "Predilution reduces hematocrit within the filter, lowering FF and extending circuit life." }, { text: "Increases FF.", correct: false, explanation: "Predilution lowers FF." }, { text: "Has no effect on FF.", correct: false, explanation: "It lowers FF." } ] },
+  { question: "Which modality has the lowest filtration fraction?", options: [ { text: "CVVHD", correct: true, explanation: "In CVVHD, only Net UF is removed from the plasma (Dialysate does not count towards FF)." }, { text: "CVVH", correct: false, explanation: "CVVH has the highest FF because all clearance is convective." }, { text: "CVVHDF", correct: false, explanation: "CVVHDF has a moderate FF because it combines convection and diffusion." } ] },
+  { question: "In CVVHDF, how is the Filtration Fraction calculated?", options: [ { text: "(Replacement Fluid + Net UF) / Q_plasma", correct: true, explanation: "Only the convective portion (replacement + net UF) contributes to FF. Dialysate is excluded." }, { text: "(Dialysate + Replacement + Net) / Q_plasma", correct: false, explanation: "Dialysate does not contribute to FF." }, { text: "(Dialysate + Net) / Q_plasma", correct: false, explanation: "This is for CVVHD." } ] },
+  { question: "What is the target Filtration Fraction in CRRT?", options: [ { text: "< 25%", correct: true, explanation: "Keeping FF below 25% minimizes hemoconcentration and clotting risk." }, { text: "> 50%", correct: false, explanation: "This would cause immediate clotting." }, { text: "Exactly 30%", correct: false, explanation: "30% is above the target threshold." } ] },
+  { question: "A patient on CVVH has a FF of 38% and keeps clotting. The best initial maneuver is:", options: [ { text: "Increase blood flow and shift some fluid to predilution.", correct: true, explanation: "This lowers the FF by increasing plasma flow and diluting the blood before the filter." }, { text: "Decrease blood flow to reduce shear stress.", correct: false, explanation: "Decreasing Qb increases FF and worsens clotting." }, { text: "Increase postfilter replacement to flush the filter.", correct: false, explanation: "Increasing postfilter RF increases FF." } ] }
+];
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = QUIZ.map(function(q){
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+function setMode(mode) {
+  const d = CONFIG[mode];
+  if (!d) return;
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const idx = ['opt1','opt2','opt3','opt4'].indexOf(mode);
+  if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+
+  const col = document.getElementById('diagram-col');
+  if (mode === 'opt1') col.innerHTML = SVG_1;
+  else if (mode === 'opt2') col.innerHTML = SVG_2;
+  else if (mode === 'opt3') col.innerHTML = SVG_3;
+  else if (mode === 'opt4') col.innerHTML = SVG_4;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + (panelCollapsed ? 'collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(r => `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`).join('');
+
+  document.getElementById('p1t').textContent = d.panel1Title;
+  document.getElementById('p1tag').textContent = d.panel1Tagline;
+  document.getElementById('p1list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('p2t').textContent = d.panel2Title;
+  document.getElementById('p2tag').textContent = d.panel2Tagline;
+  document.getElementById('p2list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function buildQuiz() {
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map((q, qi) => {
+    return `
+      <div class="q" data-qi="${qi}">
+        <p>${qi + 1}. ${q.question}</p>
+        <div class="opts">
+          ${q.options.map((o, oi) => `<button class="opt" data-qi="${qi}" data-oi="${oi}">${o.text}</button>`).join('')}
+        </div>
+        <div class="explain"></div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('quizGrid').addEventListener('click', function(e) {
+    const btn = e.target.closest('.opt');
+    if (!btn) return;
+    const qi = parseInt(btn.dataset.qi, 10);
+    const oi = parseInt(btn.dataset.oi, 10);
+    const q = RUNTIME_QUIZ[qi];
+    const o = q.options[oi];
+    const box = btn.closest('.q');
+
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct', 'wrong'));
+    btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+    const explain = box.querySelector('.explain');
+    explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+    explain.innerHTML = `<strong style="color:${o.correct ? '#166534' : '#991b1b'}">${o.correct ? '✔ Correct.' : '✘ Not quite.'}</strong> ${o.explanation}`;
+  });
+}
+
+buildQuiz();
+setMode('opt1');
+</script>
+</body>
+</html>

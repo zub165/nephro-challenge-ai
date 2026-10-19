@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peritoneal Dialysis Volume Overload — Why Diuretics Fail</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 170)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">PD PATIENT WITH VOLUME OVERLOAD</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">ESRD on PD for 2 months · Moderate pitting edema · BP 152/91</text>
+            <text x="0" y="50" text-anchor="middle" font-size="16" fill="#991b1b">What is the LEAST effective intervention for volume control?</text>
+          </g>
+
+          <g transform="translate(250, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">PATIENT HISTORY</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="28" font-weight="800" fill="#dc2626">ESRD</text>
+            <line x1="-160" y1="10" x2="160" y2="10" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="45" text-anchor="middle" font-size="15" fill="#7f1d1d">Diabetic nephropathy</text>
+            <text x="0" y="70" text-anchor="middle" font-size="15" fill="#7f1d1d">On dialysis > 3 years</text>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#7f1d1d">Almost certainly anuric</text>
+            <text x="0" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">No residual kidney function</text>
+          </g>
+
+          <g transform="translate(700, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">CLINICAL PICTURE</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="32" font-weight="800" fill="#dc2626">Volume ↑</text>
+            <line x1="-160" y1="10" x2="160" y2="10" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="45" text-anchor="middle" font-size="15" fill="#7f1d1d">BP 152/91 mmHg</text>
+            <text x="0" y="70" text-anchor="middle" font-size="15" fill="#7f1d1d">Moderate LE pitting edema</text>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#7f1d1d">New to PD (2 months)</text>
+            <text x="0" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Needs UF optimization</text>
+          </g>
+
+          <g transform="translate(1150, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">THE ANSWER</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">Loop Diuretics</text>
+            <line x1="-160" y1="10" x2="160" y2="10" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="45" text-anchor="middle" font-size="15" fill="#15803d">Require functioning nephrons</text>
+            <text x="0" y="70" text-anchor="middle" font-size="15" fill="#15803d">Anuric patient → no effect</text>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#15803d">Do not act on peritoneum</text>
+            <text x="0" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">LEAST effective choice</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 LOOP DIURETICS NEED FUNCTIONING NEPHRONS</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">They are secreted into the tubular lumen to block NKCC2 in the loop of Henle</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">No residual kidney function = no diuretic effect</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">In ESRD, volume control relies on dialysis, not diuretics</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — WHY DIURETICS FAIL
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">WHY LOOP DIURETICS FAIL IN ESRD</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Mechanism of action requires functioning proximal tubules and the loop of Henle</text>
+          </g>
+
+          <g transform="translate(350, 450)">
+            <rect x="-290" y="-200" width="580" height="400" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-200" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-145" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">NORMAL KIDNEY</text>
+
+            <g font-size="15">
+              <text x="-260" y="-90" font-weight="800" fill="#166534">① Secretion</text>
+              <text x="-260" y="-60" font-weight="700" fill="#15803d">Diuretic is secreted into the</text>
+              <text x="-260" y="-30" font-weight="700" fill="#15803d">proximal tubular lumen</text>
+              
+              <text x="-260" y="20" font-weight="800" fill="#166534">② Action</text>
+              <text x="-260" y="50" font-weight="700" fill="#15803d">Blocks NKCC2 in the TAL</text>
+              <text x="-260" y="80" font-weight="700" fill="#15803d">→ massive natriuresis</text>
+              
+              <text x="-260" y="130" font-weight="800" fill="#166534">Result</text>
+              <text x="-260" y="160" font-weight="700" fill="#15803d">Fluid removed</text>
+            </g>
+          </g>
+
+          <g transform="translate(1050, 450)">
+            <rect x="-290" y="-200" width="580" height="400" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-200" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-145" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">ESRD (ANURIC)</text>
+
+            <g font-size="15">
+              <text x="-260" y="-90" font-weight="800" fill="#991b1b">① Secretion</text>
+              <text x="-260" y="-60" font-weight="700" fill="#7f1d1d">No functioning proximal</text>
+              <text x="-260" y="-30" font-weight="700" fill="#7f1d1d">tubules to secrete the drug</text>
+              
+              <text x="-260" y="20" font-weight="800" fill="#991b1b">② Action</text>
+              <text x="-260" y="50" font-weight="700" fill="#7f1d1d">No loop of Henle to</text>
+              <text x="-260" y="80" font-weight="700" fill="#7f1d1d">respond to the drug</text>
+              
+              <text x="-260" y="130" font-weight="800" fill="#991b1b">Result</text>
+              <text x="-260" y="160" font-weight="700" fill="#991b1b">NO diuresis</text>
+            </g>
+          </g>
+
+          <g transform="translate(700, 760)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 DIURETICS DO NOT CROSS THE PERITONEAL MEMBRANE</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">They cannot remove fluid from the peritoneal cavity</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">Volume control in PD relies on osmotic/oncotic gradients</text>
+          </g>
+
+          <g transform="translate(700, 920)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">In ESRD, diuretics are ineffective; use PD strategies instead</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — EFFECTIVE PD STRATEGIES
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">EFFECTIVE STRATEGIES FOR PD VOLUME OVERLOAD</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Optimize dwell times, osmotic agents, and intake</text>
+          </g>
+
+          <!-- Restriction -->
+          <g transform="translate(250, 420)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#0891b2"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">① DIETARY RESTRICTION</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">Na⁺ + H₂O</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="15" fill="#0e7490">Limit sodium and fluid intake</text>
+            <text x="0" y="55" text-anchor="middle" font-size="15" fill="#0e7490">Foundational therapy</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">Always first-line</text>
+          </g>
+
+          <!-- Midday drain -->
+          <g transform="translate(700, 420)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">② MIDDAY DRAIN</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">Dry day</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="15" fill="#15803d">Leave abdomen empty during day</text>
+            <text x="0" y="55" text-anchor="middle" font-size="15" fill="#15803d">Prevents fluid reabsorption</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Effective if clearance is adequate</text>
+          </g>
+
+          <!-- Icodextrin -->
+          <g transform="translate(1150, 420)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">③ ICODEXTRIN</text>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">Colloid osmotic</text>
+            <line x1="-170" y1="-10" x2="170" y2="-10" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="25" text-anchor="middle" font-size="15" fill="#6d28d9">Glucose polymer</text>
+            <text x="0" y="55" text-anchor="middle" font-size="15" fill="#6d28d9">Used for the long dwell</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Sustains UF for 8–16 h</text>
+          </g>
+
+          <!-- Avoid low glucose -->
+          <g transform="translate(350, 720)">
+            <rect x="-290" y="-90" width="580" height="180" rx="20" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <rect x="-290" y="-90" width="580" height="50" rx="20" fill="#ca8a04"/>
+            <rect x="-290" y="-65" width="580" height="25" fill="#ca8a04"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">④ AVOID LOW-GLUCOSE LONG DWELLS</text>
+            <text x="0" y="-15" text-anchor="middle" font-size="15" fill="#713f12">Low-glucose solutions lose their osmotic gradient quickly</text>
+            <text x="0" y="15" text-anchor="middle" font-size="15" font-weight="700" fill="#713f12">→ Fluid is reabsorbed from the peritoneum back into the patient</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" font-weight="800" fill="#713f12">Avoid this pattern!</text>
+          </g>
+
+          <g transform="translate(1050, 720)">
+            <rect x="-290" y="-90" width="580" height="180" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-90" width="580" height="50" rx="20" fill="#dc2626"/>
+            <rect x="-290" y="-65" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">⑤ LOOP DIURETICS (LEAST EFFECTIVE)</text>
+            <text x="0" y="-15" text-anchor="middle" font-size="15" fill="#7f1d1d">Require functioning nephrons to be secreted and to act</text>
+            <text x="0" y="15" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">Anuric ESRD → no effect</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">Do NOT use for PD volume control</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 170)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER: C — LOOP DIURETICS</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#15803d">Least effective for volume overload in an anuric ESRD patient on PD</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Loop diuretics are least effective</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">No residual kidney function → diuretics cannot work</text>
+          </g>
+
+          <g transform="translate(700, 480)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Restriction of sodium and water intake</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">This is foundational and highly effective</text>
+          </g>
+
+          <g transform="translate(700, 610)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Use of midday drain</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Effective at preventing fluid reabsorption during the day</text>
+          </g>
+
+          <g transform="translate(700, 740)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D & E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Icodextrin and avoiding low-glucose long dwells</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Both are highly effective strategies to improve net UF</text>
+          </g>
+
+          <g transform="translate(700, 900)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#0f172a"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">In ESRD, volume control relies on PD optimization and restriction — not diuretics</text>
+            <text x="0" y="18" text-anchor="middle" font-size="15" fill="#cbd5e1">Diuretics require functioning nephrons to work</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Peritoneal Dialysis Volume Overload — Why Diuretics Fail",
+  subtitle: "In anuric ESRD, loop diuretics cannot work — PD optimization is key",
+  badge: "NEPHROLOGY · PERITONEAL DIALYSIS · VOLUME MANAGEMENT",
+  caseTitle: "Case: 58-year-old man with ESRD on PD presenting with volume overload",
+  caseDescription: "ESRD from diabetic nephropathy. On PD for 2 months after AV fistula failure (previously on dialysis for >3 years). BP 152/91, unremarkable cardiovascular exam, moderate lower extremity pitting edema. Which intervention would be least effective for treating volume overload?",
+  labChips: [
+    { text: "ESRD on PD", abnormal: true },
+    { text: "BP 152/91 mmHg", abnormal: true },
+    { text: "Moderate pitting edema", abnormal: true },
+    { text: "Anuric (no residual function)", abnormal: true },
+    { text: "Dialysis > 3 years", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Why Diuretics Fail", className: "opt2" },
+    { id: "opt3", label: "🔵 Effective Strategies", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 PD Volume Overload — The Case",
+      infoRows: [
+        { k: "Patient", v: "58M, ESRD, on PD 2 months" },
+        { k: "History", v: "Dialysis >3 years (previously AVF)" },
+        { k: "Status", v: "Almost certainly anuric" },
+        { k: "BP", v: "152/91 mmHg" },
+        { k: "Exam", v: "Moderate LE pitting edema" }
+      ],
+      svgTitle: "PD Patient with Volume Overload",
+      svgSubtitle: "ESRD on PD for 2 months · Moderate pitting edema · BP 152/91",
+      bannerBg: "#dc2626",
+      bannerText1: "In ESRD, volume control relies on dialysis, not diuretics",
+      bannerText2: "Loop diuretics need functioning nephrons to work",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the findings tell you",
+      panel1List: [
+        "<strong>ESRD from diabetic nephropathy</strong> — likely anuric after >3 years of dialysis",
+        "<strong>On PD for 2 months</strong> — new to PD, still adjusting therapy",
+        "<strong>BP 152/91 and pitting edema</strong> — volume overloaded",
+        "<strong>Unremarkable cardiovascular exam</strong> — not heart failure as the primary cause",
+        "<strong>Question:</strong> which intervention is <strong>least</strong> effective for volume overload?"
+      ],
+      panel2Title: "🧬 Why loop diuretics fail in ESRD",
+      panel2Tagline: "The mechanism",
+      panel2List: [
+        "<strong>Loop diuretics must be secreted</strong> into the tubular lumen by proximal tubule cells",
+        "They then block <strong>NKCC2</strong> in the thick ascending limb of the loop of Henle",
+        "In ESRD, there are <strong>no functioning nephrons</strong> to secrete the drug or respond to it",
+        "Diuretics <strong>do not act on the peritoneal membrane</strong> — they cannot remove fluid from the peritoneum",
+        "Result: <strong>no diuresis, no fluid removal</strong>"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Board Pearl — Diuretics need functioning kidneys",
+      alertText: "In any patient with ESRD and minimal residual function, <strong>loop diuretics are ineffective</strong> for volume overload. The treatment is <strong>dialysis optimization</strong> and <strong>dietary restriction</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Why Diuretics Fail in ESRD",
+      infoRows: [
+        { k: "Site of action", v: "NKCC2 in the TAL" },
+        { k: "Requirement", v: "Functioning proximal tubules" },
+        { k: "Requirement", v: "Functioning loop of Henle" },
+        { k: "In ESRD", v: "Anuria = no effect" },
+        { k: "Peritoneum", v: "Diuretics do not act here" }
+      ],
+      svgTitle: "Why Loop Diuretics Fail in ESRD",
+      svgSubtitle: "Mechanism of action requires functioning proximal tubules and the loop of Henle",
+      bannerBg: "#7c3aed",
+      bannerText1: "In ESRD, diuretics are ineffective; use PD strategies instead",
+      bannerText2: "Volume control relies on osmotic/oncotic gradients across the peritoneal membrane",
+      panel1Title: "🔬 Mechanism of action",
+      panel1Tagline: "Why normal kidneys respond",
+      panel1List: [
+        "<strong>Step 1:</strong> Loop diuretic is filtered and secreted by proximal tubule cells into the tubular lumen",
+        "<strong>Step 2:</strong> It travels to the thick ascending limb and blocks <strong>NKCC2</strong>",
+        "<strong>Step 3:</strong> Sodium, potassium, and chloride are not reabsorbed",
+        "<strong>Step 4:</strong> Massive natriuresis and diuresis",
+        "This entire cascade requires <strong>functioning nephrons</strong>"
+      ],
+      panel2Title: "🔬 Why ESRD breaks this cascade",
+      panel2Tagline: "No nephrons, no effect",
+      panel2List: [
+        "<strong>No proximal tubules</strong> to secrete the drug into the lumen",
+        "<strong>No loop of Henle</strong> to respond to the drug",
+        "<strong>No fluid in the tubular system</strong> to carry the drug to its target",
+        "Diuretics <strong>do not cross the peritoneal membrane</strong> — they cannot act on the peritoneal cavity",
+        "Result: <strong>no diuresis, no fluid removal</strong>"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Diuretics do not work on the peritoneum",
+      alertText: "In PD, volume removal relies on <strong>osmotic (glucose) or oncotic (icodextrin) gradients</strong> across the peritoneal membrane. Diuretics have no role in PD volume control unless the patient has significant residual kidney function."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Effective Strategies for PD Volume Overload",
+      infoRows: [
+        { k: "Restriction", v: "Na⁺ + H₂O" },
+        { k: "Midday drain", v: "Prevents daytime reabsorption" },
+        { k: "Icodextrin", v: "Colloid osmotic agent" },
+        { k: "Avoid", v: "Low-glucose long dwells" },
+        { k: "Loop diuretics", v: "Least effective" }
+      ],
+      svgTitle: "Effective Strategies for PD Volume Overload",
+      svgSubtitle: "Optimize dwell times, osmotic agents, and intake",
+      bannerBg: "#0891b2",
+      bannerText1: "Restriction, midday drain, icodextrin, and avoiding low-glucose long dwells are effective",
+      bannerText2: "Loop diuretics are the least effective choice",
+      panel1Title: "✅ Effective strategies",
+      panel1Tagline: "How to manage volume overload in PD",
+      panel1List: [
+        "<strong>① Dietary restriction</strong> of sodium and water — foundational",
+        "<strong>② Midday drain (dry day)</strong> — leaves abdomen empty during the day to prevent fluid reabsorption",
+        "<strong>③ Icodextrin</strong> — a colloid osmotic agent used for the long overnight dwell; maintains UF for 8–16 hours",
+        "<strong>④ Avoid low-glucose long dwells</strong> — these lose their osmotic gradient and cause fluid reabsorption"
+      ],
+      panel2Title: "❌ Why loop diuretics are the wrong choice",
+      panel2Tagline: "The least effective option",
+      panel2List: [
+        "No residual kidney function → <strong>no drug effect</strong>",
+        "Diuretics <strong>do not act on the peritoneal membrane</strong>",
+        "The only route for fluid removal is <strong>dialysis</strong> — not diuretics",
+        "If a PD patient is volume overloaded, the solution is <strong>prescription optimization</strong>, not furosemide",
+        "Reserve loop diuretics for patients with <strong>significant residual renal function</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Pearl — Optimize the PD prescription",
+      alertText: "When a PD patient is volume overloaded, evaluate: <strong>transport status</strong> (high transporters absorb fluid), <strong>dwell times</strong>, <strong>glucose/icodextrin use</strong>, and <strong>dietary adherence</strong>. Diuretics are not the answer."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "C — Loop diuretics" },
+        { k: "Why", v: "No functioning nephrons" },
+        { k: "Effective", v: "Restriction, midday drain, icodextrin" },
+        { k: "Avoid", v: "Low-glucose long dwells" },
+        { k: "Key concept", v: "PD requires PD optimization" }
+      ],
+      svgTitle: "Answer Summary — Loop Diuretics Are Least Effective",
+      svgSubtitle: "In anuric ESRD, diuretics cannot work — optimize the PD prescription",
+      bannerBg: "#ca8a04",
+      bannerText1: "C — Use of high-dose loop diuretics is the least effective intervention",
+      bannerText2: "Effective: restriction, midday drain, icodextrin, avoiding low-glucose long dwells",
+      panel1Title: "✅ The correct answer (C)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>Loop diuretics</strong> require functioning nephrons to secrete the drug and respond to it",
+        "In ESRD (anuric), there are <strong>no functioning nephrons</strong>",
+        "Diuretics <strong>do not act on the peritoneal membrane</strong>",
+        "Volume overload in PD is treated by <strong>optimizing the dialysis prescription</strong> and <strong>dietary restriction</strong>",
+        "Therefore, loop diuretics are the <strong>least effective</strong> choice"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each is effective in its own way",
+      panel2List: [
+        "<strong>A (Restriction):</strong> Foundational and effective",
+        "<strong>B (Midday drain):</strong> Prevents daytime fluid reabsorption — effective",
+        "<strong>D (Icodextrin):</strong> Colloid osmotic agent — highly effective for the long dwell",
+        "<strong>E (Avoid low-glucose long dwells):</strong> Prevents fluid reabsorption — effective",
+        "<strong>C is the only option that does not work in this patient</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "<strong>Use of high-dose loop diuretics</strong> is the least effective intervention for volume overload in an anuric ESRD patient on PD. Diuretics require functioning nephrons. The correct approach is <strong>PD prescription optimization</strong> and <strong>dietary restriction</strong>."
+    }
+  },
+  comparison: {
+    title: "📊 PD Volume Management — Effective vs Ineffective",
+    sub: "Why loop diuretics fail and other strategies work",
+    head: ["Intervention", "Mechanism", "Effective?", "Why"],
+    rows: [
+      { cells: ["Sodium and water restriction", "Reduces intake", "YES", "Foundational — reduces the volume to be removed"], hero: false },
+      { cells: ["Midday drain (dry day)", "Prevents daytime fluid reabsorption", "YES", "Leaves abdomen empty — avoids net fluid reabsorption"], hero: false },
+      { cells: ["Icodextrin", "Colloid osmotic agent", "YES", "Maintains UF for 8–16 hours in the long dwell"], hero: false },
+      { cells: ["Avoid low-glucose long dwells", "Prevents fluid reabsorption", "YES", "Low-glucose solutions lose their osmotic gradient and cause fluid reabsorption"], hero: false },
+      { cells: ["High-dose loop diuretics", "Blocks NKCC2 in the loop of Henle", "NO", "Requires functioning nephrons — anuric ESRD has none"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 58-year-old man with ESRD on PD for 2 months presents with volume overload (BP 152/91, pitting edema). He has been on dialysis for >3 years and is anuric. Which intervention is least effective?",
+      options: [
+        { text: "Use of high-dose loop diuretics.", correct: true,
+          explanation: "Loop diuretics require functioning nephrons to be secreted and to act. In an anuric ESRD patient, they have no effect. They do not act on the peritoneal membrane." },
+        { text: "Use of icodextrin.", correct: false,
+          explanation: "Icodextrin is a colloid osmotic agent used for the long dwell — highly effective for PD volume control." },
+        { text: "Restriction of sodium and water intake.", correct: false,
+          explanation: "Dietary restriction is foundational and effective for volume control in any patient." }
+      ]
+    },
+    {
+      question: "Why do loop diuretics fail in ESRD?",
+      options: [
+        { text: "They require functioning nephrons to be secreted into the tubular lumen and to block NKCC2 in the loop of Henle.", correct: true,
+          explanation: "Loop diuretics must be secreted by proximal tubule cells and travel to the thick ascending limb to block NKCC2. In ESRD, there are no functioning nephrons to do this." },
+        { text: "They are not absorbed orally in ESRD.", correct: false,
+          explanation: "The issue is not absorption — it is the lack of functioning nephrons to respond to the drug." },
+        { text: "They are dialyzable and removed by PD.", correct: false,
+          explanation: "Loop diuretics are not significantly removed by PD. The issue is their mechanism of action." }
+      ]
+    },
+    {
+      question: "What is icodextrin and why is it used in PD?",
+      options: [
+        { text: "A colloid osmotic agent that maintains ultrafiltration for 8–16 hours during the long dwell.", correct: true,
+          explanation: "Icodextrin is a glucose polymer that acts as a colloid osmotic agent. It is absorbed slowly, maintaining UF for 8–16 hours — ideal for the long overnight dwell." },
+        { text: "A loop diuretic that acts on the peritoneal membrane.", correct: false,
+          explanation: "Icodextrin is not a diuretic — it is an osmotic agent." },
+        { text: "An antibiotic used to prevent peritonitis.", correct: false,
+          explanation: "Icodextrin has no antibiotic activity." }
+      ]
+    },
+    {
+      question: "What is a 'midday drain' or 'dry day' in PD?",
+      options: [
+        { text: "Leaving the abdomen empty during the daytime to prevent fluid reabsorption.", correct: true,
+          explanation: "A midday drain (dry day) means draining the abdomen and leaving it empty during the day. This prevents the continuous fluid reabsorption that occurs during long daytime dwells and improves net UF." },
+        { text: "A drain placed in the abdomen for continuous fluid removal.", correct: false,
+          explanation: "A midday drain is simply an empty abdomen — not a surgical drain." },
+        { text: "A day off from dialysis.", correct: false,
+          explanation: "A dry day is not a day off — it is a specific PD prescription strategy." }
+      ]
+    },
+    {
+      question: "Why do long dwells with low-glucose solutions worsen volume overload?",
+      options: [
+        { text: "They lose their osmotic gradient quickly, allowing fluid to be reabsorbed from the peritoneum back into the patient.", correct: true,
+          explanation: "Low-glucose solutions lose their osmotic gradient over time. Once the gradient dissipates, the peritoneal capillaries reabsorb fluid from the dialysate — worsening volume overload." },
+        { text: "They cause hyperkalemia.", correct: false,
+          explanation: "Hyperkalemia is not the issue with low-glucose solutions." },
+        { text: "They increase peritoneal membrane permeability.", correct: false,
+          explanation: "The issue is loss of the osmotic gradient, not membrane permeability." }
+      ]
+    },
+    {
+      question: "In a PD patient with volume overload and high peritoneal transport status, which strategy is most appropriate?",
+      options: [
+        { text: "Use icodextrin for the long dwell and shorten glucose-based dwells.", correct: true,
+          explanation: "High transporters rapidly absorb glucose, losing the osmotic gradient. Icodextrin provides sustained UF, and shortening glucose dwells maximizes the gradient before it dissipates." },
+        { text: "Increase the glucose concentration indefinitely.", correct: false,
+          explanation: "Higher glucose is absorbed even faster and can worsen metabolic complications." },
+        { text: "Add a loop diuretic.", correct: false,
+          explanation: "Loop diuretics do not work in anuric patients and do not act on the peritoneum." }
+      ]
+    },
+    {
+      question: "When would loop diuretics be effective in a PD patient?",
+      options: [
+        { text: "Only if the patient has significant residual kidney function.", correct: true,
+          explanation: "Loop diuretics require functioning nephrons. They may be effective if the PD patient has significant residual renal function (e.g., >200 mL/day urine output)." },
+        { text: "Always — PD does not affect diuretic efficacy.", correct: false,
+          explanation: "Diuretics require functioning nephrons and do not act on the peritoneum." },
+        { text: "Never — diuretics are contraindicated in PD.", correct: false,
+          explanation: "They are not contraindicated, but they are ineffective in anuric patients. They can be used if there is residual function." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Peritoneal Dialysis / Volume Management",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

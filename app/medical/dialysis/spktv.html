@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daugirdas Second-Generation spKt/V — Hemodialysis Adequacy</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; border-left:4px solid var(--opt1);}
+  .stat-card:nth-child(1){border-left-color:#dc2626;}
+  .stat-card:nth-child(2){border-left-color:#7c3aed;}
+  .stat-card:nth-child(3){border-left-color:#0891b2;}
+  .stat-card:nth-child(4){border-left-color:#16a34a;}
+  .stat-card .k{font-size:.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat-card .v{font-size:1rem; font-weight:800; color:var(--ink);}
+  .stat-card .sub{font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:290px;
+    max-width:calc(100% - 40px); transition:all .3s ease;
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--opt1);}
+  .info-float.highlight-opt2{border-color:var(--opt2);}
+  .info-float.highlight-opt3{border-color:var(--opt3);}
+  .info-float.highlight-opt4{border-color:var(--opt4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800; color:#0f172a;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  /* Calculation table */
+  .calc-section{
+    background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .calc-section h3{
+    margin:0 0 6px; font-size:1.1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .calc-section .subtitle{
+    font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+
+  .calc-table{
+    width:100%; border-collapse:collapse; font-size:.88rem;
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .calc-table thead th{
+    background:#0f172a; color:#fff; padding:13px 14px;
+    text-align:left; font-weight:800; font-size:.78rem;
+    text-transform:uppercase; letter-spacing:.06em;
+    border-right:1px solid rgba(255,255,255,.1);}
+  .calc-table thead th:last-child{border-right:none;}
+  .calc-table tbody td{
+    padding:13px 14px; border-bottom:1px solid var(--line);
+    border-right:1px solid var(--line); vertical-align:top;
+    font-size:.88rem; line-height:1.55;}
+  .calc-table tbody td:last-child{border-right:none;}
+  .calc-table tbody tr:last-child td{border-bottom:none;}
+  .calc-table tbody tr:nth-child(even){background:#f8fafc;}
+  .calc-table tbody tr:hover{background:#f1f5f9;}
+  .calc-table .param{font-weight:800; color:#0f172a; background:#f8fafc; white-space:nowrap;}
+  .calc-table .formula{font-family:"JetBrains Mono",monospace; font-size:.82rem; color:#334155;}
+  .calc-table .result{font-weight:800; font-size:1rem; color:#dc2626; margin-top:6px;}
+  .calc-table .result-good{color:#16a34a;}
+  .calc-table .highlight-row{background:#fef3c7 !important;}
+  .calc-table .highlight-row td{
+    border-top:2px solid #ca8a04; border-bottom:2px solid #ca8a04;}
+  @media(max-width:800px){
+    .calc-table{font-size:.78rem;}
+    .calc-table thead th,.calc-table tbody td{padding:10px 8px;}
+  }
+
+  /* Step-by-step calculation display */
+  .steps{display:grid; grid-template-columns:1fr; gap:12px; margin-top:16px;}
+  .step{
+    background:#f8fafc; border-radius:12px; padding:16px 20px;
+    border-left:4px solid var(--opt1);
+    display:grid; grid-template-columns:60px 1fr; gap:16px;
+    align-items:start;}
+  .step .num{
+    width:44px; height:44px; border-radius:50%;
+    background:var(--opt1); color:#fff;
+    font-size:1.1rem; font-weight:800;
+    display:grid; place-items:center;}
+  .step .content h4{margin:0 0 6px; font-size:.95rem; font-weight:800; color:var(--ink);}
+  .step .content .formula{
+    font-family:"JetBrains Mono",monospace;
+    font-size:.9rem; color:#334155; margin:6px 0;
+    padding:8px 12px; background:#fff; border-radius:6px;
+    border:1px solid var(--line);
+    overflow-x:auto; white-space:nowrap;}
+  .step .content .result{
+    font-weight:800; font-size:1rem; color:#dc2626; margin-top:6px;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    display:flex; gap:16px; align-items:flex-start;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0; line-height:1;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Daugirdas Second-Generation spKt/V — Hemodialysis Adequacy</h1>
+      <p>Step-by-step calculation of delivered dialysis dose in ESKD</p>
+    </div>
+    <div class="badge">Nephrology / Hemodialysis</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>68-year-old man with ESKD on thrice-weekly maintenance hemodialysis</h2>
+      <p>Calculate the delivered single-pool Kt/V using the Daugirdas second-generation formula.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">Pre-BUN 72 mg/dL</span>
+      <span class="lab-chip pos">Post-BUN 18 mg/dL</span>
+      <span class="lab-chip">Duration 240 min</span>
+      <span class="lab-chip">UF 3.0 L</span>
+      <span class="lab-chip">Weight 75 kg</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="k">Answer</div>
+      <div class="v">E. 1.65</div>
+      <div class="sub">Excellent dialysis adequacy</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">R ratio</div>
+      <div class="v">18 / 72 = 0.25</div>
+      <div class="sub">Post/pre BUN ratio</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Duration (t)</div>
+      <div class="v">240 min = 4 h</div>
+      <div class="sub">Convert to hours</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">Target spKt/V</div>
+      <div class="v">≥ 1.2</div>
+      <div class="sub">KDOQI minimum</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="820" fill="#fdfdfd"/>
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ DIAGRAM 1 — THE CALCULATION ============ -->
+      <g id="diagram-opt1">
+        <text x="600" y="100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">DAUGIRDAS SECOND-GENERATION spKt/V — STEP BY STEP</text>
+
+        <!-- Formula box -->
+        <g transform="translate(600, 170)">
+          <rect x="-500" y="-50" width="1000" height="100" rx="14" fill="#0f172a" stroke="#0f172a" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fef3c7">spKt/V = −ln(R − 0.008t) + (4 − 3.5R) × UF/W</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#fff">R = post-BUN / pre-BUN · t = hours · UF = liters · W = kg postdialysis</text>
+          <text x="0" y="38" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#60a5fa">ln = natural logarithm (base e)</text>
+        </g>
+
+        <!-- Given values -->
+        <g transform="translate(200, 290)">
+          <rect x="-160" y="-60" width="320" height="120" rx="12" fill="#fecaca" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">GIVEN</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Pre-BUN 72 · Post-BUN 18</text>
+          <text x="0" y="20" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Duration 240 min = 4 h</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">UF 3.0 L · Post weight 75 kg</text>
+        </g>
+
+        <text x="400" y="295" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#dc2626">→</text>
+
+        <!-- Step 1: R -->
+        <g transform="translate(600, 290)">
+          <rect x="-140" y="-60" width="280" height="120" rx="12" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">STEP 1 — R</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fef3c7">R = 18 / 72</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">R = 0.25</text>
+        </g>
+
+        <text x="800" y="295" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#dc2626">→</text>
+
+        <!-- Step 2: First term -->
+        <g transform="translate(1000, 290)">
+          <rect x="-140" y="-60" width="280" height="120" rx="12" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">STEP 2 — First term</text>
+          <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">−ln(0.25 − 0.032)</text>
+          <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">= −ln(0.218)</text>
+          <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fef3c7">≈ 1.523</text>
+        </g>
+
+        <!-- Step 3: Second term -->
+        <g transform="translate(350, 470)">
+          <rect x="-180" y="-70" width="360" height="140" rx="12" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">STEP 3 — Second term</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">(4 − 3.5 × 0.25) × (3.0 / 75)</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">= 3.125 × 0.04</text>
+          <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fef3c7">= 0.125</text>
+        </g>
+
+        <!-- Step 4: Total -->
+        <g transform="translate(850, 470)">
+          <rect x="-180" y="-70" width="360" height="140" rx="12" fill="#16a34a" stroke="#065f46" stroke-width="3"/>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">STEP 4 — Total spKt/V</text>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" fill="#dcfce7">1.523 + 0.125</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#fef3c7">= 1.648</text>
+          <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">≈ 1.65 ✓</text>
+        </g>
+
+        <!-- Result box -->
+        <g transform="translate(600, 670)">
+          <rect x="-500" y="-60" width="1000" height="120" rx="16" fill="#0f172a" stroke="#0f172a" stroke-width="3"/>
+          <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fef3c7">ANSWER: E. 1.65 — EXCELLENT DIALYSIS ADEQUACY</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="12" fill="#fff">spKt/V ≥ 1.2 = minimum adequate (KDOQI) · 1.65 = well above target</text>
+          <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#60a5fa">ln = natural logarithm = inverse of e^x</text>
+        </g>
+
+        <text x="600" y="790" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7f1d1d">Daugirdas formula accounts for urea generation and postdialysis rebound</text>
+      </g>
+
+      <!-- ============ DIAGRAM 2 — WHAT IS ln ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <text x="600" y="100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">WHAT IS "ln"? — NATURAL LOGARITHM (NOT "IN")</text>
+
+        <g transform="translate(300, 260)">
+          <rect x="-220" y="-110" width="440" height="220" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-75" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">ln = natural logarithm</text>
+          <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">Logarithm to the base e</text>
+          <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">where e ≈ 2.71828...</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7c3aed">ln(x) is the inverse of eˣ</text>
+          <text x="0" y="65" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">ln(eˣ) = x  ·  e^(ln x) = x</text>
+          <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#991b1b">Not "IN" — the lowercase "l" looks like "I" on slides</text>
+        </g>
+
+        <g transform="translate(900, 260)">
+          <rect x="-220" y="-110" width="440" height="220" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="0" y="-75" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">Key properties</text>
+          <text x="-190" y="-35" text-anchor="start" font-family="Arial" font-size="12" fill="#5b21b6">• ln(1) = 0</text>
+          <text x="-190" y="-10" text-anchor="start" font-family="Arial" font-size="12" fill="#5b21b6">• ln(e) = 1</text>
+          <text x="-190" y="15" text-anchor="start" font-family="Arial" font-size="12" fill="#5b21b6">• ln(0 &lt; x &lt; 1) = negative</text>
+          <text x="-190" y="40" text-anchor="start" font-family="Arial" font-size="12" fill="#5b21b6">• ln(x &gt; 1) = positive</text>
+          <text x="-190" y="70" text-anchor="start" font-family="Arial" font-size="12" font-weight="800" fill="#7c3aed">In Daugirdas formula, R − 0.008t &lt; 1</text>
+          <text x="-190" y="90" text-anchor="start" font-family="Arial" font-size="12" font-weight="800" fill="#7c3aed">→ ln gives negative → minus sign makes it positive</text>
+        </g>
+
+        <g transform="translate(600, 530)">
+          <rect x="-500" y="-95" width="1000" height="190" rx="16" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+          <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">WORKED EXAMPLE — ln(0.218)</text>
+
+          <text x="-460" y="-25" text-anchor="start" font-family="Arial" font-size="13" fill="#ede9fe">① Recall: ln(0.218) asks: "e raised to what power gives 0.218?"</text>
+          <text x="-460" y="0" text-anchor="start" font-family="Arial" font-size="13" fill="#ede9fe">② e^(-1.523) ≈ 0.218  (check: e^1.523 ≈ 4.585 → 1/4.585 ≈ 0.218)</text>
+          <text x="-460" y="25" text-anchor="start" font-family="Arial" font-size="13" fill="#ede9fe">③ So ln(0.218) ≈ −1.523</text>
+          <text x="-460" y="58" text-anchor="start" font-family="Arial" font-size="14" font-weight="800" fill="#fef3c7">→ −ln(0.218) ≈ +1.523 ✓</text>
+        </g>
+
+        <text x="600" y="740" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#5b21b6">On most calculators, the ln key is next to the log key</text>
+      </g>
+
+      <!-- ============ DIAGRAM 3 — CONCEPT OF Kt/V ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <text x="600" y="100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">CONCEPT OF Kt/V — WHAT DOES IT MEAN?</text>
+
+        <g transform="translate(300, 250)">
+          <rect x="-180" y="-110" width="360" height="220" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-75" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">Kt/V components</text>
+          <text x="-160" y="-40" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75"><tspan font-weight="800">K</tspan> = dialyzer clearance (mL/min)</text>
+          <text x="-160" y="-15" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75"><tspan font-weight="800">t</tspan> = dialysis time (min)</text>
+          <text x="-160" y="10" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75"><tspan font-weight="800">V</tspan> = urea distribution volume (mL)</text>
+          <text x="-160" y="45" text-anchor="start" font-family="Arial" font-size="12" fill="#155e75">Kt/V = dimensionless ratio</text>
+          <text x="-160" y="70" text-anchor="start" font-family="Arial" font-size="12" font-weight="800" fill="#0891b2">= fraction of V cleared per session</text>
+        </g>
+
+        <g transform="translate(900, 250)">
+          <rect x="-180" y="-110" width="360" height="220" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-75" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">Targets (KDOQI)</text>
+          <text x="-160" y="-40" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">• Minimum adequate: spKt/V ≥ 1.2</text>
+          <text x="-160" y="-15" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">• Target: spKt/V 1.2–1.4</text>
+          <text x="-160" y="10" text-anchor="start" font-family="Arial" font-size="13" fill="#155e75">• Excellent: spKt/V &gt; 1.4</text>
+          <text x="-160" y="45" text-anchor="start" font-family="Arial" font-size="12" fill="#155e75">• URR target: &gt; 65%</text>
+          <text x="-160" y="70" text-anchor="start" font-family="Arial" font-size="12" font-weight="800" fill="#0891b2">This patient: spKt/V 1.65 ✓</text>
+        </g>
+
+        <g transform="translate(600, 530)">
+          <rect x="-500" y="-95" width="1000" height="190" rx="16" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+          <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">WHY USE THE DAUGIRDAS FORMULA?</text>
+
+          <text x="-460" y="-30" text-anchor="start" font-family="Arial" font-size="13" fill="#cffafe">① Simple — uses only pre/post BUN, time, UF, and weight</text>
+          <text x="-460" y="-5" text-anchor="start" font-family="Arial" font-size="13" fill="#cffafe">② Second-generation — accounts for urea generation during dialysis</text>
+          <text x="-460" y="20" text-anchor="start" font-family="Arial" font-size="13" fill="#cffafe">③ Corrects for postdialysis rebound (the +0.008t term)</text>
+          <text x="-460" y="45" text-anchor="start" font-family="Arial" font-size="13" fill="#cffafe">④ Validated against direct dialysate quantification</text>
+          <text x="-460" y="73" text-anchor="start" font-family="Arial" font-size="14" font-weight="800" fill="#fef3c7">→ The standard for measuring HD adequacy in clinical practice</text>
+        </g>
+
+        <text x="600" y="740" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#155e75">Daugirdas JT. J Am Soc Nephrol. 1993;4(5):1205-13</text>
+      </g>
+
+      <!-- ============ DIAGRAM 4 — CLINICAL PEARLS ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <text x="600" y="100" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">CLINICAL PEARLS — HD ADEQUACY</text>
+
+        <g transform="translate(300, 240)">
+          <rect x="-220" y="-110" width="440" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">WHAT IMPROVES spKt/V?</text>
+          <text x="-190" y="-40" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↑ K — larger/more efficient dialyzer</text>
+          <text x="-190" y="-15" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↑ t — longer treatment time</text>
+          <text x="-190" y="10" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↑ Qb — higher blood flow rate</text>
+          <text x="-190" y="35" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↑ Qd — higher dialysate flow rate</text>
+          <text x="-190" y="60" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↓ V — smaller patient (less urea space)</text>
+          <text x="-190" y="88" text-anchor="start" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">↓ Access recirculation</text>
+        </g>
+
+        <g transform="translate(900, 240)">
+          <rect x="-220" y="-110" width="440" height="220" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#713f12">WHAT DECREASES spKt/V?</text>
+          <text x="-190" y="-40" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↓ Qb — access dysfunction, hypotension</text>
+          <text x="-190" y="-15" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↓ Qd — dialysate flow problems</text>
+          <text x="-190" y="10" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">↓ t — early termination, clotting</text>
+          <text x="-190" y="35" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">Clotted dialyzer — reduced surface area</text>
+          <text x="-190" y="60" text-anchor="start" font-family="Arial" font-size="12" fill="#713f12">Access recirculation</text>
+          <text x="-190" y="88" text-anchor="start" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">↑ V — larger patient</text>
+        </g>
+
+        <g transform="translate(600, 500)">
+          <rect x="-500" y="-95" width="1000" height="190" rx="16" fill="#ca8a04" stroke="#713f12" stroke-width="3"/>
+          <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">KEY TEACHING POINTS</text>
+
+          <text x="-460" y="-30" text-anchor="start" font-family="Arial" font-size="13" fill="#fef9c3">🔹 spKt/V ≥ 1.2 is the minimum adequate dose (KDOQI)</text>
+          <text x="-460" y="-5" text-anchor="start" font-family="Arial" font-size="13" fill="#fef9c3">🔹 Daugirdas second-generation formula is the clinical standard</text>
+          <text x="-460" y="20" text-anchor="start" font-family="Arial" font-size="13" fill="#fef9c3">🔹 ln in the formula is natural logarithm (base e), NOT "IN"</text>
+          <text x="-460" y="45" text-anchor="start" font-family="Arial" font-size="13" fill="#fef9c3">🔹 Higher spKt/V ≠ better outcomes above 1.4 — no added benefit</text>
+          <text x="-460" y="73" text-anchor="start" font-family="Arial" font-size="14" font-weight="800" fill="#fef3c7">→ Use spKt/V to monitor and optimize each patient's dialysis prescription</text>
+        </g>
+
+        <text x="600" y="720" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#713f12">Also consider URR (urea reduction ratio) as a complementary measure</text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <!-- STEP-BY-STEP CALCULATION -->
+  <section class="calc-section">
+    <h3>📊 Step-by-Step Calculation of spKt/V</h3>
+    <p class="subtitle">Full Daugirdas second-generation calculation with all intermediate values</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="content">
+          <h4>Calculate R (post/pre BUN ratio)</h4>
+          <div class="formula">R = Post-BUN / Pre-BUN = 18 / 72 = 0.25</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <div class="content">
+          <h4>Convert treatment duration to hours</h4>
+          <div class="formula">t = 240 min ÷ 60 = 4.0 hours</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <div class="content">
+          <h4>Calculate the first term: −ln(R − 0.008t)</h4>
+          <div class="formula">0.008 × t = 0.008 × 4.0 = 0.032</div>
+          <div class="formula">R − 0.008t = 0.25 − 0.032 = 0.218</div>
+          <div class="formula">ln(0.218) ≈ −1.523</div>
+          <div class="result">−ln(0.218) ≈ +1.523</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <div class="content">
+          <h4>Calculate the second term: (4 − 3.5R) × UF/W</h4>
+          <div class="formula">4 − 3.5(0.25) = 4 − 0.875 = 3.125</div>
+          <div class="formula">UF/W = 3.0 / 75 = 0.04</div>
+          <div class="result">3.125 × 0.04 = 0.125</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">5</div>
+        <div class="content">
+          <h4>Add both terms to get spKt/V</h4>
+          <div class="formula">spKt/V = 1.523 + 0.125 = 1.648</div>
+          <div class="result result-good" style="font-size:1.15rem;">spKt/V ≈ 1.65 ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary table -->
+    <div style="overflow-x:auto; margin-top:20px;">
+      <table class="calc-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+            <th>Reference</th>
+            <th>Interpretation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="param">Predialysis BUN</td>
+            <td>72 mg/dL</td>
+            <td>—</td>
+            <td>Given</td>
+          </tr>
+          <tr>
+            <td class="param">Postdialysis BUN</td>
+            <td>18 mg/dL</td>
+            <td>—</td>
+            <td>Given</td>
+          </tr>
+          <tr>
+            <td class="param">R ratio</td>
+            <td>0.25</td>
+            <td>0.30–0.40 target</td>
+            <td>Lower R = better clearance</td>
+          </tr>
+          <tr>
+            <td class="param">Duration (t)</td>
+            <td>4.0 hours</td>
+            <td>3–5 h typical</td>
+            <td>Standard HD session</td>
+          </tr>
+          <tr>
+            <td class="param">UF volume</td>
+            <td>3.0 L</td>
+            <td>1–4 L typical</td>
+            <td>Moderate fluid removal</td>
+          </tr>
+          <tr>
+            <td class="param">Post-dialysis weight</td>
+            <td>75 kg</td>
+            <td>—</td>
+            <td>Used for V estimation</td>
+          </tr>
+          <tr>
+            <td class="param">First term (logarithmic)</td>
+            <td>1.523</td>
+            <td>—</td>
+            <td>Reflects BUN reduction</td>
+          </tr>
+          <tr>
+            <td class="param">Second term (UF correction)</td>
+            <td>0.125</td>
+            <td>—</td>
+            <td>Adjusts for volume removed</td>
+          </tr>
+          <tr class="highlight-row">
+            <td class="param">spKt/V</td>
+            <td><strong>1.65</strong></td>
+            <td><strong>≥ 1.2 minimum</strong></td>
+            <td><strong>Excellent adequacy ✓</strong></td>
+          </tr>
+          <tr>
+            <td class="param">URR (urea reduction ratio)</td>
+            <td>(1 − 0.25) × 100 = 75%</td>
+            <td>&gt; 65% target</td>
+            <td>Excellent — consistent with spKt/V</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount">0</span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+var TABS = [
+  { id: "opt1", label: "🔴 Calculation ✓" },
+  { id: "opt2", label: "🟣 What is ln?" },
+  { id: "opt3", label: "🔵 Kt/V Concept" },
+  { id: "opt4", label: "🟡 Clinical Pearls" }
+];
+
+var MODES = {
+  opt1: {
+    panelClass: "highlight-opt1",
+    infoTitle: "🔴 spKt/V = 1.65",
+    infoRows: [
+      { k: "Answer", v: "E. 1.65" },
+      { k: "R ratio", v: "18 / 72 = 0.25" },
+      { k: "Duration (t)", v: "4.0 hours" },
+      { k: "UF/W", v: "3.0 / 75 = 0.04" },
+      { k: "First term", v: "−ln(0.218) ≈ 1.523" },
+      { k: "Second term", v: "3.125 × 0.04 = 0.125" },
+      { k: "spKt/V", v: "1.523 + 0.125 = 1.648 ≈ 1.65" }
+    ],
+    svgTitle: "Daugirdas Second-Generation spKt/V — Step by Step",
+    svgSubtitle: "spKt/V = −ln(R − 0.008t) + (4 − 3.5R) × UF/W · Result: 1.65",
+    panel1Title: "🔴 How to Calculate spKt/V",
+    panel1Tagline: "The Daugirdas formula",
+    panel1List: [
+      "<strong>Formula:</strong> spKt/V = −ln(R − 0.008t) + (4 − 3.5R) × UF/W",
+      "<strong>R = post-BUN/pre-BUN:</strong> 18/72 = 0.25",
+      "<strong>t = treatment duration in hours:</strong> 240 min = 4.0 h",
+      "<strong>First term:</strong> −ln(0.25 − 0.008×4) = −ln(0.218) ≈ 1.523",
+      "<strong>Second term:</strong> (4 − 3.5×0.25) × (3.0/75) = 3.125 × 0.04 = 0.125",
+      "<strong>Total:</strong> 1.523 + 0.125 = 1.648 ≈ <strong>1.65</strong>"
+    ],
+    panel2Title: "🔴 Interpretation",
+    panel2Tagline: "What does 1.65 mean?",
+    panel2List: [
+      "<strong>Minimum adequate (KDOQI):</strong> spKt/V ≥ 1.2",
+      "<strong>Target range:</strong> 1.2–1.4",
+      "<strong>Excellent adequacy:</strong> > 1.4",
+      "<strong>This patient (1.65):</strong> Excellent dialysis adequacy",
+      "<strong>URR:</strong> (1 − 0.25) × 100 = 75% — also excellent",
+      "<strong>Note:</strong> Higher spKt/V above 1.4 does not provide added benefit"
+    ],
+    alertIcon: "🔴",
+    alertTitle: "Board Pearl — Answer is E (1.65)",
+    alertText: "spKt/V = <strong>−ln(R − 0.008t) + (4 − 3.5R) × UF/W</strong>. With R = 0.25, t = 4 h, UF = 3 L, W = 75 kg: spKt/V = 1.523 + 0.125 = <strong>1.65</strong> — excellent dialysis adequacy (target ≥ 1.2)."
+  },
+  opt2: {
+    panelClass: "highlight-opt2",
+    infoTitle: "🟣 What is ln?",
+    infoRows: [
+      { k: "ln", v: "Natural logarithm" },
+      { k: "Base", v: "e ≈ 2.71828" },
+      { k: "ln(1)", v: "= 0" },
+      { k: "ln(e)", v: "= 1" },
+      { k: "Inverse of", v: "e^x" }
+    ],
+    svgTitle: "What is ln? — Natural Logarithm (Not 'IN')",
+    svgSubtitle: "ln = logarithm to base e ≈ 2.71828 · Inverse of e^x · Often misread as 'IN' on slides",
+    panel1Title: "🟣 Understanding ln",
+    panel1Tagline: "Natural logarithm",
+    panel1List: [
+      "<strong>ln = natural logarithm</strong> — logarithm to the base e",
+      "<strong>e ≈ 2.71828</strong> — Euler's number, the base of natural logarithms",
+      "<strong>ln(x)</strong> is the inverse of e^x: ln(e^x) = x and e^(ln x) = x",
+      "<strong>Key values:</strong> ln(1) = 0, ln(e) = 1, ln(0 < x < 1) is negative",
+      "<strong>Common slide confusion:</strong> Lowercase 'l' looks like capital 'I' — it's <em>ln</em>, not IN"
+    ],
+    panel2Title: "🟣 Worked Example",
+    panel2Tagline: "ln(0.218)",
+    panel2List: [
+      "<strong>Question:</strong> e to what power equals 0.218?",
+      "<strong>Answer:</strong> e^(-1.523) ≈ 0.218",
+      "<strong>Verification:</strong> e^1.523 ≈ 4.585, so 1/4.585 ≈ 0.218 ✓",
+      "<strong>So:</strong> ln(0.218) ≈ −1.523",
+      "<strong>In formula:</strong> −ln(0.218) = +1.523 (positive value contributes to spKt/V)"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Board Pearl — ln is NOT 'IN'",
+    alertText: "<strong>ln</strong> in the Daugirdas formula stands for <strong>natural logarithm</strong> — logarithm to the base e ≈ 2.71828. On slides, the lowercase 'l' is easily misread as a capital 'I'. On calculators, use the <strong>ln</strong> key."
+  },
+  opt3: {
+    panelClass: "highlight-opt3",
+    infoTitle: "🔵 Kt/V — Concept",
+    infoRows: [
+      { k: "K", v: "Dialyzer clearance (mL/min)" },
+      { k: "t", v: "Treatment time (min)" },
+      { k: "V", v: "Urea distribution volume (mL)" },
+      { k: "Kt/V", v: "Dimensionless clearance ratio" },
+      { k: "Target", v: "≥ 1.2 (KDOQI)" }
+    ],
+    svgTitle: "Concept of Kt/V — What Does It Mean?",
+    svgSubtitle: "Kt/V = fraction of urea distribution volume cleared per session · Target ≥ 1.2",
+    panel1Title: "🔵 Kt/V Components",
+    panel1Tagline: "Understanding the ratio",
+    panel1List: [
+      "<strong>K</strong> = dialyzer clearance of urea (mL/min) — depends on dialyzer, Qb, Qd",
+      "<strong>t</strong> = treatment time (min) — 240 min = 4 h in this case",
+      "<strong>V</strong> = urea distribution volume (mL) — roughly total body water",
+      "<strong>Kt/V</strong> = fraction of V cleared during one session",
+      "<strong>spKt/V</strong> = single-pool — assumes urea distributes evenly; simpler, standard formula"
+    ],
+    panel2Title: "🔵 Why Use This Formula?",
+    panel2Tagline: "Daugirdas advantages",
+    panel2List: [
+      "<strong>Simple:</strong> Uses only pre/post BUN, time, UF, and weight",
+      "<strong>Second-generation:</strong> Accounts for urea generation during dialysis",
+      "<strong>Corrects for postdialysis rebound:</strong> The 0.008t term adjusts for urea rebound",
+      "<strong>Validated:</strong> Against direct dialysate quantification (DDQ)",
+      "<strong>Standard of care:</strong> Used in clinical practice for HD adequacy monitoring"
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Board Pearl — Kt/V is the Standard Measure",
+    alertText: "<strong>spKt/V ≥ 1.2</strong> is the minimum adequate dialysis dose (KDOQI). Higher values (up to 1.4) indicate better clearance; beyond 1.4, no additional benefit is proven."
+  },
+  opt4: {
+    panelClass: "highlight-opt4",
+    infoTitle: "🟡 Clinical Pearls",
+    infoRows: [
+      { k: "Target", v: "spKt/V ≥ 1.2" },
+      { k: "URR target", v: "≥ 65%" },
+      { k: "↑ spKt/V", v: "↑ K, t, Qb, Qd" },
+      { k: "↓ spKt/V", v: "↓ Qb, access issues" },
+      { k: "Beyond 1.4", v: "No added benefit" }
+    ],
+    svgTitle: "Clinical Pearls — HD Adequacy",
+    svgSubtitle: "What improves or decreases spKt/V · Targets and practical considerations",
+    panel1Title: "🟡 What Improves spKt/V",
+    panel1Tagline: "Optimizing dialysis dose",
+    panel1List: [
+      "<strong>↑ K:</strong> Larger or more efficient dialyzer (higher KoA)",
+      "<strong>↑ t:</strong> Longer treatment time",
+      "<strong>↑ Qb:</strong> Higher blood flow rate (if access allows)",
+      "<strong>↑ Qd:</strong> Higher dialysate flow rate (typically 500–800 mL/min)",
+      "<strong>↓ Recirculation:</strong> Fix access issues (stenosis, poor needle placement)"
+    ],
+    panel2Title: "🟡 What Decreases spKt/V",
+    panel2Tagline: "Common causes of inadequate dialysis",
+    panel2List: [
+      "<strong>↓ Qb:</strong> Access dysfunction, intradialytic hypotension",
+      "<strong>↓ t:</strong> Early termination, clotting, patient request",
+      "<strong>↓ Qd:</strong> Dialysate flow problems, machine error",
+      "<strong>Clotted dialyzer:</strong> Reduced surface area for clearance",
+      "<strong>Access recirculation:</strong> Poor needle position, reversed lines",
+      "<strong>↑ V:</strong> Larger patient (larger urea distribution volume)"
+    ],
+    alertIcon: "🟡",
+    alertTitle: "Board Pearl — spKt/V ≥ 1.2 Minimum",
+    alertText: "The minimum adequate spKt/V is <strong>1.2</strong> (KDOQI). Target range is 1.2–1.4; above 1.4, no additional survival benefit is proven. Monitor regularly and adjust prescription when values fall below target."
+  }
+};
+
+var QUIZ = [
+  {
+    question: "What is the approximate delivered spKt/V for this patient?",
+    options: [
+      { text: "A. 0.95", correct: false, explanation: "This would be inadequate dialysis. Recalculate: spKt/V = 1.523 + 0.125 = 1.65." },
+      { text: "B. 1.15", correct: false, explanation: "This would be just below the minimum target of 1.2. Recalculate: spKt/V = 1.65." },
+      { text: "C. 1.30", correct: false, explanation: "This is within target but not the correct value. Recalculate: 1.523 + 0.125 = 1.65." },
+      { text: "D. 1.45", correct: false, explanation: "Closer, but not the correct value. spKt/V = 1.523 + 0.125 = 1.65." },
+      { text: "E. 1.65", correct: true, explanation: "spKt/V = −ln(R − 0.008t) + (4 − 3.5R) × UF/W = −ln(0.218) + 0.125 = 1.523 + 0.125 = <strong>1.648 ≈ 1.65</strong>." }
+    ]
+  },
+  {
+    question: "What is the value of R in this patient?",
+    options: [
+      { text: "A. 0.25", correct: true, explanation: "R = Post-BUN / Pre-BUN = 18 / 72 = <strong>0.25</strong>." },
+      { text: "B. 4.0", correct: false, explanation: "4.0 is the treatment duration in hours, not R. R = 18/72 = 0.25." },
+      { text: "C. 0.04", correct: false, explanation: "0.04 = UF/W = 3.0/75. This is part of the second term, not R." }
+    ]
+  },
+  {
+    question: "What does 'ln' stand for in the Daugirdas formula?",
+    options: [
+      { text: "A. 'In' — the inverse of the ratio", correct: false, explanation: "This is a common misreading. 'ln' stands for <strong>natural logarithm</strong> (base e), not 'IN'." },
+      { text: "B. Natural logarithm (base e)", correct: true, explanation: "<strong>ln</strong> = natural logarithm, logarithm to the base e ≈ 2.71828. On slides, the lowercase 'l' is easily misread as capital 'I'." },
+      { text: "C. Log base 10", correct: false, explanation: "Log base 10 is written as 'log' (or log₁₀), not 'ln'. ln is base e." }
+    ]
+  },
+  {
+    question: "What is the minimum adequate spKt/V target?",
+    options: [
+      { text: "A. 0.8", correct: false, explanation: "0.8 is well below the minimum adequate target. The KDOQI target is ≥ 1.2." },
+      { text: "B. 1.2", correct: true, explanation: "The minimum adequate single-pool Kt/V is <strong>1.2</strong> per KDOQI guidelines. Target range is 1.2–1.4." },
+      { text: "C. 2.0", correct: false, explanation: "2.0 is above target and not necessary. Higher spKt/V beyond 1.4 does not provide added survival benefit." }
+    ]
+  },
+  {
+    question: "If the patient's R were 0.30 instead of 0.25, what would happen to spKt/V?",
+    options: [
+      { text: "A. spKt/V would increase", correct: false, explanation: "Higher R means less BUN reduction → lower spKt/V. The −ln(R − 0.008t) term would be smaller." },
+      { text: "B. spKt/V would decrease", correct: true, explanation: "R = 0.30 means less urea clearance. The logarithmic term −ln(R − 0.008t) would be lower, decreasing spKt/V." },
+      { text: "C. spKt/V would be unchanged", correct: false, explanation: "R directly affects the first term of the formula. Higher R → lower spKt/V." }
+    ]
+  },
+  {
+    question: "Which of the following would INCREASE spKt/V?",
+    options: [
+      { text: "A. Shortening dialysis time", correct: false, explanation: "Shorter time reduces Kt/V. Time (t) is directly proportional to Kt/V." },
+      { text: "B. Increasing dialyzer clearance (K)", correct: true, explanation: "Higher K (better dialyzer, higher Qb/Qd) increases Kt/V. Any increase in K, t, or decrease in V improves spKt/V." },
+      { text: "C. Reducing blood flow rate (Qb)", correct: false, explanation: "Lower Qb reduces K, which lowers Kt/V." }
+    ]
+  },
+  {
+    question: "What is the URR (urea reduction ratio) for this patient?",
+    options: [
+      { text: "A. 25%", correct: false, explanation: "25% is R (post/pre BUN ratio), not URR. URR = (1 − R) × 100 = 75%." },
+      { text: "B. 65%", correct: false, explanation: "65% is the minimum target for URR. This patient's URR = (1 − 0.25) × 100 = 75%." },
+      { text: "C. 75%", correct: true, explanation: "URR = (1 − R) × 100 = (1 − 0.25) × 100 = <strong>75%</strong>. Well above the minimum target of 65%." }
+    ]
+  },
+  {
+    question: "What is the correct way to write the treatment duration in this calculation?",
+    options: [
+      { text: "A. 240 (minutes)", correct: false, explanation: "The formula requires <strong>hours</strong>, not minutes. 240 min must be converted to 4.0 hours." },
+      { text: "B. 4.0 (hours)", correct: true, explanation: "t in the Daugirdas formula must be in <strong>hours</strong>. 240 min ÷ 60 = 4.0 hours." },
+      { text: "C. Either works the same", correct: false, explanation: "No — the formula specifically requires hours. Using 240 instead of 4.0 would give a wildly incorrect result." }
+    ]
+  }
+];
+
+function buildTabs() {
+  var html = "";
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    html += '<button class="tab ' + t.id + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }
+  document.getElementById("tabs").innerHTML = html;
+}
+
+function buildQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  var grid = document.getElementById("quizGrid");
+  var html = "";
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="q" data-q="' + i + '">';
+    html += '<p>' + (i + 1) + '. ' + q.question + '</p>';
+    html += '<div class="opts">';
+    for (var j = 0; j < q.options.length; j++) {
+      var o = q.options[j];
+      html += '<button class="opt" data-q="' + i + '" data-o="' + j + '">' + o.text + '</button>';
+    }
+    html += '</div>';
+    html += '<div class="explain"></div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+  var buttons = grid.querySelectorAll(".opt");
+  for (var k = 0; k < buttons.length; k++) {
+    buttons[k].addEventListener("click", handleAnswer);
+  }
+}
+
+function handleAnswer(e) {
+  var btn = e.currentTarget;
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-o"), 10);
+  var q = QUIZ[qi];
+  var opt = q.options[oi];
+  var box = btn.closest(".q");
+  var allOpts = box.querySelectorAll(".opt");
+  for (var i = 0; i < allOpts.length; i++) {
+    allOpts[i].classList.remove("correct", "wrong");
+  }
+  btn.classList.add(opt.correct ? "correct" : "wrong");
+  var explain = box.querySelector(".explain");
+  if (opt.correct) {
+    explain.className = "explain show correct-explain";
+    explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+  } else {
+    explain.className = "explain show wrong-explain";
+    explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+  }
+}
+
+function setMode(mode) {
+  var d = MODES[mode];
+  if (!d) return;
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    var el = document.getElementById("tab" + t.id);
+    if (el) el.classList.remove("active");
+  }
+  var activeEl = document.getElementById("tab" + mode);
+  if (activeEl) activeEl.classList.add("active");
+  var optIds = ["opt1", "opt2", "opt3", "opt4"];
+  for (var j = 0; j < optIds.length; j++) {
+    var dg = document.getElementById("diagram-" + optIds[j]);
+    if (dg) dg.style.display = "none";
+  }
+  var target = document.getElementById("diagram-" + mode);
+  if (target) target.style.display = "block";
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass + (panel.classList.contains("collapsed") ? " collapsed" : "");
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+  var infoHtml = "";
+  for (var m = 0; m < d.infoRows.length; m++) {
+    var r = d.infoRows[m];
+    infoHtml += '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }
+  document.getElementById("infoBody").innerHTML = infoHtml;
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  var p1 = "";
+  for (var n = 0; n < d.panel1List.length; n++) {
+    p1 += "<li>" + d.panel1List[n] + "</li>";
+  }
+  document.getElementById("panel1-list").innerHTML = p1;
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  var p2 = "";
+  for (var p = 0; p < d.panel2List.length; p++) {
+    p2 += "<li>" + d.panel2List[p] + "</li>";
+  }
+  document.getElementById("panel2-list").innerHTML = p2;
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById("infoPanel");
+  var btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildTabs();
+  buildQuiz();
+  setMode("opt1");
+});
+</script>
+</body>
+</html>

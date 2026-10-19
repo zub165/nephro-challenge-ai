@@ -1,0 +1,811 @@
+{
+  "generated_at": "2026-10-19T15:32:51.189360+00:00",
+  "chatgpt_board_plan": {
+    "title": "25-Day Board Plan (ChatGPT)",
+    "url": "https://chatgpt.com/share/6ad63071-6884-83e9-ab31-2acc11fe3649",
+    "description": "Know / Guessed / Wrong grading, score bands, and chapter calendar."
+  },
+  "brcu_2025": {
+    "question_count": 445,
+    "by_chapter": {
+      "acid-base-disorders": 20,
+      "acute-kidney-injury-icu": 4,
+      "chronic-kidney-disease": 4,
+      "dialysis": 84,
+      "electrolytes": 5,
+      "glomerular-vascular": 67,
+      "hypertension": 45,
+      "nephrology-pharmacology": 55,
+      "transplantation": 69,
+      "tubulointerstitial-cystic": 92
+    },
+    "note": "ASN BRCU 2025 answer key \u2014 local Desktop study PDF (not redistributed in-app).",
+    "desktop_folder": "Desktop/Nephrology Teaching/_organized_by_chapter/_reference/BRCU-2025"
+  },
+  "html_lessons": {
+    "base_path": "medical",
+    "description": "Chapter teaching HTML organized without duplicates.",
+    "chapters": [
+      {
+        "slug": "acid-base-disorders",
+        "title": "Acid\u2013Base Disorders",
+        "html": [
+          {
+            "slug": "barter-syndrome",
+            "title": "Barter Syndrome",
+            "path": "acid-base-disorders/barter-syndrome.html"
+          },
+          {
+            "slug": "chloride-responsive-metabolic-alkalosis",
+            "title": "Chloride Responsive Metabolic Alkalosis",
+            "path": "acid-base-disorders/chloride-responsive-metabolic-alkalosis.html"
+          },
+          {
+            "slug": "diaarhra",
+            "title": "Diaarhra",
+            "path": "acid-base-disorders/diaarhra.html"
+          },
+          {
+            "slug": "diarrhea-and-laxative",
+            "title": "Diarrhea And Laxative",
+            "path": "acid-base-disorders/diarrhea-and-laxative.html"
+          },
+          {
+            "slug": "fanconi-syndrome",
+            "title": "Fanconi Syndrome",
+            "path": "acid-base-disorders/fanconi-syndrome.html"
+          },
+          {
+            "slug": "gi-causes-acid-base-v1",
+            "title": "Gi Causes Acid Base V1",
+            "path": "acid-base-disorders/gi-causes-acid-base-v1.html"
+          },
+          {
+            "slug": "gi-causes-acid-base",
+            "title": "Gi Causes Acid Base",
+            "path": "acid-base-disorders/gi-causes-acid-base.html"
+          },
+          {
+            "slug": "gordon-syndrome",
+            "title": "Gordon Syndrome",
+            "path": "acid-base-disorders/gordon-syndrome.html"
+          },
+          {
+            "slug": "hypkalemic-metabolic-alkalosis",
+            "title": "Hypkalemic Metabolic Alkalosis",
+            "path": "acid-base-disorders/hypkalemic-metabolic-alkalosis.html"
+          },
+          {
+            "slug": "hypokalemic-metabolic-alkalosis-lesson",
+            "title": "Hypokalemic Metabolic Alkalosis Lesson",
+            "path": "acid-base-disorders/hypokalemic-metabolic-alkalosis-lesson.html"
+          },
+          {
+            "slug": "mixed-acid-bases",
+            "title": "Mixed Acid Bases",
+            "path": "acid-base-disorders/mixed-acid-bases.html"
+          },
+          {
+            "slug": "mixed-acidosi",
+            "title": "Mixed Acidosi",
+            "path": "acid-base-disorders/mixed-acidosi.html"
+          },
+          {
+            "slug": "renal-tubular-acidosis-patterns",
+            "title": "Renal Tubular Acidosis Patterns",
+            "path": "acid-base-disorders/renal-tubular-acidosis-patterns.html"
+          },
+          {
+            "slug": "rta",
+            "title": "Rta",
+            "path": "acid-base-disorders/rta.html"
+          },
+          {
+            "slug": "salicylate-toxicity-mixed-acid-base-disorder",
+            "title": "Salicylate Toxicity Mixed Acid Base Disorder",
+            "path": "acid-base-disorders/salicylate-toxicity-mixed-acid-base-disorder.html"
+          },
+          {
+            "slug": "simple-metabolic-alkalosis",
+            "title": "Simple Metabolic Alkalosis",
+            "path": "acid-base-disorders/simple-metabolic-alkalosis.html"
+          },
+          {
+            "slug": "toulen-induce-rta",
+            "title": "Toulen Induce Rta",
+            "path": "acid-base-disorders/toulen-induce-rta.html"
+          },
+          {
+            "slug": "type-4-rta",
+            "title": "Type 4 Rta",
+            "path": "acid-base-disorders/type-4-rta.html"
+          }
+        ]
+      },
+      {
+        "slug": "electrolytes",
+        "title": "Electrolytes",
+        "html": [
+          {
+            "slug": "diuretics",
+            "title": "Diuretics",
+            "path": "electrolytes/diuretics.html"
+          },
+          {
+            "slug": "electrolyte-free-water",
+            "title": "Electrolyte Free Water",
+            "path": "electrolytes/electrolyte-free-water.html"
+          },
+          {
+            "slug": "hypercalcemia",
+            "title": "Hypercalcemia",
+            "path": "electrolytes/hypercalcemia.html"
+          },
+          {
+            "slug": "hypernatremia",
+            "title": "Hypernatremia",
+            "path": "electrolytes/hypernatremia.html"
+          },
+          {
+            "slug": "polyuria",
+            "title": "Polyuria",
+            "path": "electrolytes/polyuria.html"
+          },
+          {
+            "slug": "postoperative-hypernatremia",
+            "title": "Postoperative Hypernatremia",
+            "path": "electrolytes/postoperative-hypernatremia.html"
+          },
+          {
+            "slug": "tumor-induced-osteomalacia",
+            "title": "Tumor Induced Osteomalacia",
+            "path": "electrolytes/tumor-induced-osteomalacia.html"
+          }
+        ]
+      },
+      {
+        "slug": "acute-kidney-injury-icu",
+        "title": "Acute Kidney Injury & ICU",
+        "html": [
+          {
+            "slug": "acei-vs-nsaid",
+            "title": "Acei Vs Nsaid",
+            "path": "acute-kidney-injury-icu/acei-vs-nsaid.html"
+          },
+          {
+            "slug": "acute-encephlopathy",
+            "title": "Acute Encephlopathy",
+            "path": "acute-kidney-injury-icu/acute-encephlopathy.html"
+          },
+          {
+            "slug": "crrt-clotting",
+            "title": "Crrt Clotting",
+            "path": "acute-kidney-injury-icu/crrt-clotting.html"
+          },
+          {
+            "slug": "tls-amnagment",
+            "title": "Tls Amnagment",
+            "path": "acute-kidney-injury-icu/tls-amnagment.html"
+          },
+          {
+            "slug": "tls",
+            "title": "Tls",
+            "path": "acute-kidney-injury-icu/tls.html"
+          },
+          {
+            "slug": "tls2",
+            "title": "Tls2",
+            "path": "acute-kidney-injury-icu/tls2.html"
+          }
+        ]
+      },
+      {
+        "slug": "chronic-kidney-disease",
+        "title": "Chronic Kidney Disease",
+        "html": [
+          {
+            "slug": "calciph",
+            "title": "Calciph",
+            "path": "chronic-kidney-disease/calciph.html"
+          },
+          {
+            "slug": "ckd-copy",
+            "title": "Ckd Copy",
+            "path": "chronic-kidney-disease/ckd-copy.html"
+          },
+          {
+            "slug": "ckd",
+            "title": "Ckd",
+            "path": "chronic-kidney-disease/ckd.html"
+          }
+        ]
+      },
+      {
+        "slug": "hypertension",
+        "title": "Hypertension",
+        "html": [
+          {
+            "slug": "adrenal-vein-sampling-selectivity-and-lateralization",
+            "title": "Adrenal Vein Sampling Selectivity And Lateralization",
+            "path": "hypertension/adrenal-vein-sampling-selectivity-and-lateralization.html"
+          },
+          {
+            "slug": "fibromuscular-dysplasia",
+            "title": "Fibromuscular Dysplasia",
+            "path": "hypertension/fibromuscular-dysplasia.html"
+          },
+          {
+            "slug": "mra-induced-hyperkalemia-collecting-duct",
+            "title": "Mra Induced Hyperkalemia Collecting Duct",
+            "path": "hypertension/mra-induced-hyperkalemia-collecting-duct.html"
+          },
+          {
+            "slug": "pah",
+            "title": "Pah",
+            "path": "hypertension/pah.html"
+          },
+          {
+            "slug": "pregnancy",
+            "title": "Pregnancy",
+            "path": "hypertension/pregnancy.html"
+          },
+          {
+            "slug": "renal-artery-stenosis",
+            "title": "Renal Artery Stenosis",
+            "path": "hypertension/renal-artery-stenosis.html"
+          },
+          {
+            "slug": "renovascular-htn",
+            "title": "Renovascular Htn",
+            "path": "hypertension/renovascular-htn.html"
+          },
+          {
+            "slug": "renovascular-hypertension",
+            "title": "Renovascular Hypertension",
+            "path": "hypertension/renovascular-hypertension.html"
+          }
+        ]
+      },
+      {
+        "slug": "dialysis",
+        "title": "Dialysis",
+        "html": [
+          {
+            "slug": "av-fistula-high-outpaut-failure",
+            "title": "Av Fistula High Outpaut Failure",
+            "path": "dialysis/av-fistula-high-outpaut-failure.html"
+          },
+          {
+            "slug": "chloramine-induced-hemolysis",
+            "title": "Chloramine Induced Hemolysis",
+            "path": "dialysis/chloramine-induced-hemolysis.html"
+          },
+          {
+            "slug": "crrt-clotting",
+            "title": "Crrt Clotting",
+            "path": "dialysis/crrt-clotting.html"
+          },
+          {
+            "slug": "crrt-copy",
+            "title": "Crrt Copy",
+            "path": "dialysis/crrt-copy.html"
+          },
+          {
+            "slug": "crrt-effluent-rate-vs-filtration-fraction",
+            "title": "Crrt Effluent Rate Vs Filtration Fraction",
+            "path": "dialysis/crrt-effluent-rate-vs-filtration-fraction.html"
+          },
+          {
+            "slug": "crrt-ff",
+            "title": "Crrt Ff",
+            "path": "dialysis/crrt-ff.html"
+          },
+          {
+            "slug": "crrt-filter-clotting",
+            "title": "Crrt Filter Clotting",
+            "path": "dialysis/crrt-filter-clotting.html"
+          },
+          {
+            "slug": "crrt-filtration-fraction-interventions",
+            "title": "Crrt Filtration Fraction Interventions",
+            "path": "dialysis/crrt-filtration-fraction-interventions.html"
+          },
+          {
+            "slug": "crrt",
+            "title": "Crrt",
+            "path": "dialysis/crrt.html"
+          },
+          {
+            "slug": "cvvhd-calculation",
+            "title": "Cvvhd Calculation",
+            "path": "dialysis/cvvhd-calculation.html"
+          },
+          {
+            "slug": "cvvhdcitrate",
+            "title": "Cvvhdcitrate",
+            "path": "dialysis/cvvhdcitrate.html"
+          },
+          {
+            "slug": "cvvhdf",
+            "title": "Cvvhdf",
+            "path": "dialysis/cvvhdf.html"
+          },
+          {
+            "slug": "daugirdas-spkt-v",
+            "title": "Daugirdas Spkt V",
+            "path": "dialysis/daugirdas-spkt-v.html"
+          },
+          {
+            "slug": "dialysis-circuit-emergencies",
+            "title": "Dialysis Circuit Emergencies",
+            "path": "dialysis/dialysis-circuit-emergencies.html"
+          },
+          {
+            "slug": "dwell-time",
+            "title": "Dwell Time",
+            "path": "dialysis/dwell-time.html"
+          },
+          {
+            "slug": "filtration-fraction-copy",
+            "title": "Filtration Fraction Copy",
+            "path": "dialysis/filtration-fraction-copy.html"
+          },
+          {
+            "slug": "filtration-fraction",
+            "title": "Filtration Fraction",
+            "path": "dialysis/filtration-fraction.html"
+          },
+          {
+            "slug": "hand-ischemia-after-av-fistula-monomelic-neuropathy-vs-steal",
+            "title": "Hand Ischemia After Av Fistula Monomelic Neuropathy Vs Steal",
+            "path": "dialysis/hand-ischemia-after-av-fistula-monomelic-neuropathy-vs-steal.html"
+          },
+          {
+            "slug": "hd-hyponatremia",
+            "title": "Hd Hyponatremia",
+            "path": "dialysis/hd-hyponatremia.html"
+          },
+          {
+            "slug": "heparin-induced-thrombocytopenia",
+            "title": "Heparin Induced Thrombocytopenia",
+            "path": "dialysis/heparin-induced-thrombocytopenia.html"
+          },
+          {
+            "slug": "hypernatremia-with-hyperkalemia-dialysis-strategy",
+            "title": "Hypernatremia With Hyperkalemia Dialysis Strategy",
+            "path": "dialysis/hypernatremia-with-hyperkalemia-dialysis-strategy.html"
+          },
+          {
+            "slug": "interactive-crrt-flow",
+            "title": "Interactive Crrt Flow",
+            "path": "dialysis/interactive-crrt-flow.html"
+          },
+          {
+            "slug": "operitoneal-dialysis",
+            "title": "Operitoneal Dialysis",
+            "path": "dialysis/operitoneal-dialysis.html"
+          },
+          {
+            "slug": "pd-peritonitis",
+            "title": "Pd Peritonitis",
+            "path": "dialysis/pd-peritonitis.html"
+          },
+          {
+            "slug": "peritoneal-dialysis-volume-overload",
+            "title": "Peritoneal Dialysis Volume Overload",
+            "path": "dialysis/peritoneal-dialysis-volume-overload.html"
+          },
+          {
+            "slug": "spktv",
+            "title": "Spktv",
+            "path": "dialysis/spktv.html"
+          },
+          {
+            "slug": "steal-syndrome",
+            "title": "Steal Syndrome",
+            "path": "dialysis/steal-syndrome.html"
+          }
+        ]
+      },
+      {
+        "slug": "tubulointerstitial-cystic",
+        "title": "Tubulointerstitial & Cystic",
+        "html": [
+          {
+            "slug": "ain",
+            "title": "Ain",
+            "path": "tubulointerstitial-cystic/ain.html"
+          },
+          {
+            "slug": "dent-disease",
+            "title": "Dent Disease",
+            "path": "tubulointerstitial-cystic/dent-disease.html"
+          },
+          {
+            "slug": "fanconi-syndrome",
+            "title": "Fanconi Syndrome",
+            "path": "tubulointerstitial-cystic/fanconi-syndrome.html"
+          },
+          {
+            "slug": "lightchain-nephropathy",
+            "title": "Lightchain Nephropathy",
+            "path": "tubulointerstitial-cystic/lightchain-nephropathy.html"
+          },
+          {
+            "slug": "pkd",
+            "title": "Pkd",
+            "path": "tubulointerstitial-cystic/pkd.html"
+          },
+          {
+            "slug": "tinu",
+            "title": "Tinu",
+            "path": "tubulointerstitial-cystic/tinu.html"
+          }
+        ]
+      },
+      {
+        "slug": "glomerular-vascular",
+        "title": "Glomerular & Vascular",
+        "html": [
+          {
+            "slug": "ahus-copy",
+            "title": "Ahus Copy",
+            "path": "glomerular-vascular/ahus-copy.html"
+          },
+          {
+            "slug": "ahus",
+            "title": "Ahus",
+            "path": "glomerular-vascular/ahus.html"
+          },
+          {
+            "slug": "berden-classification-copy",
+            "title": "Berden Classification Copy",
+            "path": "glomerular-vascular/berden-classification-copy.html"
+          },
+          {
+            "slug": "berden-classification",
+            "title": "Berden Classification",
+            "path": "glomerular-vascular/berden-classification.html"
+          },
+          {
+            "slug": "castnephropathy",
+            "title": "Castnephropathy",
+            "path": "glomerular-vascular/castnephropathy.html"
+          },
+          {
+            "slug": "cholestrol-embolization",
+            "title": "Cholestrol Embolization",
+            "path": "glomerular-vascular/cholestrol-embolization.html"
+          },
+          {
+            "slug": "cryoglobulin",
+            "title": "Cryoglobulin",
+            "path": "glomerular-vascular/cryoglobulin.html"
+          },
+          {
+            "slug": "fibrillary-glomerulonephritis",
+            "title": "Fibrillary Glomerulonephritis",
+            "path": "glomerular-vascular/fibrillary-glomerulonephritis.html"
+          },
+          {
+            "slug": "fibrillary-gn",
+            "title": "Fibrillary Gn",
+            "path": "glomerular-vascular/fibrillary-gn.html"
+          },
+          {
+            "slug": "fsgs-advanced",
+            "title": "Fsgs Advanced",
+            "path": "glomerular-vascular/fsgs-advanced.html"
+          },
+          {
+            "slug": "glomerulonephritis-treatments",
+            "title": "Glomerulonephritis Treatments",
+            "path": "glomerular-vascular/glomerulonephritis-treatments.html"
+          },
+          {
+            "slug": "hcv-associated-cryoglobulinemic-vasculitis",
+            "title": "Hcv Associated Cryoglobulinemic Vasculitis",
+            "path": "glomerular-vascular/hcv-associated-cryoglobulinemic-vasculitis.html"
+          },
+          {
+            "slug": "hiv-associated-kidney-disease",
+            "title": "Hiv Associated Kidney Disease",
+            "path": "glomerular-vascular/hiv-associated-kidney-disease.html"
+          },
+          {
+            "slug": "hiv-associated-nephropathy",
+            "title": "Hiv Associated Nephropathy",
+            "path": "glomerular-vascular/hiv-associated-nephropathy.html"
+          },
+          {
+            "slug": "hivan",
+            "title": "Hivan",
+            "path": "glomerular-vascular/hivan.html"
+          },
+          {
+            "slug": "hydralazine-induced-vasculitis",
+            "title": "Hydralazine Induced Vasculitis",
+            "path": "glomerular-vascular/hydralazine-induced-vasculitis.html"
+          },
+          {
+            "slug": "iga-nephropathy",
+            "title": "Iga Nephropathy",
+            "path": "glomerular-vascular/iga-nephropathy.html"
+          },
+          {
+            "slug": "iga",
+            "title": "Iga",
+            "path": "glomerular-vascular/iga.html"
+          },
+          {
+            "slug": "lccd",
+            "title": "Lccd",
+            "path": "glomerular-vascular/lccd.html"
+          },
+          {
+            "slug": "lcd",
+            "title": "Lcd",
+            "path": "glomerular-vascular/lcd.html"
+          },
+          {
+            "slug": "lcdd-light-chain-deposition-disease-mgrs",
+            "title": "Lcdd Light Chain Deposition Disease Mgrs",
+            "path": "glomerular-vascular/lcdd-light-chain-deposition-disease-mgrs.html"
+          },
+          {
+            "slug": "light-chain-proximal-tubulopathy",
+            "title": "Light Chain Proximal Tubulopathy",
+            "path": "glomerular-vascular/light-chain-proximal-tubulopathy.html"
+          },
+          {
+            "slug": "lightchain-nephropathy",
+            "title": "Lightchain Nephropathy",
+            "path": "glomerular-vascular/lightchain-nephropathy.html"
+          },
+          {
+            "slug": "lupus-membranous-nephropathy",
+            "title": "Lupus Membranous Nephropathy",
+            "path": "glomerular-vascular/lupus-membranous-nephropathy.html"
+          },
+          {
+            "slug": "lupus-nephritis-class-v-isn-rps-classification",
+            "title": "Lupus Nephritis Class V Isn Rps Classification",
+            "path": "glomerular-vascular/lupus-nephritis-class-v-isn-rps-classification.html"
+          },
+          {
+            "slug": "lupus-nephritis",
+            "title": "Lupus Nephritis",
+            "path": "glomerular-vascular/lupus-nephritis.html"
+          },
+          {
+            "slug": "lupus",
+            "title": "Lupus",
+            "path": "glomerular-vascular/lupus.html"
+          },
+          {
+            "slug": "memmbranous",
+            "title": "Memmbranous",
+            "path": "glomerular-vascular/memmbranous.html"
+          },
+          {
+            "slug": "pgnmid",
+            "title": "Pgnmid",
+            "path": "glomerular-vascular/pgnmid.html"
+          },
+          {
+            "slug": "pla2r-thsd7a-ext1-ext2",
+            "title": "Pla2R Thsd7A Ext1 Ext2",
+            "path": "glomerular-vascular/pla2r-thsd7a-ext1-ext2.html"
+          },
+          {
+            "slug": "postpartum-complement-mediated-tma-diagnosis-and-treatment",
+            "title": "Postpartum Complement Mediated Tma Diagnosis And Treatment",
+            "path": "glomerular-vascular/postpartum-complement-mediated-tma-diagnosis-and-treatment.html"
+          },
+          {
+            "slug": "pulmonary-renal-syndrome",
+            "title": "Pulmonary Renal Syndrome",
+            "path": "glomerular-vascular/pulmonary-renal-syndrome.html"
+          },
+          {
+            "slug": "secondary-fsgs",
+            "title": "Secondary Fsgs",
+            "path": "glomerular-vascular/secondary-fsgs.html"
+          },
+          {
+            "slug": "why-is-c3-low-in-ahus",
+            "title": "Why Is C3 Low In Ahus",
+            "path": "glomerular-vascular/why-is-c3-low-in-ahus.html"
+          },
+          {
+            "slug": "why-not-ddd-or-fibrillary-gn",
+            "title": "Why Not Ddd Or Fibrillary Gn",
+            "path": "glomerular-vascular/why-not-ddd-or-fibrillary-gn.html"
+          }
+        ]
+      },
+      {
+        "slug": "transplantation",
+        "title": "Transplantation",
+        "html": [
+          {
+            "slug": "age-based-eras",
+            "title": "Age Based Eras",
+            "path": "transplantation/age-based-eras.html"
+          },
+          {
+            "slug": "apol1-associated-kidney-disease-after-transplantation",
+            "title": "Apol1 Associated Kidney Disease After Transplantation",
+            "path": "transplantation/apol1-associated-kidney-disease-after-transplantation.html"
+          },
+          {
+            "slug": "belatacept-costimulation-blockade-and-ebv-serostatus",
+            "title": "Belatacept Costimulation Blockade And Ebv Serostatus",
+            "path": "transplantation/belatacept-costimulation-blockade-and-ebv-serostatus.html"
+          },
+          {
+            "slug": "camr",
+            "title": "Camr",
+            "path": "transplantation/camr.html"
+          },
+          {
+            "slug": "chronic-active-antibody-mediated-rejection",
+            "title": "Chronic Active Antibody Mediated Rejection",
+            "path": "transplantation/chronic-active-antibody-mediated-rejection.html"
+          },
+          {
+            "slug": "cmv-colitis-after-kidney-transplant-diagnosis-and-treatment",
+            "title": "Cmv Colitis After Kidney Transplant Diagnosis And Treatment",
+            "path": "transplantation/cmv-colitis-after-kidney-transplant-diagnosis-and-treatment.html"
+          },
+          {
+            "slug": "cmv-in-transplant",
+            "title": "Cmv In Transplant",
+            "path": "transplantation/cmv-in-transplant.html"
+          },
+          {
+            "slug": "cni",
+            "title": "Cni",
+            "path": "transplantation/cni.html"
+          },
+          {
+            "slug": "complement-mediated-ahus-and-kidney-transplant",
+            "title": "Complement Mediated Ahus And Kidney Transplant",
+            "path": "transplantation/complement-mediated-ahus-and-kidney-transplant.html"
+          },
+          {
+            "slug": "dgf",
+            "title": "Dgf",
+            "path": "transplantation/dgf.html"
+          },
+          {
+            "slug": "recurrent-fsgs-vs-genetic-fsgs-after-transplant",
+            "title": "Recurrent Fsgs Vs Genetic Fsgs After Transplant",
+            "path": "transplantation/recurrent-fsgs-vs-genetic-fsgs-after-transplant.html"
+          },
+          {
+            "slug": "renal-transplant-vein-thrombosis",
+            "title": "Renal Transplant Vein Thrombosis",
+            "path": "transplantation/renal-transplant-vein-thrombosis.html"
+          },
+          {
+            "slug": "tc-rejection",
+            "title": "Tc Rejection",
+            "path": "transplantation/tc-rejection.html"
+          },
+          {
+            "slug": "transplant-glomerulopathy-cg",
+            "title": "Transplant Glomerulopathy Cg",
+            "path": "transplantation/transplant-glomerulopathy-cg.html"
+          },
+          {
+            "slug": "type-iv-rta-tacrolimus-toxicity-in-transplant",
+            "title": "Type Iv Rta Tacrolimus Toxicity In Transplant",
+            "path": "transplantation/type-iv-rta-tacrolimus-toxicity-in-transplant.html"
+          }
+        ]
+      },
+      {
+        "slug": "nephrology-pharmacology",
+        "title": "Nephrology Pharmacology",
+        "html": [
+          {
+            "slug": "acyclovir-crystal-nephropathy",
+            "title": "Acyclovir Crystal Nephropathy",
+            "path": "nephrology-pharmacology/acyclovir-crystal-nephropathy.html"
+          },
+          {
+            "slug": "alcohol",
+            "title": "Alcohol",
+            "path": "nephrology-pharmacology/alcohol.html"
+          },
+          {
+            "slug": "bactrim",
+            "title": "Bactrim",
+            "path": "nephrology-pharmacology/bactrim.html"
+          },
+          {
+            "slug": "cholestrol-embolization",
+            "title": "Cholestrol Embolization",
+            "path": "nephrology-pharmacology/cholestrol-embolization.html"
+          },
+          {
+            "slug": "diaarhra",
+            "title": "Diaarhra",
+            "path": "nephrology-pharmacology/diaarhra.html"
+          },
+          {
+            "slug": "dialyzablemaster",
+            "title": "Dialyzablemaster",
+            "path": "nephrology-pharmacology/dialyzablemaster.html"
+          },
+          {
+            "slug": "dialyzible",
+            "title": "Dialyzible",
+            "path": "nephrology-pharmacology/dialyzible.html"
+          },
+          {
+            "slug": "ethylene-glycol",
+            "title": "Ethylene Glycol",
+            "path": "nephrology-pharmacology/ethylene-glycol.html"
+          },
+          {
+            "slug": "extrip",
+            "title": "Extrip",
+            "path": "nephrology-pharmacology/extrip.html"
+          },
+          {
+            "slug": "hiv-cart-nephrotoxicity",
+            "title": "Hiv Cart Nephrotoxicity",
+            "path": "nephrology-pharmacology/hiv-cart-nephrotoxicity.html"
+          },
+          {
+            "slug": "lcd",
+            "title": "Lcd",
+            "path": "nephrology-pharmacology/lcd.html"
+          },
+          {
+            "slug": "memmbranous",
+            "title": "Memmbranous",
+            "path": "nephrology-pharmacology/memmbranous.html"
+          },
+          {
+            "slug": "nitrofurantoin-toxicity",
+            "title": "Nitrofurantoin Toxicity",
+            "path": "nephrology-pharmacology/nitrofurantoin-toxicity.html"
+          },
+          {
+            "slug": "pgnmid",
+            "title": "Pgnmid",
+            "path": "nephrology-pharmacology/pgnmid.html"
+          },
+          {
+            "slug": "phenobarbitol-overdose",
+            "title": "Phenobarbitol Overdose",
+            "path": "nephrology-pharmacology/phenobarbitol-overdose.html"
+          },
+          {
+            "slug": "preoperative-medications",
+            "title": "Preoperative Medications",
+            "path": "nephrology-pharmacology/preoperative-medications.html"
+          },
+          {
+            "slug": "salicylate-toxicity-mixed-acid-base-disorder",
+            "title": "Salicylate Toxicity Mixed Acid Base Disorder",
+            "path": "nephrology-pharmacology/salicylate-toxicity-mixed-acid-base-disorder.html"
+          },
+          {
+            "slug": "salicylate-toxicity",
+            "title": "Salicylate Toxicity",
+            "path": "nephrology-pharmacology/salicylate-toxicity.html"
+          },
+          {
+            "slug": "toxic-alcohols",
+            "title": "Toxic Alcohols",
+            "path": "nephrology-pharmacology/toxic-alcohols.html"
+          }
+        ]
+      }
+    ]
+  }
+}

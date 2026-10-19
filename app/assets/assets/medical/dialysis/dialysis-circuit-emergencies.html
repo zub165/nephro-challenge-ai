@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dialysis Circuit Emergencies — Water, Dialysate, and Filter</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <linearGradient id="bloodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#fecaca"/>
+            <stop offset="100%" stop-color="#fca5a5"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+          <marker id="arrowGold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — WATER TREATMENT FAILURES
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-42" width="1240" height="84" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#991b1b">WATER TREATMENT CHAIN — WHERE IT FAILS</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Each stage removes a specific class of contaminant — failure of any stage sends toxins straight into the dialysate</text>
+          </g>
+
+          <!-- Chain row -->
+          <g transform="translate(700, 245)">
+            <!-- 1 source -->
+            <g transform="translate(-570, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">MUNICIPAL</text>
+              <text y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">WATER</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">chlorine/chloramine</text>
+            </g>
+            <path d="M -518,0 L -452,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 2 softener -->
+            <g transform="translate(-400, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">SOFTENER</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">Ca²⁺ · Mg²⁺</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">removed</text>
+            </g>
+            <path d="M -348,0 L -282,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 3 carbon -->
+            <g transform="translate(-230, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#fecaca" stroke="#dc2626" stroke-width="4"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">CARBON</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">chloramine</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#b91c1c">removed</text>
+            </g>
+            <path d="M -178,0 L -112,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 4 RO -->
+            <g transform="translate(-60, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">RO</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">bacteria</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">endotoxin · Al</text>
+            </g>
+            <path d="M -8,0 L 58,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 5 DI -->
+            <g transform="translate(110, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">DI TANK</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">ions</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">anions · F⁻</text>
+            </g>
+            <path d="M 162,0 L 228,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 6 UV -->
+            <g transform="translate(280, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">UV</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">bacteria</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">killed</text>
+            </g>
+            <path d="M 332,0 L 398,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 7 loop -->
+            <g transform="translate(450, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">LOOP</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">stagnation</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#0e7490">biofilm</text>
+            </g>
+            <path d="M 502,0 L 568,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <!-- 8 machine -->
+            <g transform="translate(620, 0)">
+              <rect x="-52" y="-38" width="104" height="76" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">DIALYSIS</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">MACHINE</text>
+              <text y="26" text-anchor="middle" font-family="Arial" font-size="10" fill="#15803d">→ patient</text>
+            </g>
+          </g>
+
+          <!-- Failure boxes -->
+          <!-- Carbon failure -->
+          <g transform="translate(240, 470)">
+            <rect x="-175" y="-90" width="350" height="180" rx="14" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <text y="-64" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">CARBON EXHAUSTION</text>
+            <line x1="-150" y1="-50" x2="150" y2="-50" stroke="#fecaca" stroke-width="2"/>
+            <text y="-26" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Chloramine passes through</text>
+            <text y="0" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Acute hemolysis</text>
+            <text y="22" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">pink plasma · low Hb · high K</text>
+            <text y="48" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Prevention: daily chlorine test</text>
+            <text y="68" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#94a3b8">&lt; 0.1 mg/L pre-RO</text>
+          </g>
+
+          <!-- RO failure -->
+          <g transform="translate(700, 470)">
+            <rect x="-175" y="-90" width="350" height="180" rx="14" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-64" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">RO / DI FAILURE</text>
+            <line x1="-150" y1="-50" x2="150" y2="-50" stroke="#ddd6fe" stroke-width="2"/>
+            <text y="-26" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Aluminum · fluoride · nitrate</text>
+            <text y="-6" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Al → osteomalacia, encephalopathy</text>
+            <text y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">F⁻ → arrhythmia, pruritus</text>
+            <text y="34" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">NO₃⁻ → methemoglobinemia</text>
+            <text y="60" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Monthly water analysis</text>
+          </g>
+
+          <!-- Biofilm + metals -->
+          <g transform="translate(1160, 470)">
+            <rect x="-175" y="-90" width="350" height="180" rx="14" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <text y="-64" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">BIOFILM · METALS</text>
+            <line x1="-150" y1="-50" x2="150" y2="-50" stroke="#cffafe" stroke-width="2"/>
+            <text y="-26" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Endotoxin · copper · zinc</text>
+            <text y="-6" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Endotoxin → pyrogenic reaction</text>
+            <text y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Cu / Zn → hemolysis, GI upset</text>
+            <text y="34" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Dead legs → stagnation → biofilm</text>
+            <text y="60" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Loop disinfection · flushing</text>
+          </g>
+
+          <!-- Bottom strip -->
+          <g transform="translate(700, 705)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-18" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">WATER IS THE SHARED VARIABLE — A CLUSTER OF PATIENTS MEANS THE WATER IS THE PROBLEM</text>
+            <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Test total chlorine daily · RO and DI per policy · aluminum quarterly · culture and endotoxin monthly</text>
+            <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#64748b">The chloramine case is the one you cannot afford to miss — hemolysis is immediate and severe</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-16" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#991b1b">MOST IMPORTANT PRACTICAL RULE</text>
+            <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">An activated carbon filter that is exhausted removes NOTHING — chloramine crosses it untouched</text>
+            <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#166534">Daily total chlorine test downstream of carbon is the single most important safety check in the unit</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — DIALYSATE ERRORS
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-42" width="1240" height="84" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#5b21b6">DIALYSATE — MIXING, TEMPERATURE, AND CONDUCTIVITY</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#6d28d9">Dialysate = purified water + acid concentrate + bicarbonate concentrate, at a precise ratio and temperature</text>
+          </g>
+
+          <!-- Mixing diagram -->
+          <g transform="translate(700, 250)">
+            <g transform="translate(-420, 0)">
+              <rect x="-80" y="-45" width="160" height="90" rx="12" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">PURIFIED</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">WATER</text>
+              <text y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#0e7490">~34 parts</text>
+            </g>
+            <g transform="translate(-120, 0)">
+              <rect x="-80" y="-45" width="160" height="90" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">ACID</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">CONCENTRATE</text>
+              <text y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">Na · K · Ca · Mg · Cl</text>
+            </g>
+            <g transform="translate(120, 0)">
+              <rect x="-80" y="-45" width="160" height="90" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+              <text y="-8" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">BICARB</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">CONCENTRATE</text>
+              <text y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#6d28d9">NaHCO₃</text>
+            </g>
+
+            <path d="M -340,0 L -200,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+            <path d="M -40,0 L -40,-30 L 20,-30 L 20,0" stroke="#475569" stroke-width="3" fill="none" marker-end="url(#arrowSlate)"/>
+            <path d="M 200,0 L 240,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(360, 0)">
+              <rect x="-120" y="-45" width="240" height="90" rx="12" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+              <text y="-10" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">PROPORTIONING</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#854d0e">SYSTEM</text>
+              <text y="30" text-anchor="middle" font-family="Arial" font-size="11" fill="#a16207">monitors conductivity</text>
+            </g>
+          </g>
+
+          <!-- Error cards -->
+          <g transform="translate(230, 510)">
+            <rect x="-180" y="-135" width="360" height="270" rx="16" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <text y="-105" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">ELECTROLYTE ERRORS</text>
+            <line x1="-150" y1="-90" x2="150" y2="-90" stroke="#fecaca" stroke-width="2"/>
+            <text y="-62" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#0f172a">Wrong concentrate or wrong mix ratio</text>
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-150" y="-34" font-weight="800" fill="#dc2626">↑ K⁺</text>
+              <text x="-90" y="-34">→ arrhythmia, arrest</text>
+              <text x="-150" y="-12" font-weight="800" fill="#dc2626">↓ K⁺</text>
+              <text x="-90" y="-12">→ arrhythmia, weakness</text>
+              <text x="-150" y="10" font-weight="800" fill="#dc2626">↑ / ↓ Na⁺</text>
+              <text x="-90" y="10">→ fluid shift, neuro</text>
+              <text x="-150" y="32" font-weight="800" fill="#dc2626">↓ Ca²⁺</text>
+              <text x="-90" y="32">→ tetany, seizures</text>
+              <text x="-150" y="54" font-weight="800" fill="#dc2626">↑ Ca²⁺</text>
+              <text x="-90" y="54">→ nausea, calcification</text>
+            </g>
+            <text y="90" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#94a3b8">always verify proportioning when symptoms cluster</text>
+            <text y="115" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Prevention: independent conductivity alarms</text>
+          </g>
+
+          <g transform="translate(700, 510)">
+            <rect x="-180" y="-135" width="360" height="270" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-105" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">TEMPERATURE ERRORS</text>
+            <line x1="-150" y1="-90" x2="150" y2="-90" stroke="#ddd6fe" stroke-width="2"/>
+            <text y="-62" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">OVERHEATED &gt; 42 °C</text>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Severe hemolysis · hyperkalemia</text>
+            <text y="-22" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">pink plasma · low Hb · back pain</text>
+
+            <line x1="-150" y1="-6" x2="150" y2="-6" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text y="22" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">UNDERHEATED &lt; 35 °C</text>
+            <text y="44" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Hypothermia · chills · shivering</text>
+            <text y="62" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Reduced clearance (cold slows diffusion)</text>
+
+            <text y="98" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#94a3b8">target 36–37 °C · verify with external thermometer</text>
+            <text y="120" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Prevention: high-temp cutoff alarm</text>
+          </g>
+
+          <g transform="translate(1170, 510)">
+            <rect x="-180" y="-135" width="360" height="270" rx="16" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <text y="-105" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">CONDUCTIVITY FAILURE</text>
+            <line x1="-150" y1="-90" x2="150" y2="-90" stroke="#cffafe" stroke-width="2"/>
+            <text y="-62" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#0f172a">Monitor fails or is bypassed</text>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Wrong-mix dialysate reaches patient</text>
+
+            <line x1="-150" y1="-20" x2="150" y2="-20" stroke="#cffafe" stroke-width="2"/>
+
+            <text y="4" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Hypertonic mix → <tspan font-weight="800" fill="#dc2626">hypernatremia</tspan></text>
+            <text y="24" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Hypotonic mix → <tspan font-weight="800" fill="#dc2626">hyponatremia · hemolysis</tspan></text>
+            <text y="44" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Silent failure → no symptoms until severe</text>
+
+            <text y="80" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Prevention: dual conductivity sensors</text>
+            <text y="102" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">+ independent machine calibration</text>
+          </g>
+
+          <!-- Bottom strip -->
+          <g transform="translate(700, 720)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">DIALYSATE ERRORS ARE MACHINE ERRORS — NOT PATIENT ERRORS</text>
+            <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">If multiple patients on the same machine or the same proportioning system develop symptoms, dialysate is the suspect</text>
+            <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">The dialysate temperature of 36.5 °C in the chloramine case is normal — it is <tspan font-weight="800">not</tspan> the cause of that hemolysis</text>
+            <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#64748b">Temperature and conductivity are checked on every shift — chloramine is not</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — DIALYZER & CIRCUIT
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-42" width="1240" height="84" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#155e75">DIALYZER AND EXTRACORPOREAL CIRCUIT</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#0e7490">Membrane bioincompatibility · reuse complications · air embolism · clotting</text>
+          </g>
+
+          <!-- Dialyzer schematic -->
+          <g transform="translate(700, 270)">
+            <rect x="-500" y="-80" width="1000" height="160" rx="14" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+
+            <!-- Blood compartment -->
+            <rect x="-460" y="-55" width="920" height="60" rx="6" fill="url(#bloodGrad)" stroke="#991b1b" stroke-width="2"/>
+            <text x="-440" y="-35" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">BLOOD COMPARTMENT</text>
+
+            <!-- Membrane -->
+            <g stroke="#0891b2" stroke-width="2">
+              <line x1="-440" y1="5" x2="440" y2="5"/>
+              <line x1="-440" y1="10" x2="440" y2="10"/>
+              <line x1="-440" y1="15" x2="440" y2="15"/>
+              <line x1="-440" y1="20" x2="440" y2="20"/>
+            </g>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#0e7490">DIALYZER MEMBRANE</text>
+
+            <!-- Dialysate compartment -->
+            <rect x="-460" y="48" width="920" height="22" rx="4" fill="#e0f2fe" stroke="#0891b2" stroke-width="2"/>
+            <text x="-440" y="64" font-family="Arial" font-size="11" font-weight="700" fill="#155e75">DIALYSATE COMPARTMENT</text>
+
+            <text x="0" y="95" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#64748b">Chloramine, endotoxin, and heated dialysate cross the membrane and meet the blood here</text>
+          </g>
+
+          <!-- Card 1: Type A -->
+          <g transform="translate(230, 540)">
+            <rect x="-180" y="-140" width="360" height="280" rx="16" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <text y="-110" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">TYPE A DIALYZER REACTION</text>
+            <line x1="-150" y1="-94" x2="150" y2="-94" stroke="#fecaca" stroke-width="2"/>
+            <text y="-68" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">Anaphylactic</text>
+            <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Onset 5–20 min into treatment</text>
+            <text y="-24" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">IgE-mediated · often first use</text>
+            <line x1="-150" y1="-6" x2="150" y2="-6" stroke="#fecaca" stroke-width="2"/>
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-150" y="16">• Bronchospasm · laryngeal edema</text>
+              <text x="-150" y="36">• Anaphylactic shock · hypotension</text>
+              <text x="-150" y="56">• Pruritus · urticaria · flushing</text>
+            </g>
+            <line x1="-150" y1="74" x2="150" y2="74" stroke="#fecaca" stroke-width="2"/>
+            <text y="98" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Causes: ethylene oxide · membrane</text>
+            <text y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Rx: stop dialysis · epinephrine · antihistamine</text>
+          </g>
+
+          <!-- Card 2: Type B -->
+          <g transform="translate(700, 540)">
+            <rect x="-180" y="-140" width="360" height="280" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-110" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">TYPE B DIALYZER REACTION</text>
+            <line x1="-150" y1="-94" x2="150" y2="-94" stroke="#ddd6fe" stroke-width="2"/>
+            <text y="-68" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Anaphylactoid</text>
+            <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Onset 20–40 min into treatment</text>
+            <text y="-24" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Complement activation by membrane</text>
+            <line x1="-150" y1="-6" x2="150" y2="-6" stroke="#ddd6fe" stroke-width="2"/>
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-150" y="16">• Chest and back pain</text>
+              <text x="-150" y="36">• Milder dyspnea · flushing</text>
+              <text x="-150" y="56">• Usually self-limiting</text>
+            </g>
+            <line x1="-150" y1="74" x2="150" y2="74" stroke="#ddd6fe" stroke-width="2"/>
+            <text y="98" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">Causes: bioincompatible membrane</text>
+            <text y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Rx: supportive · switch membrane</text>
+          </g>
+
+          <!-- Card 3: Reuse + circuit -->
+          <g transform="translate(1170, 540)">
+            <rect x="-180" y="-140" width="360" height="280" rx="16" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <text y="-110" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">REUSE AND CIRCUIT</text>
+            <line x1="-150" y1="-94" x2="150" y2="-94" stroke="#cffafe" stroke-width="2"/>
+            <g font-family="Arial" font-size="12" fill="#334155">
+              <text x="-150" y="-70" font-weight="800" fill="#991b1b">Residual disinfectant</text>
+              <text x="-150" y="-52">→ chemical / allergic reaction</text>
+              <text x="-150" y="-30" font-weight="800" fill="#991b1b">Membrane damage (bleach)</text>
+              <text x="-150" y="-12">→ albumin leak</text>
+              <text x="-150" y="10" font-weight="800" fill="#991b1b">Pyrogen contamination</text>
+              <text x="-150" y="28">→ fever, chills</text>
+              <text x="-150" y="50" font-weight="800" fill="#991b1b">Air embolism</text>
+              <text x="-150" y="68">→ loose port, empty bag, poor priming</text>
+              <text x="-150" y="90" font-weight="800" fill="#991b1b">Circuit clotting</text>
+              <text x="-150" y="108">→ inadequate anticoagulation</text>
+            </g>
+          </g>
+
+          <!-- Bottom strip -->
+          <g transform="translate(700, 760)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">THE FIRST QUESTION IN ANY DIALYSIS CRASH</text>
+            <text x="0" y="2" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Is the timing early (Type A, anaphylaxis) · mid (Type B, complement) · or late (waterborne, dialysate, membrane)?</text>
+            <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Timing and clustering are the two fastest discriminators — a cluster is always the water or the dialysate</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Type A → epinephrine · Type B → switch membrane · chloramine → stop, do not return blood, treat K⁺</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — CHLORAMINE CASE & EMERGENCY RESPONSE
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-42" width="1240" height="84" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#713f12">THE CHLORAMINE CASE — WHAT TO DO AND WHY</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#854d0e">Cluster of patients · acute intravascular hemolysis · elevated chloramine · carbon filter failure</text>
+          </g>
+
+          <!-- Step chain -->
+          <g transform="translate(700, 245)">
+
+            <g transform="translate(-540, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">1</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">STOP</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">halt dialysis now</text>
+            </g>
+            <path d="M -440,0 L -390,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(-330, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">2</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">DO NOT RETURN</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">discard the blood</text>
+            </g>
+            <path d="M -230,0 L -180,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(-120, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">3</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">TREAT</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">hemolysis · K⁺ 6.4</text>
+            </g>
+            <path d="M -20,0 L 30,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(90, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#dc2626"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">4</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">SUSPEND</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#b91c1c">verify water safety</text>
+            </g>
+            <path d="M 190,0 L 240,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(300, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#16a34a"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">5</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">RESTORE</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#15803d">carbon · retest</text>
+            </g>
+            <path d="M 400,0 L 450,0" stroke="#475569" stroke-width="3" marker-end="url(#arrowSlate)"/>
+
+            <g transform="translate(540, 0)">
+              <rect x="-95" y="-48" width="190" height="96" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+              <circle cx="-60" cy="-30" r="14" fill="#16a34a"/>
+              <text x="-60" y="-25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">6</text>
+              <text y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">RESUME</text>
+              <text y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#15803d">only when verified</text>
+            </g>
+          </g>
+
+          <!-- Why do not return blood -->
+          <g transform="translate(350, 470)">
+            <rect x="-290" y="-130" width="580" height="260" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text y="-100" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">WHY NOT RETURN THE BLOOD?</text>
+            <line x1="-260" y1="-84" x2="260" y2="-84" stroke="#fecaca" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-56" font-weight="800" fill="#991b1b">• The blood is already hemolyzed</text>
+              <text x="-240" y="-36">Returning it delivers free Hb + K⁺ to the patient</text>
+              <text x="-260" y="-10" font-weight="800" fill="#991b1b">• It contains the offending agent</text>
+              <text x="-240" y="10">Chloramine still present in the circuit</text>
+              <text x="-260" y="36" font-weight="800" fill="#991b1b">• Hyperkalemia is already present (K 6.4)</text>
+              <text x="-240" y="56">Adding more K⁺ risks fatal arrhythmia</text>
+              <text x="-260" y="82" font-weight="800" fill="#991b1b">• Blood loss is smaller than the risk</text>
+              <text x="-240" y="102">A discarded circuit costs ~200–250 mL, manageable</text>
+            </g>
+          </g>
+
+          <!-- Treatment -->
+          <g transform="translate(1050, 470)">
+            <rect x="-290" y="-130" width="580" height="260" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-100" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">TREAT WHAT IS LIFE-THREATENING</text>
+            <line x1="-260" y1="-84" x2="260" y2="-84" stroke="#ddd6fe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-56" font-weight="800" fill="#5b21b6">Hyperkalemia (K 6.4)</text>
+              <text x="-240" y="-36">Calcium gluconate · insulin/glucose</text>
+              <text x="-240" y="-16">β-agonist · consider urgent dialysis</text>
+
+              <text x="-260" y="12" font-weight="800" fill="#5b21b6">Hemolysis</text>
+              <text x="-240" y="32">Supportive · monitor Hb · transfuse if severe</text>
+              <text x="-240" y="52">Watch for AKI from free Hb</text>
+
+              <text x="-260" y="80" font-weight="800" fill="#5b21b6">Hypotension</text>
+              <text x="-240" y="100">Fluids · hold further treatment until safe</text>
+            </g>
+          </g>
+
+          <!-- Bottom: prevention -->
+          <g transform="translate(700, 760)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">PREVENTION IS THE REAL ANSWER — DAILY TOTAL CHLORINE TESTING AFTER CARBON</text>
+            <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Chlorine &lt; 0.1 mg/L downstream of carbon is the single most important daily water safety check</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Carbon beds must be replaced on schedule and backwashed — exhaustion removes nothing</text>
+            <text x="0" y="46" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#64748b">If a unit sees 2+ simultaneous hemolysis cases, stop the unit before the third patient is connected</text>
+          </g>
+
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Dialysis Circuit Emergencies — Water, Dialysate, and Filter",
+  subtitle: "Water is the shared variable — a cluster of patients means the water or the dialysate is the problem",
+  badge: "NEPHROLOGY · HEMODIALYSIS · WATER SAFETY",
+  caseTitle: "Comprehensive module: every failure mode in the dialysis circuit",
+  caseDescription: "From municipal water to the patient's vein, every stage can fail. This module covers water treatment failures (chloramine, metals, endotoxin, aluminum, fluoride), dialysate preparation errors (electrolytes, temperature, conductivity), and dialyzer/circuit complications (Type A and B reactions, reuse, air embolism, clotting). The chloramine case is used as the anchor — sudden clustered hemolysis with an elevated total chlorine is the emergency you cannot miss.",
+  labChips: [
+    { text: "Chloramine: acute hemolysis", abnormal: true },
+    { text: "Aluminum: osteomalacia, dementia", abnormal: true },
+    { text: "Fluoride: arrhythmia, pruritus", abnormal: true },
+    { text: "Endotoxin: pyrogenic reaction", abnormal: true },
+    { text: "Dialysate >42°C: hemolysis", abnormal: true },
+    { text: "Type A reaction: anaphylaxis", abnormal: true },
+    { text: "Type B reaction: chest/back pain", abnormal: true },
+    { text: "Air embolism: catastrophic", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Water Failures",   className: "opt1" },
+    { id: "opt2", label: "🟣 Dialysate Errors",  className: "opt2" },
+    { id: "opt3", label: "🔵 Dialyzer & Circuit", className: "opt3" },
+    { id: "opt4", label: "🟡 Chloramine Case",   className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Water Treatment Failures",
+      infoRows: [
+        { k: "Chloramine",  v: "Acute hemolysis" },
+        { k: "Aluminum",    v: "Osteomalacia, dementia" },
+        { k: "Fluoride",    v: "Arrhythmia" },
+        { k: "Nitrate",     v: "Methemoglobinemia" },
+        { k: "Copper/zinc", v: "Hemolysis" },
+        { k: "Endotoxin",   v: "Pyrogenic reaction" }
+      ],
+      svgTitle: "Water Treatment Chain — Where It Fails",
+      svgSubtitle: "Softener → carbon → RO → deionizer → UV → loop → machine",
+      bannerBg: "#dc2626",
+      bannerText1: "Carbon removes chloramine — exhausted carbon lets it pass untouched",
+      bannerText2: "A cluster of patients always means the water or the dialysate is the problem",
+      panel1Title: "🧪 Which stage removes what",
+      panel1Tagline: "Each stage has a job",
+      panel1List: [
+        "<strong>Softener</strong> — removes calcium and magnesium",
+        "<strong>Carbon</strong> — removes chlorine and chloramine",
+        "<strong>RO membrane</strong> — removes bacteria, endotoxin, aluminum, most ions",
+        "<strong>Deionizer</strong> — removes residual anions including fluoride",
+        "<strong>UV</strong> — kills bacteria (does not remove endotoxin)",
+        "<strong>Loop</strong> — stagnation causes biofilm and endotoxin"
+      ],
+      panel2Title: "🧬 Chloramine — the emergency",
+      panel2Tagline: "The one you cannot miss",
+      panel2List: [
+        "Chloramine is a potent <strong>oxidant that crosses the dialyzer membrane</strong>",
+        "It oxidises haemoglobin and causes <strong>acute intravascular hemolysis</strong>",
+        "Labs: <strong>low Hb, high LDH, undetectable haptoglobin, pink-red plasma, DAT negative</strong>",
+        "Hyperkalemia from cell lysis can be fatal",
+        "<strong>Daily total chlorine testing downstream of carbon</strong> is the key preventive measure"
+      ],
+      alertIcon: "💧",
+      alertTitle: "The single most important safety check",
+      alertText: "A total chlorine level <strong>&lt; 0.1 mg/L downstream of the carbon filter</strong>, tested daily, is the most important routine safety check in the dialysis unit."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Dialysate Errors",
+      infoRows: [
+        { k: "Composition",   v: "Water + acid + bicarbonate" },
+        { k: "Temperature",   v: "36–37 °C target" },
+        { k: "Overheated",    v: ">42 °C → hemolysis" },
+        { k: "Underheated",   v: "<35 °C → hypothermia" },
+        { k: "Conductivity",  v: "Dual monitors required" },
+        { k: "Electrolytes",  v: "K · Na · Ca · Mg" }
+      ],
+      svgTitle: "Dialysate — Mixing, Temperature, Conductivity",
+      svgSubtitle: "The final dialysate is a precise mixture of water and two concentrates",
+      bannerBg: "#7c3aed",
+      bannerText1: "Dialysate errors are machine errors — multiple patients on the same system develop symptoms",
+      bannerText2: "Electrolyte, temperature, and conductivity failures each produce a distinct toxidrome",
+      panel1Title: "🔬 Electrolyte errors",
+      panel1Tagline: "Wrong mix, wrong ratio",
+      panel1List: [
+        "<strong>Hyperkalemia</strong> — arrhythmia, cardiac arrest",
+        "<strong>Hypokalemia</strong> — arrhythmia, weakness",
+        "<strong>Hyponatremia</strong> — fluid shift, confusion, seizures",
+        "<strong>Hypernatremia</strong> — thirst, neuro symptoms",
+        "<strong>Hypocalcemia</strong> — tetany, seizures",
+        "Always verify proportioning when a cluster develops"
+      ],
+      panel2Title: "🌡️ Temperature and conductivity",
+      panel2Tagline: "Two distinct failure modes",
+      panel2List: [
+        "<strong>Overheated dialysate (>42 °C)</strong> → severe hemolysis, hyperkalemia",
+        "<strong>Underheated dialysate (<35 °C)</strong> → hypothermia, chills, reduced clearance",
+        "<strong>Conductivity monitor failure</strong> → wrong-mix dialysate reaches the patient",
+        "Hypertonic mix → hypernatremia",
+        "Hypotonic mix → hyponatremia and hemolysis",
+        "Prevention: <strong>dual conductivity sensors</strong> and high-temperature cutoff alarms"
+      ],
+      alertIcon: "🌡️",
+      alertTitle: "36.5 °C is normal",
+      alertText: "In the chloramine case the dialysate temperature is normal — <strong>not</strong> the cause of hemolysis. The cause is the chloramine in the water."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Dialyzer and Circuit",
+      infoRows: [
+        { k: "Type A",       v: "Anaphylactic · 5–20 min" },
+        { k: "Type B",       v: "Anaphylactoid · 20–40 min" },
+        { k: "Type A cause", v: "Ethylene oxide · membrane" },
+        { k: "Type A Rx",    v: "Epinephrine · stop dialysis" },
+        { k: "Reuse",        v: "Disinfectant · membrane damage" },
+        { k: "Air embolism", v: "Loose port · empty bag" }
+      ],
+      svgTitle: "Dialyzer and Extracorporeal Circuit",
+      svgSubtitle: "Membrane bioincompatibility, reuse complications, air embolism, clotting",
+      bannerBg: "#0891b2",
+      bannerText1: "Type A is anaphylaxis — early, IgE-mediated, needs epinephrine",
+      bannerText2: "Type B is anaphylactoid — later, complement-driven, usually self-limiting",
+      panel1Title: "🔬 Dialyzer reactions",
+      panel1Tagline: "Type A vs Type B",
+      panel1List: [
+        "<strong>Type A</strong> — anaphylaxis, 5–20 min, bronchospasm, laryngeal edema, shock; often IgE to ethylene oxide or membrane",
+        "<strong>Type B</strong> — anaphylactoid, 20–40 min, chest/back pain, flushing, usually milder",
+        "<strong>Timing is the key discriminator</strong>",
+        "Type A needs <strong>epinephrine and immediate stop</strong>",
+        "Type B is usually managed supportively with membrane switch"
+      ],
+      panel2Title: "🔬 Reuse and circuit",
+      panel2Tagline: "Mechanical and chemical hazards",
+      panel2List: [
+        "<strong>Residual disinfectant</strong> — chemical or allergic reaction",
+        "<strong>Membrane damage from bleach</strong> — albumin leak",
+        "<strong>Pyrogen contamination</strong> — fever, chills",
+        "<strong>Air embolism</strong> — loose port, empty infusion bag, poor priming; catastrophic",
+        "<strong>Clotting</strong> — inadequate anticoagulation, poor flow",
+        "Always inspect the circuit, connectors, and reused dialyzer before treatment"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Timing narrows the diagnosis",
+      alertText: "Early (5–20 min) → Type A anaphylaxis. Mid (20–40 min) → Type B. Late or clustered across patients → water, dialysate, or membrane."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Chloramine Case — Emergency Response",
+      infoRows: [
+        { k: "Answer",       v: "E — Stop · do not return blood" },
+        { k: "Cluster",      v: "Water is the problem" },
+        { k: "Hemolysis",    v: "Intravascular, DAT negative" },
+        { k: "K 6.4",        v: "Life-threatening" },
+        { k: "Carbon",       v: "Failed — chloramine passes" },
+        { k: "Do not delay", v: "Act while confirming" }
+      ],
+      svgTitle: "Chloramine Case — Six Steps",
+      svgSubtitle: "Stop · do not return blood · treat hemolysis and hyperkalemia · suspend · restore · resume",
+      bannerBg: "#ca8a04",
+      bannerText1: "E — Stop dialysis immediately, do not return the contaminated blood, treat, and suspend the unit",
+      bannerText2: "Do not return the blood: it is already hemolyzed, still contains chloramine, and adds more potassium",
+      panel1Title: "✅ The six steps",
+      panel1Tagline: "In order",
+      panel1List: [
+        "<strong>1. Stop dialysis</strong> immediately",
+        "<strong>2. Do not return the blood</strong> — discard the circuit",
+        "<strong>3. Treat hemolysis and hyperkalemia</strong> — calcium, insulin/glucose, β-agonist",
+        "<strong>4. Suspend affected treatments</strong> until water safety is verified",
+        "<strong>5. Restore the carbon system</strong> and retest total chlorine",
+        "<strong>6. Resume only when verified</strong> &lt; 0.1 mg/L downstream of carbon"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a fatal error",
+      panel2List: [
+        "<strong>A — Reduce dialysate flow:</strong> exposure is not proportional only to duration; hemolysis is ongoing",
+        "<strong>B — Steroids:</strong> chloramine is an oxidant, not an allergen; steroids do nothing",
+        "<strong>C — Return the blood:</strong> delivers free Hb, K⁺, and chloramine back to the patient",
+        "<strong>D — IV iron:</strong> the anemia is hemolysis, not iron deficiency; iron does not help acutely",
+        "<strong>E — Stop, discard, treat, suspend:</strong> correct on all four counts"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: E",
+      alertText: "<strong>Stop dialysis, do not return the blood, treat the hemolysis and hyperkalemia, and suspend affected treatments until water safety is restored.</strong>"
+    }
+  },
+  comparison: {
+    title: "📊 Differential of Dialysis Circuit Emergencies",
+    sub: "Timing, clustering, and lab pattern separate the causes",
+    head: ["Cause", "Onset pattern", "Key clue", "Action"],
+    rows: [
+      { cells: ["Chloramine (water)", "Minutes · clusters", "Pink plasma · low Hb · K⁺ high · total chlorine elevated", "Stop · do not return blood · treat"], hero: true },
+      { cells: ["Overheated dialysate", "Minutes · same machine", "Dialysate temp > 42 °C", "Stop · cool dialysate · investigate"], hero: false },
+      { cells: ["Type A reaction", "5–20 min · first use", "Anaphylaxis · bronchospasm", "Epinephrine · stop dialysis"], hero: false },
+      { cells: ["Type B reaction", "20–40 min", "Chest/back pain · milder", "Supportive · switch membrane"], hero: false },
+      { cells: ["Endotoxin", "Hours · clusters", "Fever · chills · hypotension", "Stop · culture · replace filters"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 59M develops back pain, chest tightness, and dyspnea 40 min into dialysis. Two other patients on the same unit develop similar symptoms within minutes. Hb fell from 10.4 to 7.1, LDH 1850, haptoglobin undetectable, plasma pink-red, DAT negative, dialysate total chlorine elevated, carbon filter failed. What is the most appropriate immediate action?",
+      options: [
+        { text: "Stop dialysis, do not return blood, treat hemolysis and hyperkalemia, and suspend affected treatments until water safety is restored.", correct: true,
+          explanation: "Chloramine-induced hemolysis. Returning blood would deliver hemolyzed cells, potassium, and chloramine back to the patient. Stop, discard, treat, and suspend the unit." },
+        { text: "Reduce dialysate flow rate and continue.", correct: false,
+          explanation: "Chloramine exposure is not proportional only to duration — continuing any exposure prolongs hemolysis." },
+        { text: "Return the blood immediately to prevent blood loss.", correct: false,
+          explanation: "The blood is hemolyzed and still contains chloramine; returning it delivers more K⁺ and more oxidant." }
+      ]
+    },
+    {
+      question: "Which component of the water treatment system removes chloramine?",
+      options: [
+        { text: "Activated carbon filter.", correct: true,
+          explanation: "Carbon removes chlorine and chloramine by reduction. Exhausted carbon removes nothing." },
+        { text: "Reverse osmosis membrane.", correct: false,
+          explanation: "RO removes ions, bacteria, and endotoxin but not chloramine efficiently — carbon is the primary barrier." },
+        { text: "Ultraviolet lamp.", correct: false,
+          explanation: "UV kills bacteria; it does not remove chemical contaminants." }
+      ]
+    },
+    {
+      question: "Which dialysate temperature causes hemolysis?",
+      options: [
+        { text: "> 42 °C.", correct: true,
+          explanation: "Overheated dialysate causes thermal hemolysis and hyperkalemia. The target is 36–37 °C." },
+        { text: "35–37 °C.", correct: false,
+          explanation: "This is the normal target range." },
+        { text: "< 30 °C.", correct: false,
+          explanation: "Underheated dialysate causes hypothermia and reduced clearance, not hemolysis." }
+      ]
+    },
+    {
+      question: "A patient develops bronchospasm, laryngeal edema, and hypotension 10 minutes into dialysis with a new dialyzer. What type of reaction is this and what is the immediate treatment?",
+      options: [
+        { text: "Type A reaction — anaphylaxis; stop dialysis and give epinephrine.", correct: true,
+          explanation: "Type A reactions are IgE-mediated anaphylaxis occurring within 5–20 minutes, often on first use. Treatment is stop dialysis, epinephrine, antihistamine, supportive care." },
+        { text: "Type B reaction — anaphylactoid; supportive care only.", correct: false,
+          explanation: "Type B reactions occur later (20–40 min), are milder, and present with chest/back pain rather than anaphylaxis." },
+        { text: "Chloramine hemolysis; stop and treat hyperkalemia.", correct: false,
+          explanation: "The presentation is anaphylaxis, not hemolysis. Labs would show anemia and high LDH if it were hemolysis." }
+      ]
+    },
+    {
+      question: "Which water contaminant causes osteomalacia and dialysis dementia?",
+      options: [
+        { text: "Aluminum.", correct: true,
+          explanation: "Aluminum accumulates in bone and brain when RO fails, causing osteomalacia and dialysis encephalopathy." },
+        { text: "Chloramine.", correct: false,
+          explanation: "Chloramine causes acute hemolysis." },
+        { text: "Endotoxin.", correct: false,
+          explanation: "Endotoxin causes pyrogenic reactions (fever, chills)." }
+      ]
+    },
+    {
+      question: "Which finding most strongly suggests that a cluster of reactions is due to the water supply rather than the machine or the patient?",
+      options: [
+        { text: "Multiple patients in the unit developing similar symptoms at the same time.", correct: true,
+          explanation: "The water is the shared exposure. A cluster points to the water or dialysate, not an individual patient or a single machine." },
+        { text: "A single patient with hemolysis.", correct: false,
+          explanation: "A single case could be patient-specific. A cluster points to the water." },
+        { text: "Normal dialysate temperature.", correct: false,
+          explanation: "A normal temperature excludes one dialysate cause but does not point to the water." }
+      ]
+    },
+    {
+      question: "Why should the blood not be returned to the patient in chloramine-induced hemolysis?",
+      options: [
+        { text: "The blood is already hemolyzed, still contains chloramine, and has a high potassium load.", correct: true,
+          explanation: "Returning it delivers free haemoglobin, potassium, and residual oxidant. Discarding ~200–250 mL is safer." },
+        { text: "The blood is clotted and cannot be returned.", correct: false,
+          explanation: "Clotting is not the issue in chloramine hemolysis." },
+        { text: "Returning blood would cause a pyrogenic reaction.", correct: false,
+          explanation: "The concern is delivering hemolyzed cells, potassium, and chloramine, not pyrogen." }
+      ]
+    },
+    {
+      question: "What is the most important daily safety test for preventing chloramine hemolysis?",
+      options: [
+        { text: "Total chlorine level downstream of the carbon filter (< 0.1 mg/L).", correct: true,
+          explanation: "This is the single most important daily water safety check. Exhausted carbon removes nothing, so the downstream total chlorine must be tested daily." },
+        { text: "Dialysate conductivity.", correct: false,
+          explanation: "Conductivity is important but does not detect chloramine." },
+        { text: "Bacterial culture of the water loop.", correct: false,
+          explanation: "Culture detects bacteria, not chloramine. Both are important but the daily chlorine test is the chloramine check." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Hemodialysis / Water Safety",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

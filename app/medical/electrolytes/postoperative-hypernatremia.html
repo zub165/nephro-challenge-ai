@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Postoperative Hypernatremia — Central Diabetes Insipidus After CABG</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 170)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">POSTOPERATIVE HYPERNATREMIA AFTER CABG</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">Normal electrolytes on morning of surgery → Na 158 next morning</text>
+            <text x="0" y="50" text-anchor="middle" font-size="16" fill="#991b1b">Lethargic, unable to follow commands · Urine osmolality 160 mOsm/kg</text>
+          </g>
+
+          <!-- Patient card -->
+          <g transform="translate(250, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">SERUM SODIUM</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="52" font-weight="800" fill="#dc2626">158</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mEq/L</text>
+            <line x1="-160" y1="55" x2="160" y2="55" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="90" text-anchor="middle" font-size="15" fill="#7f1d1d">Normal AM of surgery</text>
+            <text x="0" y="115" text-anchor="middle" font-size="15" fill="#7f1d1d">Severe hypernatremia</text>
+            <text x="0" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Lethargic, confused</text>
+          </g>
+
+          <g transform="translate(700, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">URINE OSMOLALITY</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="52" font-weight="800" fill="#dc2626">160</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mOsm/kg</text>
+            <line x1="-160" y1="55" x2="160" y2="55" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="90" text-anchor="middle" font-size="15" fill="#7f1d1d">Should be &gt; 800</text>
+            <text x="0" y="115" text-anchor="middle" font-size="15" fill="#7f1d1d">in hypernatremia</text>
+            <text x="0" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Inappropriately dilute</text>
+          </g>
+
+          <g transform="translate(1150, 480)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#7c3aed"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">CLINICAL CONTEXT</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="28" font-weight="800" fill="#5b21b6">Post-CABG</text>
+            <text x="0" y="10" text-anchor="middle" font-size="15" font-weight="700" fill="#5b21b6">BP 130/80, no pressors</text>
+            <line x1="-160" y1="45" x2="160" y2="45" stroke="#ddd6fe" stroke-width="3"/>
+            <text x="0" y="80" text-anchor="middle" font-size="14" fill="#6d28d9">Pituitary ischemia risk</text>
+            <text x="0" y="105" text-anchor="middle" font-size="14" fill="#6d28d9">Post-op free water deficit</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">→ Central DI</text>
+          </g>
+
+          <g transform="translate(700, 780)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 HYPERNATREMIA + INAPPROPRIATELY DILUTE URINE</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">In a volume-replete, non-hypovolemic patient, this means ADH is missing or ineffective</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ Diabetes insipidus (central, in this post-cardiac surgery setting)</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Normal urine osmolality in hypernatremia: &gt; 800 · Here: 160 = DI</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — NORMAL vs CENTRAL DI
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">NORMAL ADH PHYSIOLOGY vs CENTRAL DIABETES INSIPIDUS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Posterior pituitary ischemia after cardiac surgery → loss of ADH secretion</text>
+          </g>
+
+          <!-- NORMAL -->
+          <g transform="translate(350, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">NORMAL</text>
+
+            <g transform="translate(0, -130)">
+              <rect x="-120" y="-30" width="240" height="60" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+              <text x="0" y="5" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">Hypothalamus</text>
+            </g>
+            <line x1="0" y1="-70" x2="0" y2="-25" stroke="#16a34a" stroke-width="4" marker-end="url(#arrowGreen)"/>
+
+            <g transform="translate(0, -10)">
+              <rect x="-120" y="-30" width="240" height="60" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+              <text x="0" y="5" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">Posterior pituitary</text>
+            </g>
+            <line x1="0" y1="20" x2="0" y2="55" stroke="#16a34a" stroke-width="4" marker-end="url(#arrowGreen)"/>
+
+            <g transform="translate(0, 90)">
+              <rect x="-120" y="-30" width="240" height="60" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+              <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">↑ ADH released</text>
+              <text x="0" y="15" text-anchor="middle" font-size="12" fill="#166534">in response to ↑ osmolality</text>
+            </g>
+            <line x1="0" y1="120" x2="0" y2="155" stroke="#16a34a" stroke-width="4" marker-end="url(#arrowGreen)"/>
+
+            <g transform="translate(0, 190)">
+              <rect x="-140" y="-30" width="280" height="60" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+              <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">Collecting duct: AQP2 inserted</text>
+              <text x="0" y="15" text-anchor="middle" font-size="12" fill="#166534">Water reabsorbed → concentrated urine</text>
+            </g>
+
+            <rect x="-260" y="220" width="520" height="50" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">Urine osm &gt; 800 mOsm/kg in hypernatremia</text>
+          </g>
+
+          <!-- CENTRAL DI -->
+          <g transform="translate(1050, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">CENTRAL DI</text>
+
+            <g transform="translate(0, -130)">
+              <rect x="-120" y="-30" width="240" height="60" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+              <text x="0" y="5" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">Hypothalamus</text>
+            </g>
+            <line x1="0" y1="-70" x2="0" y2="-25" stroke="#dc2626" stroke-width="4" stroke-dasharray="6 4"/>
+
+            <g transform="translate(0, -10)">
+              <rect x="-120" y="-30" width="240" height="60" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+              <text x="0" y="-5" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">Posterior pituitary</text>
+              <text x="0" y="15" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">ISCHEMIC INJURY</text>
+            </g>
+            <line x1="0" y1="20" x2="0" y2="55" stroke="#dc2626" stroke-width="4" stroke-dasharray="6 4"/>
+            <text x="-80" y="40" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">↓ ADH</text>
+
+            <g transform="translate(0, 90)">
+              <rect x="-120" y="-30" width="240" height="60" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+              <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">No ADH released</text>
+              <text x="0" y="15" text-anchor="middle" font-size="12" fill="#991b1b">despite hyperosmolality</text>
+            </g>
+            <line x1="0" y1="120" x2="0" y2="155" stroke="#dc2626" stroke-width="4" stroke-dasharray="6 4"/>
+
+            <g transform="translate(0, 190)">
+              <rect x="-140" y="-30" width="280" height="60" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+              <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">Collecting duct: no AQP2</text>
+              <text x="0" y="15" text-anchor="middle" font-size="12" fill="#991b1b">Water stays in urine → DILUTE</text>
+            </g>
+
+            <rect x="-260" y="220" width="520" height="50" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">Urine osm 160 mOsm/kg in hypernatremia</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Central DI: ischemic injury to posterior pituitary after cardiac surgery → ↓ ADH → dilute urine</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — CALCULATIONS
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">CALCULATIONS — DEFICIT AND ONGOING LOSSES</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Two components determine the replacement rate</text>
+          </g>
+
+          <!-- Free water deficit -->
+          <g transform="translate(700, 320)">
+            <rect x="-620" y="-100" width="1240" height="200" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-60" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">① FREE WATER DEFICIT — the "stock" problem</text>
+            <text x="0" y="-15" text-anchor="middle" font-size="22" font-weight="800" fill="#0f172a">Deficit = TBW × [ (Na / 140) − 1 ]</text>
+            <text x="0" y="25" text-anchor="middle" font-size="16" fill="#0e7490">TBW ≈ 0.6 × weight · Assuming ~70 kg → TBW ≈ 42 L</text>
+            <text x="0" y="58" text-anchor="middle" font-size="18" font-weight="800" fill="#155e75">42 × [ (158/140) − 1 ] = 42 × 0.128 ≈ 5.4 L</text>
+            <text x="0" y="85" text-anchor="middle" font-size="14" font-style="italic" fill="#155e75">Correct over 48 h → ~2.7 L/day free water just for the deficit</text>
+          </g>
+
+          <!-- Free water clearance -->
+          <g transform="translate(700, 570)">
+            <rect x="-620" y="-120" width="1240" height="240" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">② ONGOING FREE WATER LOSSES — the "flow" problem</text>
+            <text x="0" y="-35" text-anchor="middle" font-size="22" font-weight="800" fill="#0f172a">C_eH₂O = V × [ 1 − (U_osm / P_osm) ]</text>
+            <text x="0" y="5" text-anchor="middle" font-size="16" fill="#6d28d9">P_osm ≈ 2 × Na + glucose/18 + BUN/2.8 ≈ 2×158 + 5.6 + 10.7 ≈ 332 mOsm/kg</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" fill="#6d28d9">Assuming V = 100 mL/h (may be far higher in DI)</text>
+            <text x="0" y="70" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">C_eH₂O = 100 × [ 1 − (160/332) ] ≈ 100 × 0.518 ≈ 52 mL/h free water loss</text>
+            <text x="0" y="100" text-anchor="middle" font-size="14" font-style="italic" fill="#5b21b6">Real V could be 200–400 mL/h in central DI → losses much larger</text>
+          </g>
+
+          <!-- Combined -->
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-65" width="1240" height="130" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">③ TOTAL FREE WATER REPLACEMENT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#15803d">Deficit correction (~110 mL/h) + ongoing losses (~50–200 mL/h) = ~150–350 mL/h</text>
+            <text x="0" y="40" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">D5W 300 mL/h provides 300 mL/h of pure free water → matches requirements</text>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Deficit ~5.4 L + ongoing losses ~50–200 mL/h → D5W at 300 mL/h is appropriate</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 170)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER: D — GIVE 5% DEXTROSE AT 300 mL/h</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#15803d">Central DI with severe hypernatremia and ongoing dilute urine output</text>
+            <text x="0" y="50" text-anchor="middle" font-size="16" fill="#15803d">D5W provides 100% free water to correct the deficit and match ongoing losses</text>
+          </g>
+
+          <g transform="translate(700, 350)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Give 5% dextrose at 300 mL/h</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">100% free water — corrects deficit and matches ongoing DI losses</text>
+          </g>
+
+          <g transform="translate(700, 490)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Water deprivation test</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Contraindicated in severe symptomatic hypernatremia — would worsen the condition</text>
+          </g>
+
+          <g transform="translate(700, 620)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Give 1-L bolus of 0.9% saline</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Isotonic saline (Na 154) will not correct hypernatremia and may worsen it</text>
+          </g>
+
+          <g transform="translate(700, 750)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Give 0.45% saline at 100 mL/h</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Only 50 mL/h free water — matches ongoing losses but does not correct the 5.4 L deficit</text>
+          </g>
+
+          <g transform="translate(700, 900)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#0f172a"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Rate of correction: ≤ 10 mEq/L / 24 h to avoid cerebral edema</text>
+            <text x="0" y="18" text-anchor="middle" font-size="15" fill="#cbd5e1">Check Na q4–6h; target drop ~10 mEq/L in 24 h</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Postoperative Hypernatremia — Central Diabetes Insipidus After CABG",
+  subtitle: "Hypernatremia + inappropriately dilute urine = DI → free water replacement with D5W",
+  badge: "NEPHROLOGY · CRITICAL CARE · ENDOCRINOLOGY",
+  caseTitle: "Case: 60-year-old man with bipolar disease, post-CABG, lethargic and hypernatremic",
+  caseDescription: "Normal electrolytes on the morning of elective CABG. Next morning: BP 130/80 without pressors, oxygenating well on ventilator, but lethargic and unable to follow commands without localizing signs. Na 158, K 4.0, Cl 100, CO2 24, BUN 30, Cr 1.4, glucose 100. Urine osmolality 160 mOsm/kg, urine creatinine 20 mg/dL.",
+  labChips: [
+    { text: "Na⁺ 158 mEq/L", abnormal: true },
+    { text: "K⁺ 4.0 mEq/L", abnormal: false },
+    { text: "Cl⁻ 100 mEq/L", abnormal: false },
+    { text: "CO₂ 24 mEq/L", abnormal: false },
+    { text: "BUN 30 mg/dL", abnormal: true },
+    { text: "Cr 1.4 mg/dL", abnormal: true },
+    { text: "Glucose 100 mg/dL", abnormal: false },
+    { text: "Urine osm 160 mOsm/kg", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Central DI Physiology", className: "opt2" },
+    { id: "opt3", label: "🔵 Calculations", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Postoperative Hypernatremia — The Case",
+      infoRows: [
+        { k: "Serum Na⁺", v: "158 mEq/L" },
+        { k: "Urine osm", v: "160 mOsm/kg (dilute)" },
+        { k: "Expected urine osm", v: "> 800 in hypernatremia" },
+        { k: "Clinical state", v: "Lethargic, hemodynamically stable" },
+        { k: "Diagnosis", v: "Central diabetes insipidus" }
+      ],
+      svgTitle: "Postoperative Hypernatremia After CABG",
+      svgSubtitle: "Normal electrolytes morning of surgery → Na 158 next morning with dilute urine",
+      bannerBg: "#dc2626",
+      bannerText1: "Normal urine osmolality in hypernatremia: > 800 · Here: 160 = DI",
+      bannerText2: "Posterior pituitary ischemia after cardiac surgery → loss of ADH",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the numbers tell you",
+      panel1List: [
+        "<strong>Na⁺ 158</strong> — severe hypernatremia developing over ~24 h",
+        "<strong>Urine osmolality 160</strong> — inappropriately dilute; should be >800 in hypernatremia",
+        "<strong>Urine creatinine 20 mg/dL</strong> — adequate concentrating ability but no water reabsorption",
+        "<strong>Hemodynamically stable (BP 130/80, no pressors)</strong> — not hypovolemic, so this is not simply a water deficit from poor intake",
+        "<strong>Lethargic without localizing signs</strong> — consistent with hypernatremic encephalopathy"
+      ],
+      panel2Title: "🧬 Why central DI after CABG?",
+      panel2Tagline: "The surgical context",
+      panel2List: [
+        "Cardiac surgery can cause <strong>transient pituitary ischemia</strong> → ↓ ADH release",
+        "<strong>Central DI</strong> is an uncommon but recognized complication of CABG",
+        "Postoperative fluid shifts and <strong>inadequate free water replacement</strong> compound the deficit",
+        "The rapid rise in Na⁺ (normal in the morning → 158 the next day) reflects both <strong>new-onset DI</strong> and <strong>free water deficit</strong>",
+        "Bipolar disease history and medications may also affect thirst and water intake — but the dilute urine is the diagnostic clue"
+      ],
+      alertIcon: "🧠",
+      alertTitle: "Board Pearl — Hypernatremia + dilute urine = DI",
+      alertText: "In any hypernatremic patient, if the urine is <strong>inappropriately dilute (osm < 300)</strong>, the diagnosis is <strong>diabetes insipidus</strong> until proven otherwise. In a post-cardiac surgery patient, think <strong>central DI from pituitary ischemia</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Central DI Physiology",
+      infoRows: [
+        { k: "Source of ADH", v: "Hypothalamus → posterior pituitary" },
+        { k: "Target", v: "Collecting duct V2 receptors" },
+        { k: "Effect", v: "AQP2 insertion → water reabsorption" },
+        { k: "In central DI", v: "↓ ADH → no AQP2 → dilute urine" },
+        { k: "After CABG", v: "Pituitary ischemia" }
+      ],
+      svgTitle: "Central Diabetes Insipidus — Physiology",
+      svgSubtitle: "Normal ADH signaling vs loss of ADH from pituitary ischemia",
+      bannerBg: "#7c3aed",
+      bannerText1: "Central DI: ischemic injury to posterior pituitary → ↓ ADH → dilute urine",
+      bannerText2: "Normal AQP2 insertion requires ADH — without it, water stays in the urine",
+      panel1Title: "🔬 Normal ADH physiology",
+      panel1Tagline: "How the kidney concentrates urine",
+      panel1List: [
+        "<strong>Hypothalamus</strong> synthesizes ADH (vasopressin)",
+        "ADH is transported to and released from the <strong>posterior pituitary</strong>",
+        "ADH binds <strong>V2 receptors</strong> on the basolateral membrane of collecting duct cells",
+        "This triggers <strong>AQP2 insertion</strong> on the apical membrane",
+        "<strong>Water is reabsorbed</strong> → concentrated urine (osm >800 in hypernatremia)"
+      ],
+      panel2Title: "🔬 Central DI after cardiac surgery",
+      panel2Tagline: "Why it happens in this patient",
+      panel2List: [
+        "<strong>Pituitary ischemia</strong> from intraoperative hypotension, embolism, or hypoperfusion",
+        "Damage to the <strong>posterior pituitary</strong> → ↓ ADH release",
+        "Without ADH, <strong>AQP2 is not inserted</strong> → collecting duct is impermeable to water",
+        "<strong>Dilute urine</strong> (osm 160 here) despite hypernatremia — the diagnostic clue",
+        "Often <strong>transient</strong> after cardiac surgery, but can be permanent"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — The urine osmolality makes the diagnosis",
+      alertText: "In hypernatremia, the kidney should produce <strong>concentrated urine (osm > 800)</strong>. A urine osm of <strong>160</strong> means ADH is missing or ineffective. In a post-cardiac surgery patient, this is <strong>central DI</strong>."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Calculations — Deficit and Ongoing Losses",
+      infoRows: [
+        { k: "TBW (assume 70 kg)", v: "~42 L" },
+        { k: "Free water deficit", v: "~5.4 L" },
+        { k: "Ongoing loss (est.)", v: "~50–200 mL/h" },
+        { k: "Correction rate", v: "~110 mL/h deficit" },
+        { k: "Total D5W", v: "~150–350 mL/h" }
+      ],
+      svgTitle: "Calculations — Free Water Deficit and Ongoing Losses",
+      svgSubtitle: "Two components determine the replacement rate",
+      bannerBg: "#0891b2",
+      bannerText1: "Deficit ~5.4 L + ongoing losses ~50–200 mL/h → D5W at 300 mL/h is appropriate",
+      bannerText2: "Correct Na⁺ at ≤10 mEq/L per 24 h to avoid cerebral edema",
+      panel1Title: "🧮 Free water deficit (the \"stock\" problem)",
+      panel1Tagline: "How much water is missing",
+      panel1List: [
+        "<strong>TBW ≈ 0.6 × weight</strong> — assume ~70 kg → 42 L",
+        "<strong>Deficit = TBW × [(Na / 140) − 1]</strong>",
+        "<strong>42 × [(158/140) − 1] = 42 × 0.128 ≈ 5.4 L</strong>",
+        "Correct over <strong>48 h</strong> → ~2.7 L/day → ~110 mL/h of free water just for the deficit",
+        "This is the baseline replacement rate needed"
+      ],
+      panel2Title: "🧮 Ongoing free water losses (the \"flow\" problem)",
+      panel2Tagline: "How much water is being lost right now",
+      panel2List: [
+        "<strong>C_eH₂O = V × [1 − (U_osm / P_osm)]</strong>",
+        "<strong>P_osm</strong> ≈ 2×Na + glucose/18 + BUN/2.8 ≈ <strong>332 mOsm/kg</strong>",
+        "Assuming V = 100 mL/h: C_eH₂O = 100 × [1 − (160/332)] ≈ <strong>52 mL/h</strong>",
+        "In central DI, V can be <strong>200–400 mL/h</strong> → losses far larger",
+        "<strong>Total replacement ≈ 110 (deficit) + 50–200 (ongoing) = 150–350 mL/h</strong>",
+        "<strong>D5W at 300 mL/h</strong> provides 300 mL/h of pure free water — matches requirements"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Match the replacement to both the deficit and ongoing losses",
+      alertText: "Replacing only ongoing losses leaves the <strong>5.4 L deficit uncorrected</strong>. Replacing only the deficit fails to keep up with <strong>ongoing DI losses</strong>. The total replacement must account for both."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "D — D5W at 300 mL/h" },
+        { k: "Why D5W", v: "100% free water" },
+        { k: "Deficit", v: "~5.4 L to correct over 48 h" },
+        { k: "Ongoing losses", v: "~50–200 mL/h" },
+        { k: "Correction rate", v: "≤10 mEq/L per 24 h" }
+      ],
+      svgTitle: "Answer Summary — D5W at 300 mL/h",
+      svgSubtitle: "100% free water corrects the deficit and matches ongoing DI losses",
+      bannerBg: "#ca8a04",
+      bannerText1: "D — Give 5% dextrose at 300 mL/h",
+      bannerText2: "D5W provides pure free water — best choice for hypernatremia with ongoing DI losses",
+      panel1Title: "✅ The correct answer (D)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>D5W is 100% free water</strong> — the most efficient way to correct hypernatremia",
+        "Provides <strong>300 mL/h</strong> — enough to correct the ~5.4 L deficit over 48 h and match ongoing DI losses",
+        "Does not add sodium — safe in hypernatremia",
+        "After the dextrose is metabolized, only free water remains",
+        "<strong>Target rate of correction:</strong> ≤10 mEq/L per 24 h to avoid cerebral edema"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (Water deprivation test):</strong> Contraindicated in severe hypernatremia — would worsen the condition",
+        "<strong>B (1 L bolus 0.9% saline):</strong> Isotonic saline (Na 154) does not correct hypernatremia and may worsen it. No indication for bolus in a hemodynamically stable patient",
+        "<strong>C (0.45% saline at 100 mL/h):</strong> Only ~50 mL/h free water — matches ongoing losses but does not correct the ~5.4 L deficit",
+        "<strong>D5W at 300 mL/h is the only option that corrects both the deficit and the ongoing DI losses</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>Give 5% dextrose at 300 mL/h.</strong> D5W provides 100% free water to correct the ~5.4 L deficit and match ongoing DI losses. Target Na⁺ correction ≤10 mEq/L/24 h."
+    }
+  },
+  comparison: {
+    title: "📊 Management Options for Postoperative Hypernatremia with DI",
+    sub: "Each option judged against the deficits and ongoing losses",
+    head: ["Option", "Free water delivered", "Corrects deficit?", "Matches losses?", "Verdict"],
+    rows: [
+      { cells: ["A: Water deprivation test", "None (diagnostic test)", "No", "No", '<span class="verdict-bad">✗ Contraindicated</span> — dangerous'], hero: false },
+      { cells: ["B: 1-L bolus 0.9% saline", "0 mL free water", "No — adds Na⁺", "No", '<span class="verdict-bad">✗ Wrong fluid</span> — worsens Na⁺'], hero: false },
+      { cells: ["C: 0.45% saline at 100 mL/h", "50 mL/h", "No — insufficient", "Marginally", '<span class="verdict-bad">✗ Too slow</span> — deficit uncorrected'], hero: false },
+      { cells: ["D: D5W at 300 mL/h (correct)", "300 mL/h", "Yes — over 48 h", "Yes", '<span class="verdict-good">✓ Correct</span> — best option'], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 60-year-old man post-CABG is lethargic with Na 158, normal K and glucose, and urine osmolality 160 mOsm/kg. BP is 130/80 without pressors. What is the best next step?",
+      options: [
+        { text: "Give 5% dextrose at 300 mL/h.", correct: true,
+          explanation: "This is central DI (hypernatremia with inappropriately dilute urine). D5W provides 100% free water to correct the ~5.4 L deficit and match ongoing DI losses, while targeting Na correction ≤10 mEq/L/24 h." },
+        { text: "Give 1-L bolus of 0.9% saline.", correct: false,
+          explanation: "The patient is hemodynamically stable. Isotonic saline adds sodium and would worsen hypernatremia." },
+        { text: "Give 0.45% saline at 100 mL/h.", correct: false,
+          explanation: "This provides only ~50 mL/h free water — it matches ongoing losses but does not correct the large deficit." }
+      ]
+    },
+    {
+      question: "What urine osmolality is expected in a patient with hypernatremia and intact ADH function?",
+      options: [
+        { text: "Greater than 800 mOsm/kg.", correct: true,
+          explanation: "In hypernatremia, the kidney should maximally concentrate urine to conserve water — urine osmolality should be well above 800 mOsm/kg. A low urine osmolality suggests DI." },
+        { text: "Around 160 mOsm/kg.", correct: false,
+          explanation: "This is the inappropriately dilute value seen in DI — not what you expect with intact ADH." },
+        { text: "Around 300 mOsm/kg (iso-osmolar to plasma).", correct: false,
+          explanation: "This would still be inappropriately dilute in the setting of hypernatremia." }
+      ]
+    },
+    {
+      question: "What is the classic mechanism of central DI after cardiac surgery?",
+      options: [
+        { text: "Ischemic injury to the posterior pituitary with ↓ ADH release.", correct: true,
+          explanation: "Cardiac surgery can cause transient pituitary ischemia, impairing ADH release. This leads to central DI with dilute urine despite hypernatremia." },
+        { text: "Autoimmune destruction of the pituitary.", correct: false,
+          explanation: "Autoimmune hypophysitis is a separate entity — not the typical mechanism after cardiac surgery." },
+        { text: "Renal resistance to ADH.", correct: false,
+          explanation: "Renal resistance is nephrogenic DI — the mechanism here is central (pituitary)." }
+      ]
+    },
+    {
+      question: "What is the safe rate of sodium correction in chronic hypernatremia?",
+      options: [
+        { text: "≤10 mEq/L per 24 hours.", correct: true,
+          explanation: "Rapid correction of hypernatremia risks cerebral edema. The safe ceiling is ≤10 mEq/L per 24 h." },
+        { text: "Normalize within 6 hours.", correct: false,
+          explanation: "This is dangerous and can cause cerebral edema, seizures, or death." },
+        { text: "≤30 mEq/L per 24 hours.", correct: false,
+          explanation: "This is far above the safe limit." }
+      ]
+    },
+    {
+      question: "Why is a water deprivation test contraindicated in this patient?",
+      options: [
+        { text: "The patient is already severely hypernatremic and symptomatic — deprivation would worsen the condition.", correct: true,
+          explanation: "A water deprivation test is used to diagnose DI in stable, non-hypernatremic patients. In a severely hypernatremic, symptomatic patient, further water restriction is dangerous and the diagnosis is already clear from the labs." },
+        { text: "The test requires a working pituitary gland.", correct: false,
+          explanation: "The test assesses the response to deprivation — a non-functioning pituitary is not a contraindication to the test itself." },
+        { text: "The patient has bipolar disease.", correct: false,
+          explanation: "Bipolar disease is not a contraindication to a water deprivation test." }
+      ]
+    },
+    {
+      question: "Which fluid provides 100% free water?",
+      options: [
+        { text: "5% dextrose in water (D5W).", correct: true,
+          explanation: "D5W provides 100% free water once the dextrose is metabolized, making it the most efficient fluid for correcting hypernatremia." },
+        { text: "0.9% saline.", correct: false,
+          explanation: "Isotonic saline contains 154 mEq/L of sodium and provides no free water." },
+        { text: "Lactated Ringer's.", correct: false,
+          explanation: "LR contains sodium and other electrolytes — it is not a source of free water." }
+      ]
+    },
+    {
+      question: "How does D5W correct hypernatremia?",
+      options: [
+        { text: "After the dextrose is metabolized, only free water remains — this dilutes the serum sodium.", correct: true,
+          explanation: "The dextrose is rapidly taken up by cells, leaving pure water to distribute across total body water and dilute the serum sodium." },
+        { text: "It causes osmotic diuresis to lower sodium.", correct: false,
+          explanation: "D5W does not cause osmotic diuresis — it provides free water." },
+        { text: "It increases urinary sodium excretion.", correct: false,
+          explanation: "D5W does not directly affect urinary sodium excretion." }
+      ]
+    },
+    {
+      question: "What is the primary deficit calculation for hypernatremia?",
+      options: [
+        { text: "Free water deficit = TBW × [(Na / 140) − 1].", correct: true,
+          explanation: "This formula estimates the free water deficit in liters based on total body water and the patient's sodium relative to normal (140 mEq/L)." },
+        { text: "Free water deficit = 0.6 × weight.", correct: false,
+          explanation: "0.6 × weight estimates TBW, not the deficit." },
+        { text: "Free water deficit = Na × TBW.", correct: false,
+          explanation: "This is not the correct formula." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Critical Care / Endocrinology",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

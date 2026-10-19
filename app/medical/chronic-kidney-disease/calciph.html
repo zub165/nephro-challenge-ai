@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calciphylaxis — Warfarin and Matrix Gla Protein</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">CALCIPHYLAXIS — CALCIFIC UREMIC ARTERIOLOPATHY</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">ESKD on HD · painful retiform purpura · skin biopsy: calcified dermal arterioles</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Ca 9.8 · Phos 6.8 · PTH 780 · Albumin 2.6 · INR 2.4</text>
+          </g>
+
+          <!-- Three risk factor cards -->
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">MINERAL BURDEN</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="30" font-weight="800" fill="#dc2626">Phos 6.8</text>
+            <text x="0" y="10" text-anchor="middle" font-size="30" font-weight="800" fill="#dc2626">PTH 780</text>
+            <line x1="-160" y1="45" x2="160" y2="45" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="80" text-anchor="middle" font-size="15" fill="#7f1d1d">Hyperphosphatemia</text>
+            <text x="0" y="105" text-anchor="middle" font-size="15" fill="#7f1d1d">Secondary hyperPTH</text>
+            <text x="0" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Drives Ca × P deposition</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">LOW ALBUMIN</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">2.6</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">g/dL</text>
+            <line x1="-160" y1="45" x2="160" y2="45" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="80" text-anchor="middle" font-size="15" fill="#7f1d1d">Malnutrition</text>
+            <text x="0" y="105" text-anchor="middle" font-size="15" fill="#7f1d1d">Inflammation</text>
+            <text x="0" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Independent risk factor</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">WARFARIN</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">INR 2.4</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">On warfarin</text>
+            <line x1="-160" y1="45" x2="160" y2="45" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="80" text-anchor="middle" font-size="15" fill="#7f1d1d">Inhibits vitamin K</text>
+            <text x="0" y="105" text-anchor="middle" font-size="15" fill="#7f1d1d">→ ↓ MGP carboxylation</text>
+            <text x="0" y="135" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">MODIFIABLE risk factor</text>
+          </g>
+
+          <!-- Key teaching -->
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 WARFARIN INHIBITS MGP CARBOXYLATION</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">Matrix Gla protein (MGP) is a vitamin K-dependent inhibitor of vascular calcification</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">Without carboxylation, MGP is inactive → vascular calcification → calciphylaxis</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Warfarin → inactive MGP → vascular calcification → calciphylaxis</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — WARFARIN MECHANISM
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">WARFARIN AND MATRIX GLA PROTEIN (MGP)</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">The mechanism linking warfarin to calciphylaxis</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(700, 290)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">① NORMAL VITAMIN K CYCLE</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#0e7490">Vitamin K epoxide → Vitamin K (reduced) → γ-carboxylation of MGP</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#155e75">This reaction is catalyzed by VKORC1</text>
+          </g>
+
+          <line x1="700" y1="360" x2="700" y2="400" stroke="#0891b2" stroke-width="6" marker-end="url(#arrowAccent3)"/>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 490)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#991b1b">② WARFARIN INHIBITS VKORC1</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#7f1d1d">Warfarin blocks the regeneration of reduced vitamin K</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">→ MGP cannot be carboxylated → inactive MGP</text>
+          </g>
+
+          <line x1="700" y1="560" x2="700" y2="600" stroke="#dc2626" stroke-width="6" marker-end="url(#arrowAccent1)"/>
+
+          <!-- Step 3 -->
+          <g transform="translate(700, 690)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#713f12">③ VASCULAR CALCIFICATION</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#a16207">Uncarboxylated MGP cannot bind calcium or inhibit calcification</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#713f12">→ Calcium deposits in arterioles → calciphylaxis</text>
+          </g>
+
+          <line x1="700" y1="760" x2="700" y2="800" stroke="#ca8a04" stroke-width="6" marker-end="url(#arrowAccent4)"/>
+
+          <!-- Answer -->
+          <g transform="translate(700, 890)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">✅ ANSWER C — Warfarin inhibits MGP carboxylation</text>
+            <text x="0" y="18" text-anchor="middle" font-size="16" fill="#15803d">Reduces MGP's ability to inhibit vascular calcification</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — RISK FACTORS AND MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">CALCIPHYLAXIS — RISK FACTORS AND MANAGEMENT</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Modify what you can — especially warfarin</text>
+          </g>
+
+          <!-- Risk factors -->
+          <g transform="translate(350, 500)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">RISK FACTORS</text>
+
+            <g font-size="17">
+              <text x="-260" y="-160" font-weight="700" fill="#991b1b">🔴 ESKD on dialysis</text>
+              <text x="-260" y="-125" font-weight="700" fill="#991b1b">🔴 Hyperphosphatemia (Phos 6.8)</text>
+              <text x="-260" y="-90" font-weight="700" fill="#991b1b">🔴 Secondary hyperPTH (PTH 780)</text>
+              <text x="-260" y="-55" font-weight="700" fill="#991b1b">🔴 Elevated Ca × P product</text>
+              <text x="-260" y="-20" font-weight="800" fill="#5b21b6">🟣 WARFARIN USE</text>
+              <text x="-260" y="15" font-weight="700" fill="#991b1b">🔴 Low albumin (2.6)</text>
+              <text x="-260" y="50" font-weight="700" fill="#991b1b">🔴 Female sex</text>
+              <text x="-260" y="85" font-weight="700" fill="#991b1b">🔴 Obesity</text>
+              <text x="-260" y="120" font-weight="700" fill="#991b1b">🔴 Diabetes</text>
+            </g>
+
+            <rect x="-260" y="160" width="520" height="80" rx="12" fill="#fff" stroke="#5b21b6" stroke-width="3"/>
+            <text x="0" y="190" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">Warfarin is MODIFIABLE</text>
+            <text x="0" y="218" text-anchor="middle" font-size="14" fill="#6d28d9">Consider switching to DOAC or alternative</text>
+          </g>
+
+          <!-- Management -->
+          <g transform="translate(1050, 500)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">MANAGEMENT</text>
+
+            <g font-size="16">
+              <text x="-260" y="-160" font-weight="800" fill="#166534">1. STOP WARFARIN if possible</text>
+              <text x="-260" y="-130" font-weight="700" fill="#15803d">   Switch to DOAC or alternative</text>
+              <text x="-260" y="-95" font-weight="800" fill="#166534">2. LOWER PHOSPHATE</text>
+              <text x="-260" y="-65" font-weight="700" fill="#15803d">   Diet, binders, dialysis</text>
+              <text x="-260" y="-30" font-weight="800" fill="#166534">3. CORRECT Ca × P product</text>
+              <text x="-260" y="0" font-weight="700" fill="#15803d">   Cinacalcet, vitamin D analogs</text>
+              <text x="-260" y="35" font-weight="800" fill="#166534">4. SODIUM THIOSULFATE</text>
+              <text x="-260" y="65" font-weight="700" fill="#15803d">   First-line therapy for calciphylaxis</text>
+              <text x="-260" y="100" font-weight="800" fill="#166534">5. WOUND CARE</text>
+              <text x="-260" y="130" font-weight="700" fill="#15803d">   Debridement, avoid trauma</text>
+            </g>
+
+            <rect x="-260" y="170" width="520" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="200" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">Mortality: 60–80% at 1 year</text>
+            <text x="0" y="228" text-anchor="middle" font-size="14" fill="#15803d">Early recognition and treatment are critical</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Stop warfarin, lower phosphate, sodium thiosulfate, wound care</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Answer -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER C</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Warfarin inhibits vitamin K–dependent carboxylation of matrix Gla protein</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Reducing its ability to inhibit vascular calcification</text>
+          </g>
+
+          <!-- Option cards -->
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Warfarin inhibits MGP carboxylation</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Uncarboxylated MGP cannot inhibit vascular calcification</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Warfarin does NOT activate vitamin D receptors</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Warfarin has no effect on intestinal phosphate absorption</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Warfarin does NOT stimulate osteoclasts</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Warfarin does not directly affect bone resorption</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Warfarin does NOT act on TRPV5 channels</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Warfarin does not affect renal calcium reabsorption</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Warfarin does NOT cause hypercalcemia</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Calciphylaxis occurs through MGP inhibition, independent of calcium levels</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: C — Warfarin inhibits MGP carboxylation</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Calciphylaxis — Warfarin and Matrix Gla Protein",
+  subtitle: "Warfarin inhibits MGP carboxylation, reducing its ability to prevent vascular calcification",
+  badge: "NEPHROLOGY · DERMATOLOGY · VASCULAR CALCIFICATION",
+  caseTitle: "Case: 63-year-old woman with ESKD on hemodialysis with calciphylaxis",
+  caseDescription: "ESKD on maintenance HD presents with severe pain and progressive skin lesions on thighs and abdomen. Skin exam: painful retiform purpura with central necrosis. Biopsy: calcification of small dermal arterioles with intimal proliferation and thrombosis. Labs: Ca 9.8, Phos 6.8, PTH 780, albumin 2.6, INR 2.4. Medications: warfarin, calcium acetate, calcitriol.",
+  labChips: [
+    { text: "Ca 9.8 mg/dL", abnormal: false },
+    { text: "Phos 6.8 mg/dL", abnormal: true },
+    { text: "PTH 780 pg/mL", abnormal: true },
+    { text: "Albumin 2.6 g/dL", abnormal: true },
+    { text: "INR 2.4", abnormal: true },
+    { text: "Warfarin use", abnormal: true },
+    { text: "Retiform purpura", abnormal: true },
+    { text: "Dermal arteriole calcification", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Warfarin → MGP", className: "opt2" },
+    { id: "opt3", label: "🔵 Risk Factors & Rx", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Calciphylaxis — The Case",
+      infoRows: [
+        { k: "Diagnosis", v: "Calciphylaxis (CUA)" },
+        { k: "Skin", v: "Retiform purpura, necrosis" },
+        { k: "Biopsy", v: "Calcified dermal arterioles" },
+        { k: "Phos", v: "6.8 mg/dL (high)" },
+        { k: "PTH", v: "780 pg/mL (high)" }
+      ],
+      svgTitle: "Calciphylaxis — Calcific Uremic Arteriolopathy",
+      svgSubtitle: "Painful retiform purpura · calcified dermal arterioles · ESKD on HD",
+      bannerBg: "#dc2626",
+      bannerText1: "Calciphylaxis = calcification of small dermal arterioles → ischemia → necrosis",
+      bannerText2: "Risk factors: ESKD, hyperphosphatemia, hyperPTH, low albumin, warfarin",
+      panel1Title: "🧪 What is calciphylaxis?",
+      panel1Tagline: "Calcific uremic arteriolopathy",
+      panel1List: [
+        "<strong>Calciphylaxis</strong> — calcification of small dermal and subcutaneous arterioles",
+        "Leads to <strong>intimal proliferation and thrombosis</strong> → tissue ischemia",
+        "Clinical: <strong>painful retiform purpura with central necrosis</strong>",
+        "Almost exclusively seen in <strong>ESKD patients</strong>",
+        "Mortality is <strong>60–80% at 1 year</strong> — early recognition is critical"
+      ],
+      panel2Title: "🧬 Risk factors in this patient",
+      panel2Tagline: "Multiple hits",
+      panel2List: [
+        "<strong>ESKD on hemodialysis</strong> — the strongest risk factor",
+        "<strong>Hyperphosphatemia (6.8)</strong> — drives calcium-phosphate deposition",
+        "<strong>Secondary hyperparathyroidism (PTH 780)</strong> — promotes vascular calcification",
+        "<strong>Low albumin (2.6)</strong> — malnutrition/inflammation marker",
+        "<strong>Warfarin use (INR 2.4)</strong> — inhibits MGP carboxylation"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Board Pearl — Warfarin is modifiable",
+      alertText: "Warfarin is a <strong>modifiable risk factor</strong> for calciphylaxis. When possible, <strong>switch to a DOAC or alternative anticoagulation</strong> to reduce the risk."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Warfarin → MGP Mechanism",
+      infoRows: [
+        { k: "Warfarin target", v: "VKORC1" },
+        { k: "Effect", v: "↓ Vitamin K regeneration" },
+        { k: "MGP", v: "Vitamin K-dependent protein" },
+        { k: "Without carboxylation", v: "MGP is inactive" },
+        { k: "Result", v: "Vascular calcification" }
+      ],
+      svgTitle: "Warfarin and Matrix Gla Protein (MGP)",
+      svgSubtitle: "The mechanism linking warfarin to calciphylaxis",
+      bannerBg: "#7c3aed",
+      bannerText1: "Warfarin → VKORC1 inhibition → ↓ vitamin K → uncarboxylated MGP → calcification",
+      bannerText2: "MGP is a potent inhibitor of vascular calcification — without it, vessels calcify",
+      panel1Title: "🔬 What is matrix Gla protein?",
+      panel1Tagline: "The body's calcification inhibitor",
+      panel1List: [
+        "<strong>Matrix Gla protein (MGP)</strong> is a vitamin K-dependent protein",
+        "It is one of the most potent <strong>inhibitors of vascular calcification</strong>",
+        "It works by <strong>binding calcium</strong> and preventing its deposition in arterial walls",
+        "It requires <strong>γ-carboxylation</strong> to be functional",
+        "Carboxylation requires <strong>reduced vitamin K</strong>"
+      ],
+      panel2Title: "🔬 How warfarin disrupts this",
+      panel2Tagline: "The mechanism",
+      panel2List: [
+        "<strong>Warfarin inhibits VKORC1</strong> — the enzyme that regenerates reduced vitamin K",
+        "Without reduced vitamin K, <strong>γ-carboxylation of MGP cannot occur</strong>",
+        "<strong>Uncarboxylated MGP is functionally inactive</strong> — it cannot bind calcium",
+        "Without functional MGP, <strong>vascular smooth muscle cells undergo osteogenic transformation</strong>",
+        "<strong>Calcium deposits form in arterioles</strong> → calciphylaxis"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Answer: C — Warfarin inhibits MGP carboxylation",
+      alertText: "Warfarin inhibits vitamin K–dependent carboxylation of <strong>matrix Gla protein</strong>, reducing its ability to inhibit vascular calcification."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Risk Factors and Management",
+      infoRows: [
+        { k: "Modifiable", v: "Warfarin, phosphate, Ca×P" },
+        { k: "Non-modifiable", v: "ESKD, female sex, diabetes" },
+        { k: "First-line Rx", v: "Sodium thiosulfate" },
+        { k: "Warfarin", v: "Stop / switch to DOAC" },
+        { k: "Mortality", v: "60–80% at 1 year" }
+      ],
+      svgTitle: "Calciphylaxis — Risk Factors and Management",
+      svgSubtitle: "Modify what you can — especially warfarin",
+      bannerBg: "#0891b2",
+      bannerText1: "Stop warfarin, lower phosphate, use sodium thiosulfate, wound care",
+      bannerText2: "Mortality remains 60–80% at 1 year despite treatment",
+      panel1Title: "🔍 Risk factors for calciphylaxis",
+      panel1Tagline: "Multiple contributing factors",
+      panel1List: [
+        "<strong>ESKD on dialysis</strong> — the strongest risk factor",
+        "<strong>Hyperphosphatemia</strong> — drives calcium-phosphate deposition",
+        "<strong>Secondary hyperparathyroidism</strong> — promotes vascular calcification",
+        "<strong>Elevated Ca × P product</strong> — directly promotes calcification",
+        "<strong>Warfarin use</strong> — inhibits MGP carboxylation",
+        "<strong>Low albumin</strong> — malnutrition/inflammation",
+        "<strong>Female sex, obesity, diabetes</strong> — additional risk factors"
+      ],
+      panel2Title: "💊 Management",
+      panel2Tagline: "Multidisciplinary approach",
+      panel2List: [
+        "<strong>Stop warfarin</strong> if possible — switch to DOAC or alternative",
+        "<strong>Lower phosphate</strong> — diet, binders, intensified dialysis",
+        "<strong>Correct Ca × P product</strong> — cinacalcet, vitamin D analogs",
+        "<strong>Sodium thiosulfate</strong> — first-line therapy; chelates calcium, antioxidant",
+        "<strong>Wound care</strong> — debridement, avoid trauma, prevent infection",
+        "<strong>Pain control</strong> — often requires opioids",
+        "<strong>Mortality remains 60–80% at 1 year</strong> — early recognition is critical"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Warfarin is the modifiable risk factor",
+      alertText: "When a patient on warfarin develops calciphylaxis, <strong>stop warfarin</strong> and switch to an alternative anticoagulant. This is one of the few modifiable risk factors."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "C — MGP carboxylation" },
+        { k: "Warfarin target", v: "VKORC1" },
+        { k: "Effect", v: "↓ MGP carboxylation" },
+        { k: "Result", v: "Vascular calcification" },
+        { k: "Management", v: "Stop warfarin if possible" }
+      ],
+      svgTitle: "Answer Summary — Warfarin and MGP",
+      svgSubtitle: "Warfarin inhibits MGP carboxylation, reducing its ability to prevent vascular calcification",
+      bannerBg: "#ca8a04",
+      bannerText1: "C — Warfarin inhibits vitamin K–dependent carboxylation of matrix Gla protein",
+      bannerText2: "Reducing its ability to inhibit vascular calcification",
+      panel1Title: "✅ The correct answer (C)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>Warfarin inhibits VKORC1</strong> — the enzyme that regenerates reduced vitamin K",
+        "<strong>Without reduced vitamin K, MGP cannot be carboxylated</strong>",
+        "<strong>Uncarboxylated MGP is inactive</strong> — it cannot bind calcium",
+        "<strong>Vascular calcification proceeds unchecked</strong>",
+        "<strong>This is the mechanism linking warfarin to calciphylaxis</strong>"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A:</strong> Warfarin does NOT activate vitamin D receptors or increase intestinal phosphate absorption",
+        "<strong>B:</strong> Warfarin does NOT directly stimulate osteoclasts",
+        "<strong>D:</strong> Warfarin does NOT act on TRPV5 channels",
+        "<strong>E:</strong> Warfarin does NOT cause hypercalcemia — calciphylaxis occurs through MGP inhibition, independent of calcium levels"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "<strong>Warfarin inhibits vitamin K–dependent carboxylation of matrix Gla protein</strong>, reducing its ability to inhibit vascular calcification."
+    }
+  },
+  comparison: {
+    title: "📊 Calciphylaxis — Risk Factors and Mechanisms",
+    sub: "Multiple factors contribute, but warfarin is uniquely modifiable",
+    head: ["Risk factor", "Mechanism", "Modifiable?", "Management"],
+    rows: [
+      { cells: ["ESKD on dialysis", "Retention of calcium and phosphate", "No", "Dialysis optimization"], hero: false },
+      { cells: ["Hyperphosphatemia", "Ca × P deposition in vessels", "Yes", "Diet, binders, dialysis"], hero: false },
+      { cells: ["Secondary hyperPTH", "Promotes vascular calcification", "Yes", "Cinacalcet, vitamin D analogs"], hero: false },
+      { cells: ["Warfarin use", "Inhibits MGP carboxylation", "YES", "Stop and switch to DOAC"], hero: true },
+      { cells: ["Low albumin", "Malnutrition/inflammation", "Partially", "Nutritional support"], hero: false },
+      { cells: ["Female sex", "Unknown", "No", "Screen high-risk patients"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 63-year-old woman with ESKD on HD develops painful retiform purpura with central necrosis. Biopsy shows calcified dermal arterioles. She takes warfarin. Which mechanism explains warfarin as a risk factor for calciphylaxis?",
+      options: [
+        { text: "Warfarin inhibits vitamin K–dependent carboxylation of matrix Gla protein, reducing its ability to inhibit vascular calcification.", correct: true,
+          explanation: "MGP is a vitamin K-dependent protein that inhibits vascular calcification. Warfarin inhibits VKORC1, preventing MGP carboxylation. Uncarboxylated MGP is inactive, allowing vascular calcification to proceed." },
+        { text: "Warfarin increases intestinal phosphate absorption by activating vitamin D receptors.", correct: false,
+          explanation: "Warfarin does not activate vitamin D receptors or increase intestinal phosphate absorption." },
+        { text: "Warfarin directly stimulates osteoclast-mediated calcium release from bone.", correct: false,
+          explanation: "Warfarin does not directly stimulate osteoclasts. The mechanism is via MGP inhibition." }
+      ]
+    },
+    {
+      question: "What is the function of matrix Gla protein (MGP)?",
+      options: [
+        { text: "It inhibits vascular calcification by binding calcium and preventing its deposition in arterial walls.", correct: true,
+          explanation: "MGP is a potent inhibitor of vascular calcification. It requires vitamin K-dependent carboxylation to be functional." },
+        { text: "It promotes calcium deposition in bone.", correct: false,
+          explanation: "MGP inhibits calcification in blood vessels. It does not promote bone formation." },
+        { text: "It increases intestinal calcium absorption.", correct: false,
+          explanation: "MGP does not affect intestinal calcium absorption. It acts locally in the vessel wall." }
+      ]
+    },
+    {
+      question: "What enzyme does warfarin inhibit to block vitamin K regeneration?",
+      options: [
+        { text: "VKORC1 (vitamin K epoxide reductase).", correct: true,
+          explanation: "Warfarin inhibits VKORC1, preventing the regeneration of reduced vitamin K. This blocks the carboxylation of vitamin K-dependent proteins including MGP." },
+        { text: "γ-glutamyl carboxylase.", correct: false,
+          explanation: "Warfarin does not directly inhibit γ-glutamyl carboxylase. It inhibits VKORC1, which supplies reduced vitamin K for the carboxylase reaction." },
+        { text: "CYP2C9.", correct: false,
+          explanation: "CYP2C9 metabolizes warfarin but is not the target of its anticoagulant effect." }
+      ]
+    },
+    {
+      question: "Which of the following is the most important modifiable risk factor for calciphylaxis?",
+      options: [
+        { text: "Warfarin use.", correct: true,
+          explanation: "Warfarin is a modifiable risk factor. Stopping warfarin and switching to an alternative anticoagulant may reduce the risk or severity of calciphylaxis." },
+        { text: "ESKD on dialysis.", correct: false,
+          explanation: "ESKD is the strongest risk factor but is not modifiable." },
+        { text: "Female sex.", correct: false,
+          explanation: "Female sex is a non-modifiable risk factor." }
+      ]
+    },
+    {
+      question: "What is the first-line pharmacologic treatment for calciphylaxis?",
+      options: [
+        { text: "Sodium thiosulfate.", correct: true,
+          explanation: "Sodium thiosulfate is the first-line therapy for calciphylaxis. It acts as a calcium chelator and antioxidant, and may help dissolve calcium deposits." },
+        { text: "Cinacalcet.", correct: false,
+          explanation: "Cinacalcet lowers PTH and calcium but is not the first-line treatment for calciphylaxis itself." },
+        { text: "Vitamin K.", correct: false,
+          explanation: "Vitamin K is used to reverse warfarin but is not a treatment for calciphylaxis." }
+      ]
+    },
+    {
+      question: "Why does warfarin use increase the risk of calciphylaxis in dialysis patients?",
+      options: [
+        { text: "It inhibits the carboxylation of MGP, which is a vitamin K-dependent inhibitor of vascular calcification.", correct: true,
+          explanation: "Warfarin blocks vitamin K regeneration, preventing MGP carboxylation. Without functional MGP, vascular calcification proceeds unchecked." },
+        { text: "It causes hypercalcemia.", correct: false,
+          explanation: "Warfarin does not cause hypercalcemia. The mechanism is via MGP inhibition." },
+        { text: "It increases phosphate absorption.", correct: false,
+          explanation: "Warfarin does not increase phosphate absorption." }
+      ]
+    },
+    {
+      question: "What histologic findings are characteristic of calciphylaxis on skin biopsy?",
+      options: [
+        { text: "Calcification of small dermal arterioles with intimal proliferation and thrombosis.", correct: true,
+          explanation: "Calciphylaxis is characterized by calcification of small dermal and subcutaneous arterioles, with intimal proliferation and thrombosis leading to tissue ischemia." },
+        { text: "Leukocytoclastic vasculitis with neutrophil infiltration.", correct: false,
+          explanation: "Leukocytoclastic vasculitis is a different entity. Calciphylaxis shows calcification and thrombosis, not primary vasculitis." },
+        { text: "Granulomatous inflammation with giant cells.", correct: false,
+          explanation: "Granulomatous inflammation is not the primary finding in calciphylaxis." }
+      ]
+    },
+    {
+      question: "A patient with calciphylaxis is on warfarin for atrial fibrillation. What is the most appropriate management of anticoagulation?",
+      options: [
+        { text: "Stop warfarin and switch to a DOAC or alternative anticoagulant.", correct: true,
+          explanation: "Warfarin is a modifiable risk factor. Stopping warfarin and switching to a DOAC (or another alternative) is recommended when possible in patients with calciphylaxis." },
+        { text: "Continue warfarin at a lower dose.", correct: false,
+          explanation: "Even lower-dose warfarin can inhibit MGP carboxylation. The goal is to stop warfarin entirely and switch to an alternative." },
+        { text: "Stop all anticoagulation.", correct: false,
+          explanation: "Stopping all anticoagulation increases the risk of thromboembolism. Switch to an alternative instead." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Dermatology / Vascular Calcification",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

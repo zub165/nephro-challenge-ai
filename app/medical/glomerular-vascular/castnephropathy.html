@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cast Nephropathy — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --cast:#dc2626; --kappa:#2563eb; --amyloid:#7c3aed; --atn:#0891b2; --fibrillary:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--cast);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--cast); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--amyloid); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--atn); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--fibrillary); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--cast);}
+  .info-float.highlight-opt2{border-color:var(--amyloid);}
+  .info-float.highlight-opt3{border-color:var(--atn);}
+  .info-float.highlight-opt4{border-color:var(--fibrillary);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--cast);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+  /* NEW: style the <strong> highlights inside the feedback text */
+  .explain.correct-explain strong{color:#166534;}
+  .explain.wrong-explain strong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Multiple Myeloma — Light Chain Kidney Diseases</h1>
+      <p>Why kappa + cast nephropathy = fractured casts with giant cells</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>49-year-old man with lytic bone lesions and AKI</h2>
+      <p>Serum creatinine 3.8 mg/dL. SPEP shows <strong>IgG κ</strong>, κ/λ ratio 8.2 (very high). <strong>Trace proteinuria on dipstick</strong> but <strong>PCR 5.5 g/g</strong> → light chain proteinuria. Urine: hyaline casts, tubular epithelial cells.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">κ/λ 8.2</span>
+      <span class="lab-chip abn">Cr 3.8</span>
+      <span class="lab-chip abn">PCR 5.5 g/g</span>
+      <span class="lab-chip">Dipstick: trace</span>
+      <span class="lab-chip">IgG κ</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab opt1 active" id="tabOpt1" onclick="setMode('opt1')">🔴 Cast Nephropathy ✓</button>
+    <button class="tab opt2" id="tabOpt2" onclick="setMode('opt2')">🟣 AL Amyloidosis</button>
+    <button class="tab opt3" id="tabOpt3" onclick="setMode('opt3')">🔵 Acute Tubular Injury</button>
+    <button class="tab opt4" id="tabOpt4" onclick="setMode('opt4')">🟡 Fibrillary GN</button>
+  </div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="kappaGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#2563eb"/>
+        </radialGradient>
+        <radialGradient id="castGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#991b1b"/>
+        </radialGradient>
+        <radialGradient id="giantGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#d97706"/>
+        </radialGradient>
+        <radialGradient id="kidneyGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#991b1b"/>
+        </radialGradient>
+        <radialGradient id="fibrilGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="atnGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+        </radialGradient>
+        <radialGradient id="fibrillaryGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+        </radialGradient>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+        </marker>
+        <marker id="arrowYellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">
+        Kappa Light Chains + Tamm-Horsfall → Cast Nephropathy
+      </text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">
+        Fractured casts with giant cell reaction in the distal tubule
+      </text>
+
+      <!-- ============ DIAGRAM 1 — CAST NEPHROPATHY ============ -->
+      <g id="diagram-opt1">
+        <!-- Plasma cell -->
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">PLASMA</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">CELL</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">IgG κ clone</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#dc2626">κ/λ = 8.2</text>
+        </g>
+
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+
+        <!-- Kappa light chain -->
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#kappaGrad)" stroke="#1e40af" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">Kappa LC</text>
+          <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="10" fill="#dbeafe">free light chain</text>
+        </g>
+
+        <path d="M 490 380 L 570 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <text x="530" y="370" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">+ T-H</text>
+
+        <!-- Tamm-Horsfall protein -->
+        <g transform="translate(660, 380)">
+          <ellipse rx="70" ry="55" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
+          <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">Tamm-Horsfall</text>
+          <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">protein</text>
+        </g>
+
+        <path d="M 740 380 L 810 380" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+
+        <!-- Distal tubule with cast -->
+        <g transform="translate(940, 340)">
+          <rect x="-80" y="-60" width="160" height="120" rx="14" fill="#fecaca" stroke="#7f1d1d" stroke-width="3"/>
+          <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">DISTAL TUBULE</text>
+          <!-- Fractured cast -->
+          <ellipse cx="0" cy="10" rx="55" ry="22" fill="url(#castGrad)" stroke="#450a0a" stroke-width="2"/>
+          <!-- Fracture lines -->
+          <line x1="-15" y1="-10" x2="-15" y2="30" stroke="#450a0a" stroke-width="2.5"/>
+          <line x1="20" y1="-10" x2="20" y2="30" stroke="#450a0a" stroke-width="2.5"/>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff">FRACTURED</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#fff">CAST</text>
+        </g>
+
+        <!-- Giant cells -->
+        <g transform="translate(860, 460)">
+          <circle r="30" fill="url(#giantGrad)" stroke="#92400e" stroke-width="2.5" class="pulse-node"/>
+          <circle cx="-8" cy="-8" r="6" fill="#78350f"/>
+          <circle cx="8" cy="-8" r="6" fill="#78350f"/>
+          <circle cx="-8" cy="8" r="6" fill="#78350f"/>
+          <circle cx="8" cy="8" r="6" fill="#78350f"/>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#78350f">Giant cell</text>
+        </g>
+
+        <g transform="translate(1010, 460)">
+          <circle r="30" fill="url(#giantGrad)" stroke="#92400e" stroke-width="2.5" class="pulse-node"/>
+          <circle cx="-8" cy="-8" r="6" fill="#78350f"/>
+          <circle cx="8" cy="-8" r="6" fill="#78350f"/>
+          <circle cx="-8" cy="8" r="6" fill="#78350f"/>
+          <circle cx="8" cy="8" r="6" fill="#78350f"/>
+          <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#78350f">Giant cell</text>
+        </g>
+
+        <!-- Kidney -->
+        <g transform="translate(940, 620)">
+          <path d="M -55 -45 C -88 -22 -88 33 -55 55 C -22 72 28 66 44 38 C 55 22 55 -22 38 -44 C 16 -66 -33 -71 -55 -45 Z" fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">KIDNEY</text>
+          <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">Acute kidney injury</text>
+        </g>
+      </g>
+
+      <!-- ============ DIAGRAM 2 — AMYLOIDOSIS ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">PLASMA</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">CELL</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">Lambda clone</text>
+          <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#7c3aed">κ/λ &lt; 0.26</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(420, 380)">
+          <circle r="90" fill="url(#fibrilGrad)" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">Lambda LC</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">misfolds →</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fde68a">β-pleated sheet</text>
+        </g>
+        <path d="M 520 340 Q 640 260 780 240" stroke="#7c3aed" stroke-width="3" fill="none" class="flow-anim" marker-end="url(#arrowPurple)"/>
+        <path d="M 520 380 Q 680 400 780 400" stroke="#7c3aed" stroke-width="3" fill="none" class="flow-anim" marker-end="url(#arrowPurple)"/>
+        <path d="M 520 420 Q 640 500 780 560" stroke="#7c3aed" stroke-width="3" fill="none" class="flow-anim" marker-end="url(#arrowPurple)"/>
+        <g transform="translate(940, 260)">
+          <path d="M 0 -50 Q -60 -50 -70 -10 Q -80 40 0 90 Q 80 40 70 -10 Q 60 -50 0 -50 Z" fill="#b91c1c" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">HEART</text>
+        </g>
+        <g transform="translate(940, 440)">
+          <path d="M -55 -45 C -88 -22 -88 33 -55 55 C -22 72 28 66 44 38 C 55 22 55 -22 38 -44 C 16 -66 -33 -71 -55 -45 Z" fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">KIDNEY</text>
+        </g>
+        <g transform="translate(940, 620)">
+          <circle r="50" fill="#2563eb" stroke="#1e3a8a" stroke-width="2.5"/>
+          <text x="0" y="-5" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">NERVES</text>
+        </g>
+      </g>
+
+      <!-- ============ DIAGRAM 3 — ATN ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">ISCHEMIA</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">TOXIN</text>
+          <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">or both</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#atnGrad)" stroke="#155e75" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">TUBULAR</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">INJURY</text>
+        </g>
+        <path d="M 490 380 L 570 380" stroke="#0891b2" stroke-width="3" fill="none" marker-end="url(#arrowCyan)"/>
+        <g transform="translate(720, 380)">
+          <ellipse rx="130" ry="90" fill="#fecaca" stroke="#7f1d1d" stroke-width="2.5"/>
+          <text x="0" y="-55" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7f1d1d">TUBULE</text>
+          <path d="M -100 0 Q 0 -30 100 0" stroke="#991b1b" stroke-width="3" fill="none"/>
+          <ellipse cx="0" cy="20" rx="35" ry="18" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+          <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#155e75">Flat cells</text>
+        </g>
+        <text x="720" y="500" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#155e75">Loss of brush border</text>
+        <g transform="translate(940, 380)">
+          <circle r="90" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">ATN</text>
+          <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">No casts</text>
+          <text x="0" y="35" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">No amyloid</text>
+        </g>
+      </g>
+
+      <!-- ============ DIAGRAM 4 — FIBRILLARY GN ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <g transform="translate(130, 380)">
+          <circle r="75" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">UNKNOWN</text>
+          <text x="0" y="3" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#78350f">TRIGGER</text>
+        </g>
+        <path d="M 210 380 L 280 380" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+        <g transform="translate(400, 380)">
+          <circle r="80" fill="url(#fibrillaryGrad)" stroke="#854d0e" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">FIBRILLARY</text>
+          <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">GN</text>
+        </g>
+        <path d="M 490 380 L 570 380" stroke="#ca8a04" stroke-width="3" fill="none" marker-end="url(#arrowYellow)"/>
+        <g transform="translate(720, 380)">
+          <circle r="90" fill="#fce7f3" stroke="#be185d" stroke-width="3"/>
+          <circle r="55" fill="none" stroke="#e11d48" stroke-width="6"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#831843">Fibrils in</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#831843">glomerulus</text>
+          <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="10" fill="#831843">Congo red NEGATIVE</text>
+        </g>
+        <g transform="translate(940, 380)">
+          <rect x="-100" y="-60" width="200" height="120" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+          <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">10–12 nm fibrils</text>
+          <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">No heavy/light chain</text>
+          <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">restriction</text>
+          <text x="0" y="36" text-anchor="middle" font-family="Arial" font-size="11" fill="#713f12">Not myeloma-related</text>
+        </g>
+      </g>
+
+      <!-- ============ DYNAMIC BANNER ============ -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🔴 Cast Nephropathy — Fractured Casts with Giant Cells
+        </text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2">
+          Kappa LC + Tamm-Horsfall protein → obstructive casts → acute kidney injury
+        </text>
+      </g>
+    </svg>
+
+    <!-- INFO PANEL -->
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">🔴 Cast Nephropathy</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">Clone</span><span class="v" id="iVal1">IgG κ (κ/λ = 8.2)</span></div>
+        <div class="row"><span class="k">Urine protein</span><span class="v" id="iVal2">Light chains (dipstick: trace)</span></div>
+        <div class="row"><span class="k">Cast composition</span><span class="v" id="iVal3">κ LC + Tamm-Horsfall</span></div>
+        <div class="row"><span class="k">Biopsy hallmark</span><span class="v" id="iVal4">Fractured casts + giant cells</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHING PANELS -->
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title">🔴 Cast Nephropathy — Mechanism</h3>
+      <p class="tagline" id="panel1-tagline">Tubular obstruction by light chain casts</p>
+      <ul id="panel1-list">
+        <li><strong>Light chain:</strong> Kappa more common than lambda (this patient: κ/λ = 8.2)</li>
+        <li><strong>Binding:</strong> Kappa LC + Tamm-Horsfall protein → insoluble casts in distal tubule</li>
+        <li><strong>Location:</strong> Distal tubules (T-H protein is secreted here)</li>
+        <li><strong>Consequence:</strong> Tubular obstruction → acute kidney injury</li>
+        <li><strong>Urine:</strong> Hyaline casts; on biopsy: fractured casts with giant cell reaction</li>
+      </ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title">🔴 Cast Nephropathy — Clinical Pattern</h3>
+      <p class="tagline" id="panel2-tagline">AKI + light chain proteinuria + lytic lesions</p>
+      <ul id="panel2-list">
+        <li><strong>Dipstick vs PCR mismatch:</strong> Trace protein on dipstick but high PCR — the protein is <em>light chains</em>, not albumin</li>
+        <li><strong>Urine microscopy:</strong> Hyaline casts, tubular epithelial cells</li>
+        <li><strong>Context:</strong> High tumor burden (lytic bone lesions, anemia)</li>
+        <li><strong>Treatment:</strong> Aggressive hydration + treat the plasma cell clone</li>
+        <li><strong>Note:</strong> Kappa clone argues against AL amyloidosis (which is usually lambda)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon">🔴</div>
+    <div>
+      <h3 id="alertTitle">Board Pearl — Kappa + Light Chain Proteinuria + AKI = Cast Nephropathy</h3>
+      <p id="alertText">The <strong>trace dipstick + high PCR</strong> pattern is the clue — the protein is <strong>light chains</strong>, not albumin. Combined with a <strong>kappa-predominant clone</strong> and AKI, the biopsy will show <strong>fractured tubular casts with giant cell reaction</strong>. Kappa clone argues <em>against</em> AL amyloidosis (which is usually lambda).</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <div class="q">
+        <p>1. What is the most likely biopsy finding in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Fractured tubular casts with giant cell reaction. Classic cast nephropathy — kappa LC + Tamm-Horsfall protein obstruct the distal tubule.', '')">Fractured tubular casts with giant cell reaction</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Congo red-positive deposits</strong> indicate <strong>AL amyloidosis</strong> — typically a <strong>lambda</strong> clone (κ/λ &lt; 0.26). This patient has a kappa clone (κ/λ = 8.2), making amyloid unlikely.')">Congo red–positive deposits</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Plasma cell infiltrates</strong> would indicate a <strong>renal plasmacytoma</strong> — very rare. Myeloma cells typically stay in the bone marrow.')">Plasma cell infiltrates</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>2. Why is the dipstick protein low but the PCR high?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>The dipstick is broken</strong> — no. The dipstick is functioning correctly; it just <strong>poorly detects light chains</strong>, which are the dominant protein here.')">The dipstick is broken</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'The protein is light chains. Standard dipsticks primarily detect albumin and poorly detect immunoglobulin light chains.', '')">The protein is light chains, not albumin</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>The PCR is falsely elevated</strong> — no. The PCR is accurate; light chains are being measured in the total protein. The dipstick is the one that under-reports.')">The PCR is falsely elevated</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>3. Which light chain is most associated with cast nephropathy?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Kappa. Kappa light chains bind Tamm-Horsfall protein more readily and are the more common cause of cast nephropathy.', '')">Kappa (κ)</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Lambda light chains</strong> are more commonly associated with <strong>AL amyloidosis</strong> (~70–80%), not cast nephropathy.')">Lambda (λ)</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Both equally</strong> — no. Kappa predominates in cast nephropathy because of its affinity for Tamm-Horsfall protein.')">Both equally</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>4. Which of the following would argue AGAINST cast nephropathy?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Lytic bone lesions</strong> support myeloma and are consistent with cast nephropathy, not against it.')">Lytic bone lesions</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'A lambda-predominant clone would argue against cast nephropathy and toward AL amyloidosis. Kappa predominance favors cast nephropathy.', '')">A lambda-predominant clone</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Elevated creatinine</strong> is consistent with cast nephropathy (AKI). It does not argue against it.')">Elevated creatinine</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+      <div class="q">
+        <p>5. Which additional finding would suggest AL amyloidosis instead of cast nephropathy?</p>
+        <div class="opts">
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Fractured casts on urine microscopy</strong> point to cast nephropathy, not amyloidosis.')">Fractured casts on urine microscopy</button>
+          <button class="opt" onclick="answerWithFeedback(this, false, 'Wrong', '', '<strong>Kappa-predominant clone</strong> favors cast nephropathy (kappa binds T-H protein). Amyloid is usually lambda.')">Kappa-predominant clone</button>
+          <button class="opt" onclick="answerWithFeedback(this, true, 'Correct', 'Septal wall thickening on echocardiogram suggests cardiac amyloid infiltration — classic for AL amyloidosis.', '')">Septal wall thickening on echocardiogram</button>
+        </div>
+        <div class="explain"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+  const modes = {
+    opt1: {
+      panelClass: 'highlight-opt1',
+      title: '🔴 Cast Nephropathy',
+      val1: 'IgG κ (κ/λ = 8.2)',
+      val2: 'Light chains (dipstick: trace)',
+      val3: 'κ LC + Tamm-Horsfall',
+      val4: 'Fractured casts + giant cells',
+      activeTab: 'tabOpt1',
+      diagramId: 'diagram-opt1',
+      svgTitle: 'Kappa Light Chains + Tamm-Horsfall → Cast Nephropathy',
+      svgSubtitle: 'Fractured casts with giant cell reaction in the distal tubule',
+      bannerBg: '#dc2626',
+      bannerText1: '🔴 Cast Nephropathy — Fractured Casts with Giant Cells',
+      bannerText2: 'Kappa LC + Tamm-Horsfall protein → obstructive casts → acute kidney injury',
+      panel1Title: '🔴 Cast Nephropathy — Mechanism',
+      panel1Tagline: 'Tubular obstruction by light chain casts',
+      panel1List: [
+        '<strong>Light chain:</strong> Kappa more common than lambda (this patient: κ/λ = 8.2)',
+        '<strong>Binding:</strong> Kappa LC + Tamm-Horsfall protein → insoluble casts in distal tubule',
+        '<strong>Location:</strong> Distal tubules (T-H protein is secreted here)',
+        '<strong>Consequence:</strong> Tubular obstruction → acute kidney injury',
+        '<strong>Urine:</strong> Hyaline casts; on biopsy: fractured casts with giant cell reaction'
+      ],
+      panel2Title: '🔴 Cast Nephropathy — Clinical Pattern',
+      panel2Tagline: 'AKI + light chain proteinuria + lytic lesions',
+      panel2List: [
+        '<strong>Dipstick vs PCR mismatch:</strong> Trace protein on dipstick but high PCR — the protein is <em>light chains</em>, not albumin',
+        '<strong>Urine microscopy:</strong> Hyaline casts, tubular epithelial cells',
+        '<strong>Context:</strong> High tumor burden (lytic bone lesions, anemia)',
+        '<strong>Treatment:</strong> Aggressive hydration + treat the plasma cell clone',
+        '<strong>Note:</strong> Kappa clone argues against AL amyloidosis (which is usually lambda)'
+      ],
+      alertIcon: '🔴',
+      alertTitle: 'Board Pearl — Kappa + Light Chain Proteinuria + AKI = Cast Nephropathy',
+      alertText: 'The <strong>trace dipstick + high PCR</strong> pattern is the clue — the protein is <strong>light chains</strong>, not albumin. Combined with a <strong>kappa-predominant clone</strong> and AKI, the biopsy will show <strong>fractured tubular casts with giant cell reaction</strong>.'
+    },
+    opt2: {
+      panelClass: 'highlight-opt2',
+      title: '🟣 AL Amyloidosis',
+      val1: 'Usually lambda (κ/λ < 0.26)',
+      val2: 'Albumin (nephrotic-range)',
+      val3: 'Beta-pleated sheet fibrils',
+      val4: 'Congo red (+) → apple-green',
+      activeTab: 'tabOpt2',
+      diagramId: 'diagram-opt2',
+      svgTitle: 'Lambda Light Chains → Amyloid Fibrils → Organ Deposition',
+      svgSubtitle: 'Misfolding → β-pleated sheets → Congo red positive deposits',
+      bannerBg: '#7c3aed',
+      bannerText1: '🟣 AL Amyloidosis — Lambda-Driven',
+      bannerText2: 'Lambda LC misfolds into β-pleated sheets · Congo red positive · apple-green birefringence',
+      panel1Title: '🟣 AL Amyloidosis — Why NOT This Case',
+      panel1Tagline: 'Kappa clone + cast pattern argue against it',
+      panel1List: [
+        '<strong>Light chain:</strong> Lambda causes ~70–80% of AL amyloidosis — this patient has a <em>kappa</em> clone',
+        '<strong>κ/λ ratio:</strong> Amyloid usually has κ/λ &lt; 0.26; this patient has 8.2 (opposite direction)',
+        '<strong>Urine:</strong> Amyloid has nephrotic-range <em>albumin</em>uria, not light chain proteinuria',
+        '<strong>Sediment:</strong> Amyloid is bland; this patient has casts + tubular cells',
+        '<strong>Biopsy:</strong> Amyloid shows Congo red (+) deposits, not fractured casts'
+      ],
+      panel2Title: '🟣 AL Amyloidosis — Clinical Pattern',
+      panel2Tagline: 'Nephrotic syndrome + systemic features',
+      panel2List: [
+        '<strong>Kidney:</strong> Nephrotic-range albuminuria, bland sediment',
+        '<strong>Heart:</strong> Septal wall thickening, preserved EF',
+        '<strong>Nerves:</strong> Autonomic dysfunction → orthostatic hypotension',
+        '<strong>Complement:</strong> Normal (not immune-complex mediated)',
+        '<strong>SPEP:</strong> Often normal — free light chain assay detects the clone'
+      ],
+      alertIcon: '🟣',
+      alertTitle: 'Board Pearl — AL Amyloidosis Is Usually Lambda',
+      alertText: 'AL amyloidosis is a <strong>lambda-predominant</strong> disease (~70–80%). This patient has a kappa clone (κ/λ = 8.2), so amyloidosis is <strong>unlikely</strong>. The biopsy would show fractured casts, not amyloid fibrils.'
+    },
+    opt3: {
+      panelClass: 'highlight-opt3',
+      title: '🔵 Acute Tubular Injury (ATN)',
+      val1: 'N/A (not clone-driven)',
+      val2: 'Variable',
+      val3: 'No casts, no fibrils',
+      val4: 'Flattened tubular cells',
+      activeTab: 'tabOpt3',
+      diagramId: 'diagram-opt3',
+      svgTitle: 'Ischemia / Toxin → Acute Tubular Injury',
+      svgSubtitle: 'Flattened tubular epithelium, loss of brush border',
+      bannerBg: '#0891b2',
+      bannerText1: '🔵 Acute Tubular Injury — Does NOT fit this case',
+      bannerText2: 'No casts, no light chain deposits · The pattern here is cast-driven AKI, not ATN',
+      panel1Title: '🔵 ATN — Why NOT This Case',
+      panel1Tagline: 'No casts, no light chain deposits',
+      panel1List: [
+        '<strong>Mechanism:</strong> Ischemic or toxic injury to tubular epithelium',
+        '<strong>Context:</strong> Hypotension, sepsis, nephrotoxins (contrast, aminoglycosides)',
+        '<strong>Urine:</strong> Muddy-brown granular casts — NOT hyaline casts',
+        '<strong>This case:</strong> Patient has kappa clone + light chain proteinuria → cast nephropathy',
+        '<strong>Biopsy:</strong> Would show ATN without casts — not the classic finding here'
+      ],
+      panel2Title: '🔵 ATN — Clinical Pattern',
+      panel2Tagline: 'AKI without proteinuria or clone',
+      panel2List: [
+        '<strong>Kidney:</strong> AKI, often with oliguria',
+        '<strong>Proteinuria:</strong> Usually sub-nephrotic',
+        '<strong>Urine:</strong> Granular casts, renal tubular epithelial cells',
+        '<strong>Recovery:</strong> If cause removed, often reversible',
+        '<strong>Treatment:</strong> Supportive — remove offending cause'
+      ],
+      alertIcon: '🔵',
+      alertTitle: 'Board Pearl — Cast Nephropathy ≠ ATN',
+      alertText: 'ATN causes <strong>granular casts</strong>, not hyaline casts. The <strong>light chain proteinuria</strong> (trace dipstick, high PCR) + kappa clone point specifically to <strong>cast nephropathy</strong>, not ATN.'
+    },
+    opt4: {
+      panelClass: 'highlight-opt4',
+      title: '🟡 Fibrillary GN',
+      val1: 'Not monoclonal',
+      val2: 'Nephrotic-range',
+      val3: '10–12 nm fibrils',
+      val4: 'Congo red NEGATIVE',
+      activeTab: 'tabOpt4',
+      diagramId: 'diagram-opt4',
+      svgTitle: 'Unknown Trigger → Fibrillary GN — Not Myeloma-Related',
+      svgSubtitle: '10–12 nm fibrils in glomerulus, Congo red negative',
+      bannerBg: '#ca8a04',
+      bannerText1: '🟡 Fibrillary GN — Not Associated with Myeloma',
+      bannerText2: 'Fibrils are 10–12 nm, non-amyloid, no light chain restriction · Not related to this case',
+      panel1Title: '🟡 Fibrillary GN — Why NOT This Case',
+      panel1Tagline: 'Not a myeloma-related disease',
+      panel1List: [
+        '<strong>Fibril size:</strong> 10–12 nm (vs 8–10 nm in amyloid)',
+        '<strong>Congo red:</strong> NEGATIVE (vs positive in amyloid)',
+        '<strong>Composition:</strong> Polyclonal IgG, complement — NOT restricted light chains',
+        '<strong>Association:</strong> Not linked to multiple myeloma or monoclonal gammopathy',
+        '<strong>This case:</strong> Patient has a clear monoclonal kappa clone — the biopsy will show casts'
+      ],
+      panel2Title: '🟡 Fibrillary GN — Clinical Pattern',
+      panel2Tagline: 'Nephrotic syndrome without monoclonal gammopathy',
+      panel2List: [
+        '<strong>Kidney:</strong> Proteinuria, hematuria, CKD',
+        '<strong>Sediment:</strong> Active — dysmorphic RBCs',
+        '<strong>Complement:</strong> Normal',
+        '<strong>Association:</strong> Not linked to myeloma',
+        '<strong>Biopsy:</strong> Congo red negative fibrils in glomerulus'
+      ],
+      alertIcon: '🟡',
+      alertTitle: 'Board Pearl — Fibrillary GN Is Not Monoclonal',
+      alertText: 'Fibrillary GN has <strong>Congo red negative</strong> fibrils and <strong>no light chain restriction</strong>. It is not related to multiple myeloma. This patient clearly has a monoclonal kappa clone with light chain proteinuria → cast nephropathy.'
+    }
+  };
+
+  function setMode(mode) {
+    const d = modes[mode];
+    ['tabOpt1','tabOpt2','tabOpt3','tabOpt4'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    document.getElementById(d.activeTab).classList.add('active');
+
+    ['diagram-opt1','diagram-opt2','diagram-opt3','diagram-opt4'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById(d.diagramId).style.display = 'block';
+
+    document.getElementById('svg-title').textContent = d.svgTitle;
+    document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+    document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+    document.getElementById('banner-text-1').textContent = d.bannerText1;
+    document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+    const panel = document.getElementById('infoPanel');
+    panel.className = 'info-float ' + d.panelClass +
+      (panel.classList.contains('collapsed') ? ' collapsed' : '');
+    document.getElementById('infoTitle').textContent = d.title;
+    document.getElementById('iVal1').textContent = d.val1;
+    document.getElementById('iVal2').textContent = d.val2;
+    document.getElementById('iVal3').textContent = d.val3;
+    document.getElementById('iVal4').textContent = d.val4;
+
+    document.getElementById('panel1-title').textContent = d.panel1Title;
+    document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+    document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+    document.getElementById('panel2-title').textContent = d.panel2Title;
+    document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+    document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+    document.getElementById('alertIcon').textContent = d.alertIcon;
+    document.getElementById('alertTitle').textContent = d.alertTitle;
+    document.getElementById('alertText').innerHTML = d.alertText;
+  }
+
+  let panelCollapsed = false;
+  function togglePanel() {
+    panelCollapsed = !panelCollapsed;
+    const panel = document.getElementById('infoPanel');
+    const btn = document.getElementById('toggleBtn');
+    panel.classList.toggle('collapsed', panelCollapsed);
+    btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+  }
+
+  function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+    const explain = box.querySelector('.explain');
+    if (isCorrect) {
+      explain.className = 'explain show correct-explain';
+      explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+    } else {
+      explain.className = 'explain show wrong-explain';
+      explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+    }
+  }
+
+  setMode('opt1');
+</script>
+</body>
+</html>
