@@ -1,0 +1,40 @@
+{
+  "title": "Tubulointerstitial & Cystic Kidney Disease",
+  "subtitle": "AIN · chronic tubulointerstitial disease · ADPKD",
+  "theme": "tubulointerstitial",
+  "steps": [
+    {
+      "title": "Acute interstitial nephritis",
+      "body": "Triad of fever, rash, and eosinophilia after a drug exposure (beta-lactams, TMP-SMX, NSAIDs, PPIs, rifampin, allopurinol, amoxicillin). AKI with sterile pyuria, WBC casts, and mild proteinuria; urinalysis can be bland early.",
+      "tip": "Stop the culprit drug and give corticosteroids when kidney function is not recovering — supported by KDIGO AKI guidance.",
+      "visual": "workup-flow",
+      "metrics": { "creatinine": "3.8", "eosinophils": "12%", "wbc_casts": "present" }
+    },
+    {
+      "title": "Chronic tubulointerstitial disease",
+      "body": "Slow, bland, non-nephrotic proteinuria (<1 g/day), sterile pyuria, concentrating defect, and papillary necrosis. Analgesic nephropathy (phenacetin/NSAID), reflux nephropathy, and genetic tubulointerstitial kidney diseases (e.g., HNF1B, MUC1) show small kidneys with cortical scarring.",
+      "tip": "Analgesic nephropathy classically shows papillary necrosis with calcification on CT.",
+      "visual": "workup-flow"
+    },
+    {
+      "title": "Renal tubular acidosis patterns",
+      "body": "Distal (type 1): urine pH stays >5.3 with nephrolithiasis. Proximal (type 2): urine pH falls once serum bicarbonate is low. Type 4: hyperkalemic with low/normal ammonium excretion, seen in diabetic CKD and ACEi/ARB use.",
+      "tip": "Urine anion gap helps separate distal (positive) from proximal/GI bicarbonate loss (negative).",
+      "visual": "lab-table",
+      "metrics": { "urine_ph": "5.8", "uag": "+35", "serum_hco3": "16" }
+    },
+    {
+      "title": "ADPKD diagnosis and prognosis",
+      "body": "KDIGO 2025: ultrasound criteria by age in at-risk adults, and in adults with incidentally found cysts without family history, use contrast-enhanced MRI or CT plus genetic testing. Prognostication uses age, eGFR, kidney size, hypertension, and genotype ( Mayo Imaging Classification, PROPKD).",
+      "tip": "A negative ultrasound reliably excludes ADPKD in at-risk adults aged 30-39; in adults under 30 a negative study is not sufficient.",
+      "visual": "prognosis"
+    },
+    {
+      "title": "ADPKD management",
+      "body": "Tight blood pressure control (<110/75 if tolerated), RAAS blockade first line, sodium restriction, tolvaptan for patients at risk of rapid progression, high water intake for vasopressin-exposed early disease, and avoid nephrotoxins, dehydration, and unnecessary imaging contrast.",
+      "tip": "Tolvaptan requires aquaresis precautions, liver monitoring, and is avoided in pregnancy and in those unable to sense thirst.",
+      "visual": "prognosis",
+      "metrics": { "target_bp": "110/75", "egfr_decline": "3.5 mL/min/yr" }
+    }
+  ]
+}

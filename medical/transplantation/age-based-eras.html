@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Age & Renal Artery Stenosis — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --fmd:#1d4ed8; --aras:#b45309; --ptra:#065f46; --conservative:#7c3aed;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .case-box{background:#fff; border-radius:18px; padding:20px 24px; margin-top:22px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border-left:6px solid var(--fmd);}
+  .case-box h2{margin:0 0 10px; font-size:1.05rem; color:#1e3a8a;}
+  .case-box p{margin:0 0 8px; font-size:.9rem; color:#334155;}
+  .case-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:12px;}
+  .case-stat{background:#f1f5f9; border-radius:10px; padding:10px 14px; border:1px solid #cbd5e1;}
+  .case-stat .cs-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#475569;}
+  .case-stat .cs-value{font-size:1rem; font-weight:800; color:#0f172a; margin-top:2px;}
+  .case-stat.warn{background:#fee2e2; border-color:#fca5a5;}
+  .case-stat.warn .cs-label{color:#991b1b;}
+  .case-stat.warn .cs-value{color:#7f1d1d;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.78rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.age-36.active{background:#dbeafe; border-color:var(--fmd); color:#1e3a8a;}
+  .pill.age-55.active{background:#fef9c3; border-color:#ca8a04; color:#713f12;}
+  .pill.age-78.active{background:#ffedd5; border-color:var(--aras); color:#7c2d12;}
+  .pill.age-99.active{background:#ede9fe; border-color:var(--conservative); color:#4c1d95;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:600px; display:block;}
+
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.1rem; font-weight:800; letter-spacing:-.02em; line-height:1.2;}
+  .readout-card .rc-sub{font-size:.75rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.9rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.8rem; min-width:1050px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight { background-color:#eff6ff; box-shadow: inset 4px 0 0 var(--fmd); }
+  tr.highlight td { font-weight:600; color:#1e3a8a; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-fmd{background:#dbeafe; color:#1e3a8a;}
+  .tag-aras{background:#ffedd5; color:#7c2d12;}
+  .tag-cons{background:#ede9fe; color:#4c1d95;}
+
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Age &amp; Renal Artery Stenosis</h1>
+      <p>How patient age changes diagnosis, angiography, and treatment</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE SUMMARY -->
+  <section class="case-box">
+    <h2>Teaching Case: The Impact of Age</h2>
+    <p>A woman with persistent hypertension and a renal artery duplex showing elevated systolic velocities (230 cm/s). <strong>How does changing her age change the diagnosis and management?</strong></p>
+    <div class="case-grid">
+      <div class="case-stat"><div class="cs-label">Age 36</div><div class="cs-value">FMD likely</div></div>
+      <div class="case-stat"><div class="cs-label">Age 55</div><div class="cs-value">Equivocal / Transitional</div></div>
+      <div class="case-stat warn"><div class="cs-label">Age 78</div><div class="cs-value">ARAS likely</div></div>
+      <div class="case-stat warn"><div class="cs-label">Age 99</div><div class="cs-value">ARAS + Frailty</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section class="stage">
+    <h2>Interactive Duplex &amp; Angiography Simulator</h2>
+    <p class="sub">Select an age to see how the likely diagnosis and management shift.</p>
+
+    <div class="toggle-bar">
+      <button class="pill age-36 active" id="btn36" onclick="setMode('age36')">Age 36</button>
+      <button class="pill age-55" id="btn55" onclick="setMode('age55')">Age 55</button>
+      <button class="pill age-78" id="btn78" onclick="setMode('age78')">Age 78</button>
+      <button class="pill age-99" id="btn99" onclick="setMode('age99')">Age 99</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="aortaGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e5e7eb"/><stop offset="50%" stop-color="#9ca3af"/><stop offset="100%" stop-color="#4b5563"/>
+          </linearGradient>
+          <linearGradient id="kidneyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#991b1b"/>
+          </linearGradient>
+          <linearGradient id="dopplerBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#1e293b"/>
+          </linearGradient>
+          <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="stenosisGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1200" height="620" fill="#fdfdfd"/>
+        <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Renal Artery Duplex — Spectral Doppler</text>
+
+        <!-- DOPPLER PANEL -->
+        <g transform="translate(50, 50)">
+          <rect x="0" y="0" width="1100" height="260" rx="12" fill="url(#dopplerBg)" stroke="#334155" stroke-width="2"/>
+
+          <g stroke="#1e293b" stroke-width="1" opacity="0.6">
+            <line x1="0" y1="65" x2="1100" y2="65"/>
+            <line x1="0" y1="130" x2="1100" y2="130"/>
+            <line x1="0" y1="195" x2="1100" y2="195"/>
+            <line x1="110" y1="0" x2="110" y2="260"/>
+            <line x1="220" y1="0" x2="220" y2="260"/>
+            <line x1="330" y1="0" x2="330" y2="260"/>
+            <line x1="440" y1="0" x2="440" y2="260"/>
+            <line x1="550" y1="0" x2="550" y2="260"/>
+            <line x1="660" y1="0" x2="660" y2="260"/>
+            <line x1="770" y1="0" x2="770" y2="260"/>
+            <line x1="880" y1="0" x2="880" y2="260"/>
+            <line x1="990" y1="0" x2="990" y2="260"/>
+          </g>
+
+          <line x1="0" y1="130" x2="1100" y2="130" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="20" y="30" font-family="monospace" font-size="10" fill="#64748b">cm/s</text>
+          <text x="20" y="65" font-family="monospace" font-size="9" fill="#64748b">+200</text>
+          <text x="20" y="130" font-family="monospace" font-size="9" fill="#64748b">0</text>
+          <text x="20" y="195" font-family="monospace" font-size="9" fill="#64748b">-200</text>
+          <text x="1090" y="250" font-family="monospace" font-size="10" fill="#64748b">time →</text>
+
+          <!-- WAVEFORM STATES -->
+          <g id="wave-fmd" style="display:block;">
+            <path d="M 110 130 Q 130 20, 150 130 Q 170 20, 190 130 Q 210 20, 230 130 Q 250 20, 270 130 Q 290 20, 310 130 Q 330 20, 350 130 Q 370 20, 390 130 Q 410 20, 430 130 Q 450 20, 470 130 Q 490 20, 510 130 Q 530 20, 550 130 Q 570 20, 590 130 Q 610 20, 630 130 Q 650 20, 670 130 Q 690 20, 710 130 Q 730 20, 750 130 Q 770 20, 790 130 Q 810 20, 830 130 Q 850 20, 870 130 Q 890 20, 910 130 Q 930 20, 950 130 Q 970 20, 990 130 Q 1010 20, 1030 130 Q 1050 20, 1070 130" fill="none" stroke="#3b82f6" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#3b82f6">PSV 230 cm/s ↑↑</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Tardus-parvus — classic for FMD</text>
+          </g>
+
+          <g id="wave-equo" style="display:none;">
+            <path d="M 110 130 Q 130 40, 150 130 Q 170 40, 190 130 Q 210 40, 230 130 Q 250 40, 270 130 Q 290 40, 310 130 Q 330 40, 350 130 Q 370 40, 390 130 Q 410 40, 430 130 Q 450 40, 470 130 Q 490 40, 510 130 Q 530 40, 550 130 Q 570 40, 590 130 Q 610 40, 630 130 Q 650 40, 670 130 Q 690 40, 710 130 Q 730 40, 750 130 Q 770 40, 790 130 Q 810 40, 830 130 Q 850 40, 870 130 Q 890 40, 910 130 Q 930 40, 950 130 Q 970 40, 990 130 Q 1010 40, 1030 130 Q 1050 40, 1070 130" fill="none" stroke="#f59e0b" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#f59e0b">PSV ~200 cm/s ↑</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Transitional — could be early ARAS or FMD</text>
+          </g>
+
+          <g id="wave-aras" style="display:none;">
+            <path d="M 110 130 Q 130 50, 150 130 Q 170 50, 190 130 Q 210 50, 230 130 Q 250 50, 270 130 Q 290 50, 310 130 Q 330 50, 350 130 Q 370 50, 390 130 Q 410 50, 430 130 Q 450 50, 470 130 Q 490 50, 510 130 Q 530 50, 550 130 Q 570 50, 590 130 Q 610 50, 630 130 Q 650 50, 670 130 Q 690 50, 710 130 Q 730 50, 750 130 Q 770 50, 790 130 Q 810 50, 830 130 Q 850 50, 870 130 Q 890 50, 910 130 Q 930 50, 950 130 Q 970 50, 990 130 Q 1010 50, 1030 130 Q 1050 50, 1070 130" fill="none" stroke="#f59e0b" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#f59e0b">PSV ~200 cm/s</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">Damped waveform — atherosclerotic RAS</text>
+          </g>
+
+          <g id="wave-cons" style="display:none;">
+            <path d="M 110 130 Q 130 60, 150 130 Q 170 60, 190 130 Q 210 60, 230 130 Q 250 60, 270 130 Q 290 60, 310 130 Q 330 60, 350 130 Q 370 60, 390 130 Q 410 60, 430 130 Q 450 60, 470 130 Q 490 60, 510 130 Q 530 60, 550 130 Q 570 60, 590 130 Q 610 60, 630 130 Q 650 60, 670 130 Q 690 60, 710 130 Q 730 60, 750 130 Q 770 60, 790 130 Q 810 60, 830 130 Q 850 60, 870 130 Q 890 60, 910 130 Q 930 60, 950 130 Q 970 60, 990 130 Q 1010 60, 1030 130 Q 1050 60, 1070 130" fill="none" stroke="#a78bfa" stroke-width="2.5" filter="url(#softGlow)"/>
+            <text x="550" y="40" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#a78bfa">PSV ~180 cm/s (mild)</text>
+            <text x="550" y="230" text-anchor="middle" font-family="Arial" font-size="10" fill="#94a3b8">ARAS + frailty — focus on conservative care</text>
+          </g>
+        </g>
+
+        <!-- ANGIOGRAM PANEL -->
+        <text x="600" y="345" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">Digital Subtraction Angiography (DSA)</text>
+
+        <rect x="575" y="370" width="50" height="230" rx="8" fill="url(#aortaGrad)"/>
+        <text x="600" y="615" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#475569">AORTA</text>
+
+        <g transform="translate(280, 490)">
+          <path d="M -80 -60 C -120 -30 -120 50 -80 70 C -40 90 40 80 60 50 C 75 25 75 -25 55 -50 C 35 -75 -30 -90 -80 -60 Z" fill="url(#kidneyGrad)" stroke="#7f1d1d" stroke-width="2.5" opacity="0.9"/>
+          <text x="-10" y="110" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#7f1d1d">RIGHT KIDNEY</text>
+        </g>
+
+        <g id="artery-base">
+          <path d="M 575 420 L 480 430 L 380 450" fill="none" stroke="#ef4444" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 575 420 L 480 430 L 380 450" fill="none" stroke="#f87171" stroke-width="8" stroke-linecap="round"/>
+        </g>
+
+        <!-- FMD BEADS -->
+        <g id="fmd-beads" style="display:block;">
+          <g fill="#fbbf24" filter="url(#stenosisGlow)">
+            <circle cx="540" cy="423" r="9"/><circle cx="500" cy="427" r="9"/><circle cx="460" cy="431" r="9"/><circle cx="420" cy="437" r="9"/><circle cx="380" cy="443" r="9"/>
+          </g>
+          <g fill="none" stroke="#dc2626" stroke-width="4">
+            <circle cx="520" cy="425" r="5"/><circle cx="480" cy="429" r="5"/><circle cx="440" cy="434" r="5"/><circle cx="400" cy="440" r="5"/>
+          </g>
+          <text x="460" y="380" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e40af">"String of Beads"</text>
+        </g>
+
+        <!-- EQUIVOCAL -->
+        <g id="equo-artery" style="display:none;">
+          <ellipse cx="500" cy="427" rx="14" ry="10" fill="#fbbf24" opacity="0.9" filter="url(#stenosisGlow)"/>
+          <text x="500" y="400" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#ca8a04">Mild-moderate stenosis</text>
+        </g>
+
+        <!-- ARAS -->
+        <g id="aras-stenosis" style="display:none;">
+          <ellipse cx="500" cy="427" rx="14" ry="10" fill="#f59e0b" opacity="0.9" filter="url(#stenosisGlow)">
+            <animate attributeName="rx" values="12;18;12" dur="1.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <text x="500" y="400" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#b45309">Ostial stenosis</text>
+          <text x="500" y="415" text-anchor="middle" font-family="Arial" font-size="10" fill="#92400e">Atherosclerotic</text>
+        </g>
+
+        <!-- CONSERVATIVE -->
+        <g id="cons-artery" style="display:none;">
+          <ellipse cx="500" cy="427" rx="14" ry="10" fill="#a78bfa" opacity="0.9" filter="url(#stenosisGlow)"/>
+          <text x="500" y="400" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#6d28d9">Ostial stenosis + frailty</text>
+        </g>
+
+        <g font-family="monospace" font-size="9" fill="#4b5563" opacity="0.7">
+          <text x="30" y="30">AGE-SPECIFIC SIMULATION</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Likely Diagnosis</div>
+        <div class="rc-value" id="rcDxValue">—</div>
+        <div class="rc-sub" id="rcDxSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Angiographic Pattern</div>
+        <div class="rc-value" id="rcAngioValue">—</div>
+        <div class="rc-sub" id="rcAngioSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">First-Line Treatment</div>
+        <div class="rc-value" id="rcTxValue">—</div>
+        <div class="rc-sub" id="rcTxSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Role of PTRA/Stenting</div>
+        <div class="rc-note" id="rcPtraValue">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Clinical Bottom Line</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Age-Based Diagnostic &amp; Management Algorithm</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Age</th>
+          <th>Most Likely Diagnosis</th>
+          <th>Angiographic Pattern</th>
+          <th>First-Line Treatment</th>
+          <th>Role of PTRA / Stenting</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><strong>36 years</strong> <span class="tag tag-fmd">FMD</span></td>
+          <td>Fibromuscular Dysplasia (FMD)</td>
+          <td>"String of beads" in mid-to-distal renal artery</td>
+          <td><strong>PTRA (balloon angioplasty alone)</strong></td>
+          <td><strong>Curative.</strong> No stent needed. Cure in ~37%, improvement in ~80%.</td>
+        </tr>
+        <tr>
+          <td><strong>55 years</strong> <span class="tag tag-aras">Transitional</span></td>
+          <td>FMD vs. early ARAS</td>
+          <td>Depends on anatomy — beads vs. ostial</td>
+          <td>Medical therapy if ARAS; PTRA if FMD</td>
+          <td>High if FMD; reserved if ARAS</td>
+        </tr>
+        <tr>
+          <td><strong>78 years</strong> <span class="tag tag-aras">ARAS</span></td>
+          <td>Atherosclerotic RAS (ARAS)</td>
+          <td>Focal ostial/proximal stenosis, calcified</td>
+          <td><strong>Medical therapy</strong> (statins, ACEi/ARB, antiplatelets)</td>
+          <td><strong>Reserved</strong> for refractory HTN, flash pulmonary edema, or worsening renal function. Stent required.</td>
+        </tr>
+        <tr>
+          <td><strong>99 years</strong> <span class="tag tag-cons">Conservative</span></td>
+          <td>ARAS + Frailty</td>
+          <td>Ostial stenosis (often incidental)</td>
+          <td><strong>Conservative / Palliative Care</strong></td>
+          <td><strong>Contraindicated</strong> due to high procedural risk (contrast nephropathy, atheroembolism, bleeding).</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. At what age does the diagnosis shift from FMD to Atherosclerotic RAS?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. 40 years</button>
+        <button class="opt" onclick="answer(this,true)">B. 50–60 years</button>
+        <button class="opt" onclick="answer(this,false)">C. 70 years</button>
+        <button class="opt" onclick="answer(this,false)">D. 80 years</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> FMD typically presents in women aged 20–50. ARAS is a disease of older adults, with prevalence increasing after age 60. The 50–60 age range is the transitional zone where both must be considered.</div>
+    </div>
+
+    <div class="q">
+      <p>2. What is the first-line treatment for ARAS in a 78-year-old with controlled hypertension and stable renal function?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. PTRA with stent</button>
+        <button class="opt" onclick="answer(this,true)">B. Medical therapy (statins, ACEi/ARB, antiplatelets)</button>
+        <button class="opt" onclick="answer(this,false)">C. Surgical bypass</button>
+        <button class="opt" onclick="answer(this,false)">D. Immediate dialysis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The ASTRAL and CORAL trials showed that routine revascularization (stenting) for ARAS does not improve outcomes over aggressive medical therapy alone. Medical therapy is first-line. Revascularization is reserved for refractory hypertension, flash pulmonary edema, or rapidly worsening renal function.</div>
+    </div>
+
+    <div class="q">
+      <p>3. Why is PTRA the treatment of choice for FMD but not for ARAS?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. FMD patients are younger and tolerate the procedure better</button>
+        <button class="opt" onclick="answer(this,true)">B. FMD is a non-inflammatory fibroplasia that responds well to balloon angioplasty alone, while ARAS is a diffuse atherosclerotic process that requires stenting and often recurs</button>
+        <button class="opt" onclick="answer(this,false)">C. ARAS is always bilateral</button>
+        <button class="opt" onclick="answer(this,false)">D. FMD cannot be treated with medication</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> FMD is a localized fibroplastic lesion that dilates well with plain balloon angioplasty (PTRA). ARAS is a systemic atherosclerotic process; plain angioplasty has a high restenosis rate, so stenting is required if intervention is pursued. However, even stenting has not been shown to improve outcomes over medical therapy in most ARAS patients.</div>
+    </div>
+
+    <div class="q">
+      <p>4. A 99-year-old woman is found to have a 70% ostial stenosis of the right renal artery. She has mild hypertension controlled on amlodipine. What is the most appropriate management?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. PTRA with stent placement</button>
+        <button class="opt" onclick="answer(this,false)">B. Surgical bypass</button>
+        <button class="opt" onclick="answer(this,true)">C. Continue current medical therapy and monitor</button>
+        <button class="opt" onclick="answer(this,false)">D. Start an ACE inhibitor and stop amlodipine</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> In a 99-year-old with controlled hypertension, aggressive intervention carries a very high risk of complications (contrast nephropathy, atheroembolism, bleeding, death) with minimal expected benefit. The best approach is conservative management — continue current medical therapy and focus on quality of life.</div>
+    </div>
+
+    <div class="q">
+      <p>5. What is the classic angiographic finding of FMD?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Focal ostial stenosis</button>
+        <button class="opt" onclick="answer(this,true)">B. "String of beads" appearance</button>
+        <button class="opt" onclick="answer(this,false)">C. Smooth tapered narrowing</button>
+        <button class="opt" onclick="answer(this,false)">D. Multiple microaneurysms</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The "string of beads" appearance reflects alternating areas of stenosis (from fibroplasia) and post-stenotic dilatation. It is the classic angiographic hallmark of medial fibroplasia, the most common type of FMD.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and vascular medicine</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    age36: {
+      dx: 'Fibromuscular Dysplasia (FMD)',
+      dxSub: 'Non-inflammatory, non-atherosclerotic',
+      angio: 'String of beads',
+      angioSub: 'Mid-to-distal renal artery',
+      tx: 'PTRA (balloon angioplasty)',
+      txSub: 'Treatment of choice',
+      ptra: '<strong>Curative.</strong> Balloon angioplasty alone is the treatment of choice. No stent needed. Hypertension cure in ~37%, improvement in ~80%.',
+      verdict: 'Age 36 ★ — FMD is the classic diagnosis. PTRA is the treatment of choice and offers the best chance for a cure.',
+      color: '#1d4ed8'
+    },
+    age55: {
+      dx: 'FMD vs. Early ARAS',
+      dxSub: 'Transitional / equivocal',
+      angio: 'Anatomy-dependent',
+      angioSub: 'Beads → FMD; Ostial → ARAS',
+      tx: 'Medical therapy if ARAS; PTRA if FMD',
+      txSub: 'Depends on pattern',
+      ptra: 'High if FMD anatomy. Reserved if ARAS — medical therapy is first-line unless refractory HTN or worsening renal function.',
+      verdict: 'Age 55 — Transitional zone. The diagnosis hinges on angiographic anatomy and cardiovascular risk factors. If "string of beads" → treat as FMD with PTRA. If ostial stenosis → treat as ARAS with medical therapy.',
+      color: '#ca8a04'
+    },
+    age78: {
+      dx: 'Atherosclerotic RAS (ARAS)',
+      dxSub: 'Diffuse atherosclerosis',
+      angio: 'Focal ostial/proximal stenosis',
+      angioSub: 'Often calcified',
+      tx: 'Medical therapy',
+      txSub: 'Statins, ACEi/ARB, antiplatelets',
+      ptra: '<strong>Reserved.</strong> The ASTRAL and CORAL trials showed no benefit of routine stenting over medical therapy. Reserve for refractory HTN, flash pulmonary edema, or rapidly worsening renal function. Stent required.',
+      verdict: 'Age 78 — ARAS is the most likely diagnosis. First-line treatment is aggressive medical therapy. Revascularization is reserved for specific, refractory indications.',
+      color: '#b45309'
+    },
+    age99: {
+      dx: 'ARAS + Frailty',
+      dxSub: 'Extreme elderly',
+      angio: 'Ostial stenosis (often incidental)',
+      angioSub: 'May not be hemodynamically significant',
+      tx: 'Conservative / Palliative',
+      txSub: 'Focus on quality of life',
+      ptra: '<strong>Contraindicated.</strong> High procedural risk (contrast nephropathy, atheroembolism, bleeding, death) with minimal expected benefit. Focus on safe, well-tolerated symptom management.',
+      verdict: 'Age 99 — Conservative management is appropriate. Invasive interventions are generally contraindicated due to high risk and limited benefit in this frail population.',
+      color: '#7c3aed'
+    }
+  };
+
+  function setMode(mode) {
+    ['wave-fmd','wave-equo','wave-aras','wave-cons'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    ['fmd-beads','equo-artery','aras-stenosis','cons-artery'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btn36','btn55','btn78','btn99'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      age36:'btn36', age55:'btn55',
+      age78:'btn78', age99:'btn99'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (mode === 'age36') {
+      document.getElementById('wave-fmd').style.display = 'block';
+      document.getElementById('fmd-beads').style.display = 'block';
+    } else if (mode === 'age55') {
+      document.getElementById('wave-equo').style.display = 'block';
+      document.getElementById('equo-artery').style.display = 'block';
+    } else if (mode === 'age78') {
+      document.getElementById('wave-aras').style.display = 'block';
+      document.getElementById('aras-stenosis').style.display = 'block';
+    } else if (mode === 'age99') {
+      document.getElementById('wave-cons').style.display = 'block';
+      document.getElementById('cons-artery').style.display = 'block';
+    }
+
+    document.getElementById('rcDxValue').textContent = d.dx;
+    document.getElementById('rcDxValue').style.color = d.color;
+    document.getElementById('rcDxSub').textContent = d.dxSub;
+
+    document.getElementById('rcAngioValue').textContent = d.angio;
+    document.getElementById('rcAngioValue').style.color = d.color;
+    document.getElementById('rcAngioSub').textContent = d.angioSub;
+
+    document.getElementById('rcTxValue').textContent = d.tx;
+    document.getElementById('rcTxValue').style.color = d.color;
+    document.getElementById('rcTxSub').textContent = d.txSub;
+
+    document.getElementById('rcPtraValue').innerHTML = d.ptra;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('age36');
+</script>
+</body>
+</html>

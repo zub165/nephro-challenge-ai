@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GI Causes of Acid–Base Disorders — A Gift by Dr. Malik</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --gastric:#b91c1c; --colon:#b45309; --diarrhea:#ca8a04; --renal:#1d4ed8; --aldo:#7c3aed; --bartter:#0d9488;
+    --ok:#16a34a; --warn:#dc2626;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{background:#fff; border-radius:18px; padding:22px 26px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
+  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+
+  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
+    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
+  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
+  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
+
+  .toggle-bar{display:flex; justify-content:center; gap:9px; margin-bottom:22px; flex-wrap:wrap;}
+  .pill{border:2px solid transparent; background:#f1f5f9; padding:9px 16px; border-radius:999px;
+    font-size:.8rem; font-weight:700; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); color:var(--muted);}
+  .pill:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+  .pill.normal.active{background:#d1fae5; border-color:#065f46; color:#065f46;}
+  .pill.vomiting.active{background:#fee2e2; border-color:var(--gastric); color:#7f1d1d;}
+  .pill.laxative.active{background:#ffedd5; border-color:var(--colon); color:#7c2d12;}
+  .pill.diarrhea.active{background:#fef9c3; border-color:var(--diarrhea); color:#713f12;}
+  .pill.diuretic.active{background:#dbeafe; border-color:var(--renal); color:#1e3a8a;}
+  .pill.aldo.active{background:#ede9fe; border-color:var(--aldo); color:#4c1d95;}
+  .pill.bartter.active{background:#ccfbf1; border-color:var(--bartter); color:#134e4a;}
+
+  .slide-tray{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); border-radius:12px;
+    padding:10px; display:inline-block; box-shadow:0 12px 34px rgba(0,0,0,.28);}
+  .visualizer-box{border-radius:8px; padding:0; background:#fdfdfd; display:block; overflow:hidden;}
+  svg.diagram{width:100%; height:auto; max-height:560px; display:block;}
+
+  /* READOUT CARDS */
+  .readout-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-top:22px; text-align:left;}
+  .readout-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:16px 18px;
+    box-shadow:0 2px 10px rgba(15,23,42,.05); transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
+  .readout-card:hover{transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.1);}
+  .readout-card .rc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:800; color:var(--muted); margin-bottom:6px;}
+  .readout-card .rc-value{font-size:1.35rem; font-weight:800; letter-spacing:-.02em; line-height:1.15;}
+  .readout-card .rc-sub{font-size:.78rem; color:var(--muted); margin-top:4px;}
+  .readout-card .rc-note{font-size:.74rem; margin-top:6px; line-height:1.5; color:#334155;}
+
+  .verdict{grid-column:1/-1; border-radius:14px; padding:16px 20px; font-weight:700; font-size:.92rem;
+    transition:all .4s ease; border:2px solid;}
+  .verdict .v-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; font-weight:800;
+    opacity:.75; margin-bottom:4px;}
+
+  /* CLINICAL PEARL */
+  .pearl{margin-top:22px; border-radius:14px; padding:20px 24px; text-align:left;
+    background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);
+    border:2px solid #f59e0b; box-shadow:0 4px 16px rgba(245,158,11,.15);}
+  .pearl h3{margin:0 0 10px; font-size:1.02rem; color:#78350f; display:flex; align-items:center; gap:8px;}
+  .pearl h3::before{content:"💡"; font-size:1.15rem;}
+  .pearl-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px;}
+  @media(max-width:640px){.pearl-grid{grid-template-columns:1fr;}}
+  .pearl-col{background:#fff; border-radius:10px; padding:14px 16px; border:1px solid #fcd34d;}
+  .pearl-col h4{margin:0 0 8px; font-size:.88rem; font-weight:800;}
+  .pearl-col.acid h4{color:#b91c1c;}
+  .pearl-col.alka h4{color:#1d4ed8;}
+  .pearl-col p{margin:0 0 6px; font-size:.82rem; color:#334155; line-height:1.55;}
+  .pearl-col ul{margin:6px 0 0; padding-left:18px; font-size:.8rem; color:#475569; line-height:1.6;}
+  .pearl-col li{margin-bottom:3px;}
+  .pearl-conclusion{margin-top:14px; padding:12px 16px; border-radius:10px;
+    background:rgba(120,53,15,.08); font-size:.85rem; color:#78350f; font-weight:600; line-height:1.6;}
+
+  /* TABLE */
+  .features-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
+  .features-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
+  table{width:100%; border-collapse:collapse; font-size:.82rem; min-width:1000px;}
+  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
+  td{padding:13px 14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
+  tr.highlight-lax { background-color:#ffedd5; box-shadow: inset 4px 0 0 var(--colon); }
+  tr.highlight-lax td { font-weight:600; color:#7c2d12; }
+  tr.highlight-diarrhea { background-color:#fef9c3; box-shadow: inset 4px 0 0 var(--diarrhea); }
+  tr.highlight-diarrhea td { font-weight:600; color:#713f12; }
+  tr:hover{background-color:#f8fafc;}
+  .tag{display:inline-block; font-size:.68rem; font-weight:800; padding:2px 7px; border-radius:4px; letter-spacing:.03em;}
+  .tag-acid{background:#fee2e2; color:#991b1b;}
+  .tag-alka{background:#dbeafe; color:#1e3a8a;}
+  .tag-correct{background:#fed7aa; color:#7c2d12;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
+  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
+  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+  .q p{margin:0 0 10px; font-weight:600; font-size:.93rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px;
+    font-size:.83rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
+  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
+  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
+  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px;
+    border-radius:0 10px 10px 0; font-size:.83rem; color:#334155; line-height:1.55;}
+  .explain.show{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
+  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
+  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
+  .gift-footer .byline strong{color:#60a5fa;}
+  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px;
+    padding:14px 18px; font-size:.8rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
+  .disclaimer-box strong{color:#c2410c;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>GI Causes of Acid–Base Disorders</h1>
+      <p>Diarrhea vs. laxative abuse · Urine chloride as the discriminating test</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <section class="stage">
+    <h2>Interactive Transport-Site Diagram</h2>
+    <p class="sub">Select a cause to see where the acid–base disturbance originates and how urine chloride changes.</p>
+
+    <div class="toggle-bar">
+      <button class="pill normal active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+      <button class="pill diarrhea" id="btnDiarrhea" onclick="setMode('diarrhea')">Diarrhea (Acute)</button>
+      <button class="pill vomiting" id="btnVomiting" onclick="setMode('vomiting')">Vomiting / NG suction</button>
+      <button class="pill laxative" id="btnLaxative" onclick="setMode('laxative')">Laxative abuse ★</button>
+      <button class="pill diuretic" id="btnDiuretic" onclick="setMode('diuretic')">Diuretic use</button>
+      <button class="pill aldo" id="btnAldo" onclick="setMode('aldo')">Primary aldosteronism</button>
+      <button class="pill bartter" id="btnBartter" onclick="setMode('bartter')">Bartter / Gitelman</button>
+    </div>
+
+    <div class="slide-tray">
+    <div class="visualizer-box">
+      <svg class="diagram" viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cellFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#eef2f7"/>
+          </linearGradient>
+          <linearGradient id="bloodFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff1f2"/><stop offset="100%" stop-color="#ffe4e6"/>
+          </linearGradient>
+          <linearGradient id="lumenFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fefce8"/><stop offset="100%" stop-color="#fef9c3"/>
+          </linearGradient>
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="nucGlow">
+            <feGaussianBlur stdDeviation="1.1" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect width="1000" height="640" fill="#fdfdfd"/>
+
+        <!-- PANEL 1 — GASTRIC PARIETAL CELL -->
+        <g id="panel1">
+          <text x="180" y="34" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#0f172a">Gastric Parietal Cell</text>
+
+          <rect x="70" y="52" width="220" height="102" rx="9" fill="url(#lumenFill)" stroke="#fcd34d" stroke-width="1.5"/>
+          <text x="82" y="70" font-family="Arial" font-size="10" font-weight="700" fill="#92400e">Gastric lumen</text>
+          <text x="82" y="84" font-family="Arial" font-size="9" fill="#a16207">HCl secreted → lost with vomiting</text>
+          <g font-family="Arial" font-size="9" font-weight="700">
+            <circle cx="150" cy="125" r="10" fill="#dc2626"/><text x="150" y="129" text-anchor="middle" fill="#fff">H⁺</text>
+            <circle cx="190" cy="132" r="10" fill="#16a34a"/><text x="190" y="136" text-anchor="middle" fill="#fff">Cl⁻</text>
+            <circle cx="230" cy="125" r="10" fill="#dc2626"/><text x="230" y="129" text-anchor="middle" fill="#fff">H⁺</text>
+            <circle cx="266" cy="132" r="10" fill="#16a34a"/><text x="266" y="136" text-anchor="middle" fill="#fff">Cl⁻</text>
+          </g>
+
+          <line x1="70" y1="154" x2="290" y2="154" stroke="#334155" stroke-width="4"/>
+          <g id="p1-apical">
+            <rect x="117" y="146" width="28" height="16" rx="4" fill="#7c3aed" stroke="#4c1d95" stroke-width="1"/>
+            <rect x="217" y="146" width="28" height="16" rx="4" fill="#16a34a" stroke="#14532d" stroke-width="1"/>
+            <text x="131" y="186" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#4c1d95">H⁺/K⁺ ATPase</text>
+            <text x="231" y="186" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#14532d">Cl⁻ channel</text>
+          </g>
+
+          <rect x="70" y="154" width="220" height="160" fill="url(#cellFill)"/>
+          <g filter="url(#nucGlow)">
+            <ellipse cx="105" cy="196" rx="14" ry="11" fill="#4c1d95" opacity="0.9"/>
+          </g>
+          <text x="180" y="242" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#0f172a">CO₂ + H₂O ⇌ H⁺ + HCO₃⁻</text>
+          <text x="180" y="256" text-anchor="middle" font-family="Arial" font-size="8.5" fill="#64748b">carbonic anhydrase</text>
+
+          <line x1="70" y1="314" x2="290" y2="314" stroke="#334155" stroke-width="4"/>
+          <g id="p1-baso">
+            <rect x="117" y="306" width="28" height="16" rx="4" fill="#0d9488" stroke="#115e59" stroke-width="1"/>
+            <rect x="217" y="306" width="28" height="16" rx="4" fill="#2563eb" stroke="#1e3a8a" stroke-width="1"/>
+            <text x="131" y="298" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#115e59">HCO₃⁻/Cl⁻</text>
+            <text x="231" y="298" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#1e3a8a">Na⁺/K⁺ ATPase</text>
+          </g>
+
+          <rect x="70" y="314" width="220" height="70" rx="9" fill="url(#bloodFill)" stroke="#fecdd3" stroke-width="1.5"/>
+          <text x="82" y="332" font-family="Arial" font-size="10" font-weight="700" fill="#9f1239">Blood</text>
+          <text x="82" y="346" font-family="Arial" font-size="9" fill="#be123c">HCO₃⁻ rises → alkalosis</text>
+        </g>
+
+        <!-- PANEL 2 — COLONIC ENTEROCYTE -->
+        <g id="panel2">
+          <text x="500" y="34" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#0f172a">Colonic Enterocyte</text>
+
+          <rect x="390" y="52" width="220" height="102" rx="9" fill="url(#lumenFill)" stroke="#fcd34d" stroke-width="1.5"/>
+          <text x="402" y="70" font-family="Arial" font-size="10" font-weight="700" fill="#92400e">Stool / colonic lumen</text>
+          <text x="402" y="84" font-family="Arial" font-size="9" fill="#a16207">HCO₃⁻-rich fluid lost in diarrhea</text>
+          <g font-family="Arial" font-size="9" font-weight="700">
+            <circle cx="470" cy="125" r="10" fill="#0d9488"/><text x="470" y="129" text-anchor="middle" fill="#fff">HCO₃⁻</text>
+            <circle cx="520" cy="132" r="10" fill="#0d9488"/><text x="520" y="136" text-anchor="middle" fill="#fff">HCO₃⁻</text>
+            <circle cx="570" cy="125" r="10" fill="#0d9488"/><text x="570" y="129" text-anchor="middle" fill="#fff">HCO₃⁻</text>
+          </g>
+
+          <line x1="390" y1="154" x2="610" y2="154" stroke="#334155" stroke-width="4"/>
+          <g id="p2-apical">
+            <rect x="437" y="146" width="28" height="16" rx="4" fill="#0d9488" stroke="#115e59" stroke-width="1"/>
+            <rect x="537" y="146" width="28" height="16" rx="4" fill="#7c3aed" stroke="#4c1d95" stroke-width="1"/>
+            <text x="451" y="186" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#115e59">Cl⁻/HCO₃⁻</text>
+            <text x="551" y="186" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#4c1d95">K⁺ channel</text>
+          </g>
+
+          <rect x="390" y="154" width="220" height="160" fill="url(#cellFill)"/>
+          <g filter="url(#nucGlow)">
+            <ellipse cx="425" cy="196" rx="14" ry="11" fill="#4c1d95" opacity="0.9"/>
+          </g>
+          <text x="500" y="242" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#0f172a">HCO₃⁻ secreted into lumen</text>
+          <text x="500" y="256" text-anchor="middle" font-family="Arial" font-size="8.5" fill="#64748b">lost with stool</text>
+
+          <line x1="390" y1="314" x2="610" y2="314" stroke="#334155" stroke-width="4"/>
+          <g id="p2-baso">
+            <rect x="437" y="306" width="28" height="16" rx="4" fill="#2563eb" stroke="#1e3a8a" stroke-width="1"/>
+            <rect x="537" y="306" width="28" height="16" rx="4" fill="#7c3aed" stroke="#4c1d95" stroke-width="1"/>
+            <text x="451" y="298" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#1e3a8a">Na⁺/K⁺ ATPase</text>
+            <text x="551" y="298" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#4c1d95">K⁺ channel</text>
+          </g>
+
+          <rect x="390" y="314" width="220" height="70" rx="9" fill="url(#bloodFill)" stroke="#fecdd3" stroke-width="1.5"/>
+          <text x="402" y="332" font-family="Arial" font-size="10" font-weight="700" fill="#9f1239">Blood</text>
+          <text x="402" y="346" font-family="Arial" font-size="9" fill="#be123c">HCO₃⁻ falls → acidosis</text>
+        </g>
+
+        <!-- PANEL 3 — RENAL DISTAL TUBULE -->
+        <g id="panel3">
+          <text x="820" y="34" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#0f172a">Renal Distal Tubule / Collecting Duct</text>
+
+          <rect x="710" y="52" width="220" height="102" rx="9" fill="url(#lumenFill)" stroke="#fcd34d" stroke-width="1.5"/>
+          <text x="722" y="70" font-family="Arial" font-size="10" font-weight="700" fill="#92400e">Tubular lumen (urine)</text>
+          <text x="722" y="84" font-family="Arial" font-size="9" fill="#a16207">Na⁺ reabsorbed · K⁺ &amp; H⁺ secreted</text>
+          <g font-family="Arial" font-size="9" font-weight="700">
+            <circle cx="790" cy="125" r="10" fill="#7c3aed"/><text x="790" y="129" text-anchor="middle" fill="#fff">K⁺</text>
+            <circle cx="830" cy="132" r="10" fill="#dc2626"/><text x="830" y="136" text-anchor="middle" fill="#fff">H⁺</text>
+            <circle cx="870" cy="125" r="10" fill="#7c3aed"/><text x="870" y="129" text-anchor="middle" fill="#fff">K⁺</text>
+            <circle cx="906" cy="132" r="10" fill="#dc2626"/><text x="906" y="136" text-anchor="middle" fill="#fff">H⁺</text>
+          </g>
+
+          <line x1="710" y1="154" x2="930" y2="154" stroke="#334155" stroke-width="4"/>
+          <g id="p3-apical">
+            <rect x="737" y="146" width="28" height="16" rx="4" fill="#2563eb" stroke="#1e3a8a" stroke-width="1"/>
+            <rect x="797" y="146" width="28" height="16" rx="4" fill="#7c3aed" stroke="#4c1d95" stroke-width="1"/>
+            <rect x="857" y="146" width="28" height="16" rx="4" fill="#dc2626" stroke="#7f1d1d" stroke-width="1"/>
+            <text x="751" y="188" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#1e3a8a">ENaC</text>
+            <text x="811" y="188" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#4c1d95">ROMK</text>
+            <text x="871" y="188" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#7f1d1d">H⁺-ATPase</text>
+          </g>
+
+          <rect x="710" y="154" width="220" height="160" fill="url(#cellFill)"/>
+          <g filter="url(#nucGlow)">
+            <ellipse cx="745" cy="196" rx="14" ry="11" fill="#4c1d95" opacity="0.9"/>
+          </g>
+          <text x="820" y="240" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#0f172a">Aldosterone → ENaC ↑</text>
+          <text x="820" y="255" text-anchor="middle" font-family="Arial" font-size="9" fill="#64748b">Na⁺ in → lumen negative</text>
+          <text x="820" y="269" text-anchor="middle" font-family="Arial" font-size="9" fill="#64748b">→ K⁺ &amp; H⁺ secreted</text>
+
+          <line x1="710" y1="314" x2="930" y2="314" stroke="#334155" stroke-width="4"/>
+          <g id="p3-baso">
+            <rect x="737" y="306" width="28" height="16" rx="4" fill="#2563eb" stroke="#1e3a8a" stroke-width="1"/>
+            <rect x="857" y="306" width="28" height="16" rx="4" fill="#7c3aed" stroke="#4c1d95" stroke-width="1"/>
+            <text x="751" y="298" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#1e3a8a">Na⁺/K⁺ ATPase</text>
+            <text x="871" y="298" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#4c1d95">Aldosterone R</text>
+          </g>
+
+          <rect x="710" y="314" width="220" height="70" rx="9" fill="url(#bloodFill)" stroke="#fecdd3" stroke-width="1.5"/>
+          <text x="722" y="332" font-family="Arial" font-size="10" font-weight="700" fill="#9f1239">Blood</text>
+          <text x="722" y="346" font-family="Arial" font-size="9" fill="#be123c">K⁺ falls · HCO₃⁻ rises</text>
+        </g>
+
+        <!-- HIGHLIGHT RINGS -->
+        <g id="hl-p1" style="display:none;">
+          <rect x="58" y="40" width="244" height="360" rx="14" fill="none" stroke="#dc2626" stroke-width="3" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.35;1;0.35" dur="2.2s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+        <g id="hl-p2" style="display:none;">
+          <rect x="378" y="40" width="244" height="360" rx="14" fill="none" stroke="#b45309" stroke-width="3" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.35;1;0.35" dur="2.2s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+        <g id="hl-p3" style="display:none;">
+          <rect x="698" y="40" width="244" height="360" rx="14" fill="none" stroke="#1d4ed8" stroke-width="3" filter="url(#softGlow)">
+            <animate attributeName="opacity" values="0.35;1;0.35" dur="2.2s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+
+        <!-- URINE CL SCALE -->
+        <g id="clScale">
+          <text x="500" y="440" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#0f172a">Urine Chloride (mEq/L)</text>
+
+          <rect x="150" y="460" width="700" height="26" rx="13" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+          <rect id="clFill" x="150" y="460" width="350" height="26" rx="13" fill="#16a34a" opacity="0.85"/>
+          <line id="clMarker" x1="500" y1="452" x2="500" y2="494" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+
+          <g font-family="Arial" font-size="10" fill="#64748b">
+            <line x1="150" y1="494" x2="150" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="150" y="518" text-anchor="middle">0</text>
+            <line x1="266" y1="494" x2="266" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="266" y="518" text-anchor="middle">10</text>
+            <line x1="383" y1="494" x2="383" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="383" y="518" text-anchor="middle">20</text>
+            <line x1="500" y1="494" x2="500" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="500" y="518" text-anchor="middle">30</text>
+            <line x1="616" y1="494" x2="616" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="616" y="518" text-anchor="middle">40</text>
+            <line x1="733" y1="494" x2="733" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="733" y="518" text-anchor="middle">50</text>
+            <line x1="850" y1="494" x2="850" y2="502" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="850" y="518" text-anchor="middle">60</text>
+          </g>
+
+          <line x1="383" y1="446" x2="383" y2="504" stroke="#b45309" stroke-width="2.5" stroke-dasharray="5 3"/>
+          <text x="383" y="440" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#b45309">cutoff 20</text>
+
+          <g font-family="Arial" font-size="11" font-weight="700">
+            <text x="266" y="545" text-anchor="middle" fill="#b45309">Low (&lt; 20)</text>
+            <text x="700" y="545" text-anchor="middle" fill="#1d4ed8">High (&gt; 20)</text>
+          </g>
+          <text x="266" y="562" text-anchor="middle" font-family="Arial" font-size="9.5" fill="#92400e">volume depleted · GI losses</text>
+          <text x="700" y="562" text-anchor="middle" font-family="Arial" font-size="9.5" fill="#1e3a8a">mineralocorticoid excess · renal losses</text>
+        </g>
+
+        <g transform="translate(40, 600)" font-family="Arial" font-size="10" fill="#475569">
+          <circle cx="8" cy="0" r="7" fill="#dc2626"/><text x="20" y="4" fill="#0f172a">H⁺</text>
+          <circle cx="70" cy="0" r="7" fill="#7c3aed"/><text x="82" y="4" fill="#0f172a">K⁺</text>
+          <circle cx="132" cy="0" r="7" fill="#2563eb"/><text x="144" y="4" fill="#0f172a">Na⁺</text>
+          <circle cx="200" cy="0" r="7" fill="#16a34a"/><text x="212" y="4" fill="#0f172a">Cl⁻</text>
+          <circle cx="262" cy="0" r="7" fill="#0d9488"/><text x="274" y="4" fill="#0f172a">HCO₃⁻</text>
+          <text x="360" y="4" font-size="9.5" fill="#94a3b8">Ion colours consistent across all panels</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <!-- READOUT CARDS -->
+    <div class="readout-grid" id="readoutGrid">
+      <div class="readout-card">
+        <div class="rc-label">Urine Chloride</div>
+        <div class="rc-value" id="rcClValue">—</div>
+        <div class="rc-sub" id="rcClSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Volume Status / BP</div>
+        <div class="rc-value" id="rcVolValue">—</div>
+        <div class="rc-sub" id="rcVolSub">—</div>
+      </div>
+      <div class="readout-card">
+        <div class="rc-label">Acid–Base Status</div>
+        <div class="rc-value" id="rcAbsValue">—</div>
+        <div class="rc-note" id="rcMechanism">—</div>
+      </div>
+      <div class="verdict" id="rcVerdict">
+        <div class="v-title">Interpretation</div>
+        <span id="rcVerdictText">—</span>
+      </div>
+    </div>
+
+    <!-- CLINICAL PEARL -->
+    <div class="pearl">
+      <h3>Clinical Pearl: Diarrhea vs. Laxative Abuse</h3>
+      <p style="margin:0; font-size:.85rem; color:#78350f;">
+        These two GI conditions look similar (volume depletion, hypokalemia, low urine Cl⁻) but cause <strong>opposite acid–base disturbances</strong>. The key is what is lost in the stool and how the kidney responds.
+      </p>
+      <div class="pearl-grid">
+        <div class="pearl-col acid">
+          <h4>🔴 Diarrhea (Acute) → Metabolic ACIDOSIS</h4>
+          <p>The lower GI tract secretes <strong>bicarbonate-rich</strong> fluid. In acute diarrhea:</p>
+          <ul>
+            <li>Massive <strong>HCO₃⁻ loss</strong> in stool</li>
+            <li>Serum HCO₃⁻ falls → <strong>normal anion gap metabolic acidosis</strong></li>
+            <li>Kidneys cannot regenerate bicarbonate fast enough</li>
+            <li>Hypokalemia may occur but is not the dominant feature</li>
+          </ul>
+        </div>
+        <div class="pearl-col alka">
+          <h4>🔵 Laxative Abuse (Chronic) → Metabolic ALKALOSIS</h4>
+          <p>Chronic surreptitious laxative use causes a very different picture:</p>
+          <ul>
+            <li>Chronic volume depletion → <strong>secondary hyperaldosteronism</strong></li>
+            <li>Aldosterone drives renal <strong>H⁺ and K⁺ wasting</strong></li>
+            <li>Renal H⁺ loss causes <strong>HCO₃⁻ retention</strong> → metabolic alkalosis</li>
+            <li>The renal effect <strong>overrides</strong> the bicarbonate lost in stool</li>
+            <li>Low urine Cl⁻ (&lt;20) because of avid proximal reabsorption</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pearl-conclusion">
+        <strong>Bottom line:</strong> Acute diarrhea → acidosis (bicarbonate loss). Chronic laxative abuse → alkalosis (volume depletion → secondary hyperaldosteronism → renal H⁺ and K⁺ wasting). The <strong>chronicity</strong> of the volume loss and the resulting <strong>renal compensation</strong> are what flip the acid–base status.
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FEATURES TABLE -->
+  <section class="features-section">
+    <h2>Key Features: Differential Diagnosis of Acid–Base Disorders from GI/Renal Causes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Cause</th>
+          <th>Acid–Base</th>
+          <th>Urine Cl⁻</th>
+          <th>BP / Volume</th>
+          <th>Key Mechanism</th>
+          <th>Distinguishing Clue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-diarrhea">
+          <td><strong>Acute Diarrhea</strong> <span class="tag tag-acid">Acidosis</span></td>
+          <td><strong>Metabolic Acidosis</strong> (normal anion gap)</td>
+          <td>Low (&lt;20)</td>
+          <td>Low / hypotensive</td>
+          <td>Direct loss of HCO₃⁻-rich fluid in stool; kidneys cannot regenerate bicarbonate fast enough</td>
+          <td>History of acute diarrhea; low serum HCO₃⁻; hyperchloremia</td>
+        </tr>
+        <tr class="highlight-lax">
+          <td><strong>Laxative Abuse</strong> <span class="tag tag-correct">Correct</span></td>
+          <td><strong>Metabolic Alkalosis</strong></td>
+          <td><strong>&lt; 20 mEq/L</strong></td>
+          <td>Low / hypotensive</td>
+          <td>Colonic Cl⁻ and K⁺ loss → volume depletion → secondary hyperaldosteronism → renal H⁺/K⁺ wasting → HCO₃⁻ retention</td>
+          <td>Surreptitious weight-loss method; <strong>laxative screen</strong> confirms</td>
+        </tr>
+        <tr>
+          <td><strong>Vomiting / NG suction</strong> <span class="tag tag-alka">Alkalosis</span></td>
+          <td><strong>Metabolic Alkalosis</strong></td>
+          <td><strong>&lt; 20 mEq/L</strong></td>
+          <td>Low / hypotensive</td>
+          <td>Gastric HCl loss → HCO₃⁻ retention; volume depletion → secondary hyperaldosteronism → renal K⁺ wasting</td>
+          <td>History of vomiting; metabolic alkalosis with low urine Cl</td>
+        </tr>
+        <tr>
+          <td><strong>Diuretic use</strong></td>
+          <td>Variable</td>
+          <td>Variable<br>(&gt;20 if active; &lt;20 if remote)</td>
+          <td>Low / normal</td>
+          <td>Loop/DT diuretic → Cl⁻ and K⁺ wasting; urine Cl rises while drug is active</td>
+          <td>Urine diuretic screen; urine Cl normalises once drug stopped</td>
+        </tr>
+        <tr>
+          <td><strong>Primary aldosteronism</strong></td>
+          <td><strong>Metabolic Alkalosis</strong></td>
+          <td><strong>&gt; 20 mEq/L</strong></td>
+          <td><strong>High</strong> / expanded</td>
+          <td>Aldosterone excess → ENaC upregulation → K⁺ and H⁺ wasting</td>
+          <td>Hypertension + hypokalemia + high urine Cl; aldosterone:renin ratio</td>
+        </tr>
+        <tr>
+          <td><strong>Bartter / Gitelman</strong></td>
+          <td><strong>Metabolic Alkalosis</strong></td>
+          <td><strong>&gt; 20 mEq/L</strong></td>
+          <td>Normal or low (salt wasting)</td>
+          <td>Defective NKCC2 (Bartter) or NCC (Gitelman) → renal salt wasting → secondary hyperaldosteronism</td>
+          <td>Normotensive; hypomagnesemia (Gitelman); genetic testing</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h2>Check Your Understanding</h2>
+
+    <div class="q">
+      <p>1. A young man dieting for a boxing competition presents with hypokalemia, metabolic alkalosis, and a urine chloride of 15 mEq/L. What is the BEST next diagnostic test?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Plasma renin and aldosterone</button>
+        <button class="opt" onclick="answer(this,true)">B. Laxative screen</button>
+        <button class="opt" onclick="answer(this,false)">C. Morning cortisol</button>
+        <button class="opt" onclick="answer(this,false)">D. Urine anion gap</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> The combination of hypokalemia, metabolic alkalosis, low urine chloride (&lt;20 mEq/L), and a history of extreme dieting strongly suggests <strong>surreptitious laxative abuse</strong>. A laxative screen confirms the diagnosis.</div>
+    </div>
+
+    <div class="q">
+      <p>2. Why does ACUTE diarrhea cause metabolic acidosis, while CHRONIC laxative abuse causes metabolic alkalosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Diarrhea causes K⁺ loss, laxatives cause Cl⁻ loss</button>
+        <button class="opt" onclick="answer(this,true)">B. Acute diarrhea causes direct HCO₃⁻ loss in stool; chronic laxative abuse causes volume depletion → secondary hyperaldosteronism → renal H⁺/K⁺ wasting</button>
+        <button class="opt" onclick="answer(this,false)">C. Laxatives directly stimulate the distal tubule H⁺-ATPase</button>
+        <button class="opt" onclick="answer(this,false)">D. There is no difference — both cause acidosis</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> This is the key physiological paradox. In <strong>acute diarrhea</strong>, the lower GI tract loses large amounts of <strong>bicarbonate-rich fluid</strong>, causing a normal anion gap metabolic acidosis. In <strong>chronic laxative abuse</strong>, the persistent volume depletion triggers <strong>secondary hyperaldosteronism</strong>, which drives renal <strong>H⁺ and K⁺ wasting</strong>. The renal H⁺ loss causes HCO₃⁻ retention, which <strong>overrides</strong> the bicarbonate lost in the stool, resulting in metabolic alkalosis.</div>
+    </div>
+
+    <div class="q">
+      <p>3. What urine chloride threshold separates chloride-responsive from chloride-resistant metabolic alkalosis?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. 10 mEq/L</button>
+        <button class="opt" onclick="answer(this,true)">B. 20 mEq/L</button>
+        <button class="opt" onclick="answer(this,false)">C. 40 mEq/L</button>
+        <button class="opt" onclick="answer(this,false)">D. 60 mEq/L</button>
+      </div>
+      <div class="explain"><strong>Correct: B.</strong> A urine chloride of <strong>20 mEq/L</strong> is the standard cutoff. Values below 20 indicate a chloride-responsive state (vomiting, NG suction, laxative abuse, remote diuretics). Values above 20 indicate chloride-resistant alkalosis (mineralocorticoid excess, Bartter/Gitelman, alkali ingestion).</div>
+    </div>
+
+    <div class="q">
+      <p>4. Why does the urine chloride remain LOW in laxative abuse despite renal K⁺ wasting?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,true)">A. Volume depletion drives avid proximal Na⁺ and Cl⁻ reabsorption</button>
+        <button class="opt" onclick="answer(this,false)">B. The kidney cannot excrete chloride in any form</button>
+        <button class="opt" onclick="answer(this,false)">C. Laxatives directly block the distal tubule Cl⁻ channel</button>
+      </div>
+      <div class="explain"><strong>Correct: A.</strong> Volume depletion from stool losses triggers intense proximal tubular reabsorption of Na⁺ and Cl⁻, so almost no chloride reaches the urine. The urine chloride is therefore <strong>low</strong>, even though the kidney is the site of the K⁺ wasting.</div>
+    </div>
+
+    <div class="q">
+      <p>5. Which of the following causes a CHLORIDE-RESISTANT metabolic alkalosis with HYPERTENSION?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Vomiting</button>
+        <button class="opt" onclick="answer(this,false)">B. Laxative abuse</button>
+        <button class="opt" onclick="answer(this,true)">C. Primary aldosteronism</button>
+        <button class="opt" onclick="answer(this,false)">D. Remote diuretic use</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Primary aldosteronism causes <strong>hypertension</strong> with a <strong>chloride-resistant</strong> alkalosis (urine Cl &gt;20 mEq/L) because aldosterone drives ENaC-mediated Na⁺ retention, volume expansion, and K⁺/H⁺ wasting.</div>
+    </div>
+
+    <div class="q">
+      <p>6. A patient has metabolic alkalosis with a urine chloride of 45 mEq/L and a normal blood pressure. Which diagnosis is most likely?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer(this,false)">A. Laxative abuse</button>
+        <button class="opt" onclick="answer(this,false)">B. Vomiting</button>
+        <button class="opt" onclick="answer(this,true)">C. Bartter or Gitelman syndrome</button>
+        <button class="opt" onclick="answer(this,false)">D. Nasogastric suction</button>
+      </div>
+      <div class="explain"><strong>Correct: C.</strong> Bartter and Gitelman syndromes cause renal salt wasting with a <strong>normal or low blood pressure</strong> and a <strong>chloride-resistant alkalosis</strong> (urine Cl &gt;20 mEq/L) due to a transporter defect and secondary hyperaldosteronism. Vomiting, NG suction, and laxative abuse all cause <strong>low</strong> urine chloride.</div>
+    </div>
+  </section>
+
+  <footer class="gift-footer">
+    <h3>A Gift by Dr. Malik</h3>
+    <p class="byline">Created for students and educators in nephrology and pathology</p>
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and illustrations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const data = {
+    normal: {
+      cl: 30, clSub: '20–40 mEq/L (variable)',
+      vol: 'Normal', volSub: 'Normotensive · euvolemic',
+      abs: 'Normal',
+      mechanism: 'Balanced intake and excretion; no acid–base disturbance.',
+      verdict: 'Reference state — no acid–base disturbance.',
+      color: '#16a34a',
+      highlight: null
+    },
+    diarrhea: {
+      cl: 12, clSub: '< 20 mEq/L — volume depleted',
+      vol: 'Decreased', volSub: 'Volume depleted · BP low / orthostatic',
+      abs: 'Acidosis',
+      mechanism: 'Direct loss of HCO₃⁻-rich fluid in stool → normal anion gap metabolic acidosis. Kidneys cannot regenerate bicarbonate fast enough.',
+      verdict: 'Normal anion gap METABOLIC ACIDOSIS — HCO₃⁻ loss in stool (acute diarrhea).',
+      color: '#ca8a04',
+      highlight: 'hl-p2'
+    },
+    vomiting: {
+      cl: 8, clSub: '< 20 mEq/L — chloride-responsive',
+      vol: 'Decreased', volSub: 'Volume depleted · BP low / orthostatic',
+      abs: 'Alkalosis',
+      mechanism: 'Gastric HCl loss → HCO₃⁻ retention. Volume depletion activates aldosterone → renal K⁺ wasting, worsening hypokalemia.',
+      verdict: 'Chloride-RESPONSIVE metabolic ALKALOSIS — gastric HCl loss.',
+      color: '#dc2626',
+      highlight: 'hl-p1'
+    },
+    laxative: {
+      cl: 12, clSub: '< 20 mEq/L — chloride-responsive',
+      vol: 'Decreased', volSub: 'Volume depleted · BP low',
+      abs: 'Alkalosis',
+      mechanism: 'Chronic volume depletion → secondary hyperaldosteronism → renal H⁺/K⁺ wasting → HCO₃⁻ retention. Renal effect overrides stool HCO₃⁻ loss.',
+      verdict: 'Chloride-RESPONSIVE metabolic ALKALOSIS — most consistent with surreptitious laxative abuse in this vignette.',
+      color: '#b45309',
+      highlight: 'hl-p2'
+    },
+    diuretic: {
+      cl: 28, clSub: '> 20 mEq/L if diuretic active; < 20 if remote',
+      vol: 'Decreased', volSub: 'Volume depleted · BP low / normal',
+      abs: 'Alkalosis',
+      mechanism: 'Loop or distal tubule diuretics block NaCl reabsorption → Cl⁻ and K⁺ wasting. Urine Cl⁻ rises while the drug is active.',
+      verdict: 'Chloride-RESPONSIVE once the diuretic has been stopped (urine Cl⁻ falls).',
+      color: '#1d4ed8',
+      highlight: 'hl-p3'
+    },
+    aldo: {
+      cl: 45, clSub: '> 20 mEq/L — chloride-resistant',
+      vol: 'Increased', volSub: 'Volume expanded · HYPERTENSION',
+      abs: 'Alkalosis',
+      mechanism: 'Aldosterone excess upregulates ENaC, ROMK, and H⁺-ATPase → Na⁺ retention (volume expansion) with K⁺ and H⁺ wasting.',
+      verdict: 'Chloride-RESISTANT metabolic ALKALOSIS — mineralocorticoid excess.',
+      color: '#7c3aed',
+      highlight: 'hl-p3'
+    },
+    bartter: {
+      cl: 55, clSub: '> 20 mEq/L — chloride-resistant',
+      vol: 'Decreased (renal salt wasting)', volSub: 'Normotensive or hypotensive',
+      abs: 'Alkalosis',
+      mechanism: 'Defective NKCC2 (Bartter) or NCC (Gitelman) → renal salt wasting → secondary hyperaldosteronism → K⁺ and H⁺ wasting.',
+      verdict: 'Chloride-RESISTANT metabolic ALKALOSIS — normotensive salt-wasting tubulopathy.',
+      color: '#0d9488',
+      highlight: 'hl-p3'
+    }
+  };
+
+  function setMode(mode) {
+    ['hl-p1','hl-p2','hl-p3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btnNormal','btnDiarrhea','btnVomiting','btnLaxative','btnDiuretic','btnAldo','btnBartter'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const pillMap = {
+      normal:'btnNormal', diarrhea:'btnDiarrhea', vomiting:'btnVomiting',
+      laxative:'btnLaxative', diuretic:'btnDiuretic', aldo:'btnAldo', bartter:'btnBartter'
+    };
+    document.getElementById(pillMap[mode]).classList.add('active');
+
+    const d = data[mode];
+
+    if (d.highlight) {
+      const hl = document.getElementById(d.highlight);
+      if (hl) hl.style.display = 'block';
+    }
+
+    document.getElementById('rcClValue').textContent = d.cl + ' mEq/L';
+    document.getElementById('rcClValue').style.color = d.color;
+    document.getElementById('rcClSub').textContent = d.clSub;
+
+    document.getElementById('rcVolValue').textContent = d.vol;
+    document.getElementById('rcVolSub').textContent = d.volSub;
+
+    document.getElementById('rcAbsValue').textContent = d.abs;
+    document.getElementById('rcAbsValue').style.color = d.color;
+    document.getElementById('rcMechanism').textContent = d.mechanism;
+
+    const verdict = document.getElementById('rcVerdict');
+    verdict.style.borderColor = d.color;
+    verdict.style.background = d.color + '14';
+    verdict.style.color = d.color;
+    document.getElementById('rcVerdictText').textContent = d.verdict;
+
+    const trackStart = 150, trackWidth = 700, maxVal = 60;
+    const pct = Math.min(d.cl / maxVal, 1);
+    const fillW = pct * trackWidth;
+    const markerX = trackStart + fillW;
+
+    const fill = document.getElementById('clFill');
+    fill.setAttribute('width', fillW);
+    fill.setAttribute('fill', d.color);
+    document.getElementById('clMarker').setAttribute('x1', markerX);
+    document.getElementById('clMarker').setAttribute('x2', markerX);
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('normal');
+</script>
+</body>
+</html>
