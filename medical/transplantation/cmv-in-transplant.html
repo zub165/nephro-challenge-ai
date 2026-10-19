@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CMV Colitis After Kidney Transplant — D+/R− High-Risk Disease</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">CMV COLITIS — TISSUE-INVASIVE DISEASE</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">D+/R− · 4 months post-transplant · completed 3 months prophylaxis</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Fever · fatigue · diarrhea · leukopenia · CMV PCR 185,000 IU/mL</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">SYMPTOMS</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">Fever</text>
+            <text x="0" y="25" text-anchor="middle" font-size="22" font-weight="800" fill="#dc2626">Diarrhea</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#7f1d1d">Fatigue</text>
+            <text x="0" y="120" text-anchor="middle" font-size="15" fill="#7f1d1d">Watery diarrhea</text>
+            <text x="0" y="150" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Tissue-invasive disease</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">CMV VIRAL LOAD</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">185k</text>
+            <text x="0" y="20" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">IU/mL</text>
+            <line x1="-160" y1="55" x2="160" y2="55" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="90" text-anchor="middle" font-size="15" fill="#7f1d1d">Very high titer</text>
+            <text x="0" y="115" text-anchor="middle" font-size="15" fill="#7f1d1d">Confirms active infection</text>
+            <text x="0" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Tissue-invasive CMV</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">BIOPSY</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">CMV+</text>
+            <text x="0" y="25" text-anchor="middle" font-size="20" font-weight="800" fill="#dc2626">IHC positive</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="15" fill="#7f1d1d">Colonic ulcers</text>
+            <text x="0" y="120" text-anchor="middle" font-size="15" fill="#7f1d1d">CMV inclusions</text>
+            <text x="0" y="150" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Definitive diagnosis</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 TISSUE-INVASIVE DISEASE NEEDS FULL TREATMENT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">Prophylaxis dose is inadequate for established disease</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ Therapeutic-dose valganciclovir + reduce immunosuppression</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Tissue-invasive CMV = therapeutic-dose antiviral + immunosuppression reduction</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — CMV DISEASE SPECTRUM
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">CMV INFECTION SPECTRUM AFTER TRANSPLANTATION</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Distinguishing asymptomatic viremia from tissue-invasive disease</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ASYMPTOMATIC VIREMIA</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">No symptoms</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">CMV+</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">low titer</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• CMV PCR:</text>
+              <text x="-70" y="0" font-weight="800" fill="#166534">Low-level</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Symptoms:</text>
+              <text x="-70" y="28" font-weight="800" fill="#166534">None</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Biopsy:</text>
+              <text x="-70" y="56" font-weight="800" fill="#166534">Not indicated</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Treatment:</text>
+              <text x="-70" y="84" font-weight="800" fill="#166534">Preemptive</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">  therapy</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Valganciclovir</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">at prophylactic dose</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#ca8a04"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#ca8a04"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">CMV SYNDROME</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#713f12">Systemic, no end-organ</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#fef3c7" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#713f12">Fever</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#713f12">+ cytopenia</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#713f12">• Symptoms:</text>
+              <text x="-70" y="0" font-weight="800" fill="#713f12">Fever, malaise</text>
+              <text x="-180" y="28" font-weight="700" fill="#713f12">• Labs:</text>
+              <text x="-70" y="28" font-weight="800" fill="#713f12">Leukopenia</text>
+              <text x="-180" y="56" font-weight="700" fill="#713f12">• End organ:</text>
+              <text x="-70" y="56" font-weight="800" fill="#713f12">Not involved</text>
+              <text x="-180" y="84" font-weight="700" fill="#713f12">• Biopsy:</text>
+              <text x="-70" y="84" font-weight="800" fill="#713f12">Not required</text>
+              <text x="-180" y="112" font-weight="700" fill="#713f12">• Treatment:</text>
+              <text x="-70" y="112" font-weight="800" fill="#713f12">Therapeutic dose</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#713f12">Valganciclovir 900 BID</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#713f12">+ reduce immunosuppression</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">TISSUE-INVASIVE</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Colitis</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">+ high VL</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Symptoms:</text>
+              <text x="-70" y="0" font-weight="800" fill="#166534">Diarrhea, ulcers</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• CMV PCR:</text>
+              <text x="-70" y="28" font-weight="800" fill="#166534">185,000 IU/mL</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Biopsy:</text>
+              <text x="-70" y="56" font-weight="800" fill="#166534">CMV IHC+</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Treatment:</text>
+              <text x="-70" y="84" font-weight="800" fill="#166534">Full therapeutic</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Immunosupp:</text>
+              <text x="-70" y="112" font-weight="800" fill="#166534">REDUCE</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Valganciclovir 900 BID</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">(renal-adjusted) + reduce MMF</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Tissue-invasive CMV = therapeutic dose + reduce immunosuppression</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">MANAGEMENT OF ESTABLISHED CMV DISEASE</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Antiviral therapy + immunosuppression reduction + monitoring</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">1. ANTIVIRAL</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">First-line therapy</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">Valganciclovir</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="16" font-weight="800" fill="#166534">900 mg BID</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Dose:</text>
+              <text x="-70" y="0" font-weight="800" fill="#166534">900 mg BID</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Adjust:</text>
+              <text x="-70" y="28" font-weight="800" fill="#166534">Renal function</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Duration:</text>
+              <text x="-70" y="56" font-weight="800" fill="#166534">Until VL negative</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">  then 2–3 more</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• IV ganciclovir:</text>
+              <text x="-70" y="112" font-weight="800" fill="#166534">If severe</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Monitor for</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">leukopenia, thrombocytopenia</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">2. REDUCE IMMUNOSUPP.</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">Critical step</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">↓ MMF</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">first</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• Step 1:</text>
+              <text x="-70" y="0" font-weight="800" fill="#5b21b6">Reduce MMF</text>
+              <text x="-180" y="28" font-weight="700" fill="#5b21b6">• Step 2:</text>
+              <text x="-70" y="28" font-weight="800" fill="#5b21b6">Reduce tacrolimus</text>
+              <text x="-180" y="56" font-weight="700" fill="#5b21b6">  if severe</text>
+              <text x="-180" y="84" font-weight="700" fill="#5b21b6">• Rationale:</text>
+              <text x="-70" y="84" font-weight="800" fill="#5b21b6">Immune control</text>
+              <text x="-180" y="112" font-weight="700" fill="#5b21b6">• Prednisone:</text>
+              <text x="-70" y="112" font-weight="800" fill="#5b21b6">Usually continue</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Balance infection</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">vs rejection risk</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#0891b2"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">3. MONITORING</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">Ongoing assessment</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">Weekly</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">tests</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#155e75">• CMV PCR:</text>
+              <text x="-70" y="0" font-weight="800" fill="#155e75">Weekly</text>
+              <text x="-180" y="28" font-weight="700" fill="#155e75">• CBC:</text>
+              <text x="-70" y="28" font-weight="800" fill="#155e75">Weekly</text>
+              <text x="-180" y="56" font-weight="700" fill="#155e75">• Creatinine:</text>
+              <text x="-70" y="56" font-weight="800" fill="#155e75">2–3× weekly</text>
+              <text x="-180" y="84" font-weight="700" fill="#155e75">• Tacro level:</text>
+              <text x="-70" y="84" font-weight="800" fill="#155e75">Monitor</text>
+              <text x="-180" y="112" font-weight="700" fill="#155e75">• Resistance:</text>
+              <text x="-70" y="112" font-weight="800" fill="#155e75">If VL rises</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Consider resistance if</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#155e75">VL does not fall in 2 weeks</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Antiviral + immunosuppression reduction + monitoring = key triad</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER C</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Treat with renal-adjusted therapeutic-dose valganciclovir, consider reducing mycophenolate</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Monitor CMV viral load and blood counts</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Therapeutic-dose valganciclovir + reduce MMF + monitor</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Full treatment triad for tissue-invasive CMV disease</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Restart low-dose prophylaxis without modifying immunosuppression</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Prophylactic dose is inadequate for established tissue-invasive disease</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — High-dose corticosteroids for presumed rejection</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Would worsen CMV by further immunosuppressing the patient</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Acyclovir is equivalent to valganciclovir for CMV colitis</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Acyclovir is NOT effective for established CMV disease</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Observe without antiviral treatment</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Symptomatic tissue-invasive disease requires treatment</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: C — Therapeutic-dose valganciclovir + reduce MMF + monitor</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "CMV Colitis After Kidney Transplant — D+/R− High-Risk Disease",
+  subtitle: "Tissue-invasive CMV requires therapeutic-dose valganciclovir + immunosuppression reduction",
+  badge: "TRANSPLANT INFECTIOUS DISEASE · NEPHROLOGY · CMV",
+  caseTitle: "Case: 52-year-old woman, 4 months post-deceased-donor kidney transplant",
+  caseDescription: "CMV D+/R−. Completed 3 months of valganciclovir prophylaxis. Now presents with fever, fatigue, watery diarrhea, and leukopenia. CMV plasma PCR 185,000 IU/mL. Colonoscopy shows multiple colonic ulcers; biopsy shows CMV inclusions with positive IHC. Creatinine 1.8 (baseline 1.3). WBC 2,100. On tacrolimus, mycophenolate, prednisone. Hemodynamically stable, tolerating PO.",
+  labChips: [
+    { text: "Cr 1.8 mg/dL (baseline 1.3)", abnormal: true },
+    { text: "WBC 2,100/µL", abnormal: true },
+    { text: "CMV PCR 185,000 IU/mL", abnormal: true },
+    { text: "Colonic ulcers", abnormal: true },
+    { text: "CMV IHC positive", abnormal: true },
+    { text: "D+/R− serostatus", abnormal: true },
+    { text: "On tacrolimus + MMF + pred", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 CMV Spectrum", className: "opt2" },
+    { id: "opt3", label: "🔵 Management", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Tissue-Invasive CMV Disease",
+      infoRows: [
+        { k: "Timing", v: "4 months post-transplant" },
+        { k: "Serostatus", v: "D+/R− (high risk)" },
+        { k: "CMV PCR", v: "185,000 IU/mL" },
+        { k: "Biopsy", v: "CMV IHC positive" },
+        { k: "Diagnosis", v: "CMV colitis (tissue-invasive)" }
+      ],
+      svgTitle: "CMV Colitis — Tissue-Invasive Disease",
+      svgSubtitle: "D+/R− · completed 3 months prophylaxis · now with fever, diarrhea, leukopenia, high VL",
+      bannerBg: "#dc2626",
+      bannerText1: "Tissue-invasive CMV = therapeutic-dose antiviral + immunosuppression reduction",
+      bannerText2: "Do NOT treat with prophylactic dose or steroids",
+      panel1Title: "🧪 What the findings mean",
+      panel1Tagline: "The diagnosis",
+      panel1List: [
+        "<strong>D+/R− serostatus</strong> — highest risk category for CMV disease",
+        "<strong>4 months post-transplant</strong> — classic timing for late CMV (after prophylaxis ends)",
+        "<strong>CMV PCR 185,000 IU/mL</strong> — very high viral load, confirms active infection",
+        "<strong>Colonic ulcers + CMV IHC+</strong> — tissue-invasive disease (colitis)",
+        "<strong>Fever, diarrhea, leukopenia</strong> — classic clinical presentation"
+      ],
+      panel2Title: "🧬 Why high-risk patients get late CMV",
+      panel2Tagline: "The serostatus problem",
+      panel2List: [
+        "<strong>D+/R−</strong> = donor positive, recipient negative — recipient has no pre-existing immunity",
+        "Universal prophylaxis (3 months) reduces early CMV, but <strong>delays</strong> rather than prevents",
+        "After prophylaxis stops, the <strong>recipient remains seronegative</strong> and at risk",
+        "Late CMV typically occurs <strong>1–6 months after stopping prophylaxis</strong>",
+        "This patient fits the pattern exactly — <strong>classic late CMV disease</strong>"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Board Pearl — Tissue-invasive disease ≠ viremia",
+      alertText: "Asymptomatic viremia can be managed with prophylactic-dose antiviral. But <strong>tissue-invasive disease</strong> (colitis, pneumonitis, hepatitis, retinitis) requires <strong>therapeutic-dose treatment plus immunosuppression reduction</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 CMV Infection Spectrum",
+      infoRows: [
+        { k: "Asymptomatic viremia", v: "Low titer, no symptoms" },
+        { k: "CMV syndrome", v: "Fever + cytopenia, no end organ" },
+        { k: "Tissue-invasive", v: "End organ involvement" },
+        { k: "This patient", v: "Colitis (tissue-invasive)" },
+        { k: "Treatment", v: "Therapeutic dose" }
+      ],
+      svgTitle: "CMV Infection Spectrum After Transplantation",
+      svgSubtitle: "Distinguishing asymptomatic viremia from tissue-invasive disease",
+      bannerBg: "#7c3aed",
+      bannerText1: "Tissue-invasive CMV requires therapeutic dose + immunosuppression reduction",
+      bannerText2: "The spectrum determines the treatment strategy",
+      panel1Title: "🧪 The three categories",
+      panel1Tagline: "Determines the treatment",
+      panel1List: [
+        "<strong>Asymptomatic viremia</strong> — CMV PCR positive, no symptoms; treat preemptively with prophylactic-dose valganciclovir",
+        "<strong>CMV syndrome</strong> — fever + cytopenia (leukopenia, thrombocytopenia); no end-organ involvement; treat with therapeutic dose + reduce immunosuppression",
+        "<strong>Tissue-invasive CMV disease</strong> — end-organ involvement (colitis, pneumonitis, hepatitis, retinitis, nephritis); treat with therapeutic dose + reduce immunosuppression",
+        "This patient has <strong>tissue-invasive CMV colitis</strong> — confirmed by biopsy with IHC"
+      ],
+      panel2Title: "🔬 Why tissue-invasive needs full treatment",
+      panel2Tagline: "Severity drives the strategy",
+      panel2List: [
+        "Tissue-invasive disease has <strong>higher morbidity and mortality</strong>",
+        "The virus is actively replicating in the end organ → <strong>direct tissue damage</strong>",
+        "Prophylactic dose is <strong>insufficient</strong> to clear the infection",
+        "<strong>Therapeutic-dose valganciclovir (900 mg BID)</strong> is required, adjusted for renal function",
+        "<strong>Immunosuppression reduction</strong> is essential to allow immune control",
+        "Without both, the infection can progress and become <strong>life-threatening</strong>"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Severity determines treatment intensity",
+      alertText: "The CMV syndrome and disease categories help you decide between <strong>prophylactic</strong> and <strong>therapeutic</strong> dosing. Tissue-invasive disease always requires full treatment."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Management — The Triad",
+      infoRows: [
+        { k: "Antiviral", v: "Valganciclovir 900 mg BID" },
+        { k: "Renal adjustment", v: "Based on CrCl" },
+        { k: "Immunosuppression", v: "Reduce MMF first" },
+        { k: "Monitoring", v: "Weekly CMV PCR, CBC" },
+        { k: "Duration", v: "Until VL negative + 2–3 months" }
+      ],
+      svgTitle: "Management of Established CMV Disease",
+      svgSubtitle: "Antiviral therapy + immunosuppression reduction + monitoring",
+      bannerBg: "#0891b2",
+      bannerText1: "Therapeutic-dose valganciclovir + reduce mycophenolate + monitor weekly",
+      bannerText2: "Ligation is not the answer — this is a viral infection, not a vascular problem",
+      panel1Title: "💊 Antiviral therapy",
+      panel1Tagline: "First-line treatment",
+      panel1List: [
+        "<strong>Valganciclovir 900 mg BID</strong> (therapeutic dose)",
+        "<strong>Renal-adjusted</strong> — this patient's Cr 1.8 requires dose adjustment",
+        "Severe disease or unable to tolerate PO: <strong>IV ganciclovir 5 mg/kg BID</strong>",
+        "Duration: <strong>until CMV PCR is negative</strong>, then continue for <strong>2–3 more months</strong>",
+        "<strong>Monitor CBC weekly</strong> — valganciclovir causes leukopenia and thrombocytopenia",
+        "If VL does not fall after 2 weeks → <strong>consider resistance testing</strong>"
+      ],
+      panel2Title: "🛡️ Immunosuppression reduction",
+      panel2Tagline: "Critical step — allow immune control",
+      panel2List: [
+        "<strong>Step 1:</strong> Reduce or hold <strong>mycophenolate mofetil (MMF)</strong> — first step",
+        "<strong>Step 2:</strong> Consider reducing <strong>tacrolimus</strong> if severe disease",
+        "<strong>Prednisone:</strong> usually continued at current dose",
+        "Balance: <strong>infection control vs. risk of rejection</strong>",
+        "<strong>Guidelines strongly recommend</strong> this step — it is essential for infection clearance",
+        "Monitoring: <strong>weekly CMV PCR</strong> and <strong>weekly CBC</strong>; creatinine 2–3× weekly"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Do not forget immunosuppression reduction",
+      alertText: "Antiviral therapy alone is often not enough. <strong>Reducing immunosuppression</strong> is a critical guideline-recommended step that allows the patient's immune system to help clear the virus."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "C — Therapeutic-dose + reduce MMF" },
+        { k: "Antiviral", v: "Valganciclovir 900 mg BID" },
+        { k: "Immunosuppression", v: "Reduce MMF" },
+        { k: "Monitoring", v: "Weekly CMV PCR + CBC" },
+        { k: "Duration", v: "Until VL negative + 2–3 mo" }
+      ],
+      svgTitle: "Answer Summary — CMV Colitis Management",
+      svgSubtitle: "Therapeutic-dose valganciclovir + reduce MMF + monitor",
+      bannerBg: "#ca8a04",
+      bannerText1: "C — Treat with renal-adjusted therapeutic-dose valganciclovir, reduce MMF, monitor",
+      bannerText2: "The complete management triad for tissue-invasive CMV disease",
+      panel1Title: "✅ The correct answer (C)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>Therapeutic-dose valganciclovir</strong> — for established tissue-invasive disease",
+        "<strong>Renal-adjusted</strong> — Cr 1.8 requires dose adjustment",
+        "<strong>Reduce MMF</strong> — critical step to allow immune control",
+        "<strong>Monitor CMV PCR weekly</strong> — to assess treatment response",
+        "<strong>Monitor CBC weekly</strong> — valganciclovir causes leukopenia",
+        "Duration: until PCR negative + <strong>2–3 months of maintenance</strong>"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (Prophylactic dose, no immunosuppression change):</strong> Inadequate for established disease — subtherapeutic and risks resistance",
+        "<strong>B (High-dose steroids):</strong> Wrong diagnosis (CMV, not rejection); would worsen CMV infection",
+        "<strong>D (Acyclovir):</strong> NOT effective for established CMV disease — has poor activity against CMV",
+        "<strong>E (Observation):</strong> Dangerous — symptomatic tissue-invasive disease requires treatment"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "<strong>Therapeutic-dose valganciclovir</strong> (renal-adjusted) + <strong>reduce mycophenolate</strong> + <strong>monitor CMV PCR and CBC</strong>. This is the complete management triad for tissue-invasive CMV disease."
+    }
+  },
+  comparison: {
+    title: "📊 CMV Infection Spectrum — Treatment Strategy",
+    sub: "The category determines the treatment approach",
+    head: ["Category", "CMV PCR", "Symptoms", "Biopsy", "Treatment"],
+    rows: [
+      { cells: ["Asymptomatic viremia", "Low-level positive", "None", "Not indicated", "Preemptive prophylactic-dose valganciclovir"], hero: false },
+      { cells: ["CMV syndrome", "Positive", "Fever + cytopenia", "Not required", "Therapeutic-dose valganciclovir + reduce immunosuppression"], hero: false },
+      { cells: ["Tissue-invasive (this patient)", "185,000 IU/mL", "Fever, diarrhea, leukopenia", "CMV IHC+", "Therapeutic-dose valganciclovir + reduce immunosuppression"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 52-year-old woman, 4 months post-kidney transplant (D+/R−), completed 3 months of valganciclovir prophylaxis. She presents with fever, diarrhea, leukopenia, CMV PCR 185,000 IU/mL, and colonic ulcers with CMV IHC+ on biopsy. What is the most appropriate management?",
+      options: [
+        { text: "Treat with renal-adjusted therapeutic-dose valganciclovir, consider reducing mycophenolate, and monitor CMV viral load and blood counts.", correct: true,
+          explanation: "This is tissue-invasive CMV disease (colitis). Treatment requires therapeutic-dose valganciclovir (900 mg BID, renal-adjusted), immunosuppression reduction (MMF first), and close monitoring of CMV PCR and CBC." },
+        { text: "Restart low-dose valganciclovir prophylaxis without modifying immunosuppression.", correct: false,
+          explanation: "Prophylactic dose is inadequate for tissue-invasive disease. Full therapeutic dose is required, along with immunosuppression reduction." },
+        { text: "Administer high-dose corticosteroids for presumed acute rejection.", correct: false,
+          explanation: "This would worsen the CMV infection by further immunosuppressing the patient. The diagnosis is CMV colitis, not rejection." }
+      ]
+    },
+    {
+      question: "What is the first-line antiviral for tissue-invasive CMV disease in a hemodynamically stable patient tolerating oral medications?",
+      options: [
+        { text: "Valganciclovir 900 mg twice daily (renal-adjusted).", correct: true,
+          explanation: "Valganciclovir 900 mg BID is the first-line treatment for established CMV disease. The dose must be adjusted for renal function. IV ganciclovir is reserved for severe disease or inability to tolerate PO." },
+        { text: "Acyclovir 800 mg five times daily.", correct: false,
+          explanation: "Acyclovir is NOT effective for established CMV disease. Valganciclovir or ganciclovir is required." },
+        { text: "Valacyclovir 1 g three times daily.", correct: false,
+          explanation: "Valacyclovir is not effective for CMV disease. It is used for HSV/VZV." }
+      ]
+    },
+    {
+      question: "What is the most important immunosuppression modification in a transplant patient with tissue-invasive CMV disease?",
+      options: [
+        { text: "Reduce or hold mycophenolate mofetil (MMF).", correct: true,
+          explanation: "Guidelines recommend reducing immunosuppression — starting with the antimetabolite (MMF) — to allow the patient's immune system to help control the CMV infection." },
+        { text: "Increase tacrolimus to prevent rejection.", correct: false,
+          explanation: "Increasing immunosuppression would worsen the CMV infection, not help." },
+        { text: "Discontinue all immunosuppression.", correct: false,
+          explanation: "Complete discontinuation risks rejection. The recommendation is to reduce, not eliminate, immunosuppression." }
+      ]
+    },
+    {
+      question: "What is the role of acyclovir in the treatment of established CMV disease?",
+      options: [
+        { text: "None — acyclovir is not effective for CMV disease.", correct: true,
+          explanation: "Acyclovir has poor activity against CMV and is not recommended for established CMV disease. Valganciclovir or ganciclovir is required." },
+        { text: "It is equivalent to valganciclovir for CMV colitis.", correct: false,
+          explanation: "Acyclovir is NOT equivalent to valganciclovir. It has much poorer anti-CMV activity." },
+        { text: "It is used as adjunctive therapy with valganciclovir.", correct: false,
+          explanation: "Acyclovir is not used as adjunctive therapy for CMV disease." }
+      ]
+    },
+    {
+      question: "When should CMV viral load be checked after starting treatment for CMV disease?",
+      options: [
+        { text: "Weekly until negative, then continue treatment for 2–3 more months.", correct: true,
+          explanation: "Weekly CMV PCR monitoring assesses treatment response. Once the viral load is negative, treatment is continued for an additional 2–3 months to prevent relapse." },
+        { text: "Only at the end of treatment.", correct: false,
+          explanation: "Weekly monitoring during treatment is essential to assess response and detect failure." },
+        { text: "Monthly for 6 months.", correct: false,
+          explanation: "Weekly monitoring is standard during active treatment. Monthly is insufficient." }
+      ]
+    },
+    {
+      question: "What is the timing of late CMV disease in high-risk (D+/R−) transplant recipients after stopping prophylaxis?",
+      options: [
+        { text: "Typically 1–6 months after stopping prophylaxis.", correct: true,
+          explanation: "Late CMV disease occurs most commonly in the first 1–6 months after prophylaxis is stopped. This patient presented at 4 months post-transplant (1 month after completing 3 months of prophylaxis)." },
+        { text: "Immediately during prophylaxis.", correct: false,
+          explanation: "Prophylaxis is effective during its course. Late CMV occurs after prophylaxis is stopped." },
+        { text: "Years after transplant.", correct: false,
+          explanation: "Late CMV typically occurs within months of stopping prophylaxis, not years later." }
+      ]
+    },
+    {
+      question: "Which monitoring parameters are essential during valganciclovir treatment for CMV disease?",
+      options: [
+        { text: "Weekly CMV PCR, weekly CBC, and frequent creatinine monitoring.", correct: true,
+          explanation: "Weekly CMV PCR assesses efficacy. Weekly CBC detects valganciclovir-induced leukopenia and thrombocytopenia. Frequent creatinine monitoring ensures proper renal dosing and detects nephrotoxicity." },
+        { text: "Monthly liver function tests only.", correct: false,
+          explanation: "Liver function is not the primary concern. CMV PCR, CBC, and creatinine are the essential parameters." },
+        { text: "No specific monitoring is required.", correct: false,
+          explanation: "Close monitoring is essential during CMV treatment to assess response and detect toxicity." }
+      ]
+    },
+    {
+      question: "A patient with CMV disease has been on therapeutic-dose valganciclovir for 2 weeks, but the viral load continues to rise. What should be considered?",
+      options: [
+        { text: "Antiviral resistance — consider resistance testing and alternative agents.", correct: true,
+          explanation: "Rising viral load despite appropriate therapy suggests resistance. Testing for UL97 and UL54 mutations and consideration of alternative agents (foscarnet, cidofovir) is indicated." },
+        { text: "Increase the valganciclovir dose beyond standard.", correct: false,
+          explanation: "Standard dose is already therapeutic. Increasing further risks toxicity without benefit." },
+        { text: "Stop all antivirals and observe.", correct: false,
+          explanation: "This would worsen the infection. Resistance testing and alternative agents are the next step." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Transplant Infectious Disease / Nephrology / CMV",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

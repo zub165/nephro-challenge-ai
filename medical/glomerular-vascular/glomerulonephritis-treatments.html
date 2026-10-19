@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glomerulonephritis Treatments — Brand Names & Mechanisms</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — C3G & IC-MPGN
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 150)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">C3 GLOMERULOPATHY (C3G) & IC-MPGN</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">Complement-mediated diseases with new targeted therapies</text>
+          </g>
+
+          <!-- EMPAVELI -->
+          <g transform="translate(250, 420)">
+            <rect x="-200" y="-170" width="400" height="340" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-135" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">EMPAVELI®</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">Pegcetacoplan</text>
+            <line x1="-170" y1="-50" x2="170" y2="-50" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#15803d">C3/C3b inhibitor</text>
+            <text x="0" y="15" text-anchor="middle" font-size="14" fill="#15803d">Blocks central complement pathway</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#15803d">Prevents C3 fragment deposition</text>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#15803d">FDA-approved for C3G and IC-MPGN</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">First C3 inhibitor approved</text>
+          </g>
+
+          <!-- FABHALTA -->
+          <g transform="translate(700, 420)">
+            <rect x="-200" y="-170" width="400" height="340" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-135" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">FABHALTA®</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">Iptacopan</text>
+            <line x1="-170" y1="-50" x2="170" y2="-50" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#6d28d9">Oral Factor B inhibitor</text>
+            <text x="0" y="15" text-anchor="middle" font-size="14" fill="#6d28d9">Selectively inhibits alternative pathway</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#6d28d9">First oral treatment for C3G</text>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#6d28d9">FDA-approved March 2025</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Oral option</text>
+          </g>
+
+          <!-- Aspaveli -->
+          <g transform="translate(1150, 420)">
+            <rect x="-200" y="-170" width="400" height="340" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-200" y="-170" width="400" height="60" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-135" width="400" height="25" fill="#0891b2"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">Aspaveli®</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">Pegcetacoplan</text>
+            <line x1="-170" y1="-50" x2="170" y2="-50" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#0e7490">C3 inhibitor</text>
+            <text x="0" y="15" text-anchor="middle" font-size="14" fill="#0e7490">European brand name</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#0e7490">Same drug as EMPAVELI</text>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#0e7490">Approved in EU</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">EU alternative</text>
+          </g>
+
+          <g transform="translate(700, 720)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">PARADIGM SHIFT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#15803d">Before 2025, no targeted therapies existed for C3G</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">Now: complement inhibitors address the underlying cause</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — IgA NEPHROPATHY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">IgA NEPHROPATHY (IgAN)</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Multiple novel agents targeting different steps in pathogenesis</text>
+          </g>
+
+          <!-- VANRAFIA -->
+          <g transform="translate(250, 400)">
+            <rect x="-200" y="-150" width="400" height="300" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-150" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">VANRAFIA®</text>
+            <text x="0" y="-60" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">Atrasentan</text>
+            <line x1="-170" y1="-30" x2="170" y2="-30" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="5" text-anchor="middle" font-size="14" fill="#15803d">Selective endothelin A antagonist</text>
+            <text x="0" y="30" text-anchor="middle" font-size="14" fill="#15803d">Reduces proteinuria</text>
+            <text x="0" y="55" text-anchor="middle" font-size="14" fill="#15803d">FDA-approved April 2025</text>
+            <text x="0" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">First oral ERA for IgAN</text>
+          </g>
+
+          <!-- VOYXACT -->
+          <g transform="translate(700, 400)">
+            <rect x="-200" y="-150" width="400" height="300" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-150" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">VOYXACT®</text>
+            <text x="0" y="-60" text-anchor="middle" font-size="20" font-weight="800" fill="#5b21b6">Sibeprenlimab</text>
+            <line x1="-170" y1="-30" x2="170" y2="-30" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="5" text-anchor="middle" font-size="14" fill="#6d28d9">APRIL blocker</text>
+            <text x="0" y="30" text-anchor="middle" font-size="14" fill="#6d28d9">Monoclonal antibody</text>
+            <text x="0" y="55" text-anchor="middle" font-size="14" fill="#6d28d9">FDA-approved Nov 2025</text>
+            <text x="0" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">First biologic for IgAN</text>
+          </g>
+
+          <!-- FILSPARI -->
+          <g transform="translate(1150, 400)">
+            <rect x="-200" y="-150" width="400" height="300" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-200" y="-150" width="400" height="60" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#0891b2"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">FILSPARI®</text>
+            <text x="0" y="-60" text-anchor="middle" font-size="20" font-weight="800" fill="#155e75">Sparsentan</text>
+            <line x1="-170" y1="-30" x2="170" y2="-30" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="5" text-anchor="middle" font-size="14" fill="#0e7490">Dual ETAR/AT1R antagonist</text>
+            <text x="0" y="30" text-anchor="middle" font-size="14" fill="#0e7490">Non-immunosuppressive</text>
+            <text x="0" y="55" text-anchor="middle" font-size="14" fill="#0e7490">Approved for IgAN (2024)</text>
+            <text x="0" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">DEARA</text>
+          </g>
+
+          <g transform="translate(700, 700)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#713f12">MULTIPLE TARGETS</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#a16207">Endothelin pathway (atrasentan, sparsentan) · APRIL pathway (sibeprenlimab)</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="#713f12">Each targets a different step in IgAN pathogenesis</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — MEMBRANOUS NEPHROPATHY
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">MEMBRANOUS NEPHROPATHY (MN)</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">B-cell depletion is the dominant strategy</text>
+          </g>
+
+          <!-- GAZYVA -->
+          <g transform="translate(350, 420)">
+            <rect x="-290" y="-170" width="580" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-170" width="580" height="60" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-135" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">GAZYVA® / GAZYVARO®</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">Obinutuzumab</text>
+            <line x1="-250" y1="-50" x2="250" y2="-50" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#15803d">Type II anti-CD20 monoclonal antibody</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" fill="#15803d">Deep B-cell depletion</text>
+            <text x="0" y="40" text-anchor="middle" font-size="14" fill="#15803d">Effective in PLA2R-positive and negative MN</text>
+            <text x="0" y="70" text-anchor="middle" font-size="14" fill="#15803d">12-month remission ~94%</text>
+            <text x="0" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Emerging first-line option</text>
+          </g>
+
+          <!-- Rituximab -->
+          <g transform="translate(1050, 420)">
+            <rect x="-290" y="-170" width="580" height="340" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-290" y="-170" width="580" height="60" rx="24" fill="#7c3aed"/>
+            <rect x="-290" y="-135" width="580" height="25" fill="#7c3aed"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">RITUXAN® / MABTHERA®</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">Rituximab</text>
+            <line x1="-250" y1="-50" x2="250" y2="-50" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#6d28d9">Chimeric anti-CD20 monoclonal antibody</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" fill="#6d28d9">First-line for primary MN</text>
+            <text x="0" y="40" text-anchor="middle" font-size="14" fill="#6d28d9">Depletes B cells</text>
+            <text x="0" y="70" text-anchor="middle" font-size="14" fill="#6d28d9">Well-established efficacy</text>
+            <text x="0" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Standard of care</text>
+          </g>
+
+          <g transform="translate(700, 720)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">INVESTIGATIONAL AGENTS</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#0e7490">Zuberitamab (chimeric anti-CD20) · Felzartamab (anti-CD38) · Budoprutug (anti-CD19)</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="#155e75">Targeting plasma cells and B cells at different stages</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — LUPUS NEPHRITIS & ANCA
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">LUPUS NEPHRITIS & ANCA VASCULITIS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Targeted biologics and complement inhibitors</text>
+          </g>
+
+          <!-- Lupus nephritis -->
+          <g transform="translate(350, 400)">
+            <rect x="-290" y="-180" width="580" height="360" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-180" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-125" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-125" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">LUPUS NEPHRITIS</text>
+
+            <g font-size="15">
+              <text x="-260" y="-60" font-weight="800" fill="#166534">GAZYVA® / GAZYVARO® (Obinutuzumab)</text>
+              <text x="-260" y="-30" font-weight="700" fill="#15803d">Type II anti-CD20 · B-cell depletion</text>
+              <text x="-260" y="0" font-weight="800" fill="#166534">BENLYSTA® (Belimumab)</text>
+              <text x="-260" y="30" font-weight="700" fill="#15803d">BLyS/BAFF inhibitor · Reduces B-cell survival</text>
+              <text x="-260" y="60" font-weight="800" fill="#166534">LUPKYNIS® (Voclosporin)</text>
+              <text x="-260" y="90" font-weight="700" fill="#15803d">Calcineurin inhibitor · Stabilizes podocytes</text>
+            </g>
+
+            <rect x="-260" y="120" width="520" height="50" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="150" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">Triple therapy now standard for severe LN</text>
+          </g>
+
+          <!-- ANCA -->
+          <g transform="translate(1050, 400)">
+            <rect x="-290" y="-180" width="580" height="360" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-180" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-125" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-125" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">ANCA VASCULITIS</text>
+
+            <g font-size="15">
+              <text x="-260" y="-60" font-weight="800" fill="#991b1b">TAVNEOS® (Avacopan)</text>
+              <text x="-260" y="-30" font-weight="700" fill="#7f1d1d">Oral C5a receptor antagonist</text>
+              <text x="-260" y="0" font-weight="700" fill="#7f1d1d">Blocks C5a-mediated neutrophil activation</text>
+              <text x="-260" y="30" font-weight="700" fill="#7f1d1d">Steroid-sparing alternative for induction</text>
+              <text x="-260" y="60" font-weight="700" fill="#7f1d1d">FDA and EMA approved</text>
+              <text x="-260" y="90" font-weight="700" fill="#7f1d1d">Included in 2024 KDIGO guidance</text>
+            </g>
+
+            <rect x="-260" y="120" width="520" height="50" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="150" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">Reduces glucocorticoid exposure</text>
+          </g>
+
+          <g transform="translate(700, 700)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">COMMON THEME</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#6d28d9">Targeted therapies aim to maximize efficacy and minimize steroid toxicity</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">Precision medicine is replacing broad immunosuppression</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Glomerulonephritis Treatments — Brand Names & Mechanisms",
+  subtitle: "From broad immunosuppression to precision medicine: a comprehensive guide to current and emerging GN therapies",
+  badge: "NEPHROLOGY · PHARMACOLOGY · GLOMERULAR DISEASE",
+  caseTitle: "Reference: Brand names, generic names, and mechanisms of action for major GN treatments",
+  caseDescription: "A comprehensive overview of targeted therapies for C3 glomerulopathy, IC-MPGN, IgA nephropathy, membranous nephropathy, FSGS, lupus nephritis, and ANCA-associated vasculitis.",
+  labChips: [
+    { text: "C3G: Pegcetacoplan, Iptacopan", abnormal: false },
+    { text: "IgAN: Atrasentan, Sibeprenlimab, Sparsentan", abnormal: false },
+    { text: "MN: Obinutuzumab, Rituximab", abnormal: false },
+    { text: "FSGS: Sparsentan", abnormal: false },
+    { text: "LN: Obinutuzumab, Belimumab, Voclosporin", abnormal: false },
+    { text: "AAV: Avacopan", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 C3G & MPGN", className: "opt1" },
+    { id: "opt2", label: "🟣 IgA Nephropathy", className: "opt2" },
+    { id: "opt3", label: "🔵 Membranous", className: "opt3" },
+    { id: "opt4", label: "🟡 Lupus & ANCA", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 C3 Glomerulopathy & IC-MPGN",
+      infoRows: [
+        { k: "EMPAVELI®", v: "Pegcetacoplan (C3/C3b inhibitor)" },
+        { k: "FABHALTA®", v: "Iptacopan (Factor B inhibitor)" },
+        { k: "Aspaveli®", v: "Pegcetacoplan (EU brand)" },
+        { k: "Target", v: "Complement overactivation" },
+        { k: "Impact", v: "First targeted therapies" }
+      ],
+      svgTitle: "C3 Glomerulopathy (C3G) & IC-MPGN",
+      svgSubtitle: "Complement-mediated diseases with new targeted therapies",
+      bannerBg: "#dc2626",
+      bannerText1: "EMPAVELI (pegcetacoplan) and FABHALTA (iptacopan) target complement overactivation",
+      bannerText2: "Aspaveli is the European brand name for pegcetacoplan",
+      panel1Title: "💊 Complement inhibitors",
+      panel1Tagline: "Targeting the underlying cause",
+      panel1List: [
+        "<strong>EMPAVELI® (pegcetacoplan):</strong> A C3/C3b inhibitor that binds to C3 and C3b, blocking the central complement pathway and preventing C3 fragment deposition in the glomeruli[reference:21]",
+        "<strong>FABHALTA® (iptacopan):</strong> An oral Factor B inhibitor that selectively inhibits the alternative complement pathway, which is overactive in C3G and IC-MPGN[reference:22][reference:23]",
+        "<strong>Aspaveli® (pegcetacoplan):</strong> The European brand name for the same drug as EMPAVELI[reference:24]",
+        "Before 2025, no targeted therapies existed for C3G — management relied on supportive care and broad immunosuppression[reference:25]",
+        "These agents address the underlying complement dysregulation"
+      ],
+      panel2Title: "🔬 Clinical impact",
+      panel2Tagline: "A paradigm shift",
+      panel2List: [
+        "The VALIANT phase 3 trial showed pegcetacoplan reduced proteinuria and stabilized kidney function in C3G and primary IC-MPGN[reference:26]",
+        "Iptacopan demonstrated clinically meaningful proteinuria reduction as early as 14 days, sustained at 12 months[reference:27]",
+        "Future guidelines may consider these as first-line therapeutic options for C3G and idiopathic IC-MPGN[reference:28]",
+        "These are the first approved treatments for these rare kidney diseases"
+      ],
+      alertIcon: "🧬",
+      alertTitle: "Board Pearl — Complement is the target",
+      alertText: "In C3G and IC-MPGN, complement overactivation is the key driver. Pegcetacoplan blocks C3 (the central hub), while iptacopan blocks Factor B (the alternative pathway amplification loop). Both are now FDA-approved."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 IgA Nephropathy (IgAN)",
+      infoRows: [
+        { k: "VANRAFIA®", v: "Atrasentan (ETAR antagonist)" },
+        { k: "VOYXACT®", v: "Sibeprenlimab (APRIL blocker)" },
+        { k: "FILSPARI®", v: "Sparsentan (DEARA)" },
+        { k: "Targets", v: "Endothelin, APRIL pathways" },
+        { k: "Impact", v: "Multiple novel mechanisms" }
+      ],
+      svgTitle: "IgA Nephropathy (IgAN)",
+      svgSubtitle: "Multiple novel agents targeting different steps in pathogenesis",
+      bannerBg: "#7c3aed",
+      bannerText1: "VANRAFIA (atrasentan), VOYXACT (sibeprenlimab), and FILSPARI (sparsentan) represent different therapeutic approaches",
+      bannerText2: "Each targets a distinct pathway in IgAN",
+      panel1Title: "💊 Novel agents for IgAN",
+      panel1Tagline: "Three different mechanisms",
+      panel1List: [
+        "<strong>VANRAFIA® (atrasentan):</strong> A selective endothelin A receptor antagonist (ERA) that reduces proteinuria in adults with primary IgAN at risk of rapid progression. FDA-approved April 2025[reference:29]",
+        "<strong>VOYXACT® (sibeprenlimab):</strong> A monoclonal antibody that blocks APRIL (A Proliferation Inducing Ligand), a key factor in IgAN development. FDA-approved November 2025[reference:30][reference:31]",
+        "<strong>FILSPARI® (sparsentan):</strong> A dual endothelin/angiotensin receptor antagonist (DEARA) that blocks both ETAR and AT1R. Approved for IgAN to slow kidney function decline[reference:32]"
+      ],
+      panel2Title: "🔬 Why multiple targets?",
+      panel2Tagline: "IgAN is a multi-step disease",
+      panel2List: [
+        "IgAN pathogenesis involves:<strong>galactose-deficient IgA1 production, immune complex formation, complement activation, and glomerular injury</strong>",
+        "Atrasentan targets the <strong>endothelin pathway</strong> to reduce proteinuria and preserve kidney function",
+        "Sibeprenlimab targets the <strong>APRIL pathway</strong> to reduce pathogenic IgA production",
+        "Sparsentan combines <strong>endothelin and angiotensin blockade</strong> for dual hemodynamic and podocyte protection",
+        "The availability of multiple mechanisms allows for individualized therapy"
+      ],
+      alertIcon: "🩸",
+      alertTitle: "Board Pearl — Multiple pathways, multiple options",
+      alertText: "IgAN now has multiple approved therapies targeting different pathways: <strong>endothelin</strong> (atrasentan, sparsentan) and <strong>APRIL</strong> (sibeprenlimab). This represents a shift toward precision medicine in IgAN."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Membranous Nephropathy (MN)",
+      infoRows: [
+        { k: "GAZYVA®", v: "Obinutuzumab (anti-CD20)" },
+        { k: "RITUXAN®", v: "Rituximab (anti-CD20)" },
+        { k: "Investigational", v: "Zuberitamab, Felzartamab" },
+        { k: "Target", v: "B-cell depletion" },
+        { k: "Impact", v: "High remission rates" }
+      ],
+      svgTitle: "Membranous Nephropathy (MN)",
+      svgSubtitle: "B-cell depletion is the dominant strategy",
+      bannerBg: "#0891b2",
+      bannerText1: "GAZYVA (obinutuzumab) and RITUXAN (rituximab) are anti-CD20 therapies",
+      bannerText2: "Obinutuzumab shows high remission rates in PLA2R-positive and negative MN",
+      panel1Title: "💊 Anti-CD20 therapies",
+      panel1Tagline: "Depleting B cells",
+      panel1List: [
+        "<strong>GAZYVA® / GAZYVARO® (obinutuzumab):</strong> A type II anti-CD20 monoclonal antibody that depletes B cells. In PLA2R-negative MN, 12-month remission was achieved in 94.4% of patients[reference:33][reference:34]",
+        "<strong>RITUXAN® / MABTHERA® (rituximab):</strong> A chimeric anti-CD20 monoclonal antibody that is a first-line treatment for primary MN, regardless of PLA2R status[reference:35]",
+        "Investigational agents include <strong>zuberitamab</strong> (chimeric anti-CD20) and <strong>felzartamab</strong> (anti-CD38 targeting plasma cells)[reference:36][reference:37]"
+      ],
+      panel2Title: "🔬 Emerging evidence",
+      panel2Tagline: "Obinutuzumab vs rituximab",
+      panel2List: [
+        "In a retrospective study of PLA2R-negative MN, obinutuzumab achieved 94.4% remission at 12 months vs 85.7% with rituximab (not statistically significant)[reference:38]",
+        "No relapses were observed in the obinutuzumab group during 12-month follow-up[reference:39]",
+        "Obinutuzumab has shown higher remission rates with an acceptable safety profile in both initial treatment and refractory PLA2R-associated MN[reference:40]",
+        "Anti-CD20 therapy has become the first-line treatment option for primary MN"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Anti-CD20 is the cornerstone",
+      alertText: "For primary membranous nephropathy, <strong>anti-CD20 therapy</strong> (rituximab or obinutuzumab) is the first-line treatment. Obinutuzumab may offer deeper B-cell depletion and is being investigated for superior efficacy."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Lupus Nephritis & ANCA Vasculitis",
+      infoRows: [
+        { k: "GAZYVA®", v: "Obinutuzumab (LN)" },
+        { k: "BENLYSTA®", v: "Belimumab (LN)" },
+        { k: "LUPKYNIS®", v: "Voclosporin (LN)" },
+        { k: "TAVNEOS®", v: "Avacopan (AAV)" },
+        { k: "Targets", v: "B cells, complement" }
+      ],
+      svgTitle: "Lupus Nephritis & ANCA Vasculitis",
+      svgSubtitle: "Targeted biologics and complement inhibitors",
+      bannerBg: "#ca8a04",
+      bannerText1: "GAZYVA (obinutuzumab), BENLYSTA (belimumab), LUPKYNIS (voclosporin), and TAVNEOS (avacopan) represent targeted approaches",
+      bannerText2: "These agents reduce reliance on glucocorticoids",
+      panel1Title: "🦋 Lupus nephritis — triple therapy",
+      panel1Tagline: "Targeting B cells and podocytes",
+      panel1List: [
+        "<strong>GAZYVA® / GAZYVARO® (obinutuzumab):</strong> A type II anti-CD20 monoclonal antibody approved (Oct 2025) for active lupus nephritis. It targets and eliminates B cells that drive renal inflammation[reference:41][reference:42]",
+        "<strong>BENLYSTA® (belimumab):</strong> A BLyS/BAFF inhibitor that blocks a survival factor for B cells, reducing autoantibody production. Used in triple therapy[reference:43]",
+        "<strong>LUPKYNIS® (voclosporin):</strong> A calcineurin inhibitor that inhibits T-cell activation and stabilizes podocytes to reduce proteinuria. Used in triple therapy[reference:44]"
+      ],
+      panel2Title: "🩸 ANCA vasculitis — complement inhibition",
+      panel2Tagline: "A steroid-sparing alternative",
+      panel2List: [
+        "<strong>TAVNEOS® (avacopan):</strong> An oral C5a receptor (C5aR1) antagonist that blocks C5a-mediated neutrophil activation, a key driver of ANCA vasculitis[reference:45][reference:46]",
+        "Avacopan is recommended by 2024 KDIGO, 2022 EULAR, and 2025 BSR guidelines as an alternative to glucocorticoids for induction therapy[reference:47]",
+        "It reduces glucocorticoid exposure and associated adverse effects[reference:48]",
+        "For lupus nephritis, the 2024 guidelines endorse <strong>triple therapy</strong> (glucocorticoids + MPAA + belimumab, or MPAA + CNI, or low-dose CYC + belimumab) as first-line for severe disease"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Key convergence",
+      alertText: "Across lupus nephritis and ANCA vasculitis, the trend is toward <strong>targeted therapies that reduce reliance on glucocorticoids</strong> while maintaining or improving efficacy. B-cell depletion and complement inhibition are leading this shift."
+    }
+  },
+  comparison: {
+    title: "📊 GN Treatments — Brand Names and Mechanisms",
+    sub: "A comprehensive summary of current and emerging therapies",
+    head: ["Disease", "Brand Name", "Generic Name", "Mechanism"],
+    rows: [
+      { cells: ["C3G / IC-MPGN", "EMPAVELI® / Aspaveli®", "Pegcetacoplan", "C3/C3b inhibitor"], hero: false },
+      { cells: ["C3G / IC-MPGN", "FABHALTA®", "Iptacopan", "Oral Factor B inhibitor"], hero: false },
+      { cells: ["IgA Nephropathy", "VANRAFIA®", "Atrasentan", "Selective ETAR antagonist"], hero: false },
+      { cells: ["IgA Nephropathy", "VOYXACT®", "Sibeprenlimab", "APRIL blocker"], hero: false },
+      { cells: ["IgA Nephropathy", "FILSPARI®", "Sparsentan", "Dual ETAR/AT1R antagonist"], hero: false },
+      { cells: ["Membranous Nephropathy", "GAZYVA® / GAZYVARO®", "Obinutuzumab", "Type II anti-CD20"], hero: false },
+      { cells: ["Membranous Nephropathy", "RITUXAN® / MABTHERA®", "Rituximab", "Chimeric anti-CD20"], hero: false },
+      { cells: ["FSGS", "FILSPARI®", "Sparsentan", "Dual ETAR/AT1R antagonist"], hero: false },
+      { cells: ["Lupus Nephritis", "GAZYVA® / GAZYVARO®", "Obinutuzumab", "Type II anti-CD20"], hero: false },
+      { cells: ["Lupus Nephritis", "BENLYSTA®", "Belimumab", "BLyS/BAFF inhibitor"], hero: false },
+      { cells: ["Lupus Nephritis", "LUPKYNIS®", "Voclosporin", "Calcineurin inhibitor"], hero: false },
+      { cells: ["ANCA Vasculitis", "TAVNEOS®", "Avacopan", "Oral C5a receptor antagonist"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "Which complement inhibitor is approved for C3 glomerulopathy and works by binding to C3 and C3b?",
+      options: [
+        { text: "Pegcetacoplan (EMPAVELI®).", correct: true,
+          explanation: "Pegcetacoplan is a C3/C3b inhibitor that binds to C3 and C3b, blocking the central complement pathway. It is approved for C3G and IC-MPGN." },
+        { text: "Iptacopan (FABHALTA®).", correct: false,
+          explanation: "Iptacopan is a Factor B inhibitor, not a C3 inhibitor." },
+        { text: "Avacopan (TAVNEOS®).", correct: false,
+          explanation: "Avacopan is a C5a receptor antagonist used for ANCA vasculitis, not C3G." }
+      ]
+    },
+    {
+      question: "Which agent is an APRIL blocker approved for IgA nephropathy?",
+      options: [
+        { text: "Sibeprenlimab (VOYXACT®).", correct: true,
+          explanation: "Sibeprenlimab is a monoclonal antibody that blocks APRIL, a key factor in IgAN development. It was FDA-approved in November 2025." },
+        { text: "Atrasentan (VANRAFIA®).", correct: false,
+          explanation: "Atrasentan is an endothelin A receptor antagonist, not an APRIL blocker." },
+        { text: "Sparsentan (FILSPARI®).", correct: false,
+          explanation: "Sparsentan is a dual endothelin/angiotensin receptor antagonist." }
+      ]
+    },
+    {
+      question: "Which anti-CD20 antibody is a first-line treatment for primary membranous nephropathy?",
+      options: [
+        { text: "Rituximab (RITUXAN®).", correct: true,
+          explanation: "Rituximab is a chimeric anti-CD20 monoclonal antibody that is a first-line treatment for primary membranous nephropathy, regardless of PLA2R status." },
+        { text: "Obinutuzumab (GAZYVA®).", correct: false,
+          explanation: "Obinutuzumab is also an anti-CD20 antibody and is emerging as a first-line option, but rituximab is the long-established standard." },
+        { text: "Belimumab (BENLYSTA®).", correct: false,
+          explanation: "Belimumab is a BLyS/BAFF inhibitor, not an anti-CD20 antibody, and is used for lupus nephritis." }
+      ]
+    },
+    {
+      question: "Which agent is a dual endothelin/angiotensin receptor antagonist approved for both IgA nephropathy and FSGS?",
+      options: [
+        { text: "Sparsentan (FILSPARI®).", correct: true,
+          explanation: "Sparsentan is a dual ETAR/AT1R antagonist (DEARA) approved for IgAN to slow kidney function decline. It has also received FDA approval for FSGS." },
+        { text: "Atrasentan (VANRAFIA®).", correct: false,
+          explanation: "Atrasentan is a selective endothelin A antagonist, not a dual antagonist." },
+        { text: "Sibeprenlimab (VOYXACT®).", correct: false,
+          explanation: "Sibeprenlimab is an APRIL blocker, not an endothelin/angiotensin antagonist." }
+      ]
+    },
+    {
+      question: "Which agent is an oral C5a receptor antagonist used as a steroid-sparing option for ANCA-associated vasculitis?",
+      options: [
+        { text: "Avacopan (TAVNEOS®).", correct: true,
+          explanation: "Avacopan is an oral C5a receptor (C5aR1) antagonist that blocks C5a-mediated neutrophil activation. It is approved for AAV as a steroid-sparing alternative for induction." },
+        { text: "Voclosporin (LUPKYNIS®).", correct: false,
+          explanation: "Voclosporin is a calcineurin inhibitor used for lupus nephritis, not ANCA vasculitis." },
+        { text: "Belimumab (BENLYSTA®).", correct: false,
+          explanation: "Belimumab is a BLyS/BAFF inhibitor used for lupus nephritis." }
+      ]
+    },
+    {
+      question: "What is the brand name for obinutuzumab?",
+      options: [
+        { text: "GAZYVA® / GAZYVARO®.", correct: true,
+          explanation: "GAZYVA (US) and GAZYVARO (EU) are the brand names for obinutuzumab, a type II anti-CD20 monoclonal antibody." },
+        { text: "BENLYSTA®.", correct: false,
+          explanation: "BENLYSTA is the brand name for belimumab." },
+        { text: "LUPKYNIS®.", correct: false,
+          explanation: "LUPKYNIS is the brand name for voclosporin." }
+      ]
+    },
+    {
+      question: "Which agent is an oral Factor B inhibitor approved for C3 glomerulopathy?",
+      options: [
+        { text: "Iptacopan (FABHALTA®).", correct: true,
+          explanation: "Iptacopan is an oral Factor B inhibitor that selectively inhibits the alternative complement pathway. It was FDA-approved for C3G in March 2025." },
+        { text: "Pegcetacoplan (EMPAVELI®).", correct: false,
+          explanation: "Pegcetacoplan is a C3/C3b inhibitor, not a Factor B inhibitor." },
+        { text: "Avacopan (TAVNEOS®).", correct: false,
+          explanation: "Avacopan is a C5a receptor antagonist used for ANCA vasculitis." }
+      ]
+    },
+    {
+      question: "Which agent is a selective endothelin A receptor antagonist approved for IgA nephropathy?",
+      options: [
+        { text: "Atrasentan (VANRAFIA®).", correct: true,
+          explanation: "Atrasentan is a selective endothelin A receptor antagonist approved to reduce proteinuria in adults with primary IgAN at risk of rapid progression." },
+        { text: "Sparsentan (FILSPARI®).", correct: false,
+          explanation: "Sparsentan is a dual endothelin/angiotensin receptor antagonist, not selective for ETAR." },
+        { text: "Sibeprenlimab (VOYXACT®).", correct: false,
+          explanation: "Sibeprenlimab is an APRIL blocker, not an endothelin antagonist." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Pharmacology / Glomerular Disease",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

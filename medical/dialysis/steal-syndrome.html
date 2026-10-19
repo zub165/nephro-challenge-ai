@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dialysis Access Steal Syndrome — Interactive Guide</title>
+<style>
+  :root{ 
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --artery:#dc2626; --vein:#2563eb; --steal:#d97706; --pseudo:#7c3aed;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--artery);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1; transform:translateY(-1px);}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--artery); color:#991b1b;}
+  .tab.opt2.active{background:#fef9c3; border-color:var(--steal); color:#713f12;}
+  .tab.opt3.active{background:#f5f3ff; border-color:var(--pseudo); color:#5b21b6;}
+  .tab.opt4.active{background:#cffafe; border-color:#0891b2; color:#155e75;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:290px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--artery);}
+  .info-float.highlight-opt2{border-color:var(--steal);}
+  .info-float.highlight-opt3{border-color:var(--pseudo);}
+  .info-float.highlight-opt4{border-color:#0891b2;}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#fef9c3;}
+  .info-float.highlight-opt3 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt4 .info-header{background:#cffafe;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--artery);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8; transform:translateX(3px);}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  /* Animations */
+  @keyframes slideDown{0%{opacity:0; transform:translateY(-16px);}100%{opacity:1; transform:translateY(0);}}
+  @keyframes flowFwd{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-60;}}
+  @keyframes flowRev{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:60;}}
+  @keyframes pulseNode{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.65; transform:scale(1.1);}}
+  @keyframes pulseWarning{0%,100%{opacity:.4; transform:scale(1);}50%{opacity:1; transform:scale(1.15);}}
+  .flow-fwd{stroke-dasharray:12 10; animation:flowFwd 1.4s linear infinite;}
+  .flow-rev{stroke-dasharray:12 10; animation:flowRev 1.4s linear infinite; animation-direction: reverse;}
+  .pulse-node{animation:pulseNode 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-warn{animation:pulseWarning 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Dialysis Access Steal Syndrome — Interactive Guide</h1>
+      <p>Watch the blood flow direction: antegrade into the hand vs retrograde into the fistula</p>
+    </div>
+    <div class="badge">Vascular Access</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>79-year-old man with hand pain and a high-flow AV fistula</h2>
+      <p>Right forearm radiocephalic AV fistula for 10+ years. <strong>Hand pain, paresthesias.</strong> Duplex: <strong>Flow 4,774 mL/min</strong> (normal < 1,500), <strong>2.7 cm pseudoaneurysm</strong>, retrograde distal radial flow.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">Flow 4,774</span>
+      <span class="lab-chip abn">Pseudo 2.7 cm</span>
+      <span class="lab-chip abn">Hand pain</span>
+      <span class="lab-chip abn">Retrograde flow</span>
+      <span class="lab-chip">INR 1.0</span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="arteryGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#991b1b"/>
+        </linearGradient>
+        <linearGradient id="veinGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1e40af"/>
+        </linearGradient>
+        <linearGradient id="stealGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
+        <radialGradient id="pseudoGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <!-- Arrowheads -->
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ DIAGRAM 1 — NORMAL FLOW ============ -->
+      <g id="diagram-opt1">
+        <!-- Forearm outline -->
+        <path d="M 200 150 Q 180 400 200 650 L 500 670 Q 520 400 500 150 Z"
+              fill="#fef3c7" stroke="#d97706" stroke-width="2.5" opacity="0.4"/>
+        <text x="350" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#92400e">RIGHT FOREARM (volar view)</text>
+
+        <!-- Radial Artery (Inflow) — Arrow pointing DOWN to anastomosis -->
+        <path d="M 260 180 L 260 350 Q 260 400 340 420 L 450 420" 
+              stroke="url(#arteryGrad)" stroke-width="14" fill="none" stroke-linecap="round" class="flow-fwd" marker-end="url(#arrowRed)"/>
+        <text x="240" y="170" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">Radial A. (INFLOW)</text>
+        
+        <!-- AV Anastomosis -->
+        <circle cx="470" cy="420" r="20" fill="#fbbf24" stroke="#78350f" stroke-width="3" class="pulse-node"/>
+        <text x="470" y="425" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">AV</text>
+        <text x="470" y="465" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">Anastomosis</text>
+
+        <!-- Ulnar Artery — Arrow pointing DOWN to hand -->
+        <path d="M 400 180 L 400 500 Q 400 580 350 620" 
+              stroke="url(#arteryGrad)" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.9" class="flow-fwd" marker-end="url(#arrowRed)"/>
+        <text x="420" y="170" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">Ulnar A.</text>
+
+        <!-- Hand -->
+        <ellipse cx="350" cy="680" rx="60" ry="45" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="350" y="675" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">HAND</text>
+        <text x="350" y="695" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">✓ WELL PERFUSED</text>
+
+        <!-- Cephalic Vein (Outflow) — Arrow pointing UP to heart -->
+        <path d="M 490 420 L 700 400 Q 850 350 950 250" 
+              stroke="url(#veinGrad)" stroke-width="18" fill="none" stroke-linecap="round" class="flow-fwd" marker-end="url(#arrowBlue)"/>
+        <text x="850" y="230" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#1e3a8a">Cephalic V. (OUTFLOW)</text>
+
+        <!-- Flow direction labels -->
+        <text x="350" y="390" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">→ Blood flows INTO fistula</text>
+        <text x="700" y="350" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#2563eb">↗ Returns to heart</text>
+        <text x="380" y="550" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">↓ Ulnar A. → hand</text>
+
+        <!-- Legend -->
+        <g transform="translate(60, 700)">
+          <line x1="0" y1="0" x2="30" y2="0" stroke="#dc2626" stroke-width="6" class="flow-fwd" marker-end="url(#arrowRed)"/>
+          <text x="45" y="4" font-family="Arial" font-size="10" font-weight="700" fill="#7f1d1d">Antegrade flow (into hand + fistula)</text>
+        </g>
+
+        <text x="600" y="740" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#16a34a">
+          NORMAL: Fistula AND hand are both well perfused
+        </text>
+      </g>
+
+      <!-- ============ DIAGRAM 2 — STEAL ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <path d="M 200 150 Q 180 400 200 650 L 500 670 Q 520 400 500 150 Z"
+              fill="#fef3c7" stroke="#d97706" stroke-width="2.5" opacity="0.4"/>
+        <text x="350" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#92400e">RIGHT FOREARM (volar view)</text>
+
+        <!-- Radial Artery (Inflow) — Arrow pointing DOWN to anastomosis -->
+        <path d="M 260 180 L 260 350 Q 260 400 340 420 L 450 420" 
+              stroke="url(#arteryGrad)" stroke-width="14" fill="none" stroke-linecap="round" class="flow-fwd" marker-end="url(#arrowRed)"/>
+        <text x="240" y="170" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">Radial A. (INFLOW)</text>
+        
+        <!-- AV Anastomosis -->
+        <circle cx="470" cy="420" r="24" fill="#fbbf24" stroke="#78350f" stroke-width="3" class="pulse-node"/>
+        <text x="470" y="425" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">AV</text>
+        <text x="470" y="465" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">Low-resistance "SINK"</text>
+
+        <!-- Distal Radial Artery — RETROGRADE FLOW (STEAL) -->
+        <!-- Arrow points BACKWARDS towards anastomosis -->
+        <path d="M 350 600 Q 400 550 440 460 L 450 440"
+              stroke="url(#stealGrad)" stroke-width="14" fill="none" stroke-linecap="round" class="flow-rev" marker-end="url(#arrowAmber)"/>
+        <text x="350" y="580" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#b45309">◄◄ REVERSED FLOW</text>
+        <text x="350" y="560" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#d97706">Blood flows AWAY from hand → into fistula</text>
+
+        <!-- Ulnar Artery (Compensating but insufficient) -->
+        <path d="M 400 180 L 400 500 Q 400 580 350 620" 
+              stroke="url(#arteryGrad)" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.4" class="flow-fwd" marker-end="url(#arrowRed)"/>
+        <text x="420" y="170" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#7f1d1d">Ulnar A.</text>
+        <text x="440" y="530" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#991b1b">Insufficient alone</text>
+
+        <!-- Hand (Ischemic) -->
+        <ellipse cx="350" cy="680" rx="60" ry="45" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="6 4"/>
+        <text x="350" y="675" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">HAND</text>
+        <text x="350" y="695" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#dc2626">✗ PAIN + PARESTHESIAS</text>
+
+        <!-- High Flow Cephalic Vein -->
+        <path d="M 490 420 L 700 400 Q 850 350 950 250" 
+              stroke="url(#veinGrad)" stroke-width="28" fill="none" stroke-linecap="round" class="flow-fwd" marker-end="url(#arrowBlue)"/>
+        <text x="850" y="220" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#1e3a8a">HIGH FLOW</text>
+        <text x="850" y="238" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#1e40af">4,774 mL/min</text>
+
+        <!-- Warning Symbol -->
+        <g transform="translate(600, 480)" class="pulse-warn">
+          <circle r="22" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+          <text x="0" y="9" text-anchor="middle" font-family="Arial" font-size="26" font-weight="800" fill="#dc2626">⚠</text>
+        </g>
+
+        <!-- Legend -->
+        <g transform="translate(60, 700)">
+          <line x1="0" y1="0" x2="30" y2="0" stroke="#dc2626" stroke-width="6" class="flow-fwd" marker-end="url(#arrowRed)"/>
+          <text x="45" y="4" font-family="Arial" font-size="10" font-weight="700" fill="#7f1d1d">Antegrade flow</text>
+          <line x1="0" y1="22" x2="30" y2="22" stroke="#d97706" stroke-width="6" class="flow-rev" marker-end="url(#arrowAmber)"/>
+          <text x="45" y="26" font-family="Arial" font-size="10" font-weight="700" fill="#b45309">Retrograde (STEAL) flow</text>
+        </g>
+
+        <text x="600" y="740" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">
+          STEAL: High-flow fistula sucks blood AWAY from the hand
+        </text>
+      </g>
+
+      <!-- ============ DIAGRAM 3 — PSEUDOANEURYSM ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <path d="M 200 150 Q 180 400 200 650 L 500 670 Q 520 400 500 150 Z"
+              fill="#fef3c7" stroke="#d97706" stroke-width="2.5" opacity="0.4"/>
+        <text x="350" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#92400e">RIGHT FOREARM (volar view)</text>
+
+        <!-- Radial Artery -->
+        <path d="M 260 180 L 260 350 Q 260 400 340 420 L 450 420" 
+              stroke="url(#arteryGrad)" stroke-width="14" fill="none" stroke-linecap="round" class="flow-fwd" marker-end="url(#arrowRed)"/>
+
+        <!-- AV Anastomosis -->
+        <circle cx="470" cy="420" r="20" fill="#fbbf24" stroke="#78350f" stroke-width="3" class="pulse-node"/>
+        <text x="470" y="425" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#78350f">AV</text>
+
+        <!-- Cephalic Vein with PSEUDOANEURYSM -->
+        <path d="M 490 420 L 700 400 Q 850 350 950 250" 
+              stroke="url(#veinGrad)" stroke-width="18" fill="none" stroke-linecap="round" class="flow-fwd" marker-end="url(#arrowBlue)"/>
+
+        <!-- Pseudoaneurysm sac -->
+        <g transform="translate(750, 380)">
+          <ellipse rx="60" ry="50" fill="url(#pseudoGrad)" stroke="#5b21b6" stroke-width="3" class="pulse-node"/>
+          <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">PSEUDO-</text>
+          <text x="0" y="8" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#fff">ANEURYSM</text>
+          <text x="0" y="28" text-anchor="middle" font-family="Arial" font-size="10" fill="#ede9fe">2.7 cm</text>
+        </g>
+
+        <!-- Arrow pointing to pseudoaneurysm -->
+        <path d="M 750 460 L 750 440" stroke="#5b21b6" stroke-width="3" marker-end="url(#arrowPurple)"/>
+        <text x="750" y="480" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#5b21b6">Weakened vein wall</text>
+        <text x="750" y="498" text-anchor="middle" font-family="Arial" font-size="10" fill="#7c3aed">from repeated needling</text>
+
+        <!-- Hand -->
+        <ellipse cx="350" cy="680" rx="60" ry="45" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="350" y="675" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">HAND</text>
+
+        <!-- Legend -->
+        <g transform="translate(60, 700)">
+          <ellipse cx="10" cy="0" rx="15" ry="12" fill="url(#pseudoGrad)" stroke="#5b21b6" stroke-width="1.5"/>
+          <text x="45" y="4" font-family="Arial" font-size="10" font-weight="700" fill="#5b21b6">Pseudoaneurysm</text>
+        </g>
+
+        <text x="600" y="740" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">
+          PSEUDOANEURYSM: Weakened vein wall from chronic needling
+        </text>
+      </g>
+
+      <!-- ============ DIAGRAM 4 — TREATMENT ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <text x="600" y="110" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">TREATMENT OPTIONS FOR STEAL SYNDROME</text>
+
+        <!-- Option 1 -->
+        <g transform="translate(100, 160)">
+          <rect x="0" y="0" width="300" height="200" rx="12" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="150" y="32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">1. BANDING / PLICATION</text>
+          <circle cx="150" cy="85" r="24" fill="#0891b2" opacity="0.25"/>
+          <text x="150" y="93" text-anchor="middle" font-family="Arial" font-size="22">🔧</text>
+          <text x="150" y="130" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Narrow the fistula to</text>
+          <text x="150" y="150" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">reduce flow</text>
+          <text x="150" y="180" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#991b1b">Mild steal only</text>
+        </g>
+
+        <!-- Option 2 -->
+        <g transform="translate(450, 160)">
+          <rect x="0" y="0" width="300" height="200" rx="12" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="150" y="32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">2. DRIL PROCEDURE</text>
+          <circle cx="150" cy="85" r="24" fill="#0891b2" opacity="0.25"/>
+          <text x="150" y="93" text-anchor="middle" font-family="Arial" font-size="22">✂️</text>
+          <text x="150" y="130" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Ligate distal artery +</text>
+          <text x="150" y="150" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">bypass with vein graft</text>
+          <text x="150" y="180" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#16a34a">✓ Preferred (tissue loss)</text>
+        </g>
+
+        <!-- Option 3 -->
+        <g transform="translate(800, 160)">
+          <rect x="0" y="0" width="300" height="200" rx="12" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="150" y="32" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">3. LIGATION</text>
+          <circle cx="150" cy="85" r="24" fill="#0891b2" opacity="0.25"/>
+          <text x="150" y="93" text-anchor="middle" font-family="Arial" font-size="22">🚫</text>
+          <text x="150" y="130" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">Close the fistula,</text>
+          <text x="150" y="150" text-anchor="middle" font-family="Arial" font-size="11" fill="#155e75">create new access</text>
+          <text x="150" y="180" text-anchor="middle" font-family="Arial" font-size="10" font-weight="800" fill="#991b1b">Last resort only</text>
+        </g>
+
+        <!-- Decision box -->
+        <g transform="translate(200, 430)">
+          <rect x="0" y="0" width="800" height="200" rx="14" fill="#ecfeff" stroke="#0891b2" stroke-width="2.5"/>
+          <text x="400" y="35" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">DECISION FOR THIS PATIENT</text>
+          <text x="400" y="72" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">• Flow 4,774 mL/min → markedly elevated → flow reduction indicated</text>
+          <text x="400" y="102" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">• Pseudoaneurysm 2.7 cm → surgical revision may address both issues</text>
+          <text x="400" y="132" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">• Hand ischemia symptoms → urgent intervention</text>
+          <text x="400" y="162" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">• Multidisciplinary: vascular surgery + interventional nephrology</text>
+          <text x="400" y="190" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#0891b2">Goal: preserve access + relieve hand ischemia</text>
+        </g>
+
+        <text x="600" y="690" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">
+          DRIL is the preferred procedure for access-related steal with tissue loss
+        </text>
+      </g>
+
+      <!-- ============ DYNAMIC BANNER ============ -->
+      <g transform="translate(600, 745)">
+        <rect id="banner-bg" x="-540" y="-28" width="1080" height="56" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Dialysis Access Steal Syndrome — Interactive Guide",
+  subtitle: "Watch blood flow direction: antegrade into hand vs retrograde into fistula",
+  badge: "Vascular Access",
+
+  tabs: [
+    { id: "opt1", label: "🔴 Normal Flow" },
+    { id: "opt2", label: "🟡 Steal Phenomenon" },
+    { id: "opt3", label: "🟣 Pseudoaneurysm" },
+    { id: "opt4", label: "🔵 Treatment" }
+  ],
+
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      infoTitle: "🔴 Normal AV Fistula — Blood Flow",
+      infoRows: [
+        { k: "Inflow", v: "Radial artery → fistula" },
+        { k: "Outflow", v: "Cephalic vein → heart" },
+        { k: "Hand perfusion", v: "Ulnar artery + palmar arch" },
+        { k: "Access flow", v: "600–1,500 mL/min" }
+      ],
+      svgTitle: "Normal Flow — Radial Artery Feeds Fistula AND Hand",
+      svgSubtitle: "Antegrade flow in both directions · Ulnar artery maintains hand perfusion",
+      bannerBg: "#16a34a",
+      bannerText1: "✓ Normal AV Fistula — Radial Artery Feeds Fistula AND Hand",
+      bannerText2: "Ulnar artery + palmar arch keep the hand perfused · Access flow 600–1,500 mL/min",
+      panel1Title: "🔴 Normal Flow — Antegrade",
+      panel1Tagline: "Blood flows forward in all directions",
+      panel1List: [
+        "<strong>Inflow:</strong> Radial artery delivers blood into the AV anastomosis",
+        "<strong>Fistula:</strong> Blood flows through the low-resistance fistula into the cephalic vein",
+        "<strong>Hand:</strong> The ulnar artery provides antegrade flow into the palmar arch",
+        "<strong>Balance:</strong> Both the fistula and the hand receive adequate perfusion",
+        "<strong>Access flow:</strong> Normally 600–1,500 mL/min — enough for dialysis"
+      ],
+      panel2Title: "🔴 Key Anatomy",
+      panel2Tagline: "Two arteries, one hand",
+      panel2List: [
+        "<strong>Radial artery:</strong> Feeds the fistula + contributes to palmar arch",
+        "<strong>Ulnar artery:</strong> Provides the main hand perfusion",
+        "<strong>Palmar arch:</strong> Communicating network that allows either artery to compensate",
+        "<strong>AV anastomosis:</strong> Connection between artery and vein that creates the fistula",
+        "<strong>Why this works:</strong> Normal resistance in both the fistula and hand maintains balance"
+      ],
+      alertIcon: "🔴",
+      alertTitle: "Board Pearl — Normal Fistula Flow < 1,500 mL/min",
+      alertText: "A normal mature AV fistula carries <strong>600–1,500 mL/min</strong>. The hand is protected by the <strong>ulnar artery</strong> and <strong>palmar arch</strong>. Flow > 2,000 mL/min is a risk factor for steal."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      infoTitle: "🟡 Steal Phenomenon — Retrograde Flow",
+      infoRows: [
+        { k: "Access flow", v: "4,774 mL/min (very high)" },
+        { k: "Distal radial flow", v: "REVERSED (retrograde)" },
+        { k: "Hand perfusion", v: "Diminished via ulnar only" },
+        { k: "Symptoms", v: "Pain, paresthesias, cold" }
+      ],
+      svgTitle: "Steal Phenomenon — Retrograde Distal Radial Flow",
+      svgSubtitle: "High-flow fistula draws blood BACKWARD through the distal radial artery → hand ischemia",
+      bannerBg: "#ca8a04",
+      bannerText1: "🟡 STEAL — Blood Flows Backward into the Fistula",
+      bannerText2: "Retrograde flow in distal radial artery → hand ischemia → pain, paresthesias, cold",
+      panel1Title: "🟡 What Is Steal?",
+      panel1Tagline: "The fistula 'steals' blood from the hand",
+      panel1List: [
+        "<strong>Very high flow:</strong> 4,774 mL/min (normal < 1,500) — the fistula acts as a low-resistance sink",
+        "<strong>Retrograde flow:</strong> Blood in the DISTAL radial artery reverses direction — flowing AWAY from the hand and INTO the fistula",
+        "<strong>Ulnar compensation:</strong> The ulnar artery must now supply the entire hand — often insufficient",
+        "<strong>Palmar arch:</strong> Can no longer maintain adequate perfusion pressure",
+        "<strong>Result:</strong> Hand ischemia → pain, paresthesias, cold, pallor"
+      ],
+      panel2Title: "🟡 Risk Factors",
+      panel2Tagline: "Who is at risk?",
+      panel2List: [
+        "<strong>High access flow:</strong> > 2,000 mL/min — strongly associated with steal",
+        "<strong>Diabetes:</strong> Distal small vessel disease impairs collateral flow",
+        "<strong>Peripheral arterial disease:</strong> Atherosclerosis reduces ulnar compensation",
+        "<strong>Age > 60:</strong> Reduced vascular compliance",
+        "<strong>Proximal fistula:</strong> Brachial-based fistulas have higher steal risk"
+      ],
+      alertIcon: "🟡",
+      alertTitle: "Board Pearl — Retrograde Distal Flow = Steal",
+      alertText: "In access-related steal, the <strong>distal radial artery flows BACKWARD</strong> into the fistula instead of forward into the hand. This is the hallmark of steal syndrome."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      infoTitle: "🟣 Pseudoaneurysm — What Is It?",
+      infoRows: [
+        { k: "Definition", v: "Blood leak contained by fibrous capsule" },
+        { k: "Cause", v: "Chronic needling of the same site" },
+        { k: "Size", v: "2.7 cm in this patient" },
+        { k: "Risk", v: "Rupture, bleeding, thrombosis" }
+      ],
+      svgTitle: "Pseudoaneurysm — Weakened Vein Wall from Needling",
+      svgSubtitle: "Blood leaks into surrounding tissue, contained by a fibrous capsule — not a true aneurysm",
+      bannerBg: "#7c3aed",
+      bannerText1: "🟣 Pseudoaneurysm — Disrupted Vein Wall Contained by Fibrous Capsule",
+      bannerText2: "Caused by repeated needling at the same site · Risk: rupture, bleeding, thrombosis",
+      panel1Title: "🟣 Pseudoaneurysm — Definition",
+      panel1Tagline: "Not a true aneurysm",
+      panel1List: [
+        "<strong>True aneurysm:</strong> All three vessel wall layers (intima, media, adventitia) are intact but dilated",
+        "<strong>Pseudoaneurysm:</strong> The vessel wall is disrupted — blood leaks out and is contained by surrounding tissue and a fibrous capsule",
+        "<strong>Cause:</strong> Repeated needling of the fistula at the same site (buttonhole technique gone wrong)",
+        "<strong>Appearance:</strong> Pulsatile mass at the fistula site — 2.7 cm in this patient",
+        "<strong>Risk:</strong> Rupture (life-threatening bleeding), thrombosis, infection, neuropathy"
+      ],
+      panel2Title: "🟣 Pseudoaneurysm — Management",
+      panel2Tagline: "How to treat it",
+      panel2List: [
+        "<strong>Observation:</strong> Small (< 2 cm), asymptomatic pseudoaneurysms can be monitored",
+        "<strong>Ultrasound-guided compression:</strong> For small lesions — compress to induce thrombosis",
+        "<strong>Thrombin injection:</strong> Percutaneous thrombin injected into the sac to clot it",
+        "<strong>Surgical repair:</strong> Resect the pseudoaneurysm and repair the vein — preferred for large (> 2 cm) or symptomatic",
+        "<strong>In this patient:</strong> 2.7 cm pseudoaneurysm → surgical repair indicated (can be combined with DRIL for steal)"
+      ],
+      alertIcon: "🟣",
+      alertTitle: "Board Pearl — Pseudoaneurysm ≠ True Aneurysm",
+      alertText: "A <strong>pseudoaneurysm</strong> is a contained rupture of the vessel wall — blood leaks out but is held in by a fibrous capsule. A <strong>true aneurysm</strong> involves all three vessel wall layers. Pseudoaneurysms are common in dialysis fistulas from repeated needling."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      infoTitle: "🔵 Treatment Options",
+      infoRows: [
+        { k: "First-line", v: "Flow reduction" },
+        { k: "Preferred (tissue loss)", v: "DRIL procedure" },
+        { k: "Last resort", v: "Ligation + new access" },
+        { k: "Goal", v: "Preserve access + relieve ischemia" }
+      ],
+      svgTitle: "Treatment Options — Flow Reduction & DRIL",
+      svgSubtitle: "Banding · DRIL · Ligation — the goal is to preserve access and relieve hand ischemia",
+      bannerBg: "#0891b2",
+      bannerText1: "🔵 Treatment — Flow Reduction or DRIL Procedure",
+      bannerText2: "DRIL preferred for steal with tissue loss · Ligation is a last resort",
+      panel1Title: "🔵 Treatment Options",
+      panel1Tagline: "Match intervention to severity",
+      panel1List: [
+        "<strong>Banding:</strong> Narrow the fistula with a band to reduce flow — simple but risk of thrombosis",
+        "<strong>Plication:</strong> Surgical narrowing of the fistula vein — similar concept",
+        "<strong>DRIL (Distal Revascularization-Interval Ligation):</strong> Ligate the distal artery + bypass with a vein graft — preserves access AND hand perfusion",
+        "<strong>Proximalization of arterial inflow (PAI):</strong> Move the anastomosis more proximally",
+        "<strong>Ligation:</strong> Last resort — closes the fistula but requires new access"
+      ],
+      panel2Title: "🔵 Decision for This Patient",
+      panel2Tagline: "What to do here",
+      panel2List: [
+        "<strong>Flow 4,774 mL/min:</strong> Markedly elevated — flow reduction clearly indicated",
+        "<strong>Pseudoaneurysm 2.7 cm:</strong> Surgical revision may address both issues",
+        "<strong>Hand ischemia:</strong> Urgent intervention to prevent tissue loss",
+        "<strong>Preferred approach:</strong> DRIL if tissue loss is present; banding if mild",
+        "<strong>Multidisciplinary:</strong> Vascular surgery + interventional nephrology",
+        "<strong>Post-op:</strong> Repeat duplex to confirm flow reduction and hand perfusion"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Board Pearl — DRIL for Steal with Tissue Loss",
+      alertText: "For access-related steal with <strong>tissue loss or severe ischemia</strong>, the <strong>DRIL procedure</strong> is preferred. For milder cases, banding or plication may suffice. Ligation sacrifices the access — it's a last resort."
+    }
+  },
+
+  quiz: [
+    {
+      question: "What is the primary mechanism of dialysis access steal syndrome?",
+      options: [
+        { text: "A. Increased ulnar artery flow into the hand", correct: false, explanation: "Ulnar flow may increase to compensate, but it does not cause steal. The steal is due to <strong>retrograde distal radial artery flow</strong>." },
+        { text: "B. Retrograde flow in the distal radial artery into the fistula", correct: true, explanation: "High-flow fistula creates low resistance that draws blood <strong>backwards</strong> through the distal radial artery into the fistula, away from the hand → steal." },
+        { text: "C. Venous stenosis blocking outflow", correct: false, explanation: "Venous stenosis causes access dysfunction and swelling, not steal. In this patient the venous anastomosis is patent (81 cm/s)." }
+      ]
+    },
+    {
+      question: "What is the reported access flow in this patient?",
+      options: [
+        { text: "A. 850 mL/min", correct: false, explanation: "That value is not in this case. The access flow was 4,774 mL/min." },
+        { text: "B. 4,774 mL/min", correct: true, explanation: "The duplex showed an estimated access volume flow of <strong>4,774 mL/min</strong> — markedly elevated (normal < 1,500)." },
+        { text: "C. 220 mL/min", correct: false, explanation: "That value is from a different case. Here the flow was 4,774 mL/min." }
+      ]
+    },
+    {
+      question: "What is the normal flow range for a mature AV fistula?",
+      options: [
+        { text: "A. 100–300 mL/min", correct: false, explanation: "Too low — this would not support adequate dialysis." },
+        { text: "B. 600–1,500 mL/min", correct: true, explanation: "A mature AV fistula typically carries <strong>600–1,500 mL/min</strong>. Flow above 2,000 mL/min is a risk factor for steal." },
+        { text: "C. 3,000–5,000 mL/min", correct: false, explanation: "This range is markedly elevated and puts the patient at high risk for steal syndrome." }
+      ]
+    },
+    {
+      question: "What is a pseudoaneurysm?",
+      options: [
+        { text: "A. A dilated artery with all three wall layers intact", correct: false, explanation: "This describes a <strong>true aneurysm</strong>. A pseudoaneurysm has a disrupted wall." },
+        { text: "B. A contained rupture of the vessel wall with blood held in by a fibrous capsule", correct: true, explanation: "A <strong>pseudoaneurysm</strong> occurs when the vessel wall is disrupted, allowing blood to leak out and be contained by surrounding tissue and a fibrous capsule — commonly from repeated needling." },
+        { text: "C. A blood clot inside the fistula", correct: false, explanation: "This describes a thrombus, not a pseudoaneurysm. A pseudoaneurysm is a pulsatile, contained collection of blood outside the vessel wall." }
+      ]
+    },
+    {
+      question: "Which physical exam finding is most concerning for steal syndrome?",
+      options: [
+        { text: "A. Warm hand with bounding pulse", correct: false, explanation: "A warm hand suggests adequate perfusion — not steal." },
+        { text: "B. Cool hand with delayed capillary refill and pain", correct: true, explanation: "Steal causes <strong>hand ischemia</strong> — cool, pale hand, delayed capillary refill, pain, and paresthesias." },
+        { text: "C. Palpable thrill at the fistula", correct: false, explanation: "A thrill is normal and expected in a working fistula — it does not indicate steal." }
+      ]
+    },
+    {
+      question: "What is the preferred surgical treatment for steal syndrome with tissue loss?",
+      options: [
+        { text: "A. Simple banding", correct: false, explanation: "Banding may reduce flow but is less reliable than DRIL and risks thrombosis." },
+        { text: "B. DRIL procedure", correct: true, explanation: "<strong>DRIL (Distal Revascularization-Interval Ligation)</strong> is preferred for steal with tissue loss. It ligates the distal artery and bypasses with a vein graft — preserving both access and hand perfusion." },
+        { text: "C. Immediate fistula ligation", correct: false, explanation: "Ligation sacrifices the access and is a <strong>last resort</strong> when other options fail." }
+      ]
+    },
+    {
+      question: "Which finding on duplex ultrasound most strongly suggests steal?",
+      options: [
+        { text: "A. Low access flow", correct: false, explanation: "Low flow suggests access dysfunction, not steal. Steal is associated with HIGH flow." },
+        { text: "B. Retrograde flow in the distal radial artery", correct: true, explanation: "<strong>Retrograde (reversed) flow in the distal radial artery</strong> is the hallmark of steal — blood flows away from the hand and into the fistula." },
+        { text: "C. High venous anastomotic velocity", correct: false, explanation: "Elevated venous anastomotic velocity suggests venous stenosis, not steal." }
+      ]
+    },
+    {
+      question: "Which patient characteristic increases the risk of steal syndrome?",
+      options: [
+        { text: "A. Young age", correct: false, explanation: "Young age is protective. Older age (> 60) increases risk due to reduced vascular compliance." },
+        { text: "B. Diabetes mellitus and peripheral arterial disease", correct: true, explanation: "<strong>Diabetes and PAD</strong> reduce collateral flow and impair the ulnar artery's ability to compensate — increasing steal risk." },
+        { text: "C. Distal (radiocephalic) fistula location", correct: false, explanation: "Distal fistulas have <em>lower</em> steal risk than proximal (brachial-based) fistulas." }
+      ]
+    },
+    {
+      question: "What is the goal of treatment in access-related steal syndrome?",
+      options: [
+        { text: "A. Ligate the fistula and place a catheter", correct: false, explanation: "Ligation is a last resort. The goal is to preserve access while relieving ischemia." },
+        { text: "B. Preserve access while relieving hand ischemia", correct: true, explanation: "The dual goal is to <strong>preserve the dialysis access</strong> and <strong>relieve hand ischemia</strong>. DRIL and banding achieve this." },
+        { text: "C. Increase access flow further", correct: false, explanation: "Increasing flow would worsen steal. The goal is to <em>reduce</em> flow to a level that preserves hand perfusion." }
+      ]
+    },
+    {
+      question: "In this patient, what is the primary concern about the pseudoaneurysm?",
+      options: [
+        { text: "A. It causes the steal syndrome", correct: false, explanation: "The steal is caused by the HIGH-FLOW fistula, not the pseudoaneurysm. The pseudoaneurysm is a separate structural problem." },
+        { text: "B. It can rupture, causing severe bleeding", correct: true, explanation: "A pseudoaneurysm has a weakened wall. It can <strong>rupture</strong>, causing severe bleeding — especially concerning in a dialysis patient. It also risks thrombosis and infection." },
+        { text: "C. It is the only reason for surgical intervention", correct: false, explanation: "The steal syndrome also requires intervention. The pseudoaneurysm and steal may be addressed together during surgery." }
+      ]
+    }
+  ]
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Render Tabs
+  document.getElementById("tabs").innerHTML = CONFIG.tabs
+    .map(t => `<button class="tab ${t.id}" id="tab${t.id}" onclick="setMode('${t.id}')">${t.label}</button>`)
+    .join("");
+
+  // Render Quiz Header
+  document.getElementById("quizCount").textContent = CONFIG.quiz.length;
+
+  // Render Quiz Questions
+  const quizGrid = document.getElementById("quizGrid");
+  quizGrid.innerHTML = CONFIG.quiz.map((q, i) => `
+    <div class="q" data-q="${i}">
+      <p>${i + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map((o, oi) => `
+          <button class="opt" data-q="${i}" data-o="${oi}">${o.text}</button>
+        `).join("")}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join("");
+
+  // Attach Quiz Event Listeners
+  quizGrid.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const qi = parseInt(btn.dataset.q, 10);
+      const oi = parseInt(btn.dataset.o, 10);
+      const q = CONFIG.quiz[qi];
+      const opt = q.options[oi];
+      const box = btn.closest(".q");
+
+      box.querySelectorAll(".opt").forEach(b => b.classList.remove("correct", "wrong"));
+      btn.classList.add(opt.correct ? "correct" : "wrong");
+
+      const explain = box.querySelector(".explain");
+      if (opt.correct) {
+        explain.className = "explain show correct-explain";
+        explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+      } else {
+        explain.className = "explain show wrong-explain";
+        explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+      }
+    });
+  });
+
+  // Initialize First Tab
+  setMode("opt1");
+});
+
+function setMode(mode) {
+  const d = CONFIG.modes[mode];
+  if (!d) return;
+
+  // Update Tabs
+  CONFIG.tabs.forEach(t => {
+    document.getElementById("tab" + t.id).classList.remove("active");
+  });
+  document.getElementById("tab" + mode).classList.add("active");
+
+  // Swap SVG Diagram
+  ["opt1", "opt2", "opt3", "opt4"].forEach(id => {
+    document.getElementById("diagram-" + id).style.display = "none";
+  });
+  document.getElementById("diagram-" + mode).style.display = "block";
+
+  // Update SVG Titles
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+
+  // Update Banner
+  document.getElementById("banner-bg").setAttribute("fill", d.bannerBg);
+  document.getElementById("banner-text-1").textContent = d.bannerText1;
+  document.getElementById("banner-text-2").textContent = d.bannerText2;
+
+  // Update Info Panel
+  const panel = document.getElementById("infoPanel");
+  panel.className = "info-float " + d.panelClass +
+    (panel.classList.contains("collapsed") ? " collapsed" : "");
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+  document.getElementById("infoBody").innerHTML = d.infoRows
+    .map(r => `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`)
+    .join("");
+
+  // Update Teaching Panels
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  document.getElementById("panel1-list").innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join("");
+
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  document.getElementById("panel2-list").innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join("");
+
+  // Update Alert Box
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById("infoPanel");
+  const btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+</script>
+</body>
+</html>

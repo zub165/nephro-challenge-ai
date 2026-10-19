@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chronic Active Antibody-Mediated Rejection — C4d-Negative</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="45" text-anchor="middle" font-family="Arial" font-size="26" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="75" text-anchor="middle" font-family="Arial" font-size="15" fill="#64748b"></text>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 1 — THE CASE -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 150)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">CHRONIC ACTIVE ANTIBODY-MEDIATED REJECTION</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">5 years post-transplant · Cr 1.1 → 2.3 over 6 months · proteinuria 2.4 g/day</text>
+            <text x="0" y="45" text-anchor="middle" font-size="14" fill="#991b1b">New class II anti-HLA-DQ DSA · C4d negative</text>
+          </g>
+
+          <!-- Findings -->
+          <g transform="translate(250, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">CLINICAL FINDINGS</text>
+            <line x1="-160" y1="-70" x2="160" y2="-70" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="-35" text-anchor="middle" font-size="22" font-weight="800" fill="#dc2626">Cr 2.3</text>
+            <text x="0" y="-8" text-anchor="middle" font-size="13" fill="#7f1d1d">(baseline 1.1)</text>
+            <line x1="-160" y1="10" x2="160" y2="10" stroke="#fecaca" stroke-width="1"/>
+            <text x="0" y="38" text-anchor="middle" font-size="22" font-weight="800" fill="#dc2626">2.4 g/day</text>
+            <text x="0" y="65" text-anchor="middle" font-size="13" fill="#7f1d1d">Proteinuria</text>
+            <text x="0" y="95" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Gradual decline over 6 months</text>
+          </g>
+
+          <g transform="translate(700, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">BIOPSY SCORES</text>
+            <line x1="-160" y1="-70" x2="160" y2="-70" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="-140" y="-40" font-size="14" font-weight="700" fill="#5b21b6">Glomerulitis</text>
+            <text x="140" y="-40" text-anchor="end" font-size="18" font-weight="800" fill="#dc2626">g2</text>
+            <text x="-140" y="-10" font-size="14" font-weight="700" fill="#5b21b6">Peritubular capillaritis</text>
+            <text x="140" y="-10" text-anchor="end" font-size="18" font-weight="800" fill="#dc2626">ptc2</text>
+            <text x="-140" y="20" font-size="14" font-weight="700" fill="#5b21b6">Transplant glomerulopathy</text>
+            <text x="140" y="20" text-anchor="end" font-size="18" font-weight="800" fill="#dc2626">cg2</text>
+            <line x1="-160" y1="40" x2="160" y2="40" stroke="#ddd6fe" stroke-width="1"/>
+            <text x="-140" y="70" font-size="14" font-weight="700" fill="#5b21b6">Tubulitis</text>
+            <text x="140" y="70" text-anchor="end" font-size="18" font-weight="800" fill="#16a34a">t0</text>
+            <text x="-140" y="100" font-size="14" font-weight="700" fill="#5b21b6">Intimal arteritis</text>
+            <text x="140" y="100" text-anchor="end" font-size="18" font-weight="800" fill="#16a34a">v0</text>
+          </g>
+
+          <g transform="translate(1150, 400)">
+            <rect x="-200" y="-140" width="400" height="280" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-140" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-105" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-103" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">IMMUNOLOGY & EM</text>
+            <line x1="-160" y1="-70" x2="160" y2="-70" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="-140" y="-40" font-size="14" font-weight="700" fill="#166534">Donor-specific Ab</text>
+            <text x="140" y="-40" text-anchor="end" font-size="14" font-weight="800" fill="#dc2626">+ (HLA-DQ)</text>
+            <text x="-140" y="-10" font-size="14" font-weight="700" fill="#166534">C4d staining</text>
+            <text x="140" y="-10" text-anchor="end" font-size="14" font-weight="800" fill="#dc2626">NEGATIVE</text>
+            <text x="-140" y="20" font-size="14" font-weight="700" fill="#166534">EM GBM duplication</text>
+            <text x="140" y="20" text-anchor="end" font-size="14" font-weight="800" fill="#166534">PRESENT</text>
+            <text x="-140" y="50" font-size="14" font-weight="700" fill="#166534">BK virus PCR</text>
+            <text x="140" y="50" text-anchor="end" font-size="14" font-weight="800" fill="#16a34a">NEGATIVE</text>
+            <line x1="-160" y1="70" x2="160" y2="70" stroke="#bbf7d0" stroke-width="1"/>
+            <text x="0" y="100" text-anchor="middle" font-size="13" font-style="italic" fill="#15803d">C4d negative despite active ABMR</text>
+          </g>
+
+          <g transform="translate(700, 700)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">🔑 C4d-NEGATIVE ABMR IS RECOGNIZED BY BANFF</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#6d28d9">Microvascular inflammation (g + ptc ≥ 2) can substitute for C4d positivity</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">This patient has g2 + ptc2 = 4 — well above the threshold</text>
+          </g>
+
+          <g transform="translate(700, 850)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ DIAGNOSIS: CHRONIC ACTIVE ANTIBODY-MEDIATED REJECTION</text>
+            <text x="0" y="18" text-anchor="middle" font-size="16" fill="#15803d">DSA + MVI + cg2 = all 3 Banff criteria met, despite negative C4d</text>
+          </g>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 2 — BANFF CRITERIA -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">BANFF 2019 CRITERIA FOR CHRONIC ACTIVE ABMR</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">All three criteria must be met for diagnosis</text>
+          </g>
+
+          <!-- Criterion 1 -->
+          <g transform="translate(700, 310)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="20" font-weight="800" fill="#991b1b">1. Morphologic evidence of chronic tissue injury</text>
+            <text x="-580" y="15" font-size="16" fill="#7f1d1d">• Transplant glomerulopathy (cg &gt; 0) if no evidence of chronic TMA or recurrent/de novo GN</text>
+            <text x="-580" y="42" font-size="16" font-weight="800" fill="#dc2626">✅ This patient: cg2</text>
+          </g>
+
+          <!-- Criterion 2 -->
+          <g transform="translate(700, 470)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="20" font-weight="800" fill="#5b21b6">2. Evidence of current/recent antibody interaction with endothelium</text>
+            <text x="-580" y="15" font-size="16" fill="#6d28d9">• Linear C4d staining in peritubular capillaries (C4d2 or C4d3 by IF)</text>
+            <text x="-580" y="42" font-size="16" font-weight="800" fill="#5b21b6">• OR at least moderate microvascular inflammation ([g + ptc] &gt; 2)</text>
+            <text x="-580" y="68" font-size="16" font-weight="800" fill="#dc2626">✅ This patient: g2 + ptc2 = 4 (C4d negative, but MVI substitutes)</text>
+          </g>
+
+          <!-- Criterion 3 -->
+          <g transform="translate(700, 630)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-580" y="-20" font-size="20" font-weight="800" fill="#155e75">3. Serologic evidence of circulating donor-specific antibodies (DSA)</text>
+            <text x="-580" y="15" font-size="16" fill="#0e7490">• DSA to HLA or other antigens</text>
+            <text x="-580" y="42" font-size="16" font-weight="800" fill="#dc2626">✅ This patient: anti-HLA-DQ DSA positive</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 810)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">✅ ALL THREE CRITERIA ARE MET</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#15803d">cg2 (chronic injury) + g2+ptc2=4 (MVI) + DSA positive</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">→ Chronic active ABMR</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">C4d negative does NOT exclude ABMR</text>
+          </g>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 3 — C4d-NEGATIVE ABMR -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">C4d-NEGATIVE ANTIBODY-MEDIATED REJECTION</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Recognized by the Banff classification since 2013</text>
+          </g>
+
+          <!-- C4d positive vs negative -->
+          <g transform="translate(350, 480)">
+            <rect x="-280" y="-250" width="560" height="500" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-280" y="-250" width="560" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-280" y="-195" width="560" height="25" fill="#16a34a"/>
+            <text x="0" y="-195" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">C4d-POSITIVE ABMR</text>
+
+            <rect x="-250" y="-140" width="500" height="100" rx="16" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Linear C4d in peritubular capillaries</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="15" fill="#15803d">C4d2 or C4d3 by IF on frozen sections</text>
+
+            <rect x="-250" y="-20" width="500" height="100" rx="16" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="15" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Microvascular inflammation may</text>
+            <text x="0" y="45" text-anchor="middle" font-size="15" fill="#15803d">be absent or mild</text>
+
+            <rect x="-250" y="100" width="500" height="100" rx="16" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="135" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">DSA positive</text>
+            <text x="0" y="165" text-anchor="middle" font-size="15" fill="#15803d">Required for diagnosis</text>
+          </g>
+
+          <!-- C4d negative -->
+          <g transform="translate(1050, 480)">
+            <rect x="-280" y="-250" width="560" height="500" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-280" y="-250" width="560" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-280" y="-195" width="560" height="25" fill="#16a34a"/>
+            <text x="0" y="-195" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">C4d-NEGATIVE ABMR</text>
+
+            <rect x="-250" y="-140" width="500" height="100" rx="16" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">NO C4d staining in peritubular capillaries</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="15" fill="#15803d">C4d0 or C4d1</text>
+
+            <rect x="-250" y="-20" width="500" height="100" rx="16" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="15" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">Moderate microvascular inflammation</text>
+            <text x="0" y="45" text-anchor="middle" font-size="15" fill="#15803d">[g + ptc] &gt; 2 substitutes for C4d</text>
+
+            <rect x="-250" y="100" width="500" height="100" rx="16" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="135" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">DSA positive</text>
+            <text x="0" y="165" text-anchor="middle" font-size="15" fill="#15803d">Required for diagnosis</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">🔑 WHY THIS PATIENT HAS C4d-NEGATIVE ABMR</text>
+            <text x="0" y="15" text-anchor="middle" font-size="17" fill="#6d28d9">The microvascular inflammation (g2 + ptc2 = 4) provides the evidence of antibody interaction</text>
+            <text x="0" y="45" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">C4d is not required when MVI is present</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Since Banff 2013, C4d is not required for ABMR diagnosis</text>
+          </g>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- DIAGRAM 4 — ANSWER SUMMARY -->
+        <!-- ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER D</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Chronic active antibody-mediated rejection, despite negative C4d staining</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">All 3 Banff criteria are met</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Chronic active antibody-mediated rejection</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">All 3 criteria met: cg2 + (g2+ptc2=4) + DSA positive</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Chronic calcineurin inhibitor nephrotoxicity</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">CNI toxicity does not explain DSA positivity or microvascular inflammation</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Chronic active T-cell–mediated rejection</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">TCMR requires tubulitis (t &gt; 0) and interstitial inflammation; both are absent (t0)</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Recurrent membranous nephropathy</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">EM shows GBM duplication (transplant glomerulopathy), not subepithelial deposits</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Acute tubular injury</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">ABMR does not require positive C4d staining — MVI can substitute</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: D — Chronic active ABMR despite negative C4d</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 975)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Chronic Active Antibody-Mediated Rejection — C4d-Negative",
+  subtitle: "All 3 Banff criteria met despite negative C4d staining",
+  badge: "TRANSPLANT NEPHROLOGY · RENAL PATHOLOGY · BANFF",
+  caseTitle: "Case: 54-year-old woman, 5 years post-kidney transplant, rising creatinine",
+  caseDescription: "Creatinine increased from 1.1 to 2.3 mg/dL over 6 months with proteinuria 2.4 g/day. DSA positive (anti-HLA-DQ). Biopsy: g2, ptc2, cg2, C4d negative, t0, v0. EM shows GBM duplication. BK virus PCR negative.",
+  labChips: [
+    { text: "Creatinine 2.3 mg/dL", abnormal: true },
+    { text: "Proteinuria 2.4 g/day", abnormal: true },
+    { text: "DSA: anti-HLA-DQ +", abnormal: true },
+    { text: "Glomerulitis g2", abnormal: true },
+    { text: "Peritubular capillaritis ptc2", abnormal: true },
+    { text: "Transplant glomerulopathy cg2", abnormal: true },
+    { text: "C4d NEGATIVE", abnormal: false },
+    { text: "Tubulitis t0", abnormal: false },
+    { text: "Intimal arteritis v0", abnormal: false },
+    { text: "BK virus PCR negative", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Banff Criteria", className: "opt2" },
+    { id: "opt3", label: "🔵 C4d-Negative ABMR", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Rising Creatinine 5 Years Post-Transplant",
+      infoRows: [
+        { k: "Creatinine", v: "1.1 → 2.3 mg/dL" },
+        { k: "Proteinuria", v: "2.4 g/day" },
+        { k: "DSA", v: "Anti-HLA-DQ positive" },
+        { k: "Biopsy", v: "g2, ptc2, cg2" },
+        { k: "C4d", v: "Negative" }
+      ],
+      svgTitle: "Chronic Active Antibody-Mediated Rejection — The Case",
+      svgSubtitle: "All 3 Banff criteria met despite C4d negative staining",
+      bannerBg: "#dc2626",
+      bannerText1: "DSA + chronic injury + microvascular inflammation = chronic active ABMR",
+      bannerText2: "C4d negative does NOT exclude ABMR",
+      panel1Title: "🧪 Reading the biopsy",
+      panel1Tagline: "What the scores mean",
+      panel1List: [
+        "<strong>g2</strong> — moderate glomerulitis (inflammation in glomerular capillaries)",
+        "<strong>ptc2</strong> — moderate peritubular capillaritis (inflammation in peritubular capillaries)",
+        "<strong>cg2</strong> — transplant glomerulopathy (chronic injury with GBM duplication)",
+        "<strong>g2 + ptc2 = 4</strong> — meets the threshold for microvascular inflammation (≥2)",
+        "<strong>C4d negative</strong> — does NOT exclude ABMR (recognized since Banff 2013)"
+      ],
+      panel2Title: "🧬 The clinical context",
+      panel2Tagline: "Why ABMR is the diagnosis",
+      panel2List: [
+        "<strong>5 years post-transplant</strong> — chronic rejection typically presents years after transplant",
+        "<strong>Gradual creatinine rise</strong> — indolent course characteristic of chronic ABMR",
+        "<strong>Proteinuria 2.4 g/day</strong> — glomerular injury from chronic antibody-mediated damage",
+        "<strong>Anti-HLA-DQ DSA</strong> — donor-specific antibody driving the rejection",
+        "<strong>BK virus negative</strong> — rules out BK nephropathy as a cause of the findings"
+      ],
+      alertIcon: "🧪",
+      alertTitle: "Board Pearl — C4d negative does not exclude ABMR",
+      alertText: "Since the 2013 Banff classification, ABMR can be diagnosed without C4d positivity. <strong>Microvascular inflammation ([g + ptc] &gt; 2) can substitute for C4d</strong> when DSA and chronic injury are present."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Banff 2019 Criteria for Chronic Active ABMR",
+      infoRows: [
+        { k: "Criterion 1", v: "Chronic tissue injury (cg > 0)" },
+        { k: "Criterion 2", v: "MVI ([g+ptc] > 2) or C4d+" },
+        { k: "Criterion 3", v: "DSA positive" },
+        { k: "This patient", v: "All 3 met" },
+        { k: "Diagnosis", v: "Chronic active ABMR" }
+      ],
+      svgTitle: "Banff 2019 Criteria for Chronic Active ABMR",
+      svgSubtitle: "All three criteria must be met for diagnosis",
+      bannerBg: "#7c3aed",
+      bannerText1: "Criterion 1: chronic tissue injury (cg > 0) · Criterion 2: MVI or C4d+ · Criterion 3: DSA+",
+      bannerText2: "This patient meets all 3 criteria — chronic active ABMR",
+      panel1Title: "🔬 Criterion 1 — Chronic tissue injury",
+      panel1Tagline: "Morphologic evidence",
+      panel1List: [
+        "<strong>Transplant glomerulopathy (cg &gt; 0)</strong> — if no evidence of chronic TMA or recurrent/de novo GN",
+        "<strong>Severe peritubular capillary basement membrane multilayering</strong> (ptcml1; requires EM)",
+        "<strong>Arterial intimal fibrosis of new onset</strong> — excluding other causes",
+        "This patient: <strong>cg2</strong> (transplant glomerulopathy) ✓",
+        "Meets criterion 1"
+      ],
+      panel2Title: "🔬 Criterion 2 — Antibody interaction with endothelium",
+      panel2Tagline: "C4d or microvascular inflammation",
+      panel2List: [
+        "<strong>Linear C4d staining</strong> in peritubular capillaries (C4d2 or C4d3 by IF)",
+        "<strong>Moderate microvascular inflammation</strong> ([g + ptc] &gt; 2) — can substitute for C4d",
+        "<strong>Increased expression of gene transcripts</strong> associated with ABMR",
+        "This patient: <strong>g2 + ptc2 = 4 &gt; 2</strong> ✓ (despite C4d negative)",
+        "Meets criterion 2 via microvascular inflammation"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Criterion 3 — DSA positive",
+      alertText: "This patient has <strong>anti-HLA-DQ DSA</strong>, meeting criterion 3. All three criteria are met → chronic active ABMR."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 C4d-Negative Antibody-Mediated Rejection",
+      infoRows: [
+        { k: "Historical view", v: "C4d required for ABMR" },
+        { k: "Banff 2013", v: "Recognized C4d-negative ABMR" },
+        { k: "Substitute for C4d", v: "MVI ([g+ptc] > 2)" },
+        { k: "This patient", v: "C4d negative but MVI present" },
+        { k: "Diagnosis", v: "ABMR despite C4d negative" }
+      ],
+      svgTitle: "C4d-Negative Antibody-Mediated Rejection",
+      svgSubtitle: "Recognized by the Banff classification since 2013",
+      bannerBg: "#0891b2",
+      bannerText1: "C4d-negative ABMR: diagnosed by microvascular inflammation + DSA + chronic injury",
+      bannerText2: "Microvascular inflammation can substitute for C4d positivity",
+      panel1Title: "🧪 Why C4d-negative ABMR matters",
+      panel1Tagline: "A major diagnostic advance",
+      panel1List: [
+        "Historically, ABMR diagnosis required <strong>C4d positivity</strong> in peritubular capillaries",
+        "Many cases of ABMR are <strong>C4d-negative</strong> but still have DSA and microvascular inflammation",
+        "The <strong>2013 Banff classification</strong> recognized C4d-negative ABMR as a distinct entity",
+        "<strong>Microvascular inflammation</strong> ([g + ptc] &gt; 2) can substitute for C4d in the diagnostic criteria",
+        "This patient is a classic example: <strong>C4d negative but MVI present</strong>"
+      ],
+      panel2Title: "🧪 The evidence for C4d-negative ABMR",
+      panel2Tagline: "Why it's now accepted",
+      panel2List: [
+        "Studies showed that <strong>C4d-negative ABMR</strong> has similar outcomes to C4d-positive ABMR",
+        "Molecular studies justified the threshold of <strong>[g + ptc] ≥ 2</strong> for C4d-negative ABMR",
+        "Banff 2013 <strong>enhanced the ability to diagnose</strong> acute/active and chronic active ABMR",
+        "Without recognizing C4d-negative ABMR, <strong>many cases would be missed</strong>",
+        "This patient's diagnosis would have been missed under the old criteria"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — C4d negative does not rule out ABMR",
+      alertText: "Always check for <strong>microvascular inflammation</strong> (glomerulitis + peritubular capillaritis) when C4d is negative. If [g + ptc] &gt; 2 and DSA is positive, the diagnosis is still ABMR."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "D — Chronic active ABMR" },
+        { k: "Criterion 1", v: "cg2 (transplant glomerulopathy)" },
+        { k: "Criterion 2", v: "g2 + ptc2 = 4 (MVI)" },
+        { k: "Criterion 3", v: "Anti-HLA-DQ DSA+" },
+        { k: "Key point", v: "C4d negative does not exclude" }
+      ],
+      svgTitle: "Answer Summary — Chronic Active ABMR",
+      svgSubtitle: "All 3 Banff criteria are met despite C4d negative staining",
+      bannerBg: "#ca8a04",
+      bannerText1: "D — Chronic active antibody-mediated rejection, despite negative C4d staining",
+      bannerText2: "The key is the combination of DSA, chronic injury, and microvascular inflammation",
+      panel1Title: "✅ The correct answer (D)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>Criterion 1:</strong> cg2 — transplant glomerulopathy (chronic injury)",
+        "<strong>Criterion 2:</strong> g2 + ptc2 = 4 &gt; 2 — microvascular inflammation substitutes for C4d",
+        "<strong>Criterion 3:</strong> Anti-HLA-DQ DSA positive",
+        "<strong>All 3 criteria met</strong> → chronic active ABMR",
+        "<strong>C4d negative</strong> does not change the diagnosis"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (Chronic CNI toxicity):</strong> CNI toxicity does not explain DSA positivity or microvascular inflammation",
+        "<strong>B (Chronic active TCMR):</strong> TCMR requires tubulitis (t &gt; 0). Here t0.",
+        "<strong>C (Recurrent membranous):</strong> EM shows GBM duplication (transplant glomerulopathy), not subepithelial deposits",
+        "<strong>E (Acute tubular injury):</strong> ABMR does not require positive C4d — MVI can substitute"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>Chronic active antibody-mediated rejection</strong> is the correct diagnosis. All 3 Banff criteria are met despite negative C4d staining. The key is the combination of DSA, chronic injury (cg2), and microvascular inflammation (g2+ptc2)."
+    }
+  },
+  comparison: {
+    title: "📊 Banff Classification of ABMR — Categories and Criteria",
+    sub: "Distinguishing active, chronic active, and chronic inactive ABMR",
+    head: ["Category", "Chronic injury (cg)", "MVI or C4d", "DSA", "This patient"],
+    rows: [
+      { cells: ["Active ABMR", "Absent (cg 0)", "MVI present or C4d+", "Required", "Not this category"], hero: false },
+      { cells: ["Chronic active ABMR", "Present (cg > 0)", "MVI present or C4d+", "Required", "✅ THIS PATIENT"], hero: true },
+      { cells: ["Chronic inactive ABMR", "Present (cg > 0)", "Absent (no MVI, C4d−)", "Prior documented", "Not this category"], hero: false },
+      { cells: ["C4d staining without rejection", "Absent", "C4d+ only, no MVI", "Absent", "Not this category"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 54-year-old woman, 5 years post-kidney transplant, has rising creatinine and proteinuria. Biopsy shows g2, ptc2, cg2, DSA positive, and C4d negative. What is the most appropriate diagnosis?",
+      options: [
+        { text: "Chronic active antibody-mediated rejection, despite negative C4d staining.", correct: true,
+          explanation: "All 3 Banff criteria are met: cg2 (chronic injury), g2+ptc2=4 (microvascular inflammation substituting for C4d), and DSA positive. C4d negative does not exclude ABMR." },
+        { text: "Acute T-cell–mediated rejection, grade IB.", correct: false,
+          explanation: "TCMR shows tubulitis and interstitial inflammation, not DSA positivity and transplant glomerulopathy." },
+        { text: "Chronic inactive antibody-mediated rejection, because C4d is negative.", correct: false,
+          explanation: "The presence of microvascular inflammation (g2+ptc2=4) indicates active disease, not inactive ABMR." }
+      ]
+    },
+    {
+      question: "What is the minimum microvascular inflammation score required to substitute for C4d positivity in the diagnosis of C4d-negative ABMR?",
+      options: [
+        { text: "[g + ptc] > 2.", correct: true,
+          explanation: "The Banff criteria state that at least moderate microvascular inflammation ([g + ptc] > 2) can substitute for C4d positivity. This patient has g2 + ptc2 = 4, meeting the threshold." },
+        { text: "[g + ptc] > 1.", correct: false,
+          explanation: "A score of >1 is not sufficient. The threshold is >2." },
+        { text: "[g + ptc] > 4.", correct: false,
+          explanation: "The threshold is >2, not >4. This patient's score of 4 meets the criterion." }
+      ]
+    },
+    {
+      question: "Which Banff criterion does transplant glomerulopathy (cg > 0) satisfy?",
+      options: [
+        { text: "Criterion 1 — Morphologic evidence of chronic tissue injury.", correct: true,
+          explanation: "Transplant glomerulopathy (cg > 0) is a morphologic marker of chronic tissue injury and satisfies criterion 1 for chronic active ABMR." },
+        { text: "Criterion 2 — Evidence of antibody interaction with endothelium.", correct: false,
+          explanation: "Criterion 2 is satisfied by C4d positivity or microvascular inflammation, not by cg." },
+        { text: "Criterion 3 — Serologic evidence of DSA.", correct: false,
+          explanation: "Criterion 3 is satisfied by the presence of donor-specific antibodies, not by cg." }
+      ]
+    },
+    {
+      question: "Since which Banff classification meeting has C4d-negative ABMR been officially recognized?",
+      options: [
+        { text: "2013.", correct: true,
+          explanation: "The 2013 Banff classification was the first major revision to include C4d-negative ABMR as a diagnostic entity." },
+        { text: "2007.", correct: false,
+          explanation: "C4d-negative ABMR was not recognized until 2013." },
+        { text: "2019.", correct: false,
+          explanation: "C4d-negative ABMR was recognized in 2013. The 2019 classification built upon this." }
+      ]
+    },
+    {
+      question: "What key finding would suggest chronic inactive ABMR rather than chronic active ABMR?",
+      options: [
+        { text: "Absence of microvascular inflammation and negative C4d.", correct: true,
+          explanation: "Chronic inactive ABMR has chronic injury (cg > 0) but lacks evidence of current antibody interaction (no MVI, C4d negative). This patient has MVI (g2+ptc2=4), indicating active disease." },
+        { text: "Presence of donor-specific antibodies.", correct: false,
+          explanation: "DSA is required for both chronic active and chronic inactive ABMR." },
+        { text: "Transplant glomerulopathy (cg > 0).", correct: false,
+          explanation: "cg > 0 is present in both chronic active and chronic inactive ABMR." }
+      ]
+    },
+    {
+      question: "Which of the following would NOT be consistent with a diagnosis of chronic active ABMR?",
+      options: [
+        { text: "Negative DSA and negative C4d.", correct: true,
+          explanation: "DSA is required for the diagnosis of chronic active ABMR. If both DSA and C4d are negative, the case is classified as 'MVI, DSA-negative and C4d-negative,' not ABMR." },
+        { text: "Transplant glomerulopathy (cg2).", correct: false,
+          explanation: "cg2 is a morphologic criterion for chronic active ABMR." },
+        { text: "Microvascular inflammation (g2+ptc2).", correct: false,
+          explanation: "MVI is a criterion for chronic active ABMR and can substitute for C4d." }
+      ]
+    },
+    {
+      question: "What is the role of C4d staining in the current Banff classification?",
+      options: [
+        { text: "It is one of several ways to satisfy criterion 2, but it is not required for the diagnosis of ABMR.", correct: true,
+          explanation: "C4d positivity is one way to meet criterion 2, but microvascular inflammation can also satisfy it. C4d-negative ABMR is a recognized entity." },
+        { text: "It is required for the diagnosis of all forms of ABMR.", correct: false,
+          explanation: "C4d-negative ABMR is recognized. C4d is not required for the diagnosis." },
+        { text: "It is used only to confirm chronic inactive ABMR.", correct: false,
+          explanation: "C4d is not used to confirm chronic inactive ABMR. It is a marker of active antibody interaction." }
+      ]
+    },
+    {
+      question: "What is the most likely long-term clinical consequence of chronic active ABMR if left untreated?",
+      options: [
+        { text: "Progressive graft dysfunction and eventual graft loss.", correct: true,
+          explanation: "Chronic active ABMR causes progressive damage to the allograft, leading to worsening kidney function and ultimately graft failure if not treated." },
+        { text: "Spontaneous resolution of the rejection.", correct: false,
+          explanation: "Chronic active ABMR does not resolve spontaneously. It requires treatment." },
+        { text: "Acute rejection crisis with rapid onset.", correct: false,
+          explanation: "Chronic active ABMR has an indolent course, not an acute crisis. It presents with gradual worsening of function." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Transplant Nephrology / Renal Pathology / Banff",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

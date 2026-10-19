@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcineurin Inhibitor–Associated TMA After Kidney Transplant</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55; max-width:640px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap:12px;
+    align-items:start;
+  }
+  @media(max-width:980px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:980px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:12px 14px 14px; max-height:600px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:20px 24px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.78rem; color:var(--muted); margin:0 0 14px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.78rem;}
+  .compare-table th{text-align:left; padding:10px 12px; font-weight:800;
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:10px 12px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.5;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+        </defs>
+
+        <rect width="1200" height="780" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — TMA OVERVIEW
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Glomerulus -->
+          <g transform="translate(300, 320)">
+            <circle r="180" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <!-- Capillary loops -->
+            <path d="M -100 -40 Q -50 -120 0 -60 Q 50 -120 100 -40 Q 50 40 0 0 Q -50 40 -100 -40"
+                  fill="none" stroke="#dc2626" stroke-width="8" opacity="0.5"/>
+            <path d="M -100 40 Q -50 120 0 60 Q 50 120 100 40 Q 50 -40 0 0 Q -50 -40 -100 40"
+                  fill="none" stroke="#dc2626" stroke-width="8" opacity="0.5"/>
+
+            <text x="0" y="-200" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">GLOMERULUS</text>
+            <text x="0" y="230" text-anchor="middle" font-size="13" fill="#7f1d1d">Endothelial injury → fibrin thrombi</text>
+
+            <!-- Fibrin thrombi -->
+            <ellipse cx="-60" cy="-30" rx="28" ry="14" fill="#0f172a" class="pulse-block"/>
+            <ellipse cx="70" cy="30" rx="24" ry="12" fill="#0f172a" class="pulse-block"/>
+            <ellipse cx="0" cy="10" rx="20" ry="10" fill="#0f172a" class="pulse-block"/>
+
+            <!-- Schistocytes -->
+            <g transform="translate(180, -180)">
+              <path d="M 0 0 L 30 -10 L 40 5 L 10 15 Z" fill="#dc2626"/>
+              <text x="60" y="5" font-size="12" font-weight="700" fill="#991b1b">schistocyte</text>
+            </g>
+          </g>
+
+          <!-- Right side: consequences -->
+          <g transform="translate(880, 320)">
+            <rect x="-200" y="-260" width="400" height="520" rx="20" fill="#fff" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="17" font-weight="800" fill="#991b1b">CONSEQUENCES</text>
+
+            <g font-size="14" fill="#334155">
+              <!-- Platelet consumption -->
+              <circle cx="-140" cy="-160" r="14" fill="#ca8a04"/>
+              <text x="-110" y="-155" font-weight="700" fill="#0f172a">Platelet consumption</text>
+              <text x="-110" y="-136" font-size="12" fill="#7f1d1d">→ thrombocytopenia 68k</text>
+
+              <!-- Mechanical hemolysis -->
+              <circle cx="-140" cy="-80" r="14" fill="#dc2626"/>
+              <text x="-110" y="-75" font-weight="700" fill="#0f172a">Mechanical hemolysis</text>
+              <text x="-110" y="-56" font-size="12" fill="#7f1d1d">→ anemia, ↑ LDH, ↓ haptoglobin</text>
+
+              <!-- Organ ischemia -->
+              <circle cx="-140" cy="0" r="14" fill="#7c3aed"/>
+              <text x="-110" y="5" font-weight="700" fill="#0f172a">Microvascular occlusion</text>
+              <text x="-110" y="24" font-size="12" fill="#7f1d1d">→ graft dysfunction (Cr 3.2)</text>
+
+              <!-- Classic triad -->
+              <rect x="-180" y="80" width="360" height="120" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+              <text x="0" y="110" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">CLASSIC TRIAD</text>
+              <text x="0" y="135" text-anchor="middle" font-size="13" fill="#7f1d1d">MAHA · Thrombocytopenia · Organ injury</text>
+              <text x="0" y="162" text-anchor="middle" font-size="12" fill="#991b1b">(schistocytes, ↑ LDH, ↓ Plt, ↓ Hgb)</text>
+              <text x="0" y="185" text-anchor="middle" font-size="12" fill="#991b1b">AKI / graft dysfunction</text>
+            </g>
+          </g>
+
+          <!-- Bottom banner -->
+          <g transform="translate(600, 660)">
+            <rect x="-500" y="-40" width="1000" height="80" rx="14" fill="#0f172a"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">TMA = microangiopathic hemolytic anemia + thrombocytopenia + organ ischemia</text>
+            <text x="0" y="16" text-anchor="middle" font-size="13" fill="#cbd5e1">Multiple causes — must distinguish TTP, AMR, aHUS, drug-induced, and STEC-HUS</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — CNI-ASSOCIATED TMA
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <!-- Endothelial cell -->
+          <g transform="translate(500, 340)">
+            <rect x="-200" y="-140" width="400" height="280" rx="30" fill="url(#accent2Grad)" opacity="0.85"/>
+            <ellipse cx="0" cy="0" rx="55" ry="40" fill="#5b21b6" opacity="0.4"/>
+            <text x="0" y="90" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">ENDOTHELIAL CELL</text>
+            <text x="0" y="115" text-anchor="middle" font-size="12" fill="#ede9fe">(glomerular capillary)</text>
+
+            <!-- Calcineurin -->
+            <g transform="translate(-90, -30)">
+              <circle r="28" fill="#7c3aed"/>
+              <text x="0" y="5" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Calci-</text>
+              <text x="0" y="20" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">neurin</text>
+            </g>
+
+            <!-- Tacrolimus blocking -->
+            <g transform="translate(-90, -30)">
+              <circle r="38" fill="none" stroke="#dc2626" stroke-width="4" stroke-dasharray="6 4"/>
+              <text x="0" y="-52" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">TACRO</text>
+              <text x="0" y="-36" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">17 ng/mL</text>
+            </g>
+          </g>
+
+          <!-- Arrow pathway -->
+          <g transform="translate(500, 340)">
+            <!-- Step 1 -->
+            <line x1="-40" y1="-30" x2="40" y2="-30" stroke="#dc2626" stroke-width="4" marker-end="url(#arrowAccent1)" class="flow-anim"/>
+          </g>
+
+          <!-- Cascade box -->
+          <g transform="translate(500, 130)">
+            <rect x="-460" y="-60" width="920" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="15" font-weight="800" fill="#991b1b">Tacrolimus → ↓ calcineurin in endothelium</text>
+            <text x="0" y="0" text-anchor="middle" font-size="14" fill="#7f1d1d">↓ eNOS / ↓ NO → ↑ endothelin-1 → ↑ thromboxane A₂ → ↑ vWF release</text>
+            <text x="0" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">→ Endothelial activation → platelet adhesion → microthrombi</text>
+          </g>
+
+          <!-- Arrow down -->
+          <line x1="500" y1="190" x2="500" y2="200" stroke="#dc2626" stroke-width="4"/>
+          <line x1="500" y1="190" x2="500" y2="200" stroke="#dc2626" stroke-width="4" marker-end="url(#arrowAccent1)"/>
+
+          <!-- Results -->
+          <g transform="translate(600, 540)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="-460" y="-30" font-size="14" font-weight="800" fill="#991b1b">→ Glomerular endothelial swelling (biopsy)</text>
+            <text x="-460" y="0" font-size="14" font-weight="800" fill="#991b1b">→ Fibrin thrombi in capillaries (biopsy)</text>
+            <text x="-460" y="30" font-size="14" font-weight="800" fill="#991b1b">→ AKI (Cr 3.2), MAHA, thrombocytopenia 68k</text>
+            <text x="380" y="5" text-anchor="middle" font-size="15" font-weight="800" fill="#7c3aed">DOSE-DEPENDENT</text>
+            <text x="380" y="28" text-anchor="middle" font-size="12" fill="#5b21b6">Direct drug toxicity</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(600, 680)">
+            <rect x="-500" y="-32" width="1000" height="64" rx="14" fill="#16a34a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">✅ Answer E — CNI-associated endothelial injury from tacrolimus toxicity</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — MIMICS
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <!-- TTP -->
+          <g transform="translate(180, 340)">
+            <rect x="-140" y="-260" width="280" height="520" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">TTP</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="12" fill="#7f1d1d">Thrombotic thrombocytopenic purpura</text>
+
+            <circle cx="0" cy="-100" r="55" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="-108" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">ADAMTS13</text>
+            <text x="0" y="-85" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">&lt; 10%</text>
+
+            <text x="0" y="0" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">❌ THIS PATIENT</text>
+            <text x="0" y="22" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">= 72% (NORMAL)</text>
+
+            <text x="0" y="80" text-anchor="middle" font-size="13" fill="#7f1d1d">• Severe ADAMTS13 deficiency</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" fill="#7f1d1d">• Autoimmune or hereditary</text>
+            <text x="0" y="130" text-anchor="middle" font-size="13" fill="#7f1d1d">• Treat: plasma exchange</text>
+            <text x="0" y="155" text-anchor="middle" font-size="13" fill="#7f1d1d">• Caplacizumab adjunct</text>
+
+            <text x="0" y="220" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">NOT the answer</text>
+          </g>
+
+          <!-- AMR -->
+          <g transform="translate(500, 340)">
+            <rect x="-140" y="-260" width="280" height="520" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">AMR</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="12" fill="#6d28d9">Antibody-mediated rejection</text>
+
+            <circle cx="-40" cy="-100" r="40" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+            <text x="-40" y="-95" text-anchor="middle" font-size="12" font-weight="800" fill="#5b21b6">DSA</text>
+            <circle cx="50" cy="-100" r="40" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+            <text x="50" y="-95" text-anchor="middle" font-size="12" font-weight="800" fill="#5b21b6">C4d</text>
+
+            <text x="0" y="0" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">❌ THIS PATIENT</text>
+            <text x="0" y="22" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">DSA NEG · C4d NEG</text>
+
+            <text x="0" y="80" text-anchor="middle" font-size="13" fill="#6d28d9">• Donor-specific antibodies</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" fill="#6d28d9">• C4d+ peritubular capillaries</text>
+            <text x="0" y="130" text-anchor="middle" font-size="13" fill="#6d28d9">• Treat: steroids, IVIG, PLEX</text>
+            <text x="0" y="155" text-anchor="middle" font-size="13" fill="#6d28d9">• Rituximab, eculizumab</text>
+
+            <text x="0" y="220" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">NOT the answer</text>
+          </g>
+
+          <!-- aHUS -->
+          <g transform="translate(820, 340)">
+            <rect x="-140" y="-260" width="280" height="520" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">aHUS</text>
+            <text x="0" y="-200" text-anchor="middle" font-size="12" fill="#0e7490">Atypical HUS (complement)</text>
+
+            <circle cx="0" cy="-100" r="55" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="-108" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">Complement</text>
+            <text x="0" y="-85" text-anchor="middle" font-size="14" font-weight="700" fill="#155e75">dysregulation</text>
+
+            <text x="0" y="0" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Possible but...</text>
+            <text x="0" y="22" text-anchor="middle" font-size="13" font-weight="800" fill="#155e75">CNI + level 17 more likely</text>
+
+            <text x="0" y="80" text-anchor="middle" font-size="13" fill="#0e7490">• Genetic or autoantibody</text>
+            <text x="0" y="105" text-anchor="middle" font-size="13" fill="#0e7490">• No diarrhea prodrome</text>
+            <text x="0" y="130" text-anchor="middle" font-size="13" fill="#0e7490">• Treat: eculizumab</text>
+            <text x="0" y="155" text-anchor="middle" font-size="13" fill="#0e7490">• Check complement</text>
+
+            <text x="0" y="220" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">Less likely</text>
+          </g>
+
+          <g transform="translate(600, 680)">
+            <rect x="-500" y="-32" width="1000" height="64" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">Distinguish by ADAMTS13, DSA/C4d, complement, stool studies, and drug levels</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Step 1 -->
+          <g transform="translate(600, 180)">
+            <rect x="-500" y="-70" width="1000" height="140" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+            <circle cx="-440" cy="0" r="30" fill="#dc2626"/>
+            <text x="-440" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">1</text>
+            <text x="-390" y="-25" font-size="16" font-weight="800" fill="#991b1b">Reduce or STOP the calcineurin inhibitor</text>
+            <text x="-390" y="5" font-size="14" fill="#7f1d1d">• Lower tacrolimus dose or switch to <strong>belatacept</strong> (CNI-sparing)</text>
+            <text x="-390" y="30" font-size="14" fill="#7f1d1d">• Consider cyclosporine → tacrolimus switch if on CsA</text>
+            <text x="-390" y="55" font-size="14" fill="#7f1d1d">• This is the PRIMARY treatment — remove the offending agent</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(600, 350)">
+            <rect x="-500" y="-70" width="1000" height="140" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+            <circle cx="-440" cy="0" r="30" fill="#7c3aed"/>
+            <text x="-440" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">2</text>
+            <text x="-390" y="-25" font-size="16" font-weight="800" fill="#5b21b6">Supportive care</text>
+            <text x="-390" y="5" font-size="14" fill="#6d28d9">• Manage volume status, blood pressure, electrolytes</text>
+            <text x="-390" y="30" font-size="14" fill="#6d28d9">• Transfuse as needed (platelets only if bleeding/procedure)</text>
+            <text x="-390" y="55" font-size="14" fill="#6d28d9">• Monitor renal function, LDH, platelets, haptoglobin</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(600, 520)">
+            <rect x="-500" y="-70" width="1000" height="140" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+            <circle cx="-440" cy="0" r="30" fill="#0891b2"/>
+            <text x="-440" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">3</text>
+            <text x="-390" y="-25" font-size="16" font-weight="800" fill="#155e75">Consider plasma exchange / eculizumab if severe</text>
+            <text x="-390" y="5" font-size="14" fill="#0e7490">• PLEX is not first-line for CNI-TMA (unlike TTP)</text>
+            <text x="-390" y="30" font-size="14" fill="#0e7490">• Eculizumab may be considered for refractory cases</text>
+            <text x="-390" y="55" font-size="14" fill="#0e7490">• Reserved for cases not responding to CNI reduction</text>
+          </g>
+
+          <g transform="translate(600, 680)">
+            <rect x="-500" y="-32" width="1000" height="64" rx="14" fill="#16a34a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">Reducing the CNI is the answer — not plasmapheresis</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(600, 730)">
+          <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Calcineurin Inhibitor–Associated TMA After Kidney Transplant",
+  subtitle: "Elevated tacrolimus + MAHA + thrombocytopenia + graft dysfunction = drug-induced TMA",
+  badge: "NEPHROLOGY · TRANSPLANT · HEMATOLOGY",
+  caseTitle: "Case: 38-year-old woman, deceased-donor kidney transplant 3 weeks ago",
+  caseDescription: "Develops acute allograft dysfunction (Cr 3.2 from 1.3), thrombocytopenia (68k), and microangiopathic hemolytic anemia. Tacrolimus trough 17 ng/mL, ADAMTS13 activity 72%, DSA negative, C4d negative. Biopsy: glomerular endothelial swelling + fibrin thrombi.",
+  labChips: [
+    { text: "Creatinine 3.2 mg/dL", abnormal: true },
+    { text: "Hemoglobin 8.1 g/dL", abnormal: true },
+    { text: "Platelets 68,000/µL", abnormal: true },
+    { text: "LDH 950 U/L", abnormal: true },
+    { text: "Haptoglobin undetectable", abnormal: true },
+    { text: "Schistocytes present", abnormal: true },
+    { text: "ADAMTS13 72% (normal)", abnormal: false },
+    { text: "Tacrolimus 17 ng/mL", abnormal: true },
+    { text: "DSA negative", abnormal: false },
+    { text: "C4d negative", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 TMA Overview", className: "opt1" },
+    { id: "opt2", label: "🟣 CNI-Associated TMA", className: "opt2" },
+    { id: "opt3", label: "🔵 Mimics", className: "opt3" },
+    { id: "opt4", label: "🟡 Management", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 TMA — The Syndrome",
+      infoRows: [
+        { k: "Definition", v: "MAHA + thrombocytopenia + organ injury" },
+        { k: "Key finding", v: "Schistocytes on smear" },
+        { k: "Hemolysis", v: "↑ LDH, ↓ haptoglobin" },
+        { k: "Biopsy", v: "Endothelial swelling + fibrin thrombi" },
+        { k: "In transplant", v: "Multiple causes — must distinguish" }
+      ],
+      svgTitle: "Thrombotic Microangiopathy — The Clinical Picture",
+      svgSubtitle: "Endothelial injury in the glomerulus triggers platelet aggregation, fibrin deposition, and mechanical hemolysis",
+      bannerBg: "#dc2626",
+      bannerText1: "TMA = microangiopathic hemolytic anemia + thrombocytopenia + organ ischemia",
+      bannerText2: "Multiple causes in transplant — must distinguish TTP, AMR, aHUS, drug-induced, STEC-HUS",
+      panel1Title: "🧬 What is TMA?",
+      panel1Tagline: "A syndrome, not a disease",
+      panel1List: [
+        "<strong>Microangiopathic hemolytic anemia (MAHA):</strong> schistocytes, ↑ LDH, ↓ haptoglobin, anemia",
+        "<strong>Thrombocytopenia:</strong> platelet consumption in microthrombi",
+        "<strong>Organ injury:</strong> ischemia from microvascular occlusion (here, the kidney allograft)",
+        "<strong>Biopsy hallmark:</strong> glomerular endothelial swelling and fibrin thrombi",
+        "TMA is a <strong>final common pathway</strong> — multiple causes converge on it"
+      ],
+      panel2Title: "🔍 Differential diagnosis in transplant",
+      panel2Tagline: "The big five",
+      panel2List: [
+        "<strong>TTP:</strong> ADAMTS13 <10% (autoimmune or hereditary)",
+        "<strong>AMR:</strong> DSA+ and C4d+ peritubular capillaries",
+        "<strong>aHUS:</strong> complement dysregulation (genetic or autoantibody)",
+        "<strong>CNI-associated TMA:</strong> tacrolimus/cyclosporine toxicity — <strong>THIS PATIENT</strong>",
+        "<strong>STEC-HUS:</strong> Shiga toxin, usually with diarrhea prodrome"
+      ],
+      alertIcon: "⚠️",
+      alertTitle: "Board Pearl — The differential is narrow",
+      alertText: "In a transplant patient with TMA, immediately check: <strong>ADAMTS13, DSA, C4d, drug levels, and stool studies</strong>. The answer is usually in the numbers."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 CNI-Associated TMA",
+      infoRows: [
+        { k: "Drug", v: "Tacrolimus (or cyclosporine)" },
+        { k: "Level", v: "17 ng/mL (supratherapeutic)" },
+        { k: "Timing", v: "Days to weeks after starting" },
+        { k: "Biopsy", v: "Endothelial swelling + fibrin thrombi" },
+        { k: "Treatment", v: "Reduce / stop the CNI" }
+      ],
+      svgTitle: "Calcineurin Inhibitor–Associated TMA — Direct Endothelial Toxicity",
+      svgSubtitle: "Tacrolimus inhibits calcineurin in endothelial cells → ↓ NO → endothelial activation → microthrombi",
+      bannerBg: "#7c3aed",
+      bannerText1: "Tacrolimus trough 17 ng/mL — toxic range (target ~5–10 for kidney transplant)",
+      bannerText2: "Direct, dose-dependent endothelial injury — not immune-mediated",
+      panel1Title: "🔬 Mechanism of CNI-TMA",
+      panel1Tagline: "Direct endothelial toxicity",
+      panel1List: [
+        "CNI inhibits <strong>calcineurin in endothelial cells</strong>",
+        "→ <strong>↓ eNOS / ↓ nitric oxide</strong> → vasoconstriction and platelet adhesion",
+        "→ <strong>↑ endothelin-1, ↑ thromboxane A₂, ↑ vWF release</strong>",
+        "→ <strong>Endothelial activation and injury</strong> → platelet adhesion + fibrin deposition",
+        "Result: <strong>glomerular microthrombi</strong> → TMA + graft dysfunction"
+      ],
+      panel2Title: "🎯 Why THIS patient has CNI-TMA",
+      panel2Tagline: "Every clue fits",
+      panel2List: [
+        "<strong>Tacrolimus 17 ng/mL</strong> — supratherapeutic (target 5–10)",
+        "<strong>3 weeks post-transplant</strong> — classic timing",
+        "<strong>ADAMTS13 72%</strong> — normal, ruling out TTP",
+        "<strong>DSA and C4d negative</strong> — ruling out AMR",
+        "<strong>Biopsy: endothelial swelling + fibrin thrombi</strong> — classic TMA histology"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Answer: E — CNI-associated endothelial injury from tacrolimus toxicity",
+      alertText: "Calcineurin inhibitor–associated endothelial injury due to <strong>tacrolimus toxicity</strong> is the most likely cause of this patient's TMA."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Mimics — Why They Don't Fit",
+      infoRows: [
+        { k: "TTP", v: "ADAMTS13 72% → NOT TTP" },
+        { k: "AMR", v: "DSA neg, C4d neg → NOT AMR" },
+        { k: "aHUS", v: "No complement data; CNI fits better" },
+        { k: "STEC-HUS", v: "No diarrhea prodrome" },
+        { k: "APS", v: "No antiphospholipid history" }
+      ],
+      svgTitle: "Mimics — Distinguishing the Causes of TMA",
+      svgSubtitle: "Each mimic has a specific marker that this patient lacks",
+      bannerBg: "#0891b2",
+      bannerText1: "ADAMTS13 72% rules out TTP; DSA/C4d negative rules out AMR",
+      bannerText2: "The elevated tacrolimus level + classic biopsy is the giveaway",
+      panel1Title: "🧪 TTP — excluded by ADAMTS13",
+      panel1Tagline: "ADAMTS13 <10% required",
+      panel1List: [
+        "TTP is caused by <strong>severe ADAMTS13 deficiency (<10%)</strong>",
+        "This patient's level is <strong>72% — completely normal</strong>",
+        "TTP would also typically present with <strong>neurologic symptoms</strong> and <strong>fever</strong>",
+        "Treatment of TTP is <strong>plasma exchange</strong> — not appropriate here"
+      ],
+      panel2Title: "🧪 AMR — excluded by DSA and C4d",
+      panel2Tagline: "Both markers negative",
+      panel2List: [
+        "AMR is defined by <strong>donor-specific antibodies (DSA)</strong> and <strong>C4d deposition</strong> in peritubular capillaries",
+        "This patient has <strong>DSA negative</strong> and <strong>C4d negative</strong>",
+        "AMR treatment: steroids, IVIG, plasma exchange, rituximab",
+        "aHUS is possible but less likely given the elevated CNI level and timing"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — The markers make the diagnosis",
+      alertText: "In TMA after transplant, check the specific markers: <strong>ADAMTS13</strong> (TTP), <strong>DSA + C4d</strong> (AMR), <strong>complement</strong> (aHUS), <strong>stool studies</strong> (STEC-HUS), and <strong>drug levels</strong> (CNI-TMA)."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management",
+      infoRows: [
+        { k: "Primary treatment", v: "Reduce / stop the CNI" },
+        { k: "Alternative", v: "Belatacept (CNI-sparing)" },
+        { k: "Supportive", v: "BP, volume, electrolytes" },
+        { k: "PLEX", v: "Not first-line (unlike TTP)" },
+        { k: "Eculizumab", v: "Consider if refractory" }
+      ],
+      svgTitle: "Management of CNI-Associated TMA",
+      svgSubtitle: "Remove the offending agent — reduce or switch the calcineurin inhibitor",
+      bannerBg: "#ca8a04",
+      bannerText1: "Step 1: Reduce or stop tacrolimus → switch to belatacept if needed",
+      bannerText2: "PLEX is not first-line for CNI-TMA (unlike TTP)",
+      panel1Title: "✅ Step 1 — Reduce or stop the CNI",
+      panel1Tagline: "The primary treatment",
+      panel1List: [
+        "<strong>Reduce tacrolimus dose</strong> to target 5–10 ng/mL",
+        "If TMA persists, <strong>switch to belatacept</strong> — a CNI-sparing agent",
+        "Belatacept is a CTLA-4-Ig fusion protein that blocks T-cell costimulation without endothelial toxicity",
+        "Consider switching cyclosporine → tacrolimus if on CsA (though both can cause TMA)",
+        "<strong>Monitor drug levels frequently</strong> during the transition"
+      ],
+      panel2Title: "💊 Step 2 & 3 — Supportive and second-line",
+      panel2Tagline: "When reduction isn't enough",
+      panel2List: [
+        "<strong>Supportive care:</strong> BP control, volume management, electrolytes, transfusions as needed",
+        "<strong>Plasma exchange:</strong> NOT first-line for CNI-TMA (unlike TTP) — reserve for severe or refractory cases",
+        "<strong>Eculizumab:</strong> may be considered for refractory cases with complement activation",
+        "<strong>Avoid platelet transfusions</strong> unless bleeding or pre-procedure — they can worsen microthrombi",
+        "<strong>Monitor:</strong> LDH, platelets, haptoglobin, creatinine, tacrolimus level"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: E",
+      alertText: "Calcineurin inhibitor–associated endothelial injury due to <strong>tacrolimus toxicity</strong>. Treat by <strong>reducing or stopping the CNI</strong> — not by plasma exchange."
+    }
+  },
+  comparison: {
+    title: "📊 Differential Diagnosis of TMA After Kidney Transplant",
+    sub: "Five causes — each with a specific diagnostic marker. This patient's findings point to CNI-TMA.",
+    head: ["Cause", "Key marker", "This patient", "Treatment", "Verdict"],
+    rows: [
+      { cells: ["TTP", "ADAMTS13 < 10%", "ADAMTS13 72%", "Plasma exchange, caplacizumab", '<span class="verdict-bad">✗ Excluded</span> — normal ADAMTS13'], hero: false },
+      { cells: ["Antibody-mediated rejection (AMR)", "DSA+ and C4d+", "DSA neg, C4d neg", "Steroids, IVIG, PLEX, rituximab", '<span class="verdict-bad">✗ Excluded</span> — no markers'], hero: false },
+      { cells: ["aHUS (complement-mediated)", "Complement dysregulation", "Not tested", "Eculizumab", '<span class="verdict-bad">✗ Less likely</span> — CNI level fits better'], hero: false },
+      { cells: ["STEC-HUS", "Shiga toxin in stool", "No diarrhea", "Supportive care", '<span class="verdict-bad">✗ Excluded</span> — no prodrome'], hero: false },
+      { cells: ["CNI-associated TMA", "Supratherapeutic tacrolimus level + biopsy", "Tacrolimus 17 ng/mL + classic biopsy", "Reduce/stop CNI; switch to belatacept", '<span class="verdict-good">✓ Correct</span> — every clue fits'], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "A kidney transplant recipient develops TMA 3 weeks post-transplant with tacrolimus trough 17 ng/mL, ADAMTS13 activity 72%, DSA negative, and C4d negative. What is the most likely cause?",
+      options: [
+        { text: "Calcineurin inhibitor–associated endothelial injury from tacrolimus toxicity.", correct: true,
+          explanation: "The elevated tacrolimus level, classic timing, biopsy findings, and negative workup for other causes all point to CNI-TMA." },
+        { text: "Severe ADAMTS13 deficiency causing TTP.", correct: false,
+          explanation: "ADAMTS13 activity is 72% (normal). TTP requires activity <10%." },
+        { text: "Acute antibody-mediated rejection.", correct: false,
+          explanation: "DSA and C4d are both negative, ruling out AMR." }
+      ]
+    },
+    {
+      question: "What ADAMTS13 activity level is required to diagnose TTP?",
+      options: [
+        { text: "<10%.", correct: true,
+          explanation: "Severe ADAMTS13 deficiency is defined as activity less than 10%. This patient's 72% is completely normal." },
+        { text: "<30%.", correct: false,
+          explanation: "30% is not the diagnostic threshold. TTP requires <10%." },
+        { text: "<50%.", correct: false,
+          explanation: "50% is within the lower range of normal and not diagnostic of TTP." }
+      ]
+    },
+    {
+      question: "What biopsy findings support a diagnosis of TMA?",
+      options: [
+        { text: "Glomerular endothelial swelling and fibrin thrombi.", correct: true,
+          explanation: "These are the classic histologic hallmarks of TMA — endothelial injury with microthrombi in the glomerular capillaries." },
+        { text: "C4d deposition in peritubular capillaries.", correct: false,
+          explanation: "C4d deposition is a marker of antibody-mediated rejection, not TMA." },
+        { text: "Interstitial fibrosis and tubular atrophy.", correct: false,
+          explanation: "These are markers of chronic allograft nephropathy, not acute TMA." }
+      ]
+    },
+    {
+      question: "What is the primary treatment for CNI-associated TMA?",
+      options: [
+        { text: "Reduce or stop the calcineurin inhibitor.", correct: true,
+          explanation: "CNI-TMA is caused by direct drug toxicity. Removing the offending agent is the primary treatment. Belatacept is a CNI-sparing alternative." },
+        { text: "Plasma exchange.", correct: false,
+          explanation: "PLEX is first-line for TTP, not for CNI-TMA. Reducing the CNI is the primary treatment." },
+        { text: "Rituximab.", correct: false,
+          explanation: "Rituximab is used in AMR and some autoimmune TMA, not as first-line for CNI-TMA." }
+      ]
+    },
+    {
+      question: "What tacrolimus trough level is typically targeted in kidney transplant maintenance?",
+      options: [
+        { text: "5–10 ng/mL.", correct: true,
+          explanation: "Maintenance tacrolimus trough is typically 5–10 ng/mL. This patient's level of 17 is supratherapeutic and in the toxic range." },
+        { text: "15–20 ng/mL.", correct: false,
+          explanation: "15–20 ng/mL is too high for maintenance and is associated with toxicity, including TMA." },
+        { text: "1–3 ng/mL.", correct: false,
+          explanation: "1–3 ng/mL is too low for adequate immunosuppression and risks rejection." }
+      ]
+    },
+    {
+      question: "Which medication is a CNI-sparing alternative that can be used if tacrolimus must be stopped?",
+      options: [
+        { text: "Belatacept.", correct: true,
+          explanation: "Belatacept is a CTLA-4-Ig fusion protein that blocks T-cell costimulation without the endothelial toxicity of calcineurin inhibitors." },
+        { text: "Cyclosporine.", correct: false,
+          explanation: "Cyclosporine is also a calcineurin inhibitor and can also cause TMA." },
+        { text: "Sirolimus.", correct: false,
+          explanation: "Sirolimus (mTOR inhibitor) can also be associated with TMA and is not the classic CNI-sparing alternative for this indication." }
+      ]
+    },
+    {
+      question: "Which finding would most strongly suggest antibody-mediated rejection rather than CNI-TMA?",
+      options: [
+        { text: "Positive donor-specific antibodies and C4d deposition.", correct: true,
+          explanation: "DSA positivity and C4d deposition in peritubular capillaries are the defining features of AMR. Both are negative in this patient." },
+        { text: "Elevated tacrolimus trough level.", correct: false,
+          explanation: "An elevated tacrolimus level points toward CNI-TMA, not AMR." },
+        { text: "Schistocytes on peripheral smear.", correct: false,
+          explanation: "Schistocytes are seen in all forms of TMA, including AMR and CNI-TMA. They do not distinguish between them." }
+      ]
+    },
+    {
+      question: "What is the classic timing of CNI-associated TMA after kidney transplant?",
+      options: [
+        { text: "Days to weeks after starting the calcineurin inhibitor.", correct: true,
+          explanation: "CNI-TMA typically occurs days to weeks after starting or increasing the dose of tacrolimus or cyclosporine." },
+        { text: "Immediately at the time of transplant.", correct: false,
+          explanation: "CNI-TMA is not immediate — it requires drug exposure and typically presents days to weeks later." },
+        { text: "Years after transplant.", correct: false,
+          explanation: "CNI-TMA is an acute/subacute complication, not a late one." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Transplant / Hematology",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : '') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = CONFIG.quiz.length;
+  document.getElementById('quizGrid').innerHTML = CONFIG.quiz.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = CONFIG.quiz[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

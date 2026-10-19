@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renal Transplant Vein Thrombosis — Vascular Emergency</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Header -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">RENAL TRANSPLANT VEIN THROMBOSIS</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">Sudden oliguria · graft tenderness · gross hematuria on POD 5</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Doppler: absent venous flow + reversed diastolic arterial flow</text>
+          </g>
+
+          <!-- Four clinical findings -->
+          <g transform="translate(200, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">SUDDEN OLIGURIA</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">80 mL</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">over 6 hours</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#7f1d1d">Dramatic drop from</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#7f1d1d">previously good output</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Acute event on POD 5</text>
+          </g>
+
+          <g transform="translate(533, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">GRAFT TENDERNESS</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">🫀</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">Swollen allograft</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#7f1d1d">Venous congestion</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#7f1d1d">→ increased pressure</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Classic for RVT</text>
+          </g>
+
+          <g transform="translate(866, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">GROSS HEMATURIA</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">🩸</text>
+            <text x="0" y="10" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">Visible blood</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#7f1d1d">Venous infarction</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#7f1d1d">→ hemorrhage</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Alarming sign</text>
+          </g>
+
+          <g transform="translate(1200, 490)">
+            <rect x="-165" y="-160" width="330" height="320" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-165" y="-160" width="330" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-165" y="-125" width="330" height="25" fill="#dc2626"/>
+            <text x="0" y="-122" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">CREATININE ↑</text>
+            <text x="0" y="-30" text-anchor="middle" font-size="34" font-weight="800" fill="#dc2626">2.1 → 4.6</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">mg/dL</text>
+            <line x1="-130" y1="40" x2="130" y2="40" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="75" text-anchor="middle" font-size="14" fill="#7f1d1d">Acute graft dysfunction</text>
+            <text x="0" y="98" text-anchor="middle" font-size="14" fill="#7f1d1d">from venous occlusion</text>
+            <text x="0" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Rapid, sudden onset</text>
+          </g>
+
+          <!-- Key Doppler findings -->
+          <g transform="translate(700, 810)">
+            <rect x="-620" y="-75" width="1240" height="150" rx="22" fill="#fee2e2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-35" text-anchor="middle" font-size="22" font-weight="800" fill="#991b1b">🔍 KEY DOPPLER FINDINGS — DIAGNOSTIC</text>
+            <text x="-580" y="5" font-size="18" font-weight="800" fill="#7f1d1d">1. Absent venous flow in renal vein and parenchyma</text>
+            <text x="-580" y="35" font-size="18" font-weight="800" fill="#7f1d1d">2. Reversal of diastolic arterial flow (high-resistance pattern)</text>
+            <text x="-580" y="65" font-size="18" font-weight="800" fill="#7f1d1d">3. Enlarged, swollen, hypoechoic allograft</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Absent venous flow = diagnostic of renal vein thrombosis → EMERGENT surgery</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — NORMAL vs THROMBOSED VEIN
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">NORMAL RENAL VASCULATURE vs VEIN THROMBOSIS</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Doppler reveals the occluded vein and its hemodynamic consequences</text>
+          </g>
+
+          <!-- NORMAL -->
+          <g transform="translate(350, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">NORMAL KIDNEY</text>
+
+            <!-- Kidney -->
+            <ellipse cx="0" cy="-40" rx="180" ry="120" fill="#bbf7d0" stroke="#16a34a" stroke-width="3"/>
+
+            <!-- Artery -->
+            <line x1="-280" y1="-40" x2="-180" y2="-40" stroke="#dc2626" stroke-width="14" stroke-linecap="round"/>
+            <text x="-330" y="-35" font-size="15" font-weight="800" fill="#991b1b">ARTERY</text>
+            <text x="-330" y="-15" font-size="13" fill="#7f1d1d">antegrade</text>
+
+            <!-- Vein -->
+            <line x1="180" y1="-40" x2="280" y2="-40" stroke="#2563eb" stroke-width="14" stroke-linecap="round"/>
+            <text x="220" y="-60" font-size="15" font-weight="800" fill="#1d4ed8">VEIN</text>
+            <text x="220" y="-40" font-size="13" fill="#1e40af">patent</text>
+
+            <!-- Flow arrows -->
+            <line x1="-160" y1="-40" x2="-100" y2="-40" stroke="#dc2626" stroke-width="5" class="flow-anim" marker-end="url(#arrowAccent1)"/>
+            <line x1="100" y1="-40" x2="160" y2="-40" stroke="#2563eb" stroke-width="5" class="flow-anim" marker-end="url(#arrowBlue)"/>
+
+            <!-- Doppler waveform -->
+            <rect x="-240" y="100" width="480" height="140" rx="14" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">ARTERIAL DOPPLER</text>
+            <path d="M -220 200 L -200 130 L -180 200 L -160 130 L -140 200 L -120 130 L -100 200 L -80 130 L -60 200 L -40 130 L -20 200 L 0 130 L 20 200 L 40 130 L 60 200 L 80 130 L 100 200 L 120 130 L 140 200 L 160 130 L 180 200 L 200 130 L 220 200"
+                  fill="none" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="225" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Continuous forward flow (low resistance)</text>
+          </g>
+
+          <!-- THROMBOSED -->
+          <g transform="translate(1050, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#fee2e2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">VEIN THROMBOSIS</text>
+
+            <!-- Swollen kidney -->
+            <ellipse cx="0" cy="-40" rx="210" ry="140" fill="#fca5a5" stroke="#dc2626" stroke-width="3" class="pulse-block"/>
+
+            <!-- Artery (still present) -->
+            <line x1="-300" y1="-40" x2="-210" y2="-40" stroke="#dc2626" stroke-width="14" stroke-linecap="round"/>
+            <text x="-350" y="-35" font-size="15" font-weight="800" fill="#991b1b">ARTERY</text>
+
+            <!-- VEIN — BLOCKED -->
+            <line x1="210" y1="-40" x2="300" y2="-40" stroke="#94a3b8" stroke-width="14" stroke-linecap="round" stroke-dasharray="10 6"/>
+            <text x="250" y="-65" font-size="15" font-weight="800" fill="#64748b">VEIN</text>
+            <text x="230" y="-42" font-size="13" font-weight="800" fill="#991b1b">⛔ THROMBOSED</text>
+
+            <!-- Clot -->
+            <ellipse cx="240" cy="-40" rx="30" ry="20" fill="#0f172a" class="pulse-block"/>
+            <text x="240" y="-35" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">CLOT</text>
+
+            <!-- Reversed diastolic Doppler -->
+            <rect x="-240" y="100" width="480" height="140" rx="14" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">ARTERIAL DOPPLER</text>
+            <path d="M -220 160 L -200 200 L -180 160 L -160 220 L -140 160 L -120 200 L -100 160 L -80 220 L -60 160 L -40 200 L -20 160 L 0 220 L 20 160 L 40 200 L 60 160 L 80 220 L 100 160 L 120 200 L 140 160 L 160 220 L 180 160 L 200 200 L 220 160"
+                  fill="none" stroke="#dc2626" stroke-width="3"/>
+            <line x1="-240" y1="190" x2="240" y2="190" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <text x="0" y="235" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">REVERSED diastolic flow (high resistance)</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Absent venous flow + reversed diastolic arterial flow = renal vein thrombosis</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DIFFERENTIAL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DIFFERENTIAL DIAGNOSIS OF EARLY POST-TRANSPLANT DYSFUNCTION</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Timing and Doppler findings distinguish these entities</text>
+          </g>
+
+          <!-- RVT -->
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">RENAL VEIN THROMBOSIS</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">POD 1–7</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">early</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Timing:</text>
+              <text x="-100" y="0" font-weight="800" fill="#166534">Days 1–7</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Doppler:</text>
+              <text x="-100" y="28" font-weight="800" fill="#166534">Absent venous flow</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Doppler:</text>
+              <text x="-100" y="56" font-weight="800" fill="#166534">Reversed diastolic</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Symptoms:</text>
+              <text x="-100" y="84" font-weight="800" fill="#166534">Oliguria + hematuria</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Treatment:</text>
+              <text x="-100" y="112" font-weight="800" fill="#166534">EMERGENT surgery</text>
+              <text x="-180" y="140" font-weight="700" fill="#166534">• Creatinine:</text>
+              <text x="-100" y="140" font-weight="800" fill="#166534">Acute spike</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Immediate surgical</text>
+            <text x="0" y="232" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">exploration + thrombectomy</text>
+          </g>
+
+          <!-- ATN -->
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#dc2626"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">ACUTE TUBULAR NECROSIS</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Ischemic/reperfusion injury</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">POD 0–7</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">early</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#991b1b">• Timing:</text>
+              <text x="-100" y="0" font-weight="800" fill="#991b1b">Days 0–7</text>
+              <text x="-180" y="28" font-weight="700" fill="#991b1b">• Doppler:</text>
+              <text x="-100" y="28" font-weight="800" fill="#991b1b">Normal flow</text>
+              <text x="-180" y="56" font-weight="700" fill="#991b1b">• Doppler:</text>
+              <text x="-100" y="56" font-weight="800" fill="#991b1b">No reversal</text>
+              <text x="-180" y="84" font-weight="700" fill="#991b1b">• Symptoms:</text>
+              <text x="-100" y="84" font-weight="800" fill="#991b1b">Slow graft function</text>
+              <text x="-180" y="112" font-weight="700" fill="#991b1b">• Treatment:</text>
+              <text x="-100" y="112" font-weight="800" fill="#991b1b">Supportive</text>
+              <text x="-180" y="140" font-weight="700" fill="#991b1b">• Creatinine:</text>
+              <text x="-100" y="140" font-weight="800" fill="#991b1b">Slow decline</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Observation;</text>
+            <text x="0" y="232" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">usually recovers</text>
+          </g>
+
+          <!-- Other -->
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-290" width="420" height="580" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-290" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-235" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-235" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">OTHER CAUSES</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Rule out by timing/workup</text>
+
+            <circle cx="0" cy="-90" r="55" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">Many</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">causes</text>
+
+            <g font-size="13">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• Rejection:</text>
+              <text x="-70" y="0" font-weight="800" fill="#5b21b6">Weeks</text>
+              <text x="-180" y="22" font-weight="700" fill="#5b21b6">• CNI toxicity:</text>
+              <text x="-70" y="22" font-weight="800" fill="#5b21b6">Variable</text>
+              <text x="-180" y="44" font-weight="700" fill="#5b21b6">• Arterial stenosis:</text>
+              <text x="-70" y="44" font-weight="800" fill="#5b21b6">Months–years</text>
+              <text x="-180" y="66" font-weight="700" fill="#5b21b6">• BK nephropathy:</text>
+              <text x="-70" y="66" font-weight="800" fill="#5b21b6">Weeks–months</text>
+              <text x="-180" y="88" font-weight="700" fill="#5b21b6">• Ureteral obstruction:</text>
+              <text x="-70" y="88" font-weight="800" fill="#5b21b6">Days–weeks</text>
+              <text x="-180" y="110" font-weight="700" fill="#5b21b6">• Urine leak:</text>
+              <text x="-70" y="110" font-weight="800" fill="#5b21b6">Early</text>
+            </g>
+
+            <rect x="-180" y="160" width="360" height="100" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="188" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">None have absent</text>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">venous flow on Doppler</text>
+            <text x="0" y="235" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">→ RVT is the answer</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Absent venous flow on Doppler = vascular emergency → EMERGENT surgery</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- Answer -->
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER B</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Renal transplant vein thrombosis → urgent surgical exploration for thrombectomy</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Absent venous flow on Doppler is diagnostic — do not delay</text>
+          </g>
+
+          <!-- Option cards -->
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Renal vein thrombosis; urgent surgical evaluation</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Absent venous flow + reversed diastolic flow = diagnostic; thrombectomy can salvage</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Acute T-cell–mediated rejection</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Rejection does NOT cause absent venous flow; Doppler would be normal or show increased flow</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Calcineurin inhibitor nephrotoxicity</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Tacrolimus 7.8 ng/mL is therapeutic; toxicity does not cause absent venous flow</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Transplant renal artery stenosis</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">TRAS is a late complication; Doppler shows increased velocities, not absent venous flow</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Acute BK polyomavirus nephropathy</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">BK presents weeks–months post-transplant with gradual dysfunction; no venous flow abnormality</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: B — Renal vein thrombosis; emergent surgical exploration</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Renal Transplant Vein Thrombosis — Vascular Emergency",
+  subtitle: "Sudden oliguria + graft tenderness + absent venous flow = surgical emergency",
+  badge: "TRANSPLANT SURGERY · NEPHROLOGY · VASCULAR",
+  caseTitle: "Case: 48-year-old man, POD 5 after deceased-donor kidney transplant",
+  caseDescription: "Initial graft function was good (Cr 8.2 → 2.1 over 3 days). On POD 5, he develops sudden oliguria (80 mL/6 h), graft tenderness, and gross hematuria. Creatinine rises to 4.6. Doppler shows enlarged allograft with absent venous flow and reversed diastolic arterial flow. No perinephric collection.",
+  labChips: [
+    { text: "Creatinine 4.6 mg/dL", abnormal: true },
+    { text: "Urine output 80 mL/6 h", abnormal: true },
+    { text: "BP 148/92 mmHg", abnormal: true },
+    { text: "Platelets 185,000/µL", abnormal: false },
+    { text: "Tacrolimus 7.8 ng/mL", abnormal: false },
+    { text: "Absent venous flow", abnormal: true },
+    { text: "Reversed diastolic flow", abnormal: true },
+    { text: "Gross hematuria", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Normal vs Thrombosed", className: "opt2" },
+    { id: "opt3", label: "🔵 Differential", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — POD 5 Vascular Emergency",
+      infoRows: [
+        { k: "Timing", v: "POD 5 (early)" },
+        { k: "Urine output", v: "80 mL / 6 h (oliguria)" },
+        { k: "Creatinine", v: "2.1 → 4.6 mg/dL" },
+        { k: "Doppler", v: "Absent venous flow" },
+        { k: "Action", v: "EMERGENT surgery" }
+      ],
+      svgTitle: "Renal Transplant Vein Thrombosis — The Case",
+      svgSubtitle: "Sudden oliguria · graft tenderness · gross hematuria · absent venous flow",
+      bannerBg: "#dc2626",
+      bannerText1: "Absent venous flow on Doppler = diagnostic of renal vein thrombosis",
+      bannerText2: "Reversed diastolic arterial flow confirms the diagnosis",
+      panel1Title: "🧪 Clinical presentation",
+      panel1Tagline: "The classic triad",
+      panel1List: [
+        "<strong>Sudden oliguria</strong> — 80 mL over 6 hours after previously good output",
+        "<strong>Graft tenderness</strong> — swollen, congested allograft",
+        "<strong>Gross hematuria</strong> — venous infarction with hemorrhage",
+        "<strong>Creatinine spike</strong> — 2.1 → 4.6 mg/dL over days",
+        "<strong>Timing</strong> — POD 5 (typical for RVT, days 1–7 post-transplant)"
+      ],
+      panel2Title: "🔍 Doppler findings — diagnostic",
+      panel2Tagline: "What to look for",
+      panel2List: [
+        "<strong>Absent venous flow</strong> in the renal vein and parenchyma",
+        "<strong>Reversed diastolic arterial flow</strong> — high-resistance pattern from venous backup",
+        "<strong>Enlarged, swollen, hypoechoic kidney</strong> — venous congestion",
+        "<strong>No perinephric collection</strong> — rules out hematoma/abscess/urine leak",
+        "Doppler is the <strong>diagnostic test of choice</strong> — do NOT delay surgery for CT/MRI"
+      ],
+      alertIcon: "🚨",
+      alertTitle: "Board Pearl — Immediate surgery",
+      alertText: "When Doppler shows <strong>absent venous flow</strong> in a post-transplant patient with acute oliguria and graft tenderness, the diagnosis is <strong>renal vein thrombosis</strong>. Get the patient to the OR for thrombectomy — time is graft salvage."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Normal vs Thrombosed Vasculature",
+      infoRows: [
+        { k: "Normal vein", v: "Continuous forward flow" },
+        { k: "Thrombosed vein", v: "Absent flow" },
+        { k: "Normal artery", v: "Low-resistance waveform" },
+        { k: "Thrombosed artery", v: "Reversed diastolic flow" },
+        { k: "Kidney size", v: "Enlarged with RVT" }
+      ],
+      svgTitle: "Normal Renal Vasculature vs Vein Thrombosis",
+      svgSubtitle: "Doppler reveals the occluded vein and its hemodynamic consequences",
+      bannerBg: "#7c3aed",
+      bannerText1: "Absent venous flow + reversed diastolic arterial flow = renal vein thrombosis",
+      bannerText2: "The arterial tree is 'backed up' because the vein is occluded",
+      panel1Title: "🩸 Normal Doppler findings",
+      panel1Tagline: "What you should see",
+      panel1List: [
+        "<strong>Renal vein</strong> — continuous, low-velocity flow toward the IVC",
+        "<strong>Renal artery</strong> — low-resistance waveform with continuous forward diastolic flow",
+        "<strong>Parenchyma</strong> — normal echogenicity, normal size",
+        "<strong>Intrarenal veins</strong> — detectable flow in segmental and interlobar veins",
+        "Normally, the kidney is <strong>not enlarged or tender</strong>"
+      ],
+      panel2Title: "🚫 Doppler findings in RVT",
+      panel2Tagline: "Diagnostic changes",
+      panel2List: [
+        "<strong>Absent venous flow</strong> — the diagnostic finding",
+        "<strong>Reversed diastolic arterial flow</strong> — the arterial tree cannot drain, so flow reverses during diastole",
+        "<strong>High-resistance waveform</strong> — resistive index close to 1.0",
+        "<strong>Enlarged, swollen kidney</strong> — venous congestion and edema",
+        "<strong>Loss of intrarenal venous Doppler signal</strong>"
+      ],
+      alertIcon: "✅",
+      alertTitle: "The hallmark: absent venous flow",
+      alertText: "The single most important Doppler finding is <strong>absent venous flow</strong>. Once this is seen with the appropriate clinical picture, proceed to <strong>surgery</strong> — do not delay for additional imaging."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Differential Diagnosis of Early Graft Dysfunction",
+      infoRows: [
+        { k: "RVT", v: "POD 1–7, absent venous flow" },
+        { k: "ATN", v: "POD 0–7, normal Doppler" },
+        { k: "Rejection", v: "Weeks, normal Doppler" },
+        { k: "TRAS", v: "Months–years, ↑ velocities" },
+        { k: "BK nephropathy", v: "Weeks–months, normal Doppler" }
+      ],
+      svgTitle: "Differential Diagnosis of Early Post-Transplant Dysfunction",
+      svgSubtitle: "Timing and Doppler findings distinguish these entities",
+      bannerBg: "#0891b2",
+      bannerText1: "Absent venous flow on Doppler = vascular emergency → EMERGENT surgery",
+      bannerText2: "None of the other causes of early dysfunction show absent venous flow",
+      panel1Title: "🚫 Acute tubular necrosis (ATN)",
+      panel1Tagline: "The most common early cause",
+      panel1List: [
+        "ATN occurs in <strong>POD 0–7</strong> from ischemic/reperfusion injury",
+        "Presents with <strong>slow or delayed graft function</strong>, not sudden oliguria",
+        "<strong>Doppler is normal</strong> — patent vein, forward arterial flow",
+        "<strong>No gross hematuria</strong>, no graft tenderness",
+        "Treatment: <strong>supportive</strong> — dialysis if needed, wait for recovery"
+      ],
+      panel2Title: "🚫 Other causes — all have different Doppler",
+      panel2Tagline: "Key distinguishing features",
+      panel2List: [
+        "<strong>Acute rejection</strong> — typically weeks post-transplant; Doppler usually normal or shows increased resistive index but NOT absent venous flow",
+        "<strong>CNI nephrotoxicity</strong> — tacrolimus 7.8 ng/mL is therapeutic; toxicity does not cause absent venous flow",
+        "<strong>Transplant renal artery stenosis (TRAS)</strong> — late complication (months–years); Doppler shows <strong>increased velocities</strong> with tardus-parvus waveform",
+        "<strong>BK nephropathy</strong> — weeks–months post-transplant; gradual dysfunction; no Doppler flow abnormality",
+        "<strong>Ureteral obstruction</strong> — hydronephrosis on ultrasound; not absent venous flow"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Doppler distinguishes vascular from non-vascular",
+      alertText: "If the Doppler shows <strong>absent venous flow</strong>, you have your answer. If the Doppler is normal, the cause is most likely <strong>parenchymal</strong> (ATN, rejection, CNI toxicity, BK)."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "B — Renal vein thrombosis" },
+        { k: "Key finding", v: "Absent venous flow" },
+        { k: "Confirming finding", v: "Reversed diastolic flow" },
+        { k: "Treatment", v: "Emergent surgical exploration" },
+        { k: "Salvage", v: "Time-critical" }
+      ],
+      svgTitle: "Answer Summary — Renal Vein Thrombosis",
+      svgSubtitle: "Absent venous flow on Doppler is diagnostic — get to the OR",
+      bannerBg: "#ca8a04",
+      bannerText1: "B — Renal transplant vein thrombosis; urgent surgical evaluation for thrombectomy",
+      bannerText2: "Absent venous flow on Doppler is diagnostic; do not delay",
+      panel1Title: "✅ The correct answer (B)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>POD 5</strong> — early post-transplant (typical for RVT, days 1–7)",
+        "<strong>Sudden oliguria + graft tenderness + gross hematuria</strong> — classic presentation",
+        "<strong>Absent venous flow on Doppler</strong> — diagnostic of renal vein thrombosis",
+        "<strong>Reversed diastolic arterial flow</strong> — confirms the diagnosis",
+        "<strong>Emergent surgical exploration</strong> — thrombectomy can salvage the graft"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (Acute TCMR):</strong> Rejection does not cause absent venous flow; Doppler would be normal. Treatment is steroids, not surgery.",
+        "<strong>C (CNI toxicity):</strong> Tacrolimus 7.8 ng/mL is therapeutic; toxicity does not cause absent venous flow or acute oliguria.",
+        "<strong>D (TRAS):</strong> TRAS is a late complication (months–years); Doppler shows increased velocities, not absent venous flow.",
+        "<strong>E (BK nephropathy):</strong> BK presents weeks–months post-transplant with gradual dysfunction; no Doppler flow abnormality."
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: B",
+      alertText: "<strong>Renal transplant vein thrombosis</strong> — obtain <strong>immediate transplant surgical evaluation for urgent exploration and possible thrombectomy</strong>. Absent venous flow on Doppler is diagnostic; time is critical for graft salvage."
+    }
+  },
+  comparison: {
+    title: "📊 Early Post-Transplant Graft Dysfunction — Differential",
+    sub: "Timing, Doppler findings, and clinical presentation distinguish these entities",
+    head: ["Cause", "Timing", "Doppler findings", "Key clinical clue", "Treatment"],
+    rows: [
+      { cells: ["Renal vein thrombosis", "POD 1–7", "Absent venous flow + reversed diastolic", "Sudden oliguria + graft tenderness + hematuria", "Emergent surgical exploration"], hero: true },
+      { cells: ["Acute tubular necrosis", "POD 0–7", "Normal", "Slow/delayed graft function", "Supportive; dialysis if needed"], hero: false },
+      { cells: ["Acute rejection", "Weeks", "Normal or ↑ RI", "Fever, graft tenderness, rising Cr", "Steroids, immunosuppression"], hero: false },
+      { cells: ["CNI toxicity", "Variable", "Normal", "Therapeutic/high tacrolimus level", "Reduce or switch CNI"], hero: false },
+      { cells: ["Transplant renal artery stenosis", "Months–years", "↑ Velocities, tardus-parvus", "Refractory hypertension, rising Cr", "Angioplasty ± stent"], hero: false },
+      { cells: ["BK nephropathy", "Weeks–months", "Normal", "BK viremia, rising Cr", "Reduce immunosuppression"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 48-year-old man, POD 5 after kidney transplant, develops sudden oliguria, graft tenderness, gross hematuria, and rising creatinine. Doppler shows absent venous flow and reversed diastolic arterial flow. What is the diagnosis and immediate management?",
+      options: [
+        { text: "Renal transplant vein thrombosis; obtain immediate transplant surgical evaluation for urgent exploration and possible thrombectomy.", correct: true,
+          explanation: "Absent venous flow on Doppler is diagnostic of renal vein thrombosis. Reversed diastolic arterial flow confirms it. This is a vascular emergency requiring immediate surgical exploration — thrombectomy can salvage the graft." },
+        { text: "Acute T-cell–mediated rejection; initiate high-dose IV methylprednisolone.", correct: false,
+          explanation: "TCMR does not cause absent venous flow on Doppler. The Doppler would be normal or show increased resistive index but not absent venous flow." },
+        { text: "Calcineurin inhibitor nephrotoxicity; discontinue tacrolimus and observe.", correct: false,
+          explanation: "Tacrolimus 7.8 ng/mL is therapeutic. Toxicity does not cause absent venous flow or acute oliguria with gross hematuria." }
+      ]
+    },
+    {
+      question: "What is the diagnostic Doppler finding in renal transplant vein thrombosis?",
+      options: [
+        { text: "Absent venous flow in the renal vein and parenchyma.", correct: true,
+          explanation: "Absent venous flow is the diagnostic finding in renal vein thrombosis. It is often accompanied by reversed diastolic arterial flow." },
+        { text: "Increased arterial velocities with tardus-parvus waveform.", correct: false,
+          explanation: "This finding suggests transplant renal artery stenosis, not vein thrombosis." },
+        { text: "Normal venous and arterial flow.", correct: false,
+          explanation: "Normal flow would rule out vein thrombosis. Absent venous flow is the key finding." }
+      ]
+    },
+    {
+      question: "What is the mechanism of reversed diastolic arterial flow in renal vein thrombosis?",
+      options: [
+        { text: "Venous outflow obstruction causes high resistance, reversing flow during diastole.", correct: true,
+          explanation: "When the renal vein is occluded, the arterial tree cannot drain. The resulting high resistance causes flow to reverse during diastole — a classic high-resistance pattern." },
+        { text: "The arterial anastomosis is also thrombosed.", correct: false,
+          explanation: "Arterial thrombosis would cause absent arterial flow, not reversed diastolic flow. Reversed diastolic flow is due to venous occlusion." },
+        { text: "The kidney is undergoing acute rejection.", correct: false,
+          explanation: "Rejection can increase the resistive index but does not cause the dramatic reversal seen in vein thrombosis." }
+      ]
+    },
+    {
+      question: "What is the typical timing of renal vein thrombosis after kidney transplantation?",
+      options: [
+        { text: "Postoperative days 1–7.", correct: true,
+          explanation: "Renal vein thrombosis typically occurs in the first week post-transplant, most commonly POD 1–7. It is more common in deceased-donor grafts." },
+        { text: "Months to years post-transplant.", correct: false,
+          explanation: "Late complications include transplant renal artery stenosis, not vein thrombosis." },
+        { text: "Immediately at the time of surgery.", correct: false,
+          explanation: "RVT typically presents in the first few days after surgery as the clot forms, not immediately intraoperatively." }
+      ]
+    },
+    {
+      question: "Which of the following is NOT part of the classic presentation of renal vein thrombosis?",
+      options: [
+        { text: "Gradual, indolent decline in kidney function over weeks.", correct: true,
+          explanation: "RVT presents with SUDDEN oliguria and acute graft dysfunction, not a gradual decline over weeks. Gradual decline suggests chronic rejection or BK nephropathy." },
+        { text: "Sudden oliguria.", correct: false,
+          explanation: "Sudden oliguria is a classic presenting feature of RVT." },
+        { text: "Gross hematuria.", correct: false,
+          explanation: "Gross hematuria is part of the classic presentation, caused by venous infarction and hemorrhage." }
+      ]
+    },
+    {
+      question: "Why is it important NOT to delay surgery for additional imaging (CT/MRI) when Doppler shows absent venous flow?",
+      options: [
+        { text: "The graft can be salvaged if thrombectomy is performed urgently — delays cause irreversible infarction.", correct: true,
+          explanation: "Renal vein thrombosis is a time-critical emergency. The graft becomes infarcted if the vein is not opened quickly. Additional imaging delays surgery and reduces the chance of salvage." },
+        { text: "CT contrast is nephrotoxic to the graft.", correct: false,
+          explanation: "While contrast is a consideration, the primary reason is time — urgent surgery is needed for salvage." },
+        { text: "MRI is contraindicated in transplant patients.", correct: false,
+          explanation: "MRI is not contraindicated, but the delay it causes is the real issue." }
+      ]
+    },
+    {
+      question: "A patient with suspected renal vein thrombosis has a creatinine of 4.6 mg/dL, urine output of 80 mL/6 h, and graft tenderness. Doppler shows absent venous flow. What is the next step?",
+      options: [
+        { text: "Immediate transplant surgical consultation for urgent exploration and possible thrombectomy.", correct: true,
+          explanation: "Urgent surgical exploration is the next step. Thrombectomy can salvage the graft if performed promptly. Do not delay for additional imaging or observation." },
+        { text: "Start high-dose steroids for presumed rejection.", correct: false,
+          explanation: "Steroids would not help RVT and would delay the necessary surgery." },
+        { text: "Place a dialysis catheter and start hemodialysis.", correct: false,
+          explanation: "Dialysis may be needed temporarily, but the priority is surgical exploration to salvage the graft." }
+      ]
+    },
+    {
+      question: "Which of the following is NOT a risk factor for renal vein thrombosis after kidney transplantation?",
+      options: [
+        { text: "Living-donor kidney transplant.", correct: true,
+          explanation: "Living-donor kidneys actually have a LOWER risk of RVT compared to deceased-donor kidneys. Deceased-donor grafts are at higher risk." },
+        { text: "Deceased-donor kidney transplant.", correct: false,
+          explanation: "Deceased-donor kidneys are at higher risk for RVT." },
+        { text: "Surgical technical factors (e.g., venous anastomosis issues).", correct: false,
+          explanation: "Technical factors can contribute to RVT risk." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Transplant Surgery / Nephrology / Vascular",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

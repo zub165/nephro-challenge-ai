@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rasburicase & G6PD — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --rask:#dc2626; --g6pd:#7c3aed; --safe:#16a34a; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  /* HEADER */
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  /* CASE STRIP */
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--rask);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip .cs-main{flex:1; min-width:240px;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .case-strip .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  /* TABS */
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.g6pd.active{background:#f5f3ff; border-color:var(--g6pd); color:#5b21b6;}
+  .tab.rasb.active{background:#fef2f2; border-color:var(--rask); color:#991b1b;}
+
+  /* DIAGRAM */
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; max-height:540px; display:block;}
+
+  /* ============ FLOATING INFO PANEL (COLLAPSIBLE) ============ */
+  .info-float{position:absolute; top:20px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:270px;
+    max-width:calc(100% - 40px);
+    transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden;}
+  .info-float.highlight-g6pd{border-color:var(--g6pd);}
+  .info-float.highlight-rasb{border-color:var(--rask);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:rgba(245,243,255,.7); border-bottom:1px solid transparent;
+    transition:all .2s ease;}
+  .info-float.highlight-g6pd .info-header{background:#ede9fe;}
+  .info-float.highlight-rasb .info-header{background:#fee2e2;}
+
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.05); padding:3px 8px; border-radius:999px;
+    font-weight:700; transition:all .2s ease; white-space:nowrap;}
+  .info-header:hover .toggle-btn{background:rgba(0,0,0,.1);}
+  .info-float.highlight-g6pd .info-header .toggle-btn{background:#ddd6fe; color:#5b21b6;}
+  .info-float.highlight-rasb .info-header .toggle-btn{background:#fecaca; color:#991b1b;}
+
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float.collapsed .info-header{border-bottom-color:transparent;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);
+    gap:10px;}
+  .info-float .row:last-child{border:none; padding-bottom:0;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; line-height:1.35;}
+
+  /* Floating hint when collapsed */
+  .collapse-hint{position:absolute; top:24px; right:24px;
+    font-size:.72rem; color:var(--muted); background:rgba(255,255,255,.9);
+    padding:4px 10px; border-radius:999px; border:1px dashed var(--line);
+    pointer-events:none; opacity:0; transition:opacity .4s ease;
+    white-space:nowrap;}
+  .info-float.collapsed ~ .collapse-hint{opacity:1;}
+
+  /* TEACHING PANELS */
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid;}
+  .panel.g6pd{border-top-color:var(--g6pd);}
+  .panel.rasb{border-top-color:var(--rask);}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  /* BIG WARNING */
+  .warning{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .warning .icon{font-size:2.4rem; flex-shrink:0;}
+  .warning h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .warning p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .warning strong{color:#fef3c7;}
+
+  /* QUIZ */
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px;
+    border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain strong{color:#1e3a8a;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;
+    line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  /* ANIMATIONS */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="top">
+    <div>
+      <h1>Rasburicase &amp; G6PD Deficiency</h1>
+      <p>Why you must check G6PD before giving rasburicase</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE STRIP -->
+  <div class="case-strip">
+    <div class="cs-main">
+      <h2>44-year-old man with aggressive B-cell lymphoma</h2>
+      <p>Presents with a groin mass → biopsy confirms aggressive B-cell lymphoma. <strong>Prior episode of acute anemia after a sulfonamide antibiotic in childhood</strong> — classic clue for G6PD deficiency. Labs consistent with <strong>tumor lysis syndrome (TLS)</strong>.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip">Cr 1.7</span>
+      <span class="lab-chip abn">Uric acid 15.6</span>
+      <span class="lab-chip abn">PO₄ 8.5</span>
+      <span class="lab-chip">Ca 8.5</span>
+      <span class="lab-chip">Albumin 3.8</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab g6pd active" id="tabG6pd" onclick="setMode('g6pd')">🟣 G6PD Deficiency</button>
+    <button class="tab rasb" id="tabRasb" onclick="setMode('rasb')">🔴 Rasburicase in G6PD</button>
+  </div>
+
+  <!-- DIAGRAM -->
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="healthyGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#dcfce7"/><stop offset="100%" stop-color="#16a34a"/>
+        </radialGradient>
+        <radialGradient id="g6pdGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="raskGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="h2o2Grad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fff7ed"/><stop offset="100%" stop-color="#f97316"/>
+        </radialGradient>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+        </marker>
+        <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="640" fill="#fdfdfd"/>
+
+      <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">
+        Rasburicase Generates H₂O₂ — G6PD Protects RBCs
+      </text>
+
+      <!-- LEFT: NORMAL RBC -->
+      <g id="normalRBC">
+        <circle cx="200" cy="280" r="90" fill="url(#healthyGrad)" stroke="#16a34a" stroke-width="3"/>
+        <ellipse cx="200" cy="280" rx="55" ry="42" fill="#bbf7d0" opacity="0.6"/>
+        <text x="200" y="240" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">NORMAL RBC</text>
+        <text x="200" y="290" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">G6PD</text>
+        <text x="200" y="308" text-anchor="middle" font-family="Arial" font-size="11" fill="#dcfce7">working</text>
+
+        <text x="200" y="400" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#166534">
+          → NADPH production ✓
+        </text>
+        <text x="200" y="420" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">
+          → Glutathione reduced ✓
+        </text>
+        <text x="200" y="438" text-anchor="middle" font-family="Arial" font-size="11" fill="#166534">
+          → H₂O₂ neutralized ✓
+        </text>
+        <text x="200" y="462" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#16a34a">
+          ✅ No hemolysis
+        </text>
+      </g>
+
+      <!-- MIDDLE: H₂O₂ GENERATION -->
+      <g id="middle">
+        <path d="M 310 280 Q 380 280 430 280" stroke="#94a3b8" stroke-width="2.5" fill="none"/>
+
+        <circle cx="600" cy="180" r="70" fill="url(#h2o2Grad)" stroke="#f97316" stroke-width="3" class="pulse-node"/>
+        <text x="600" y="170" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#7c2d12">H₂O₂</text>
+        <text x="600" y="190" text-anchor="middle" font-family="Arial" font-size="11" fill="#92400e">Hydrogen</text>
+        <text x="600" y="204" text-anchor="middle" font-family="Arial" font-size="11" fill="#92400e">peroxide</text>
+
+        <rect x="510" y="290" width="180" height="55" rx="12" fill="url(#raskGrad)" stroke="#991b1b" stroke-width="3"/>
+        <text x="600" y="315" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">RASBURICASE</text>
+        <text x="600" y="333" text-anchor="middle" font-family="Arial" font-size="11" fill="#fecaca">converts uric acid</text>
+
+        <path d="M 600 250 L 600 285" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+
+        <path d="M 470 320 L 505 320" stroke="#d97706" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+        <text x="440" y="324" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#92400e">Uric acid</text>
+
+        <path d="M 695 320 L 730 320" stroke="#16a34a" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
+        <text x="765" y="324" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#166534">Allantoin</text>
+
+        <text x="600" y="380" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">
+          ⚡ H₂O₂ generated as byproduct
+        </text>
+      </g>
+
+      <!-- RIGHT: G6PD DEFICIENT RBC -->
+      <g id="g6pdRBC">
+        <circle cx="1000" cy="280" r="90" fill="url(#g6pdGrad)" stroke="#7c3aed" stroke-width="3"/>
+        <ellipse cx="1000" cy="280" rx="55" ry="42" fill="#ddd6fe" opacity="0.6"/>
+        <text x="1000" y="240" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">G6PD-DEFICIENT RBC</text>
+        <text x="1000" y="290" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">G6PD</text>
+        <text x="1000" y="308" text-anchor="middle" font-family="Arial" font-size="11" fill="#ede9fe">defective</text>
+
+        <text x="1000" y="400" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#7c3aed">
+          → ↓ NADPH production ✗
+        </text>
+        <text x="1000" y="420" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">
+          → ↓ Reduced glutathione ✗
+        </text>
+        <text x="1000" y="438" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">
+          → Cannot neutralize H₂O₂ ✗
+        </text>
+        <text x="1000" y="462" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">
+          🩸 Severe hemolysis
+        </text>
+      </g>
+
+      <path d="M 670 200 Q 830 200 910 250" stroke="#dc2626" stroke-width="3"
+            fill="none" class="flow-anim" marker-end="url(#arrowRed)"/>
+
+      <text x="790" y="210" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">
+        Oxidative stress
+      </text>
+
+      <!-- Bottom warning strip -->
+      <g transform="translate(600, 560)">
+        <rect x="-520" y="-30" width="1040" height="60" rx="14" fill="#7c3aed" opacity="0.95"/>
+        <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          🚨 ALWAYS CHECK G6PD BEFORE RASBURICASE
+        </text>
+        <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#e9d5ff">
+          In G6PD deficiency → rasburicase causes severe hemolysis, methemoglobinemia, and potentially death
+        </text>
+      </g>
+
+    </svg>
+
+    <!-- FLOATING INFO PANEL (COLLAPSIBLE) -->
+    <div class="info-float highlight-g6pd" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">🟣 G6PD Deficiency</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">Inheritance</span><span class="v" id="iInherit">X-linked recessive</span></div>
+        <div class="row"><span class="k">Trigger</span><span class="v" id="iTrigger">Sulfonamides, dapsone, fava beans, infection</span></div>
+        <div class="row"><span class="k">Test</span><span class="v" id="iTest">G6PD enzyme assay</span></div>
+        <div class="row"><span class="k">Action</span><span class="v" id="iAction">Avoid oxidative drugs; screen before rasburicase</span></div>
+      </div>
+    </div>
+
+    <!-- Hint shown when panel is collapsed -->
+    <div class="collapse-hint" id="collapseHint">👆 Click "Show" to expand panel</div>
+  </section>
+
+  <!-- TEACHING PANELS -->
+  <div class="panels">
+    <div class="panel g6pd">
+      <h3>🟣 G6PD Deficiency</h3>
+      <p class="tagline">The pentose phosphate pathway's protective enzyme</p>
+      <ul>
+        <li><strong>Function:</strong> G6PD generates NADPH → regenerates reduced glutathione → neutralizes reactive oxygen species</li>
+        <li><strong>Inheritance:</strong> X-linked recessive — most common in Mediterranean, African, Middle Eastern, and Southeast Asian ancestry</li>
+        <li><strong>Triggers:</strong> Sulfonamides, dapsone, primaquine, nitrofurantoin, fava beans, infection, <strong>rasburicase</strong></li>
+        <li><strong>Presentation:</strong> Acute intravascular hemolysis, hemoglobinuria, jaundice, anemia</li>
+        <li><strong>Key clue in this case:</strong> Prior sulfonamide-induced anemia → strongly suggests undiagnosed G6PD deficiency</li>
+      </ul>
+    </div>
+
+    <div class="panel rasb">
+      <h3>🔴 Rasburicase</h3>
+      <p class="tagline">Recombinant urate oxidase — powerful but dangerous in G6PD</p>
+      <ul>
+        <li><strong>Mechanism:</strong> Converts uric acid → allantoin (highly soluble, easily excreted)</li>
+        <li><strong>Byproduct:</strong> Hydrogen peroxide (H₂O₂) — a reactive oxygen species</li>
+        <li><strong>Uses:</strong> Tumor lysis syndrome (especially in high-risk hematologic malignancies)</li>
+        <li><strong>Contraindications:</strong> <strong>G6PD deficiency</strong>, known allergy, pregnancy</li>
+        <li><strong>If G6PD-deficient:</strong> Use <strong>allopurinol</strong> (or febuxostat) + hydration + close monitoring</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BIG WARNING -->
+  <div class="warning">
+    <div class="icon">🚨</div>
+    <div>
+      <h3>Board Pearl — Test G6PD BEFORE Rasburicase</h3>
+      <p>Rasburicase generates <strong>H₂O₂</strong> as a byproduct. In G6PD-deficient patients, RBCs cannot neutralize H₂O₂ → <strong>severe oxidative hemolysis and methemoglobinemia</strong>. The patient's prior sulfonamide-induced anemia is a major red flag. <strong>Screen G6PD before giving rasburicase.</strong></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <div class="q">
+        <p>1. Which test should be ordered before giving rasburicase?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">Serum ferritin</button>
+          <button class="opt" onclick="answer(this,true)">G6PD enzyme assay</button>
+          <button class="opt" onclick="answer(this,false)">RAST test</button>
+          <button class="opt" onclick="answer(this,false)">C-reactive protein</button>
+        </div>
+        <div class="explain"><strong>G6PD assay.</strong> Rasburicase is contraindicated in G6PD deficiency because it generates H₂O₂, which triggers severe hemolysis.</div>
+      </div>
+
+      <div class="q">
+        <p>2. Why is rasburicase dangerous in G6PD deficiency?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">It lowers the seizure threshold</button>
+          <button class="opt" onclick="answer(this,true)">It generates H₂O₂ that G6PD-deficient RBCs cannot neutralize</button>
+          <button class="opt" onclick="answer(this,false)">It causes direct bone marrow suppression</button>
+        </div>
+        <div class="explain"><strong>Correct.</strong> Rasburicase converts uric acid to allantoin and produces H₂O₂. G6PD-deficient RBCs lack the NADPH needed to neutralize it → oxidative hemolysis.</div>
+      </div>
+
+      <div class="q">
+        <p>3. Which historical clue suggests this patient has G6PD deficiency?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">Family history of gout</button>
+          <button class="opt" onclick="answer(this,true)">Acute anemia after sulfonamide antibiotic</button>
+          <button class="opt" onclick="answer(this,false)">Recent viral illness</button>
+        </div>
+        <div class="explain"><strong>Correct.</strong> Sulfonamides are oxidative drugs — classic triggers of hemolytic crisis in G6PD-deficient patients.</div>
+      </div>
+
+      <div class="q">
+        <p>4. What is the appropriate alternative if the patient IS G6PD-deficient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">Give rasburicase at half dose</button>
+          <button class="opt" onclick="answer(this,true)">Use allopurinol + hydration</button>
+          <button class="opt" onclick="answer(this,false)">Give pegloticase instead</button>
+        </div>
+        <div class="explain"><strong>Allopurinol + hydration.</strong> Allopurinol inhibits xanthine oxidase without producing H₂O₂ — safe in G6PD deficiency. Avoid rasburicase and pegloticase.</div>
+      </div>
+
+      <div class="q">
+        <p>5. Which lab pattern is classic for tumor lysis syndrome?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">↑Ca, ↓PO₄, ↓K⁺, ↑uric acid</button>
+          <button class="opt" onclick="answer(this,true)">↑K⁺, ↑PO₄, ↓Ca, ↑uric acid</button>
+          <button class="opt" onclick="answer(this,false)">↑Ca, ↑PO₄, ↑K⁺, ↑uric acid</button>
+        </div>
+        <div class="explain"><strong>↑K⁺, ↑PO₄, ↓Ca, ↑uric acid.</strong> Classic TLS: hyperkalemia, hyperphosphatemia, hypocalcemia (Ca binds phosphate), and hyperuricemia.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+  const modes = {
+    g6pd: {
+      panelClass: 'highlight-g6pd',
+      title: '🟣 G6PD Deficiency',
+      inherit: 'X-linked recessive',
+      trigger: 'Sulfonamides, dapsone, fava beans, infection',
+      test: 'G6PD enzyme assay',
+      action: 'Avoid oxidative drugs; screen before rasburicase',
+      activeTab: 'tabG6pd'
+    },
+    rasb: {
+      panelClass: 'highlight-rasb',
+      title: '🔴 Rasburicase',
+      inherit: '—',
+      trigger: 'Generates H₂O₂ as byproduct',
+      test: 'Check G6PD status FIRST',
+      action: 'CONTRAINDICATED in G6PD deficiency',
+      activeTab: 'tabRasb'
+    }
+  };
+
+  function setMode(mode) {
+    const d = modes[mode];
+
+    ['tabG6pd','tabRasb'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    document.getElementById(d.activeTab).classList.add('active');
+
+    const panel = document.getElementById('infoPanel');
+    panel.className = 'info-float ' + d.panelClass + (panel.classList.contains('collapsed') ? ' collapsed' : '');
+    document.getElementById('infoTitle').textContent = d.title;
+    document.getElementById('iInherit').textContent = d.inherit;
+    document.getElementById('iTrigger').textContent = d.trigger;
+    document.getElementById('iTest').textContent = d.test;
+    document.getElementById('iAction').textContent = d.action;
+  }
+
+  let panelCollapsed = false;
+
+  function togglePanel() {
+    panelCollapsed = !panelCollapsed;
+    const panel = document.getElementById('infoPanel');
+    const btn = document.getElementById('toggleBtn');
+    panel.classList.toggle('collapsed', panelCollapsed);
+    btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('g6pd');
+</script>
+</body>
+</html>

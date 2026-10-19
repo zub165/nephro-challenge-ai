@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRRT Modalities — CVVH vs CVVHD vs CVVHDF</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --opt1:#dc2626; --opt2:#7c3aed; --opt3:#0891b2; --opt4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;
+    overflow-x:hidden;}
+  .wrap{max-width:1400px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--opt1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.pos{background:#dcfce7; border-color:#bbf7d0; color:#166534;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; border-left:4px solid var(--opt1);}
+  .stat-card:nth-child(1){border-left-color:#dc2626;}
+  .stat-card:nth-child(2){border-left-color:#7c3aed;}
+  .stat-card:nth-child(3){border-left-color:#0891b2;}
+  .stat-card .k{font-size:.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat-card .v{font-size:1rem; font-weight:800; color:var(--ink);}
+  .stat-card .sub{font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .18s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--opt1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--opt2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--opt3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--opt4); color:#713f12;}
+
+  /* STAGE — grid layout, no overlap */
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1000px){
+    .stage{grid-template-columns:1fr;}
+  }
+
+  .stage-main{
+    min-width:0;
+    overflow:hidden;
+    border-radius:12px;
+  }
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  /* INFO PANEL — grid column */
+  .info-panel{
+    background:#fff;
+    border-radius:12px;
+    border:1px solid var(--line);
+    overflow:hidden;
+    transition:border-color .2s ease;
+  }
+  .info-panel.highlight-opt1{border-color:var(--opt1);}
+  .info-panel.highlight-opt2{border-color:var(--opt2);}
+  .info-panel.highlight-opt3{border-color:var(--opt3);}
+  .info-panel.highlight-opt4{border-color:var(--opt4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease;}
+  .info-panel.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-panel.highlight-opt3 .info-header{background:#cffafe;}
+  .info-panel.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.95rem; font-weight:800; color:#0f172a;
+    word-break:break-word;}
+  .info-header .toggle-btn{font-size:.78rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; margin-left:8px;}
+  .info-body{padding:14px 16px 16px; max-height:600px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-panel.collapsed .info-body{max-height:0; padding:0 16px;}
+  .info-panel .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.88rem; border-bottom:1px solid var(--line);
+    gap:8px;}
+  .info-panel .row:last-child{border:none;}
+  .info-panel .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-panel .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line); border-top:4px solid var(--opt1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    display:flex; gap:16px; align-items:flex-start;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0; line-height:1;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  .flow-anim{stroke-dasharray:10 8; animation:flowDash 1.4s linear infinite;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>CRRT Modalities — CVVH vs CVVHD vs CVVHDF</h1>
+      <p>Step-by-step effluent dose and filtration fraction calculations for each modality</p>
+    </div>
+    <div class="badge">Critical Care Nephrology</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>Same patient, three modalities — see how the numbers change</h2>
+      <p><strong>75-kg patient</strong> · Qb 180 mL/min · Hct 35% · Q_net UF 150 mL/h · Target dose 25 mL/kg/h = 1,875 mL/h</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip">Qb 180 mL/min</span>
+      <span class="lab-chip">Hct 35%</span>
+      <span class="lab-chip">Net UF 150 mL/h</span>
+      <span class="lab-chip pos">Target 1,875 mL/h</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="k">CVVH</div>
+      <div class="v">Q_R + Q_UF</div>
+      <div class="sub">Convection only</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">CVVHD</div>
+      <div class="v">Q_D + Q_UF</div>
+      <div class="sub">Diffusion only</div>
+    </div>
+    <div class="stat-card">
+      <div class="k">CVVHDF</div>
+      <div class="v">Q_R + Q_D + Q_UF</div>
+      <div class="sub">Both mechanisms</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="stage-main">
+      <!-- SMALLER viewBox = LARGER apparent text when scaled -->
+      <svg class="diagram" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <rect width="900" height="640" fill="#fdfdfd"/>
+        <text id="svg-title" x="450" y="30" text-anchor="middle" font-family="Arial" font-size="19" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="450" y="54" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b"></text>
+
+        <!-- ============ DIAGRAM 1 — CVVH ============ -->
+        <g id="diagram-opt1">
+          <text x="450" y="95" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#7f1d1d">CVVH — HEMOFILTRATION (CONVECTION ONLY)</text>
+
+          <!-- Patient -->
+          <g transform="translate(75, 220)">
+            <circle r="42" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7f1d1d">PATIENT</text>
+            <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">75 kg</text>
+          </g>
+
+          <!-- Blood out -->
+          <path d="M 120 220 L 240 220" stroke="#dc2626" stroke-width="14" fill="none" class="flow-anim" stroke-linecap="round"/>
+          <text x="180" y="200" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#7f1d1d">Qb 180</text>
+
+          <!-- Filter -->
+          <g transform="translate(240, 130)">
+            <rect x="0" y="0" width="150" height="220" rx="14" fill="#f1f5f9" stroke="#334155" stroke-width="3"/>
+            <text x="75" y="-10" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">FILTER</text>
+            <rect x="12" y="14" width="126" height="100" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+            <text x="75" y="68" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">BLOOD</text>
+            <rect x="12" y="118" width="126" height="16" rx="4" fill="#64748b"/>
+            <text x="75" y="131" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">MEMBRANE</text>
+            <rect x="12" y="140" width="126" height="66" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+            <text x="75" y="178" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#1e3a8a">EFFLUENT</text>
+          </g>
+
+          <!-- Postdilution -->
+          <g transform="translate(435, 165)">
+            <circle r="32" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+            <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">POST</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">1,725</text>
+          </g>
+          <path d="M 435 197 L 435 218" stroke="#ca8a04" stroke-width="3" fill="none" stroke-dasharray="4 3"/>
+
+          <!-- Blood flow to return -->
+          <path d="M 390 220 L 750 220" stroke="#dc2626" stroke-width="14" fill="none" class="flow-anim" stroke-linecap="round"/>
+
+          <!-- Return circle -->
+          <circle cx="810" cy="220" r="42" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+          <text x="810" y="216" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">RETURN</text>
+          <text x="810" y="236" text-anchor="middle" font-family="Arial" font-size="12" fill="#7f1d1d">to patient</text>
+
+          <!-- Effluent out tube -->
+          <path d="M 390 290 L 435 290 L 435 320" stroke="#2563eb" stroke-width="10" fill="none" stroke-linecap="round"/>
+
+          <!-- CALCULATION BOX — bigger fonts -->
+          <g transform="translate(450, 470)">
+            <rect x="-420" y="-115" width="840" height="230" rx="16" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+            <text x="0" y="-82" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">CVVH — CALCULATION</text>
+
+            <text x="-390" y="-45" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#fee2e2">Step 1: Q_eff = Q_R + Q_net UF</text>
+            <text x="-390" y="-18" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 1,725 + 150 = 1,875 mL/h ✓</text>
+
+            <text x="-390" y="16" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#fee2e2">Step 2: Q_p = Qb × 60 × (1 − Hct)</text>
+            <text x="-390" y="42" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 180 × 60 × 0.65 = 7,020 mL/h</text>
+
+            <text x="-390" y="76" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#fee2e2">Step 3: FF = (Q_R + Q_net UF) / Q_p × 100</text>
+            <text x="-390" y="102" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 1,875 / 7,020 × 100 ≈ 27%</text>
+          </g>
+
+          <text x="450" y="625" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7f1d1d">CVVH: 100% convective clearance · Best for middle molecules</text>
+        </g>
+
+        <!-- ============ DIAGRAM 2 — CVVHD ============ -->
+        <g id="diagram-opt2" style="display:none">
+          <text x="450" y="95" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">CVVHD — HEMODIALYSIS (DIFFUSION ONLY)</text>
+
+          <g transform="translate(75, 220)">
+            <circle r="42" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">PATIENT</text>
+            <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">75 kg</text>
+          </g>
+
+          <path d="M 120 220 L 240 220" stroke="#dc2626" stroke-width="14" fill="none" class="flow-anim" stroke-linecap="round"/>
+          <text x="180" y="200" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Qb 180</text>
+
+          <g transform="translate(240, 130)">
+            <rect x="0" y="0" width="150" height="220" rx="14" fill="#f1f5f9" stroke="#334155" stroke-width="3"/>
+            <text x="75" y="-10" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">FILTER</text>
+            <rect x="12" y="14" width="126" height="100" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+            <text x="75" y="68" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">BLOOD</text>
+            <rect x="12" y="118" width="126" height="16" rx="4" fill="#64748b"/>
+            <text x="75" y="131" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">MEMBRANE</text>
+            <rect x="12" y="140" width="126" height="66" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+            <text x="75" y="172" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e3a8a">DIALYSATE</text>
+            <text x="75" y="190" text-anchor="middle" font-family="Arial" font-size="12" fill="#1e3a8a">1,725</text>
+          </g>
+
+          <!-- Dialysate in from bottom left -->
+          <path d="M 140 340 L 300 340 L 300 320" stroke="#2563eb" stroke-width="10" fill="none" stroke-linecap="round" class="flow-anim"/>
+          <text x="200" y="365" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e3a8a">Dialysate IN</text>
+
+          <!-- Effluent out bottom right -->
+          <path d="M 390 320 L 390 340 L 550 340" stroke="#0891b2" stroke-width="10" fill="none" stroke-linecap="round" class="flow-anim"/>
+          <text x="470" y="365" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Effluent OUT</text>
+
+          <!-- Blood flow -->
+          <path d="M 390 220 L 750 220" stroke="#dc2626" stroke-width="14" fill="none" class="flow-anim" stroke-linecap="round"/>
+
+          <circle cx="810" cy="220" r="42" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+          <text x="810" y="216" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">RETURN</text>
+          <text x="810" y="236" text-anchor="middle" font-family="Arial" font-size="12" fill="#5b21b6">to patient</text>
+
+          <g transform="translate(450, 470)">
+            <rect x="-420" y="-115" width="840" height="230" rx="16" fill="#7c3aed" stroke="#5b21b6" stroke-width="3"/>
+            <text x="0" y="-82" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">CVVHD — CALCULATION</text>
+
+            <text x="-390" y="-45" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#ede9fe">Step 1: Q_eff = Q_D + Q_net UF</text>
+            <text x="-390" y="-18" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 1,725 + 150 = 1,875 mL/h ✓</text>
+
+            <text x="-390" y="16" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#ede9fe">Step 2: Q_p = Qb × 60 × (1 − Hct)</text>
+            <text x="-390" y="42" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 180 × 60 × 0.65 = 7,020 mL/h</text>
+
+            <text x="-390" y="76" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#ede9fe">Step 3: FF = Q_net UF / Q_p × 100</text>
+            <text x="-390" y="102" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 150 / 7,020 × 100 ≈ 2%</text>
+          </g>
+
+          <text x="450" y="625" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">CVVHD: 100% diffusive clearance · Best for small solutes</text>
+        </g>
+
+        <!-- ============ DIAGRAM 3 — CVVHDF ============ -->
+        <g id="diagram-opt3" style="display:none">
+          <text x="450" y="95" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#155e75">CVVHDF — HEMODIAFILTRATION (BOTH MECHANISMS)</text>
+
+          <g transform="translate(75, 220)">
+            <circle r="42" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">PATIENT</text>
+            <text x="0" y="16" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">75 kg</text>
+          </g>
+
+          <path d="M 120 220 L 240 220" stroke="#dc2626" stroke-width="14" fill="none" class="flow-anim" stroke-linecap="round"/>
+          <text x="180" y="200" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Qb 180</text>
+
+          <g transform="translate(240, 110)">
+            <rect x="0" y="0" width="150" height="260" rx="14" fill="#f1f5f9" stroke="#334155" stroke-width="3"/>
+            <text x="75" y="-10" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">FILTER</text>
+            <rect x="12" y="14" width="126" height="110" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+            <text x="75" y="73" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#7f1d1d">BLOOD</text>
+            <rect x="12" y="128" width="126" height="16" rx="4" fill="#64748b"/>
+            <text x="75" y="141" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">MEMBRANE</text>
+            <rect x="12" y="150" width="126" height="96" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+            <text x="75" y="192" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e3a8a">DIALYSATE</text>
+            <text x="75" y="212" text-anchor="middle" font-family="Arial" font-size="12" fill="#1e3a8a">+ EFFLUENT</text>
+          </g>
+
+          <!-- Postdilution -->
+          <g transform="translate(435, 165)">
+            <circle r="32" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+            <text x="0" y="-2" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">POST</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#713f12">725</text>
+          </g>
+          <path d="M 435 197 L 435 218" stroke="#ca8a04" stroke-width="3" fill="none" stroke-dasharray="4 3"/>
+
+          <!-- Dialysate in from bottom left -->
+          <path d="M 140 400 L 300 400 L 300 370" stroke="#2563eb" stroke-width="10" fill="none" stroke-linecap="round" class="flow-anim"/>
+          <text x="200" y="425" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e3a8a">Dialysate IN (1,000)</text>
+
+          <!-- Effluent out -->
+          <path d="M 390 370 L 390 400 L 550 400" stroke="#0891b2" stroke-width="10" fill="none" stroke-linecap="round" class="flow-anim"/>
+          <text x="470" y="425" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Effluent OUT (1,875)</text>
+
+          <!-- Blood flow -->
+          <path d="M 390 220 L 750 220" stroke="#dc2626" stroke-width="14" fill="none" class="flow-anim" stroke-linecap="round"/>
+
+          <circle cx="810" cy="220" r="42" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+          <text x="810" y="216" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">RETURN</text>
+          <text x="810" y="236" text-anchor="middle" font-family="Arial" font-size="12" fill="#155e75">to patient</text>
+
+          <g transform="translate(450, 510)">
+            <rect x="-420" y="-115" width="840" height="230" rx="16" fill="#0891b2" stroke="#155e75" stroke-width="3"/>
+            <text x="0" y="-82" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">CVVHDF — CALCULATION</text>
+
+            <text x="-390" y="-45" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#cffafe">Step 1: Q_eff = Q_R + Q_D + Q_net UF</text>
+            <text x="-390" y="-18" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 725 + 1,000 + 150 = 1,875 mL/h ✓</text>
+
+            <text x="-390" y="16" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#cffafe">Step 2: Q_p = Qb × 60 × (1 − Hct)</text>
+            <text x="-390" y="42" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = 180 × 60 × 0.65 = 7,020 mL/h</text>
+
+            <text x="-390" y="76" text-anchor="start" font-family="Arial" font-size="15" font-weight="700" fill="#cffafe">Step 3: FF = (Q_R + Q_net UF) / Q_p × 100</text>
+            <text x="-390" y="102" text-anchor="start" font-family="Arial" font-size="15" fill="#fef3c7">        = (725 + 150) / 7,020 × 100 ≈ 12.5%</text>
+          </g>
+
+          <text x="450" y="665" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">CVVHDF: Convection + Diffusion · Best of both</text>
+        </g>
+
+        <!-- ============ DIAGRAM 4 — SIDE BY SIDE ============ -->
+        <g id="diagram-opt4" style="display:none">
+          <text x="450" y="95" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#713f12">SIDE-BY-SIDE — SAME PATIENT, SAME DOSE</text>
+
+          <!-- CVVH -->
+          <g transform="translate(160, 220)">
+            <rect x="-140" y="-95" width="280" height="190" rx="14" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#7f1d1d">CVVH</text>
+            <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Convection only</text>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Q_R 1,725 + UF 150</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">No dialysate</text>
+            <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#dc2626">FF ≈ 27%</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" fill="#991b1b">↑↑ clotting risk</text>
+          </g>
+
+          <!-- CVVHD -->
+          <g transform="translate(450, 220)">
+            <rect x="-140" y="-95" width="280" height="190" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">CVVHD</text>
+            <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">Diffusion only</text>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">Q_D 1,725 + UF 150</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">No replacement</text>
+            <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#7c3aed">FF ≈ 2%</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" fill="#5b21b6">✓ longest filter life</text>
+          </g>
+
+          <!-- CVVHDF -->
+          <g transform="translate(740, 220)">
+            <rect x="-140" y="-95" width="280" height="190" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#155e75">CVVHDF</text>
+            <text x="0" y="-35" text-anchor="middle" font-family="Arial" font-size="13" fill="#155e75">Both mechanisms</text>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="13" fill="#155e75">R 725 + D 1,000 + UF 150</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#155e75">Balanced</text>
+            <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#0891b2">FF ≈ 12.5%</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" fill="#155e75">✓ balanced approach</text>
+          </g>
+
+          <!-- Same dose banner -->
+          <g transform="translate(450, 385)">
+            <rect x="-420" y="-35" width="840" height="70" rx="12" fill="#0f172a"/>
+            <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fef3c7">ALL THREE ACHIEVE THE SAME DOSE: 1,875 mL/h = 25 mL/kg/h</text>
+            <text x="0" y="22" text-anchor="middle" font-family="Arial" font-size="14" fill="#fff">But FF differs dramatically → filter life differs dramatically</text>
+          </g>
+
+          <!-- Recommendation box -->
+          <g transform="translate(450, 545)">
+            <rect x="-420" y="-115" width="840" height="230" rx="16" fill="#ca8a04" stroke="#713f12" stroke-width="3"/>
+            <text x="0" y="-85" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">WHICH MODALITY TO CHOOSE?</text>
+            <text x="-390" y="-45" text-anchor="start" font-family="Arial" font-size="14" fill="#fef9c3">→ Sepsis + middle molecule clearance → CVVH or CVVHDF</text>
+            <text x="-390" y="-15" text-anchor="start" font-family="Arial" font-size="14" fill="#fef9c3">→ Hyperkalemia / hyperammonemia → CVVHD</text>
+            <text x="-390" y="15" text-anchor="start" font-family="Arial" font-size="14" fill="#fef9c3">→ Recurrent filter clotting → CVVHD or CVVHDF with predilution</text>
+            <text x="-390" y="45" text-anchor="start" font-family="Arial" font-size="14" fill="#fef9c3">→ Bleeding risk → any modality + regional citrate</text>
+            <text x="-390" y="82" text-anchor="start" font-family="Arial" font-size="15" font-weight="800" fill="#fef3c7">→ Most common in ICU: CVVHDF</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-panel highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </aside>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount">0</span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+var TABS = [
+  { id: "opt1", label: "🔴 CVVH" },
+  { id: "opt2", label: "🟣 CVVHD" },
+  { id: "opt3", label: "🔵 CVVHDF" },
+  { id: "opt4", label: "🟡 Side-by-Side" }
+];
+
+var MODES = {
+  opt1: {
+    panelClass: "highlight-opt1",
+    infoTitle: "🔴 CVVH — Convection Only",
+    infoRows: [
+      { k: "Mechanism", v: "Convection (100%)" },
+      { k: "Q_eff", v: "Q_R + Q_UF" },
+      { k: "Q_R (post)", v: "1,725 mL/h" },
+      { k: "Q_net UF", v: "150 mL/h" },
+      { k: "Q_eff total", v: "1,875 mL/h = 25 mL/kg/h" },
+      { k: "FF", v: "≈ 27% (above target)" }
+    ],
+    svgTitle: "CVVH — Hemofiltration",
+    svgSubtitle: "Convection only · Q_eff = Q_R + Q_net UF · FF ≈ 27% (above target < 25%)",
+    bannerBg: "#dc2626",
+    bannerText1: "🔴 CVVH — Convection Only · FF ≈ 27%",
+    bannerText2: "Q_eff = 1,725 + 150 = 1,875 mL/h ✓ · FF = 1,875 / 7,020 × 100 ≈ 27%",
+    panel1Title: "🔴 CVVH — How It Works",
+    panel1Tagline: "Pure convective clearance",
+    panel1List: [
+      "<strong>Mechanism:</strong> Convection (solvent drag) — solutes dragged across the membrane with ultrafiltered plasma water",
+      "<strong>Replacement fluid:</strong> Required to maintain volume — can be pre, post, or both",
+      "<strong>Effluent formula:</strong> Q_eff = Q_R (pre + post) + Q_net UF",
+      "<strong>This case:</strong> Q_R 1,725 mL/h (post) + 150 net UF = 1,875 mL/h",
+      "<strong>Dose check:</strong> 1,875 / 75 = 25 mL/kg/h ✓ (target met)"
+    ],
+    panel2Title: "🔴 CVVH — FF & Clinical Use",
+    panel2Tagline: "High FF limits filter life",
+    panel2List: [
+      "<strong>FF calculation:</strong> FF = (Q_R + Q_net UF) / Q_p × 100 = (1,725 + 150) / 7,020 × 100 ≈ 27%",
+      "<strong>FF is high:</strong> Every mL of effluent is plasma water — FF is directly proportional to dose",
+      "<strong>Filter life shorter:</strong> Hemoconcentration at filter → faster clotting",
+      "<strong>Best for:</strong> Sepsis (middle molecule clearance via convection)",
+      "<strong>To lower FF:</strong> Add predilution, ↑ Qb, or switch to CVVHD/CVVHDF"
+    ],
+    alertIcon: "🔴",
+    alertTitle: "Board Pearl — CVVH Has Highest FF",
+    alertText: "CVVH uses <strong>100% convection</strong> — every mL of effluent is plasma water removed by ultrafiltration. FF is directly proportional to dose. In this case, FF ≈ 27% (above target < 25%). Add predilution or ↑ Qb to lower FF."
+  },
+  opt2: {
+    panelClass: "highlight-opt2",
+    infoTitle: "🟣 CVVHD — Diffusion Only",
+    infoRows: [
+      { k: "Mechanism", v: "Diffusion (100%)" },
+      { k: "Q_eff", v: "Q_D + Q_UF" },
+      { k: "Q_D", v: "1,725 mL/h" },
+      { k: "Q_net UF", v: "150 mL/h" },
+      { k: "Q_eff total", v: "1,875 mL/h = 25 mL/kg/h" },
+      { k: "FF", v: "≈ 2% (well below target)" }
+    ],
+    svgTitle: "CVVHD — Hemodialysis",
+    svgSubtitle: "Diffusion only · Q_eff = Q_D + Q_net UF · FF ≈ 2% (lowest of the three)",
+    bannerBg: "#7c3aed",
+    bannerText1: "🟣 CVVHD — Diffusion Only · FF ≈ 2%",
+    bannerText2: "Q_eff = 1,725 + 150 = 1,875 mL/h ✓ · FF = 150 / 7,020 × 100 ≈ 2% — lowest FF",
+    panel1Title: "🟣 CVVHD — How It Works",
+    panel1Tagline: "Pure diffusive clearance",
+    panel1List: [
+      "<strong>Mechanism:</strong> Diffusion — solutes move down their concentration gradient from blood to dialysate",
+      "<strong>Dialysate:</strong> Flows on the other side of the membrane — no replacement fluid needed",
+      "<strong>Effluent formula:</strong> Q_eff = Q_D + Q_net UF",
+      "<strong>This case:</strong> Q_D 1,725 mL/h + 150 net UF = 1,875 mL/h",
+      "<strong>Dose check:</strong> 1,875 / 75 = 25 mL/kg/h ✓ (target met)"
+    ],
+    panel2Title: "🟣 CVVHD — FF & Clinical Use",
+    panel2Tagline: "Lowest FF, longest filter life",
+    panel2List: [
+      "<strong>FF calculation:</strong> FF = Q_net UF / Q_p × 100 = 150 / 7,020 × 100 ≈ 2%",
+      "<strong>Why so low:</strong> Dialysate clears solute by diffusion WITHOUT removing plasma water — FF is only from net UF",
+      "<strong>Longest filter life:</strong> Minimal hemoconcentration → lowest clotting risk",
+      "<strong>Best for:</strong> Hyperkalemia, hyperammonemia, small solute clearance",
+      "<strong>Limitation:</strong> Poor middle molecule clearance (no convection)"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Board Pearl — CVVHD Has Lowest FF",
+    alertText: "CVVHD uses <strong>100% diffusion</strong> — dialysate clears solute without removing plasma water. FF is only the net UF fraction, so <strong>FF ≈ 2%</strong>. Filters last longest. Best for small solutes (K⁺, ammonia), not middle molecules."
+  },
+  opt3: {
+    panelClass: "highlight-opt3",
+    infoTitle: "🔵 CVVHDF — Both Mechanisms",
+    infoRows: [
+      { k: "Mechanism", v: "Convection + Diffusion" },
+      { k: "Q_eff", v: "Q_R + Q_D + Q_UF" },
+      { k: "Q_R (post)", v: "725 mL/h" },
+      { k: "Q_D", v: "1,000 mL/h" },
+      { k: "Q_eff total", v: "1,875 mL/h = 25 mL/kg/h" },
+      { k: "FF", v: "≈ 12.5% (within target)" }
+    ],
+    svgTitle: "CVVHDF — Hemodiafiltration",
+    svgSubtitle: "Combined convection + diffusion · Q_eff = Q_R + Q_D + Q_net UF · FF ≈ 12.5%",
+    bannerBg: "#0891b2",
+    bannerText1: "🔵 CVVHDF — Combined · FF ≈ 12.5%",
+    bannerText2: "Q_eff = 725 + 1,000 + 150 = 1,875 mL/h ✓ · FF = (725 + 150) / 7,020 × 100 ≈ 12.5%",
+    panel1Title: "🔵 CVVHDF — How It Works",
+    panel1Tagline: "Best of both worlds",
+    panel1List: [
+      "<strong>Mechanism:</strong> Combined convection (replacement fluid) + diffusion (dialysate)",
+      "<strong>Two fluid inputs:</strong> Q_R (replacement) AND Q_D (dialysate)",
+      "<strong>Effluent formula:</strong> Q_eff = Q_R + Q_D + Q_net UF",
+      "<strong>This case:</strong> Q_R 725 + Q_D 1,000 + 150 net UF = 1,875 mL/h",
+      "<strong>Dose check:</strong> 1,875 / 75 = 25 mL/kg/h ✓ (target met)"
+    ],
+    panel2Title: "🔵 CVVHDF — FF & Clinical Use",
+    panel2Tagline: "Balanced FF and clearance",
+    panel2List: [
+      "<strong>FF calculation:</strong> FF = (Q_R + Q_net UF) / Q_p × 100 — only Q_R and net UF count",
+      "<strong>Dialysate doesn't count:</strong> Q_D clears solute by diffusion (no plasma water removed)",
+      "<strong>FF here:</strong> (725 + 150) / 7,020 × 100 ≈ 12.5% — comfortably within target",
+      "<strong>Best for:</strong> Broad spectrum of solutes — small + middle molecules",
+      "<strong>Most common:</strong> CVVHDF is the workhorse modality in most ICUs"
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Board Pearl — CVVHDF Balances Both",
+    alertText: "CVVHDF combines convection (replacement) and diffusion (dialysate). For FF, only <strong>Q_R + Q_net UF</strong> count — dialysate doesn't remove plasma water. FF ≈ 12.5% (comfortably within target). Most common modality in ICU."
+  },
+  opt4: {
+    panelClass: "highlight-opt4",
+    infoTitle: "🟡 Side-by-Side Comparison",
+    infoRows: [
+      { k: "CVVH", v: "FF 27% · Convection" },
+      { k: "CVVHD", v: "FF 2% · Diffusion" },
+      { k: "CVVHDF", v: "FF 12.5% · Both" },
+      { k: "Target FF", v: "< 25%" },
+      { k: "Same dose", v: "1,875 mL/h = 25 mL/kg/h" }
+    ],
+    svgTitle: "Side-by-Side Comparison",
+    svgSubtitle: "Same dose for all three · FF differs: CVVHD 2% < CVVHDF 12.5% < CVVH 27%",
+    bannerBg: "#ca8a04",
+    bannerText1: "🟡 Same Dose, Different FF",
+    bannerText2: "Effluent 1,875 mL/h for all three · FF: CVVHD 2% < CVVHDF 12.5% < CVVH 27%",
+    panel1Title: "🟡 How to Choose",
+    panel1Tagline: "Match modality to clinical goal",
+    panel1List: [
+      "<strong>Sepsis + middle molecule clearance:</strong> CVVH or CVVHDF (convection needed for middle molecules)",
+      "<strong>Hyperkalemia / hyperammonemia:</strong> CVVHD (best small solute clearance via diffusion)",
+      "<strong>Recurrent filter clotting:</strong> CVVHD (lowest FF) or CVVHDF with predilution",
+      "<strong>Bleeding risk:</strong> Any modality + regional citrate anticoagulation",
+      "<strong>Most common in ICU:</strong> CVVHDF — balanced clearance + acceptable FF"
+    ],
+    panel2Title: "🟡 Practical Tips",
+    panel2Tagline: "Prescription decisions",
+    panel2List: [
+      "<strong>Effluent dose is the same:</strong> 20–25 mL/kg/h regardless of modality",
+      "<strong>FF differs by modality:</strong> CVVHD 2% (lowest) → CVVH 27% (highest)",
+      "<strong>CVVHD is protective:</strong> Longest filter life, but poor middle molecule clearance",
+      "<strong>CVVH needs predilution:</strong> To lower FF and prolong filter life",
+      "<strong>CVVHDF balances:</strong> Best compromise for most patients in the ICU"
+    ],
+    alertIcon: "🟡",
+    alertTitle: "Board Pearl — Same Dose, Different FF",
+    alertText: "All three modalities can achieve the same effluent dose (1,875 mL/h = 25 mL/kg/h). But <strong>FF differs dramatically</strong>: CVVHD 2% < CVVHDF 12.5% < CVVH 27%. Choose the modality based on the clinical goal."
+  }
+};
+
+var QUIZ = [
+  {
+    question: "A 75-kg patient is on CVVH with postdilution replacement of 1,725 mL/h and net UF of 150 mL/h. What is the effluent dose?",
+    options: [
+      { text: "A. 1,500 mL/h", correct: false, explanation: "Recheck: Q_eff = Q_R + Q_net UF = 1,725 + 150 = 1,875 mL/h." },
+      { text: "B. 1,875 mL/h (25 mL/kg/h)", correct: true, explanation: "Q_eff = Q_R + Q_net UF = 1,725 + 150 = <strong>1,875 mL/h</strong>. Divide by 75 kg = <strong>25 mL/kg/h</strong> — target dose achieved." },
+      { text: "C. 3,450 mL/h", correct: false, explanation: "Too high — double counting. Q_eff = 1,875 mL/h." }
+    ]
+  },
+  {
+    question: "What is the approximate filtration fraction in CVVH with Q_R 1,725 mL/h, net UF 150 mL/h, Qb 180 mL/min, Hct 35%?",
+    options: [
+      { text: "A. 2%", correct: false, explanation: "2% is the FF for CVVHD. In CVVH, all replacement fluid counts in the FF numerator." },
+      { text: "B. 27%", correct: true, explanation: "FF = (Q_R + Q_net UF) / Q_p × 100 = (1,725 + 150) / 7,020 × 100 ≈ <strong>27%</strong>. Above target < 25%." },
+      { text: "C. 50%", correct: false, explanation: "Too high. Recalculate: (1,725 + 150) / 7,020 × 100 ≈ 27%." }
+    ]
+  },
+  {
+    question: "In CVVHD, why is the filtration fraction so much lower than in CVVH?",
+    options: [
+      { text: "A. Because dialysate clears solute without removing plasma water", correct: true, explanation: "In CVVHD, clearance happens by <strong>diffusion</strong> — solutes move into dialysate WITHOUT plasma water being removed. Only net UF contributes to FF → <strong>FF ≈ 2%</strong>." },
+      { text: "B. Because the membrane is different", correct: false, explanation: "The membrane is the same. The difference is the mechanism." },
+      { text: "C. Because blood flow is lower in CVVHD", correct: false, explanation: "Blood flow (Qb) is the same in both modalities." }
+    ]
+  },
+  {
+    question: "A patient on CVVHDF has Q_R 725 mL/h, Q_D 1,000 mL/h, and net UF 150 mL/h. What is the effluent dose?",
+    options: [
+      { text: "A. 1,875 mL/h (25 mL/kg/h)", correct: true, explanation: "Q_eff = Q_R + Q_D + Q_net UF = 725 + 1,000 + 150 = <strong>1,875 mL/h</strong>. Same dose as CVVH and CVVHD." },
+      { text: "B. 1,000 mL/h", correct: false, explanation: "That's only the dialysate. Add replacement fluid AND net UF: 725 + 1,000 + 150 = 1,875." },
+      { text: "C. 875 mL/h", correct: false, explanation: "That's only Q_R + net UF. In CVVHDF, dialysate also contributes: 725 + 1,000 + 150 = 1,875." }
+    ]
+  },
+  {
+    question: "Which formula correctly calculates FF in CVVHDF?",
+    options: [
+      { text: "A. FF = (Q_R + Q_D + Q_net UF) / Q_p × 100", correct: false, explanation: "This incorrectly includes Q_D. Dialysate doesn't remove plasma water." },
+      { text: "B. FF = (Q_R + Q_net UF) / Q_p × 100", correct: true, explanation: "In CVVHDF, only <strong>Q_R + Q_net UF</strong> contribute to FF. With Q_R 725 + 150 / 7,020 × 100 ≈ <strong>12.5%</strong>." },
+      { text: "C. FF = Q_net UF / Q_p × 100", correct: false, explanation: "This is the CVVHD formula. In CVVHDF, replacement fluid also contributes." }
+    ]
+  },
+  {
+    question: "Which CRRT modality has the LOWEST filtration fraction?",
+    options: [
+      { text: "A. CVVH", correct: false, explanation: "CVVH has the <strong>highest</strong> FF (≈ 27%)." },
+      { text: "B. CVVHD", correct: true, explanation: "CVVHD has the <strong>lowest</strong> FF (≈ 2%) because dialysate clears solute without removing plasma water." },
+      { text: "C. CVVHDF", correct: false, explanation: "CVVHDF has intermediate FF (≈ 12.5%). CVVHD has the lowest." }
+    ]
+  },
+  {
+    question: "A patient on CVVH has FF of 27% and the filter keeps clotting. What is the best first step?",
+    options: [
+      { text: "A. Add predilution to the replacement fluid", correct: true, explanation: "Predilution dilutes blood BEFORE the filter → lowers FF → prolongs filter life. Most physiologically sound first step." },
+      { text: "B. Decrease the effluent dose", correct: false, explanation: "Would lower FF but at the cost of subtherapeutic clearance." },
+      { text: "C. Increase the postdilution rate", correct: false, explanation: "Increasing postdilution would <strong>raise</strong> FF further." }
+    ]
+  },
+  {
+    question: "Which modality is best for clearing middle molecules (e.g., cytokines in sepsis)?",
+    options: [
+      { text: "A. CVVHD", correct: false, explanation: "CVVHD relies on diffusion, poor for middle molecules." },
+      { text: "B. CVVH or CVVHDF", correct: true, explanation: "<strong>CVVH and CVVHDF</strong> use convection, superior for middle molecule clearance." },
+      { text: "C. All modalities are equivalent", correct: false, explanation: "Not equivalent — convection is superior for middle molecules, diffusion for small solutes." }
+    ]
+  }
+];
+
+function buildTabs() {
+  var html = "";
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    html += '<button class="tab ' + t.id + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }
+  document.getElementById("tabs").innerHTML = html;
+}
+
+function buildQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  var grid = document.getElementById("quizGrid");
+  var html = "";
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="q" data-q="' + i + '">';
+    html += '<p>' + (i + 1) + '. ' + q.question + '</p>';
+    html += '<div class="opts">';
+    for (var j = 0; j < q.options.length; j++) {
+      var o = q.options[j];
+      html += '<button class="opt" data-q="' + i + '" data-o="' + j + '">' + o.text + '</button>';
+    }
+    html += '</div>';
+    html += '<div class="explain"></div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+  var buttons = grid.querySelectorAll(".opt");
+  for (var k = 0; k < buttons.length; k++) {
+    buttons[k].addEventListener("click", handleAnswer);
+  }
+}
+
+function handleAnswer(e) {
+  var btn = e.currentTarget;
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-o"), 10);
+  var q = QUIZ[qi];
+  var opt = q.options[oi];
+  var box = btn.closest(".q");
+  var allOpts = box.querySelectorAll(".opt");
+  for (var i = 0; i < allOpts.length; i++) {
+    allOpts[i].classList.remove("correct", "wrong");
+  }
+  btn.classList.add(opt.correct ? "correct" : "wrong");
+  var explain = box.querySelector(".explain");
+  if (opt.correct) {
+    explain.className = "explain show correct-explain";
+    explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+  } else {
+    explain.className = "explain show wrong-explain";
+    explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+  }
+}
+
+function setMode(mode) {
+  var d = MODES[mode];
+  if (!d) return;
+  for (var i = 0; i < TABS.length; i++) {
+    var t = TABS[i];
+    var el = document.getElementById("tab" + t.id);
+    if (el) el.classList.remove("active");
+  }
+  var activeEl = document.getElementById("tab" + mode);
+  if (activeEl) activeEl.classList.add("active");
+  var optIds = ["opt1", "opt2", "opt3", "opt4"];
+  for (var j = 0; j < optIds.length; j++) {
+    var dg = document.getElementById("diagram-" + optIds[j]);
+    if (dg) dg.style.display = "none";
+  }
+  var target = document.getElementById("diagram-" + mode);
+  if (target) target.style.display = "block";
+  document.getElementById("svg-title").textContent = d.svgTitle;
+  document.getElementById("svg-subtitle").textContent = d.svgSubtitle;
+  var panel = document.getElementById("infoPanel");
+  panel.className = "info-panel " + d.panelClass + (panel.classList.contains("collapsed") ? " collapsed" : "");
+  document.getElementById("infoTitle").textContent = d.infoTitle;
+  var infoHtml = "";
+  for (var m = 0; m < d.infoRows.length; m++) {
+    var r = d.infoRows[m];
+    infoHtml += '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }
+  document.getElementById("infoBody").innerHTML = infoHtml;
+  document.getElementById("panel1-title").textContent = d.panel1Title;
+  document.getElementById("panel1-tagline").textContent = d.panel1Tagline;
+  var p1 = "";
+  for (var n = 0; n < d.panel1List.length; n++) {
+    p1 += "<li>" + d.panel1List[n] + "</li>";
+  }
+  document.getElementById("panel1-list").innerHTML = p1;
+  document.getElementById("panel2-title").textContent = d.panel2Title;
+  document.getElementById("panel2-tagline").textContent = d.panel2Tagline;
+  var p2 = "";
+  for (var p = 0; p < d.panel2List.length; p++) {
+    p2 += "<li>" + d.panel2List[p] + "</li>";
+  }
+  document.getElementById("panel2-list").innerHTML = p2;
+  document.getElementById("alertIcon").textContent = d.alertIcon;
+  document.getElementById("alertTitle").textContent = d.alertTitle;
+  document.getElementById("alertText").innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById("infoPanel");
+  var btn = document.getElementById("toggleBtn");
+  panel.classList.toggle("collapsed", panelCollapsed);
+  btn.textContent = panelCollapsed ? "▼ Show" : "▲ Hide";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildTabs();
+  buildQuiz();
+  setMode("opt1");
+});
+</script>
+</body>
+</html>

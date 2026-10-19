@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MRA-Induced Hyperkalemia: Where Aldosterone Acts in the Collecting Duct</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-float{position:absolute; top:80px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:260px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden; z-index:10;}
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:all .2s ease;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px; font-weight:700;}
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:155px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="780" fill="#fdfdfd"/>
+
+      <text id="svg-title" x="500" y="35" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a"></text>
+      <text id="svg-subtitle" x="500" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+      <!-- ============ SHARED ZONES: lumen | principal cell | blood ============ -->
+      <g id="zones">
+        <rect x="60" y="100" width="230" height="500" rx="14" fill="#dbeafe" opacity="0.55"/>
+        <text x="175" y="130" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#1e40af">LUMEN (urine)</text>
+        <rect x="330" y="100" width="340" height="500" rx="14" fill="#fef9c3" opacity="0.6"/>
+        <text x="500" y="130" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#854d0e">PRINCIPAL CELL</text>
+        <rect x="710" y="100" width="180" height="500" rx="14" fill="#fee2e2" opacity="0.55"/>
+        <text x="800" y="130" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">BLOOD</text>
+        <!-- apical and basolateral membranes -->
+        <rect x="324" y="160" width="10" height="400" fill="#64748b"/>
+        <rect x="666" y="160" width="10" height="400" fill="#64748b"/>
+        <text x="500" y="590" text-anchor="middle" font-family="Arial" font-size="11" fill="#475569">Aldosterone receptor sits in the cytosol</text>
+        <text x="175" y="590" text-anchor="middle" font-family="Arial" font-size="11" fill="#475569">Lumen-negative potential</text>
+      </g>
+
+      <!-- ============ DIAGRAM 1: MR blocked, ENaC and ATPase down (CORRECT) ============ -->
+      <g id="diagram-opt1" style="display:none">
+        <!-- MR blocker -->
+        <rect x="380" y="230" width="240" height="46" rx="10" fill="#dc2626"/>
+        <text x="500" y="250" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#fff">MR antagonist blocks receptor</text>
+        <text x="500" y="266" text-anchor="middle" font-family="Arial" font-size="11" fill="#fee2e2">Aldosterone cannot act here</text>
+        <!-- reduced ENaC -->
+        <rect x="318" y="330" width="24" height="46" rx="5" fill="#94a3b8"/>
+        <text x="280" y="392" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#475569">ENaC down</text>
+        <path d="M 240 352 L 310 352" stroke="#94a3b8" stroke-width="3" stroke-dasharray="4 4" marker-end="url(#arrowGray)"/>
+        <!-- reduced ATPase -->
+        <rect x="660" y="330" width="26" height="46" rx="5" fill="#94a3b8"/>
+        <text x="740" y="392" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#475569">Na⁺/K⁺-ATPase down</text>
+        <!-- reduced K secretion -->
+        <path d="M 500 420 L 290 420" stroke="#dc2626" stroke-width="3" stroke-dasharray="4 4" fill="none"/>
+        <text x="330" y="442" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Less K⁺ leaves through ROMK</text>
+        <!-- lumen potential less negative -->
+        <text x="175" y="470" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#1e40af">Less negative</text>
+        <text x="175" y="488" text-anchor="middle" font-family="Arial" font-size="12" fill="#1e40af">lumen potential</text>
+        <!-- K accumulates -->
+        <text x="800" y="470" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">K⁺ retained</text>
+        <text x="800" y="488" text-anchor="middle" font-family="Arial" font-size="12" fill="#991b1b">serum rises</text>
+        <circle class="pulse-node" cx="800" cy="390" r="28" fill="none" stroke="#dc2626" stroke-width="3"/>
+      </g>
+
+      <!-- ============ DIAGRAM 2: NCC in DCT (WRONG) ============ -->
+      <g id="diagram-opt2" style="display:none">
+        <rect x="350" y="200" width="300" height="46" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-dasharray="4 3"/>
+        <text x="500" y="220" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#334155">NCC, distal convoluted tubule</text>
+        <text x="500" y="236" text-anchor="middle" font-family="Arial" font-size="11" fill="#475569">Not the principal cell site</text>
+        <path d="M 240 300 L 320 300" stroke="#7c3aed" stroke-width="4" class="flow-anim" marker-end="url(#arrowGray)"/>
+        <text x="280" y="284" text-anchor="middle" font-family="Arial" font-size="11" fill="#5b21b6">Na⁺ in</text>
+        <text x="500" y="380" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">NCC activity does not drive K⁺ secretion</text>
+        <text x="500" y="410" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">MR antagonists act on principal cells, not on NCC</text>
+        <text x="500" y="430" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Thiazides inhibit NCC; this is a different drug class</text>
+      </g>
+
+      <!-- ============ DIAGRAM 3: ATPase and ROMK up (WRONG) ============ -->
+      <g id="diagram-opt3" style="display:none">
+        <path d="M 500 420 L 290 420" stroke="#0891b2" stroke-width="5" class="flow-anim" marker-end="url(#arrowBlue)"/>
+        <text x="330" y="442" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">K⁺ secretion increases</text>
+        <rect x="620" y="330" width="60" height="46" rx="5" fill="#0891b2"/>
+        <text x="650" y="360" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#fff">ATPase</text>
+        <text x="740" y="392" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">Activity goes up (wrong)</text>
+        <rect x="318" y="330" width="24" height="46" rx="5" fill="#0891b2"/>
+        <text x="280" y="392" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#155e75">ROMK up</text>
+        <text x="500" y="520" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Would lower serum K⁺, the opposite of this patient</text>
+      </g>
+
+      <!-- ============ DIAGRAM 4: Proximal bicarbonate (WRONG) ============ -->
+      <g id="diagram-opt4" style="display:none">
+        <rect x="350" y="200" width="300" height="46" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+        <text x="500" y="220" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Proximal tubule HCO₃⁻ handling</text>
+        <text x="500" y="236" text-anchor="middle" font-family="Arial" font-size="11" fill="#475569">Upstream of the collecting duct</text>
+        <text x="500" y="330" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Proximal bicarbonate reabsorption does not</text>
+        <text x="500" y="350" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">control distal K⁺ secretion</text>
+        <text x="500" y="400" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Mild acidosis (HCO₃ 19) shifts K⁺ out of cells,</text>
+        <text x="500" y="420" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">a contributor, but it is not the MR blockade effect</text>
+      </g>
+
+      <!-- ============ DYNAMIC BANNER ============ -->
+      <g transform="translate(600, 730)">
+        <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+        <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+        <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+      </g>
+    </svg>
+
+    <!-- INFO PANEL -->
+    <div class="info-float highlight-opt1" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle"></h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody"></div>
+    </div>
+  </section>
+
+  <!-- TEACHING PANELS -->
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  title: "MRA-Induced Hyperkalemia: Where Aldosterone Acts in the Collecting Duct",
+  subtitle: "Why blocking the mineralocorticoid receptor lowers potassium secretion, even when aldosterone is high",
+  badge: "NEPHROLOGY · POTASSIUM",
+  caseTitle: "Case: 64-year-old man with T2DM and CKD 3b on a new MR antagonist",
+  caseDescription: "Potassium rose to 6.0 after the antihypertensive was started. Renin and aldosterone are both elevated, yet urine potassium is inappropriately low. The drug blocks the mineralocorticoid receptor in collecting-duct principal cells.",
+  labChips: [
+    { text: "K 6.0", abnormal: true },
+    { text: "HCO₃ 19", abnormal: true },
+    { text: "Cr 1.8", abnormal: true },
+    { text: "BP 142/84", abnormal: false },
+    { text: "Renin ↑", abnormal: true },
+    { text: "Aldosterone ↑", abnormal: true },
+    { text: "Urine K⁺ low", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 D: ENaC and ATPase down", className: "opt1" },
+    { id: "opt2", label: "🟣 A: NCC increased", className: "opt2" },
+    { id: "opt3", label: "🔵 B: ATPase and ROMK up", className: "opt3" },
+    { id: "opt4", label: "🟡 C: Proximal HCO₃⁻", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 MR blocked: less ENaC and ATPase",
+      infoRows: [
+        { k: "Drug target", v: "Mineralocorticoid receptor in principal cells" },
+        { k: "ENaC", v: "Reduced activity, less Na⁺ entry" },
+        { k: "Na⁺/K⁺-ATPase", v: "Reduced activity" },
+        { k: "Lumen potential", v: "Less negative, so less K⁺ secretion" }
+      ],
+      svgTitle: "Aldosterone cannot drive potassium secretion",
+      svgSubtitle: "Receptor blockade lowers ENaC and ATPase, so K⁺ is retained",
+      bannerBg: "#dc2626",
+      bannerText1: "✔ Correct: reduced ENaC and ATPase",
+      bannerText2: "Less lumen-negative potential means less K⁺ leaves through ROMK",
+      panel1Title: "The mechanism",
+      panel1Tagline: "Aldosterone normally drives K⁺ secretion",
+      panel1List: [
+        "<strong>Aldosterone</strong> binds the receptor and increases ENaC and Na⁺/K⁺-ATPase",
+        "<strong>ENaC Na⁺ entry</strong> makes the lumen negative, pulling K⁺ out through ROMK",
+        "<strong>Blocking the receptor</strong> removes that drive, so potassium builds up"
+      ],
+      panel2Title: "The clues in this case",
+      panel2Tagline: "Hormone levels and urine tell the story",
+      panel2List: [
+        "<strong>Aldosterone is high but cannot act</strong>, because the receptor is blocked",
+        "<strong>Urine K⁺ is low</strong> for the level of hyperkalemia, showing low distal secretion",
+        "<strong>Mild acidosis (HCO₃ 19)</strong> adds to the rise by shifting K⁺ out of cells"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Blocking the receptor is the lesion",
+      alertText: "High aldosterone with high potassium is a red flag for <strong>MR antagonism or a blocked receptor</strong>, not for more hormone."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 NCC activity increased",
+      infoRows: [
+        { k: "Segment", v: "Distal convoluted tubule" },
+        { k: "Effect claimed", v: "More K⁺ secretion" },
+        { k: "Why it fails", v: "NCC does not secrete K⁺ here" },
+        { k: "Verdict", v: "Wrong site" }
+      ],
+      svgTitle: "Wrong nephron segment",
+      svgSubtitle: "NCC is upstream and not the site of potassium secretion",
+      bannerBg: "#7c3aed",
+      bannerText1: "✘ Wrong: NCC is not the K⁺ site",
+      bannerText2: "The MR antagonist acts on principal cells in the collecting duct",
+      panel1Title: "What goes wrong",
+      panel1Tagline: "Confusing the segment",
+      panel1List: [
+        "<strong>NCC reabsorbs sodium</strong> in the distal convoluted tubule",
+        "<strong>Increased NCC activity</strong> would not raise K⁺ secretion"
+      ],
+      panel2Title: "Why it is tempting",
+      panel2Tagline: "Distal sodium handling is involved",
+      panel2List: [
+        "Distal sodium handling is linked to potassium, so the link seems plausible",
+        "The drug class is often confused with thiazide effects"
+      ],
+      alertIcon: "🟣",
+      alertTitle: "Know the segment before the transporter",
+      alertText: "Option A points at the wrong segment. <strong>The drug acts on principal cells</strong>, downstream of NCC."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 ATPase and ROMK activity up",
+      infoRows: [
+        { k: "Proposed effect", v: "More Na⁺/K⁺-ATPase and ROMK" },
+        { k: "Potassium effect", v: "More K⁺ secretion" },
+        { k: "Serum K⁺ result", v: "Would fall" },
+        { k: "Verdict", v: "Opposite of this patient" }
+      ],
+      svgTitle: "Wrong direction for potassium secretion",
+      svgSubtitle: "This would lower K⁺, but the MR blockade does the opposite",
+      bannerBg: "#0891b2",
+      bannerText1: "✘ Wrong: direction is reversed",
+      bannerText2: "The blocker lowers ATPase and ENaC activity, not raises them",
+      panel1Title: "What goes wrong",
+      panel1Tagline: "The mechanism runs backward",
+      panel1List: [
+        "<strong>Increased ATPase and ROMK</strong> would lower serum K⁺",
+        "<strong>An MR blocker</strong> reduces ENaC and ATPase activity"
+      ],
+      panel2Title: "What to remember",
+      panel2Tagline: "Match the drug action to the direction",
+      panel2List: [
+        "Enhanced secretion is the normal aldosterone effect, not the drug effect",
+        "This option describes what aldosterone would do, not what the blocker does"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Check the sign before the mechanism",
+      alertText: "Option B describes the effect of more aldosterone. <strong>The blocker produces the reverse</strong>."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Proximal bicarbonate handling",
+      infoRows: [
+        { k: "Segment", v: "Proximal tubule, upstream" },
+        { k: "Claimed effect", v: "Redistribution of K⁺" },
+        { k: "Why it fails", v: "Not the collecting-duct mechanism" },
+        { k: "Verdict", v: "Wrong pathway" }
+      ],
+      svgTitle: "Upstream bicarbonate, not distal potassium",
+      svgSubtitle: "Proximal HCO₃⁻ handling does not control distal K⁺ secretion",
+      bannerBg: "#ca8a04",
+      bannerText1: "✘ Wrong: upstream, not distal",
+      bannerText2: "Acidosis contributes to K⁺ shifts, but the cause here is the MR blocker",
+      panel1Title: "What goes wrong",
+      panel1Tagline: "A different segment and a different problem",
+      panel1List: [
+        "<strong>Proximal bicarbonate reabsorption</strong> happens upstream of the collecting duct",
+        "<strong>It does not set the distal K⁺ secretion rate</strong>"
+      ],
+      panel2Title: "What is true",
+      panel2Tagline: "Acidosis is a contributor, not the cause",
+      panel2List: [
+        "Mild acidosis (HCO₃ 19) shifts K⁺ out of cells",
+        "Correcting acidosis is a reasonable adjunct, not the main mechanism"
+      ],
+      alertIcon: "🟡",
+      alertTitle: "Contributor is not the mechanism",
+      alertText: "Option C names a real factor, but <strong>it is not what most directly explains the hyperkalemia</strong>."
+    }
+  },
+  quiz: [
+    {
+      question: "Which receptor does the new medication block?",
+      options: [
+        { text: "Mineralocorticoid receptor in collecting-duct principal cells", correct: true, explanation: "MR antagonists such as spironolactone and eplerenone block the aldosterone receptor in principal cells." },
+        { text: "Angiotensin II type 1 receptor", correct: false, explanation: "ARBs block the AT1 receptor. The scenario describes a direct mineralocorticoid receptor blocker." },
+        { text: "Beta-1 adrenergic receptor", correct: false, explanation: "Beta-blockers act on beta-1 receptors, which do not control principal-cell potassium secretion." }
+      ]
+    },
+    {
+      question: "What does aldosterone normally increase in principal cells to promote potassium secretion?",
+      options: [
+        { text: "ENaC and basolateral Na⁺/K⁺-ATPase", correct: true, explanation: "Aldosterone increases ENaC and Na⁺/K⁺-ATPase, which creates the lumen-negative potential that drives K⁺ secretion through ROMK." },
+        { text: "NCC in the distal convoluted tubule", correct: false, explanation: "NCC is upstream and is not the main driver of distal potassium secretion." },
+        { text: "NKCC2 in the thick ascending limb", correct: false, explanation: "NKCC2 is in the thick ascending limb and is not controlled by aldosterone in the collecting duct." }
+      ]
+    },
+    {
+      question: "Why is aldosterone high in this patient without causing potassium excretion?",
+      options: [
+        { text: "The receptor is blocked, so the hormone cannot act on principal cells", correct: true, explanation: "Elevated aldosterone is a compensatory response to the blocked effect, but the receptor blockade prevents its action." },
+        { text: "The drug suppresses aldosterone production", correct: false, explanation: "MR antagonists do not lower aldosterone. Renin and aldosterone rise because the kidney senses low effect." },
+        { text: "Aldosterone only acts in the proximal tubule", correct: false, explanation: "Aldosterone's main potassium effect is in the collecting duct principal cells, not the proximal tubule." }
+      ]
+    },
+    {
+      question: "What does an inappropriately low urine potassium indicate here?",
+      options: [
+        { text: "Reduced distal potassium secretion", correct: true, explanation: "Low urinary K⁺ for the degree of hyperkalemia shows that the kidney is not excreting the potassium load, consistent with reduced distal secretion." },
+        { text: "Increased filtered potassium load", correct: false, explanation: "A higher filtered load would increase urinary K⁺ if handling were normal. The low value points to a distal defect." },
+        { text: "Increased proximal potassium reabsorption only", correct: false, explanation: "Proximal reabsorption is part of normal handling, but this question points to the distal defect that the MR blocker causes." }
+      ]
+    },
+    {
+      question: "Why does a less negative lumen potential matter for potassium?",
+      options: [
+        { text: "It reduces the driving force for K⁺ to leave the principal cell through ROMK", correct: true, explanation: "The lumen-negative potential pulls K⁺ into the urine. When ENaC activity falls, that driving force falls with it." },
+        { text: "It drives sodium out of the lumen", correct: false, explanation: "Sodium enters the cell through ENaC, moving with the electrical gradient. The potential does not drive sodium out of the lumen." },
+        { text: "It controls bicarbonate secretion", correct: false, explanation: "Bicarbonate handling is regulated by other transporters. The lumen potential is the key driver for potassium here." }
+      ]
+    },
+    {
+      question: "What is the most appropriate next step in this patient with K⁺ 6.0?",
+      options: [
+        { text: "Stop or reduce the MR antagonist, check an ECG, and treat per protocol", correct: true, explanation: "Hyperkalemia at this level calls for prompt management. Stopping the drug, checking the ECG, and using a potassium binder or other therapy are standard steps." },
+        { text: "Increase the MR antagonist dose to overcome the blockade", correct: false, explanation: "A higher dose would worsen hyperkalemia. The blocker should be reduced or stopped." },
+        { text: "Add a potassium supplement to correct the low urine potassium", correct: false, explanation: "Potassium supplements would worsen hyperkalemia. Low urinary potassium here reflects impaired excretion, not depletion." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation",
+  footerNote: "Educational content based on standard nephrology principles. Verify against current guidelines and your institution's protocols."
+};
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(c =>
+    `<span class="lab-chip${c.abnormal ? ' abn' : ''}">${c.text}</span>`
+  ).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(t =>
+    `<button class="tab ${t.className}" id="tab${t.id}" onclick="setMode('${t.id}')">${t.label}</button>`
+  ).join('');
+
+  document.getElementById('quizCount').textContent = CONFIG.quiz.length;
+
+  document.getElementById('quizGrid').innerHTML = CONFIG.quiz.map((q, qi) => `
+    <div class="q">
+      <p>${qi + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map(o => `
+          <button class="opt" onclick="answerWithFeedback(this, ${o.correct}, '${o.correct ? 'Correct' : 'Wrong'}', '${o.explanation.replace(/'/g, "\\'")}', '${o.explanation.replace(/'/g, "\\'")}')">${o.text}</button>
+        `).join('')}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join('');
+}
+
+function setMode(mode) {
+  const d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(t => document.getElementById('tab' + t.id).classList.remove('active'));
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(id => {
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panel.classList.contains('collapsed') ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(r =>
+    `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`
+  ).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel() {
+  panelCollapsed = !panelCollapsed;
+  document.getElementById('infoPanel').classList.toggle('collapsed', panelCollapsed);
+  document.getElementById('toggleBtn').textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function answerWithFeedback(btn, isCorrect, label, correctText, wrongText) {
+  const box = btn.closest('.q');
+  box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  const explain = box.querySelector('.explain');
+  if (isCorrect) {
+    explain.className = 'explain show correct-explain';
+    explain.innerHTML = '<strong class="correct">✔ ' + label + '.</strong> ' + correctText;
+  } else {
+    explain.className = 'explain show wrong-explain';
+    explain.innerHTML = '<strong class="wrong">✘ ' + label + '.</strong> ' + wrongText;
+  }
+}
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

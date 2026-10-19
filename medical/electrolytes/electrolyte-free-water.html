@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electrolyte-Free Water Clearance in SIADH</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55; max-width:640px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap:12px;
+    align-items:start;
+  }
+  @media(max-width:980px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:980px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:12px 14px 14px; max-height:600px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:20px 24px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.78rem; color:var(--muted); margin:0 0 14px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.78rem;}
+  .compare-table th{text-align:left; padding:10px 12px; font-weight:800;
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:10px 12px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.5;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1200 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+        </defs>
+
+        <rect width="1200" height="780" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="600" y="35" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="600" y="58" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE FORMULA
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <!-- Big formula card -->
+          <g transform="translate(600, 200)">
+            <rect x="-500" y="-100" width="1000" height="200" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-50" text-anchor="middle" font-size="22" font-weight="800" fill="#991b1b">ELECTROLYTE-FREE WATER CLEARANCE</text>
+            <text x="0" y="10" text-anchor="middle" font-size="34" font-weight="800" fill="#0f172a">C_eH₂O = V × ( 1 − (U_Na + U_K) / P_Na )</text>
+            <text x="0" y="55" text-anchor="middle" font-size="14" fill="#7f1d1d">V = urine volume · U = urinary · P = plasma</text>
+            <text x="0" y="80" text-anchor="middle" font-size="13" fill="#991b1b">Assumes P_Na ≈ plasma Na⁺ + K⁺</text>
+          </g>
+
+          <!-- Three interpretation boxes -->
+          <g transform="translate(200, 480)">
+            <rect x="-165" y="-90" width="330" height="180" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">POSITIVE</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">C_eH₂O &gt; 0</text>
+            <text x="0" y="15" text-anchor="middle" font-size="13" fill="#15803d">Kidneys excrete free water</text>
+            <text x="0" y="38" text-anchor="middle" font-size="13" fill="#15803d">Serum Na⁺ rises toward normal</text>
+            <text x="0" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">U_Na + U_K &lt; P_Na</text>
+          </g>
+
+          <g transform="translate(600, 480)">
+            <rect x="-165" y="-90" width="330" height="180" rx="18" fill="#f1f5f9" stroke="#64748b" stroke-width="2.5"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="20" font-weight="800" fill="#334155">ZERO</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#334155">C_eH₂O = 0</text>
+            <text x="0" y="15" text-anchor="middle" font-size="13" fill="#475569">No net free water excreted</text>
+            <text x="0" y="38" text-anchor="middle" font-size="13" fill="#475569">Hyponatremia persists</text>
+            <text x="0" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">U_Na + U_K = P_Na</text>
+          </g>
+
+          <g transform="translate(1000, 480)">
+            <rect x="-165" y="-90" width="330" height="180" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="0" y="-55" text-anchor="middle" font-size="20" font-weight="800" fill="#991b1b">NEGATIVE</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#991b1b">C_eH₂O &lt; 0</text>
+            <text x="0" y="15" text-anchor="middle" font-size="13" fill="#7f1d1d">Kidneys retain free water</text>
+            <text x="0" y="38" text-anchor="middle" font-size="13" fill="#7f1d1d">Serum Na⁺ falls further</text>
+            <text x="0" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">U_Na + U_K &gt; P_Na</text>
+          </g>
+
+          <!-- Bottom note -->
+          <g transform="translate(600, 680)">
+            <rect x="-500" y="-40" width="1000" height="80" rx="14" fill="#0f172a"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">This formula tells you whether the kidney is helping or hurting</text>
+            <text x="0" y="16" text-anchor="middle" font-size="13" fill="#cbd5e1">Positive → helping · Zero → neutral · Negative → worsening</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — SIADH PATHOPHYSIOLOGY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <!-- Hypothalamus/Posterior pituitary -->
+          <g transform="translate(200, 250)">
+            <rect x="-140" y="-110" width="280" height="220" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+            <text x="0" y="-75" text-anchor="middle" font-size="15" font-weight="800" fill="#5b21b6">HYPOTHALAMUS</text>
+            <text x="0" y="-55" text-anchor="middle" font-size="12" fill="#6d28d9">↓</text>
+            <rect x="-80" y="-40" width="160" height="60" rx="12" fill="#7c3aed"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">POSTERIOR</text>
+            <text x="0" y="15" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">PITUITARY</text>
+            <text x="0" y="55" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">↑ ADH release</text>
+            <text x="0" y="80" text-anchor="middle" font-size="12" fill="#6d28d9">(inappropriate)</text>
+          </g>
+
+          <!-- Arrow -->
+          <line x1="360" y1="250" x2="460" y2="250" stroke="#7c3aed" stroke-width="6" class="flow-anim" marker-end="url(#arrowAccent2)"/>
+          <text x="410" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">ADH</text>
+
+          <!-- Collecting duct -->
+          <g transform="translate(650, 250)">
+            <rect x="-160" y="-160" width="320" height="320" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+            <text x="0" y="-125" text-anchor="middle" font-size="15" font-weight="800" fill="#155e75">COLLECTING DUCT</text>
+
+            <!-- Apical membrane -->
+            <line x1="-140" y1="-90" x2="-140" y2="90" stroke="#334155" stroke-width="4"/>
+
+            <!-- AQP2 channels -->
+            <rect x="-155" y="-60" width="30" height="40" rx="6" fill="#0891b2"/>
+            <rect x="-155" y="-10" width="30" height="40" rx="6" fill="#0891b2"/>
+            <rect x="-155" y="40" width="30" height="40" rx="6" fill="#0891b2"/>
+            <text x="-140" y="-100" text-anchor="middle" font-size="10" font-weight="800" fill="#155e75">AQP2</text>
+
+            <!-- Water arrows into cell -->
+            <line x1="-100" y1="-40" x2="-40" y2="-40" stroke="#2563eb" stroke-width="5" class="flow-anim" marker-end="url(#arrowBlue)"/>
+            <line x1="-100" y1="10" x2="-40" y2="10" stroke="#2563eb" stroke-width="5" class="flow-anim" marker-end="url(#arrowBlue)"/>
+            <line x1="-100" y1="60" x2="-40" y2="60" stroke="#2563eb" stroke-width="5" class="flow-anim" marker-end="url(#arrowBlue)"/>
+
+            <!-- Cell body -->
+            <ellipse cx="50" cy="0" rx="70" ry="80" fill="url(#accent2Grad)" opacity="0.6"/>
+            <text x="50" y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">CELL</text>
+
+            <!-- Label -->
+            <text x="0" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#0e7490">Water reabsorbed → concentrated urine</text>
+          </g>
+
+          <!-- Concentrated urine output -->
+          <g transform="translate(1000, 250)">
+            <rect x="-100" y="-160" width="200" height="320" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="0" y="-125" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">URINE</text>
+            <circle cx="0" cy="-40" r="50" fill="#dc2626" opacity="0.85"/>
+            <text x="0" y="-35" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">520</text>
+            <text x="0" y="-10" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">mOsm/kg</text>
+            <text x="0" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">Concentrated</text>
+            <text x="0" y="75" text-anchor="middle" font-size="12" fill="#7f1d1d">Low volume</text>
+            <text x="0" y="100" text-anchor="middle" font-size="12" fill="#7f1d1d">High osmolality</text>
+            <text x="0" y="130" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">Cannot dilute</text>
+          </g>
+
+          <g transform="translate(600, 680)">
+            <rect x="-500" y="-40" width="1000" height="80" rx="14" fill="#7c3aed"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">SIADH: ADH → AQP2 → water reabsorbed → concentrated urine</text>
+            <text x="0" y="16" text-anchor="middle" font-size="13" fill="#ede9fe">No free water excreted → hyponatremia persists</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — THE CALCULATION
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <!-- Step 1 -->
+          <g transform="translate(600, 170)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+            <circle cx="-440" cy="0" r="28" fill="#0891b2"/>
+            <text x="-440" y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">1</text>
+            <text x="-390" y="-15" font-size="15" font-weight="800" fill="#155e75">Sum urinary electrolytes:</text>
+            <text x="-390" y="25" font-size="20" font-weight="800" fill="#0f172a">U_Na + U_K = 75 + 45 = 120 mEq/L</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(600, 320)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+            <circle cx="-440" cy="0" r="28" fill="#0891b2"/>
+            <text x="-440" y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">2</text>
+            <text x="-390" y="-15" font-size="15" font-weight="800" fill="#155e75">Divide by plasma sodium:</text>
+            <text x="-390" y="25" font-size="20" font-weight="800" fill="#0f172a">(U_Na + U_K) / P_Na = 120 / 120 = 1.0</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(600, 470)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="2.5"/>
+            <circle cx="-440" cy="0" r="28" fill="#0891b2"/>
+            <text x="-440" y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">3</text>
+            <text x="-390" y="-15" font-size="15" font-weight="800" fill="#155e75">Apply the formula:</text>
+            <text x="-390" y="25" font-size="20" font-weight="800" fill="#0f172a">C_eH₂O = 1.5 × (1 − 1.0) = 0 L/day</text>
+          </g>
+
+          <!-- Answer -->
+          <g transform="translate(600, 630)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">ANSWER: 0 L/day</text>
+            <text x="0" y="22" text-anchor="middle" font-size="15" font-weight="700" fill="#15803d">No net electrolyte-free water excretion → fluid restriction alone will fail</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <!-- The problem -->
+          <g transform="translate(600, 140)">
+            <rect x="-500" y="-60" width="1000" height="120" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="17" font-weight="800" fill="#991b1b">The problem: C_eH₂O = 0 → urine is iso-osmotic to plasma</text>
+            <text x="0" y="18" text-anchor="middle" font-size="14" fill="#7f1d1d">Fluid restriction alone cannot correct hyponatremia if no free water is being excreted</text>
+          </g>
+
+          <!-- Strategy cards -->
+          <g transform="translate(200, 400)">
+            <rect x="-165" y="-140" width="330" height="280" rx="18" fill="#fff" stroke="#7c3aed" stroke-width="2.5"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#5b21b6">1. REDUCE INTAKE</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="13" fill="#6d28d9">Fluid restriction</text>
+            <text x="0" y="-50" text-anchor="middle" font-size="12" fill="#6d28d9">&lt; insensible losses</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="12" fill="#6d28d9">(~500–1000 mL/day)</text>
+            <line x1="-130" y1="5" x2="130" y2="5" stroke="#e9d5ff" stroke-width="2"/>
+            <text x="0" y="30" text-anchor="middle" font-size="12" fill="#6d28d9">Difficult to sustain</text>
+            <text x="0" y="55" text-anchor="middle" font-size="12" fill="#6d28d9">Often insufficient alone</text>
+            <text x="0" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">First-line but limited</text>
+          </g>
+
+          <g transform="translate(600, 400)">
+            <rect x="-165" y="-140" width="330" height="280" rx="18" fill="#fff" stroke="#0891b2" stroke-width="2.5"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">2. INCREASE SOLUTE</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="13" fill="#0e7490">Urea or salt tablets</text>
+            <text x="0" y="-50" text-anchor="middle" font-size="12" fill="#0e7490">↑ osmotic load</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="12" fill="#0e7490">→ ↑ free water excretion</text>
+            <line x1="-130" y1="5" x2="130" y2="5" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="30" text-anchor="middle" font-size="12" fill="#0e7490">Urea 15–60 g/day</text>
+            <text x="0" y="55" text-anchor="middle" font-size="12" fill="#0e7490">Salt tablets if tolerated</text>
+            <text x="0" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#155e75">Useful adjunct</text>
+          </g>
+
+          <g transform="translate(1000, 400)">
+            <rect x="-165" y="-140" width="330" height="280" rx="18" fill="#fff" stroke="#ca8a04" stroke-width="2.5"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="16" font-weight="800" fill="#713f12">3. PHARMACOTHERAPY</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="13" fill="#a16207">Vaptans (tolvaptan)</text>
+            <text x="0" y="-50" text-anchor="middle" font-size="12" fill="#a16207">Demeclocycline</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="12" fill="#a16207">Loop diuretics + salt</text>
+            <line x1="-130" y1="5" x2="130" y2="5" stroke="#fef3c7" stroke-width="2"/>
+            <text x="0" y="30" text-anchor="middle" font-size="12" fill="#a16207">Vaptans: oral, selective</text>
+            <text x="0" y="55" text-anchor="middle" font-size="12" fill="#a16207">Demeclocycline: nephrotoxic</text>
+            <text x="0" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#713f12">When restriction fails</text>
+          </g>
+
+          <!-- Bottom: rate of correction -->
+          <g transform="translate(600, 670)">
+            <rect x="-500" y="-40" width="1000" height="80" rx="14" fill="#0f172a"/>
+            <text x="0" y="-10" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">⚠️ Correct Na⁺ by ≤ 8–10 mEq/L / 24 h to avoid osmotic demyelination</text>
+            <text x="0" y="16" text-anchor="middle" font-size="13" fill="#cbd5e1">If overcorrected: D5W ± desmopressin to re-lower sodium</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(600, 730)">
+          <rect id="banner-bg" x="-520" y="-30" width="1040" height="60" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Electrolyte-Free Water Clearance in SIADH",
+  subtitle: "Why fluid restriction fails when U_Na + U_K equals P_Na",
+  badge: "NEPHROLOGY · ELECTROLYTES · CRITICAL CARE",
+  caseTitle: "Case: 72-year-old woman with SIADH and persistent hypotonic hyponatremia",
+  caseDescription: "Persistent hypotonic hyponatremia despite fluid restriction. Serum Na⁺ 120, urine osmolality 520 mOsm/kg, urine Na⁺ 75 mEq/L, urine K⁺ 45 mEq/L, urine output 1.5 L/day. Calculate the electrolyte-free water clearance.",
+  labChips: [
+    { text: "Serum Na⁺ 120 mEq/L", abnormal: true },
+    { text: "Serum osmolality 255 mOsm/kg", abnormal: true },
+    { text: "Urine osmolality 520 mOsm/kg", abnormal: true },
+    { text: "Urine Na⁺ 75 mEq/L", abnormal: true },
+    { text: "Urine K⁺ 45 mEq/L", abnormal: true },
+    { text: "Urine output 1.5 L/day", abnormal: false },
+    { text: "Creatinine 0.8 mg/dL", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Formula", className: "opt1" },
+    { id: "opt2", label: "🟣 SIADH Physiology", className: "opt2" },
+    { id: "opt3", label: "🔵 Calculation", className: "opt3" },
+    { id: "opt4", label: "🟡 Management", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Formula — Electrolyte-Free Water Clearance",
+      infoRows: [
+        { k: "Formula", v: "C_eH₂O = V × (1 − (U_Na+U_K)/P_Na)" },
+        { k: "V", v: "Urine volume (L/day)" },
+        { k: "U_Na", v: "Urine sodium (mEq/L)" },
+        { k: "U_K", v: "Urine potassium (mEq/L)" },
+        { k: "P_Na", v: "Plasma sodium (mEq/L)" }
+      ],
+      svgTitle: "Electrolyte-Free Water Clearance — The Formula",
+      svgSubtitle: "Tells you whether the kidney is excreting or retaining free water",
+      bannerBg: "#dc2626",
+      bannerText1: "C_eH₂O = V × (1 − (U_Na + U_K) / P_Na)",
+      bannerText2: "Positive → excreting free water · Zero → neutral · Negative → retaining free water",
+      panel1Title: "🧮 What the formula calculates",
+      panel1Tagline: "Free water, not total water",
+      panel1List: [
+        "Measures the volume of water excreted <strong>free of electrolytes</strong>",
+        "<strong>Positive value:</strong> kidneys excrete free water → serum Na⁺ rises toward normal",
+        "<strong>Zero:</strong> urine is iso-osmotic to plasma electrolytes → no net free water excreted",
+        "<strong>Negative value:</strong> kidneys retain free water → serum Na⁺ falls further",
+        "It tells you whether the kidney is <strong>helping or hurting</strong> the sodium problem"
+      ],
+      panel2Title: "🔑 Why it matters in SIADH",
+      panel2Tagline: "The kidney cannot dilute urine",
+      panel2List: [
+        "In SIADH, ADH drives <strong>AQP2 insertion</strong> in the collecting duct → water reabsorbed",
+        "Urine becomes <strong>concentrated</strong> (high osmolality) and <strong>low volume</strong>",
+        "The urine electrolyte sum (U_Na + U_K) is often <strong>≥ P_Na</strong>",
+        "This means C_eH₂O is <strong>zero or negative</strong>",
+        "Fluid restriction alone <strong>cannot</strong> correct hyponatremia if no free water is being excreted"
+      ],
+      alertIcon: "🧮",
+      alertTitle: "Board Pearl — The formula tells you if restriction will work",
+      alertText: "If C_eH₂O is <strong>zero or negative</strong>, fluid restriction alone will fail. You must <strong>reduce intake below insensible losses</strong>, <strong>increase solute intake</strong>, or use <strong>vaptans/demeclocycline</strong>."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 SIADH Physiology",
+      infoRows: [
+        { k: "Primary defect", v: "↑ ADH release (inappropriate)" },
+        { k: "Effect", v: "↑ AQP2 in collecting duct" },
+        { k: "Result", v: "Water reabsorbed → concentrated urine" },
+        { k: "Urine osmolality", v: "> 100 mOsm/kg (often >300)" },
+        { k: "Urine Na⁺", v: "> 30–40 mEq/L (euvolemic)" }
+      ],
+      svgTitle: "SIADH — The Kidney Cannot Dilute Urine",
+      svgSubtitle: "ADH → AQP2 → water reabsorbed → concentrated urine → hyponatremia persists",
+      bannerBg: "#7c3aed",
+      bannerText1: "SIADH: excess ADH → water reabsorption → concentrated urine → dilutional hyponatremia",
+      bannerText2: "Without free water excretion, fluid restriction alone cannot correct the sodium",
+      panel1Title: "🔬 The physiology of SIADH",
+      panel1Tagline: "Excess ADH, concentrated urine",
+      panel1List: [
+        "SIADH = <strong>syndrome of inappropriate antidiuretic hormone secretion</strong>",
+        "ADH binds V2 receptors on the collecting duct → <strong>AQP2 insertion</strong>",
+        "Water is reabsorbed → <strong>concentrated, low-volume urine</strong>",
+        "Urine osmolality is <strong>high (>100, often >300 mOsm/kg)</strong>",
+        "Urine Na⁺ is typically <strong>>30–40 mEq/L</strong> in euvolemic patients"
+      ],
+      panel2Title: "🧪 Diagnostic criteria for SIADH",
+      panel2Tagline: "The classic findings",
+      panel2List: [
+        "<strong>Hypotonic hyponatremia</strong> (serum osmolality <275 mOsm/kg)",
+        "<strong>Urine osmolality >100 mOsm/kg</strong> (inappropriately concentrated)",
+        "<strong>Urine Na⁺ >30–40 mEq/L</strong> (euvolemic)",
+        "<strong>Euvolemia</strong> (no edema, no dehydration)",
+        "<strong>Normal thyroid and adrenal function</strong>"
+      ],
+      alertIcon: "🧪",
+      alertTitle: "Pearl — Urine osmolality >100 rules out water deprivation",
+      alertText: "In SIADH, the urine is <strong>inappropriately concentrated</strong>. If urine osmolality is <100 mOsm/kg, the kidney is appropriately diluting — consider primary polydipsia instead."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Step-by-Step Calculation",
+      infoRows: [
+        { k: "Given", v: "V = 1.5 L/day" },
+        { k: "U_Na + U_K", v: "75 + 45 = 120 mEq/L" },
+        { k: "P_Na", v: "120 mEq/L" },
+        { k: "Ratio", v: "120 / 120 = 1.0" },
+        { k: "C_eH₂O", v: "1.5 × (1 − 1.0) = 0 L/day" }
+      ],
+      svgTitle: "Calculating Electrolyte-Free Water Clearance",
+      svgSubtitle: "Step-by-step for this patient",
+      bannerBg: "#0891b2",
+      bannerText1: "U_Na + U_K = 120 mEq/L = P_Na → C_eH₂O = 0 L/day",
+      bannerText2: "Zero free water clearance → fluid restriction alone will fail",
+      panel1Title: "🧮 The calculation — step by step",
+      panel1Tagline: "Three simple steps",
+      panel1List: [
+        "<strong>Step 1:</strong> Sum urinary electrolytes: U_Na + U_K = 75 + 45 = <strong>120 mEq/L</strong>",
+        "<strong>Step 2:</strong> Divide by plasma sodium: 120 / 120 = <strong>1.0</strong>",
+        "<strong>Step 3:</strong> Apply the formula: C_eH₂O = 1.5 × (1 − 1.0) = <strong>0 L/day</strong>",
+        "When U_Na + U_K = P_Na, C_eH₂O = <strong>0</strong>",
+        "The urine is <strong>iso-osmotic</strong> to plasma electrolytes — no free water excreted"
+      ],
+      panel2Title: "📊 What the result means",
+      panel2Tagline: "Zero is the key finding",
+      panel2List: [
+        "C_eH₂O = 0 → the kidneys are <strong>not excreting free water</strong>",
+        "They are also not retaining it — the urine is iso-osmotic to plasma electrolytes",
+        "This is why <strong>fluid restriction alone fails</strong> — no free water can be excreted",
+        "To correct the sodium, you must <strong>reduce intake below insensible losses</strong>, <strong>increase solute intake</strong>, or use <strong>vaptans/demeclocycline</strong>",
+        "Simply restricting fluid to 1 L/day will not work if the urine remains iso-osmotic"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Answer: D — 0 L/day",
+      alertText: "When U_Na + U_K = P_Na, the electrolyte-free water clearance is <strong>zero</strong>. No net free water excretion — fluid restriction alone cannot correct the hyponatremia."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management When C_eH₂O = 0",
+      infoRows: [
+        { k: "Problem", v: "No free water excretion" },
+        { k: "Fluid restriction", v: "First-line but often fails" },
+        { k: "Solute", v: "Urea or salt tablets" },
+        { k: "Vaptans", v: "Tolvaptan (oral)" },
+        { k: "Correction rate", v: "≤8–10 mEq/L / 24 h" }
+      ],
+      svgTitle: "Management When Electrolyte-Free Water Clearance is Zero",
+      svgSubtitle: "Fluid restriction alone won't work — you must change the solute or use pharmacotherapy",
+      bannerBg: "#ca8a04",
+      bannerText1: "First-line: fluid restriction < insensible losses (~500–1000 mL/day)",
+      bannerText2: "If that fails: increase solute (urea/salt) or use vaptans/demeclocycline",
+      panel1Title: "🥇 Step 1 — Fluid restriction (first-line)",
+      panel1Tagline: "But often insufficient",
+      panel1List: [
+        "<strong>Restrict fluid to < insensible losses</strong> (~500–1000 mL/day)",
+        "Goal: create negative water balance so serum Na⁺ rises",
+        "Difficult to sustain — patients are thirsty",
+        "<strong>Often fails when C_eH₂O = 0</strong> because no free water is being excreted",
+        "May need to combine with other strategies"
+      ],
+      panel2Title: "💊 Step 2 & 3 — Solute and pharmacotherapy",
+      panel2Tagline: "When restriction isn't enough",
+      panel2List: [
+        "<strong>Increase solute intake:</strong> urea 15–60 g/day PO, or salt tablets if tolerated",
+        "Urea increases osmotic load → ↑ free water excretion",
+        "<strong>Vaptans (tolvaptan):</strong> oral V2-receptor antagonists → aquaresis",
+        "<strong>Demeclocycline:</strong> induces nephrogenic DI — but nephrotoxic",
+        "<strong>Loop diuretics + salt:</strong> may help in some patients",
+        "<strong>Rate of correction:</strong> ≤8–10 mEq/L / 24 h to avoid osmotic demyelination"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D — 0 L/day",
+      alertText: "U_Na + U_K = 120 mEq/L = P_Na → <strong>C_eH₂O = 0 L/day</strong>. No net electrolyte-free water excretion → fluid restriction alone will fail. Escalate to <strong>solute loading or vaptans</strong>."
+    }
+  },
+  comparison: {
+    title: "📊 Interpretation of Electrolyte-Free Water Clearance",
+    sub: "The sign of C_eH₂O tells you whether the kidney is helping or hurting — and what to do next.",
+    head: ["C_eH₂O", "U_Na + U_K vs P_Na", "Kidney behavior", "Effect on serum Na⁺", "Clinical action"],
+    rows: [
+      { cells: ["Positive (> 0)", "U_Na + U_K < P_Na", "Excreting free water", "Serum Na⁺ rises toward normal", "Continue current management; monitor"], hero: false },
+      { cells: ["Zero (= 0)", "U_Na + U_K = P_Na", "Iso-osmotic urine", "Serum Na⁺ unchanged", "Fluid restriction alone fails — add solute or vaptan"], hero: true },
+      { cells: ["Negative (< 0)", "U_Na + U_K > P_Na", "Retaining free water", "Serum Na⁺ falls further", "Urgent: reduce intake, increase solute, consider vaptan"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A patient with SIADH has U_Na 75, U_K 45, P_Na 120, and urine output 1.5 L/day. What is the electrolyte-free water clearance?",
+      options: [
+        { text: "0 L/day.", correct: true,
+          explanation: "U_Na + U_K = 120 = P_Na. C_eH₂O = 1.5 × (1 − 1.0) = 0 L/day. No net free water excreted." },
+        { text: "+1.5 L/day.", correct: false,
+          explanation: "That would require U_Na + U_K = 0, which is impossible." },
+        { text: "−1.5 L/day.", correct: false,
+          explanation: "That would require U_Na + U_K = 240 mEq/L, far above the measured value." }
+      ]
+    },
+    {
+      question: "What does a C_eH₂O of 0 L/day imply?",
+      options: [
+        { text: "The kidneys are neither excreting nor retaining free water — urine is iso-osmotic to plasma electrolytes.", correct: true,
+          explanation: "When U_Na + U_K = P_Na, the urine is iso-osmotic with respect to electrolytes. No net free water is excreted or retained." },
+        { text: "The kidneys are excreting 1.5 L/day of free water.", correct: false,
+          explanation: "That would be a positive value, not zero." },
+        { text: "The kidneys are retaining 1.5 L/day of free water.", correct: false,
+          explanation: "That would be a negative value, not zero." }
+      ]
+    },
+    {
+      question: "Why does fluid restriction alone often fail in SIADH when C_eH₂O is zero?",
+      options: [
+        { text: "No free water is being excreted, so reducing intake does not create negative water balance.", correct: true,
+          explanation: "If the urine is iso-osmotic to plasma electrolytes, the kidney cannot excrete free water. Restriction alone cannot correct the hyponatremia." },
+        { text: "Fluid restriction causes ADH release.", correct: false,
+          explanation: "Fluid restriction does not directly stimulate ADH in SIADH; ADH is already inappropriately elevated." },
+        { text: "The kidney cannot reabsorb sodium.", correct: false,
+          explanation: "The problem is water handling, not sodium reabsorption." }
+      ]
+    },
+    {
+      question: "What is the maximum recommended rate of sodium correction in chronic hyponatremia?",
+      options: [
+        { text: "≤8–10 mEq/L per 24 hours.", correct: true,
+          explanation: "Correcting faster than 8–10 mEq/L per 24 h risks osmotic demyelination syndrome." },
+        { text: "≤2 mEq/L per 24 hours.", correct: false,
+          explanation: "This is unnecessarily slow and would leave the hyponatremia untreated." },
+        { text: "Normalize within 6 hours.", correct: false,
+          explanation: "Rapid correction is dangerous and can cause osmotic demyelination." }
+      ]
+    },
+    {
+      question: "What is the first-line treatment for chronic SIADH hyponatremia?",
+      options: [
+        { text: "Fluid restriction.", correct: true,
+          explanation: "Fluid restriction is first-line, but it often fails when C_eH₂O is zero or negative." },
+        { text: "Hypertonic saline.", correct: false,
+          explanation: "Hypertonic saline is reserved for severe symptomatic hyponatremia (seizures, coma), not chronic asymptomatic cases." },
+        { text: "Vaptans.", correct: false,
+          explanation: "Vaptans are second-line, used when fluid restriction fails or is not tolerated." }
+      ]
+    },
+    {
+      question: "Which medication increases solute intake to promote free water excretion?",
+      options: [
+        { text: "Urea.", correct: true,
+          explanation: "Urea 15–60 g/day PO increases osmotic load and promotes free water excretion. It is a useful adjunct when fluid restriction fails." },
+        { text: "Furosemide.", correct: false,
+          explanation: "Furosemide is a loop diuretic — it may help in some patients but does not increase solute intake." },
+        { text: "Tolvaptan.", correct: false,
+          explanation: "Tolvaptan is a V2-receptor antagonist that causes aquaresis, but it does not increase solute intake." }
+      ]
+    },
+    {
+      question: "What is the mechanism of action of tolvaptan?",
+      options: [
+        { text: "V2-receptor antagonism → aquaresis (free water excretion).", correct: true,
+          explanation: "Tolvaptan blocks V2 receptors in the collecting duct, preventing AQP2 insertion and causing excretion of free water." },
+        { text: "Loop diuretic action at NKCC2.", correct: false,
+          explanation: "Tolvaptan does not act on NKCC2. It is a V2-receptor antagonist." },
+        { text: "Stimulation of ADH release.", correct: false,
+          explanation: "Tolvaptan blocks ADH action, it does not stimulate ADH release." }
+      ]
+    },
+    {
+      question: "If a patient's serum sodium rises too rapidly during correction, what should be done?",
+      options: [
+        { text: "Give D5W ± desmopressin to re-lower the sodium.", correct: true,
+          explanation: "Overcorrection of hyponatremia risks osmotic demyelination. D5W with or without desmopressin can re-lower the sodium to a safe rate." },
+        { text: "Continue current therapy and monitor.", correct: false,
+          explanation: "Continuing current therapy risks osmotic demyelination. Intervention is needed." },
+        { text: "Give hypertonic saline.", correct: false,
+          explanation: "Hypertonic saline would raise sodium further, worsening the overcorrection." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Electrolytes / Critical Care",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : '') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = CONFIG.quiz.length;
+  document.getElementById('quizGrid').innerHTML = CONFIG.quiz.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = CONFIG.quiz[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

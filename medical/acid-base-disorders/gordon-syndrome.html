@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gordon Syndrome (PHA II) — Hyperkalemia from NCC Overactivity</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table th:nth-child(6){background:#0f172a;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- DIAGRAM 1 — THE TRIAD -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 190)">
+            <rect x="-620" y="-80" width="1240" height="160" rx="26" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="34" font-weight="800" fill="#991b1b">GORDON SYNDROME (PHA II)</text>
+            <text x="0" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#7f1d1d">The Classic Triad — Hypertension + Hyperkalemia + Hyperchloremic Acidosis</text>
+            <text x="0" y="62" text-anchor="middle" font-size="16" fill="#991b1b">Also called familial hyperkalemic hypertension (FHHt) · Autosomal dominant</text>
+          </g>
+
+          <g transform="translate(250, 480)">
+            <rect x="-200" y="-160" width="400" height="320" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-160" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">1. HYPERTENSION</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="52" font-weight="800" fill="#dc2626">168/96</text>
+            <text x="0" y="30" text-anchor="middle" font-size="20" font-weight="800" fill="#991b1b">mmHg</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="17" fill="#7f1d1d">Volume-mediated</text>
+            <text x="0" y="122" text-anchor="middle" font-size="17" fill="#7f1d1d">Often severe</text>
+            <text x="0" y="149" text-anchor="middle" font-size="17" fill="#7f1d1d">Early-onset</text>
+          </g>
+
+          <g transform="translate(700, 480)">
+            <rect x="-200" y="-160" width="400" height="320" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-160" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">2. HYPERKALEMIA</text>
+            <text x="0" y="-20" text-anchor="middle" font-size="52" font-weight="800" fill="#dc2626">6.1</text>
+            <text x="0" y="30" text-anchor="middle" font-size="20" font-weight="800" fill="#991b1b">mEq/L</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="17" fill="#7f1d1d">Out of proportion</text>
+            <text x="0" y="122" text-anchor="middle" font-size="17" fill="#7f1d1d">to normal GFR</text>
+            <text x="0" y="149" text-anchor="middle" font-size="17" fill="#7f1d1d">Tubular, not renal</text>
+          </g>
+
+          <g transform="translate(1150, 480)">
+            <rect x="-200" y="-160" width="400" height="320" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-160" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">3. ACIDOSIS</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="34" font-weight="800" fill="#dc2626">HCO₃⁻ 18</text>
+            <text x="0" y="20" text-anchor="middle" font-size="34" font-weight="800" fill="#dc2626">Cl⁻ 113</text>
+            <line x1="-160" y1="60" x2="160" y2="60" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="95" text-anchor="middle" font-size="17" fill="#7f1d1d">Non-anion gap</text>
+            <text x="0" y="122" text-anchor="middle" font-size="17" fill="#7f1d1d">Hyperchloremic</text>
+            <text x="0" y="149" text-anchor="middle" font-size="17" fill="#7f1d1d">Metabolic acidosis</text>
+          </g>
+
+          <g transform="translate(700, 790)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#fff" stroke="#0f172a" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="20" font-weight="800" fill="#0f172a">KEY DISTINGUISHING FEATURES</text>
+            <g font-size="17">
+              <text x="-600" y="10" font-weight="700" fill="#16a34a">✓</text>
+              <text x="-565" y="10" fill="#334155"><tspan font-weight="800">Normal kidney function</tspan> (Cr 0.9) — hyperkalemia is tubular</text>
+              <text x="-600" y="40" font-weight="700" fill="#16a34a">✓</text>
+              <text x="-565" y="40" fill="#334155"><tspan font-weight="800">Suppressed renin</tspan> + <tspan font-weight="800">low aldosterone</tspan> — not aldosterone deficiency</text>
+              <text x="100" y="10" font-weight="700" fill="#16a34a">✓</text>
+              <text x="135" y="10" fill="#334155"><tspan font-weight="800">KLHL3 mutation</tspan> — autosomal dominant</text>
+              <text x="100" y="40" font-weight="700" fill="#16a34a">✓</text>
+              <text x="135" y="40" fill="#334155"><tspan font-weight="800">Thiazide-responsive</tspan> — diuretic fixes hyperkalemia</text>
+            </g>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">Hypertension + Hyperkalemia + Hyperchloremic acidosis = Gordon syndrome</text>
+          </g>
+        </g>
+
+        <!-- DIAGRAM 2 — MECHANISM -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 160)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="26" font-weight="800" fill="#5b21b6">① KLHL3 LOSS-OF-FUNCTION MUTATION</text>
+            <text x="0" y="15" text-anchor="middle" font-size="18" fill="#6d28d9">KLHL3 normally forms an E3 ubiquitin ligase with CUL3 → degrades WNK kinases</text>
+            <text x="0" y="48" text-anchor="middle" font-size="20" font-weight="800" fill="#5b21b6">→ WNK kinases are NOT degraded → ↑ WNK signaling</text>
+          </g>
+
+          <line x1="700" y1="240" x2="700" y2="290" stroke="#7c3aed" stroke-width="8" marker-end="url(#arrowAccent2)"/>
+
+          <g transform="translate(700, 490)">
+            <rect x="-620" y="-170" width="1240" height="340" rx="22" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-135" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">② DISTAL CONVOLUTED TUBULE (DCT)</text>
+
+            <rect x="-580" y="-100" width="280" height="240" rx="20" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-440" y="-65" text-anchor="middle" font-size="18" font-weight="800" fill="#0e7490">LUMEN</text>
+            <circle cx="-520" cy="-10" r="28" fill="#2563eb"/>
+            <text x="-520" y="0" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">Na⁺</text>
+            <circle cx="-440" cy="-10" r="28" fill="#16a34a"/>
+            <text x="-440" y="0" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">Cl⁻</text>
+            <circle cx="-360" cy="-10" r="28" fill="#2563eb"/>
+            <text x="-360" y="0" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">Na⁺</text>
+            <circle cx="-440" cy="70" r="28" fill="#2563eb"/>
+            <text x="-440" y="80" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">Na⁺</text>
+            <text x="-440" y="125" text-anchor="middle" font-size="15" font-weight="700" fill="#0e7490">Na⁺ · Cl⁻ delivered</text>
+
+            <line x1="-290" y1="-100" x2="-290" y2="140" stroke="#334155" stroke-width="6"/>
+            <text x="-290" y="-115" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">APICAL</text>
+
+            <rect x="-320" y="-40" width="60" height="130" rx="10" fill="#ca8a04" class="pulse-block"/>
+            <text x="-290" y="10" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">NCC</text>
+            <text x="-290" y="38" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">↑↑</text>
+
+            <line x1="-220" y1="-20" x2="-130" y2="-20" stroke="#2563eb" stroke-width="6" class="flow-anim" marker-end="url(#arrowBlue)"/>
+            <line x1="-220" y1="40" x2="-130" y2="40" stroke="#16a34a" stroke-width="6" class="flow-anim" marker-end="url(#arrowGray)"/>
+
+            <ellipse cx="30" cy="10" rx="180" ry="120" fill="url(#accent4Grad)" opacity="0.5"/>
+            <text x="30" y="-10" text-anchor="middle" font-size="22" font-weight="800" fill="#713f12">DCT CELL</text>
+            <text x="30" y="25" text-anchor="middle" font-size="17" fill="#a16207">↑ Na⁺ and Cl⁻ reabsorption</text>
+            <text x="30" y="55" text-anchor="middle" font-size="16" font-weight="700" fill="#7c3aed">via ↑ NCC activity</text>
+
+            <rect x="280" y="-100" width="320" height="240" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="440" y="-65" text-anchor="middle" font-size="18" font-weight="800" fill="#991b1b">DISTAL CONSEQUENCE</text>
+            <text x="305" y="-15" font-size="15" font-weight="700" fill="#7f1d1d">→ ↓ Na⁺ delivery</text>
+            <text x="305" y="15" font-size="15" fill="#7f1d1d">  to collecting duct</text>
+            <text x="305" y="50" font-size="15" font-weight="700" fill="#7f1d1d">→ ↓ ENaC activity</text>
+            <text x="305" y="80" font-size="15" font-weight="700" fill="#7f1d1d">→ ↓ lumen-negative</text>
+            <text x="305" y="105" font-size="15" fill="#7f1d1d">  potential</text>
+            <text x="440" y="130" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">→ ↓ K⁺ secretion</text>
+          </g>
+
+          <line x1="700" y1="670" x2="700" y2="720" stroke="#dc2626" stroke-width="8" marker-end="url(#arrowAccent1)"/>
+
+          <g transform="translate(700, 830)">
+            <rect x="-620" y="-80" width="1240" height="160" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#166534">✅ ANSWER B — ↑ NCC → ↓ distal Na⁺ → ↓ K⁺ secretion</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#15803d">The DCT reabsorbs more Na⁺ and Cl⁻, leaving less Na⁺ for the collecting duct</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" fill="#15803d">↓ ENaC → ↓ lumen-negative potential → ↓ ROMK-mediated K⁺ secretion → HYPERKALEMIA</text>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">KLHL3 loss → WNK↑ → NCC↑ → ↓ distal Na⁺ → ↓ K⁺ secretion</text>
+          </g>
+        </g>
+
+        <!-- DIAGRAM 3 — MIMICS -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DISTINGUISHING THE TUBULOPATHIES</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Renin and aldosterone are the fastest way to sort them out</text>
+          </g>
+
+          <g transform="translate(250, 520)">
+            <rect x="-210" y="-300" width="420" height="600" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-300" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-245" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">GORDON (PHA II)</text>
+            <text x="0" y="-195" text-anchor="middle" font-size="15" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+            <circle cx="0" cy="-100" r="65" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">NCC</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="24" font-weight="800" fill="#166534">↑↑</text>
+            <g font-size="16">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• BP:</text>
+              <text x="-100" y="0" font-weight="800" fill="#166534">↑ Hypertension</text>
+              <text x="-180" y="30" font-weight="700" fill="#166534">• K⁺:</text>
+              <text x="-100" y="30" font-weight="800" fill="#166534">↑ Hyperkalemia</text>
+              <text x="-180" y="60" font-weight="700" fill="#166534">• HCO₃⁻:</text>
+              <text x="-100" y="60" font-weight="800" fill="#166534">↓ Acidosis</text>
+              <text x="-180" y="90" font-weight="700" fill="#166534">• Renin:</text>
+              <text x="-100" y="90" font-weight="800" fill="#166534">↓ Suppressed</text>
+              <text x="-180" y="120" font-weight="700" fill="#166534">• Aldo:</text>
+              <text x="-100" y="120" font-weight="800" fill="#166534">↓ Low-normal</text>
+              <text x="-180" y="150" font-weight="700" fill="#166534">• Cr:</text>
+              <text x="-100" y="150" font-weight="800" fill="#166534">Normal</text>
+            </g>
+            <rect x="-180" y="190" width="360" height="85" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="218" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">Treatment:</text>
+            <text x="0" y="245" text-anchor="middle" font-size="17" font-weight="800" fill="#166534">Thiazide + low salt</text>
+          </g>
+
+          <g transform="translate(700, 520)">
+            <rect x="-210" y="-300" width="420" height="600" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-300" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-245" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">PHA I</text>
+            <text x="0" y="-195" text-anchor="middle" font-size="15" font-weight="700" fill="#6d28d9">Aldosterone resistance</text>
+            <circle cx="0" cy="-100" r="65" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">MR or</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">ENaC ↓</text>
+            <g font-size="16">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• BP:</text>
+              <text x="-100" y="0" font-weight="800" fill="#5b21b6">↓ Hypotension</text>
+              <text x="-180" y="30" font-weight="700" fill="#5b21b6">• K⁺:</text>
+              <text x="-100" y="30" font-weight="800" fill="#5b21b6">↑ Hyperkalemia</text>
+              <text x="-180" y="60" font-weight="700" fill="#5b21b6">• HCO₃⁻:</text>
+              <text x="-100" y="60" font-weight="800" fill="#5b21b6">↓ Acidosis</text>
+              <text x="-180" y="90" font-weight="700" fill="#5b21b6">• Renin:</text>
+              <text x="-100" y="90" font-weight="800" fill="#5b21b6">↑↑ Elevated</text>
+              <text x="-180" y="120" font-weight="700" fill="#5b21b6">• Aldo:</text>
+              <text x="-100" y="120" font-weight="800" fill="#5b21b6">↑↑ Elevated</text>
+              <text x="-180" y="150" font-weight="700" fill="#5b21b6">• Cr:</text>
+              <text x="-100" y="150" font-weight="800" fill="#5b21b6">Normal</text>
+            </g>
+            <rect x="-180" y="190" width="360" height="85" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="218" text-anchor="middle" font-size="15" font-weight="700" fill="#5b21b6">Treatment:</text>
+            <text x="0" y="245" text-anchor="middle" font-size="17" font-weight="800" fill="#5b21b6">Salt + K⁺ binders</text>
+          </g>
+
+          <g transform="translate(1150, 520)">
+            <rect x="-210" y="-300" width="420" height="600" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-210" y="-300" width="420" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-210" y="-245" width="420" height="25" fill="#0891b2"/>
+            <text x="0" y="-245" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">BARTTER</text>
+            <text x="0" y="-195" text-anchor="middle" font-size="15" font-weight="700" fill="#0e7490">TAL defect (NKCC2)</text>
+            <circle cx="0" cy="-100" r="65" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-105" text-anchor="middle" font-size="20" font-weight="800" fill="#155e75">NKCC2</text>
+            <text x="0" y="-75" text-anchor="middle" font-size="24" font-weight="800" fill="#155e75">↓↓</text>
+            <g font-size="16">
+              <text x="-180" y="0" font-weight="700" fill="#155e75">• BP:</text>
+              <text x="-100" y="0" font-weight="800" fill="#155e75">↓ / normal</text>
+              <text x="-180" y="30" font-weight="700" fill="#155e75">• K⁺:</text>
+              <text x="-100" y="30" font-weight="800" fill="#155e75">↓ Hypokalemia</text>
+              <text x="-180" y="60" font-weight="700" fill="#155e75">• HCO₃⁻:</text>
+              <text x="-100" y="60" font-weight="800" fill="#155e75">↑ Alkalosis</text>
+              <text x="-180" y="90" font-weight="700" fill="#155e75">• Renin:</text>
+              <text x="-100" y="90" font-weight="800" fill="#155e75">↑ Elevated</text>
+              <text x="-180" y="120" font-weight="700" fill="#155e75">• Aldo:</text>
+              <text x="-100" y="120" font-weight="800" fill="#155e75">↑ Elevated</text>
+              <text x="-180" y="150" font-weight="700" fill="#155e75">• Ca²⁺:</text>
+              <text x="-100" y="150" font-weight="800" fill="#155e75">↑ Urinary Ca</text>
+            </g>
+            <rect x="-180" y="190" width="360" height="85" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="218" text-anchor="middle" font-size="15" font-weight="700" fill="#155e75">Treatment:</text>
+            <text x="0" y="245" text-anchor="middle" font-size="17" font-weight="800" fill="#155e75">K⁺ + indomethacin</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Gordon: HTN + hyperK + acidosis · PHA I: hypotension + high renin/aldo · Bartter: hypoK + alkalosis</text>
+          </g>
+        </g>
+
+        <!-- DIAGRAM 4 — DIAGNOSIS & TREATMENT -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 210)">
+            <rect x="-620" y="-140" width="1240" height="280" rx="22" fill="#fff" stroke="#0f172a" stroke-width="4"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="24" font-weight="800" fill="#0f172a">🔍 DIAGNOSIS — THE 4 KEY FINDINGS</text>
+            <g font-size="17">
+              <text x="-600" y="-45" font-weight="800" fill="#16a34a">1.</text>
+              <text x="-560" y="-45" fill="#334155"><tspan font-weight="800">Hypertension</tspan> — volume-mediated, often severe</text>
+              <text x="-600" y="-5" font-weight="800" fill="#16a34a">2.</text>
+              <text x="-560" y="-5" fill="#334155"><tspan font-weight="800">Hyperkalemia</tspan> — out of proportion to GFR</text>
+              <text x="-600" y="35" font-weight="800" fill="#16a34a">3.</text>
+              <text x="-560" y="35" fill="#334155"><tspan font-weight="800">Hyperchloremic metabolic acidosis</tspan> (non-anion gap)</text>
+              <text x="-600" y="75" font-weight="800" fill="#16a34a">4.</text>
+              <text x="-560" y="75" fill="#334155"><tspan font-weight="800">Suppressed renin + low-normal aldosterone</tspan> — distinguishes from PHA I</text>
+            </g>
+            <text x="0" y="120" text-anchor="middle" font-size="15" font-style="italic" fill="#64748b">Confirm with genetic testing: WNK1 · WNK4 · KLHL3 · CUL3</text>
+          </g>
+
+          <g transform="translate(700, 490)">
+            <rect x="-620" y="-100" width="1240" height="200" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-58" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">🧬 GENETICS — Four Genes, One Pathway</text>
+            <g transform="translate(-450, 30)">
+              <rect x="-105" y="-50" width="210" height="100" rx="14" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+              <text x="0" y="-10" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">WNK1</text>
+              <text x="0" y="18" text-anchor="middle" font-size="13" fill="#6d28d9">gain-of-function</text>
+            </g>
+            <g transform="translate(-150, 30)">
+              <rect x="-105" y="-50" width="210" height="100" rx="14" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+              <text x="0" y="-10" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">WNK4</text>
+              <text x="0" y="18" text-anchor="middle" font-size="13" fill="#6d28d9">gain-of-function</text>
+            </g>
+            <g transform="translate(150, 30)">
+              <rect x="-105" y="-50" width="210" height="100" rx="14" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+              <text x="0" y="-10" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">KLHL3</text>
+              <text x="0" y="18" text-anchor="middle" font-size="13" fill="#6d28d9">loss-of-function</text>
+            </g>
+            <g transform="translate(450, 30)">
+              <rect x="-105" y="-50" width="210" height="100" rx="14" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+              <text x="0" y="-10" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">CUL3</text>
+              <text x="0" y="18" text-anchor="middle" font-size="13" fill="#6d28d9">loss-of-function</text>
+            </g>
+            <text x="0" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="#5b21b6">All four converge on ↑ WNK signaling → ↑ NCC activity</text>
+          </g>
+
+          <g transform="translate(700, 780)">
+            <rect x="-620" y="-110" width="1240" height="220" rx="22" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-65" text-anchor="middle" font-size="24" font-weight="800" fill="#166534">💊 TREATMENT — Thiazide Diuretics</text>
+            <g transform="translate(-420, 40)">
+              <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">1. THIAZIDE</text>
+              <text x="0" y="15" text-anchor="middle" font-size="16" fill="#15803d">Hydrochlorothiazide</text>
+              <text x="0" y="40" text-anchor="middle" font-size="16" fill="#15803d">or chlorthalidone</text>
+              <text x="0" y="72" text-anchor="middle" font-size="14" font-style="italic" fill="#166534">Blocks the overactive NCC</text>
+            </g>
+            <g transform="translate(0, 40)">
+              <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">2. LOW-SALT DIET</text>
+              <text x="0" y="15" text-anchor="middle" font-size="16" fill="#15803d">Sodium restriction</text>
+              <text x="0" y="40" text-anchor="middle" font-size="16" fill="#15803d">&lt; 2 g/day</text>
+              <text x="0" y="72" text-anchor="middle" font-size="14" font-style="italic" fill="#166534">Reduces volume load</text>
+            </g>
+            <g transform="translate(420, 40)">
+              <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">3. MONITOR</text>
+              <text x="0" y="15" text-anchor="middle" font-size="16" fill="#15803d">K⁺, HCO₃⁻, BP</text>
+              <text x="0" y="40" text-anchor="middle" font-size="16" fill="#15803d">Expect correction</text>
+              <text x="0" y="72" text-anchor="middle" font-size="14" font-style="italic" fill="#166534">Watch hypoK / hypoNa</text>
+            </g>
+          </g>
+
+          <g transform="translate(700, 950)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Diagnose with triad + suppressed renin/aldo · Treat with thiazide + low salt</text>
+          </g>
+        </g>
+
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  title: "Gordon Syndrome (PHA II) — Hyperkalemia from NCC Overactivity",
+  subtitle: "KLHL3 loss → WNK↑ → NCC↑ → ↓ distal Na⁺ → ↓ K⁺ secretion",
+  badge: "NEPHROLOGY · HYPERTENSION · GENETICS",
+  caseTitle: "Case: 42-year-old man with hypertension and persistent hyperkalemia",
+  caseDescription: "Hypertension 168/96 with persistent hyperkalemia (K⁺ 6.1) despite normal kidney function (Cr 0.9). Hyperchloremic metabolic acidosis (HCO₃⁻ 18, Cl⁻ 113). Suppressed renin, low-normal aldosterone. Father with similar history. Genetic testing: loss-of-function KLHL3 mutation → increased WNK signaling.",
+  labChips: [
+    { text: "BP 168/96 mmHg", abnormal: true },
+    { text: "K⁺ 6.1 mEq/L", abnormal: true },
+    { text: "HCO₃⁻ 18 mEq/L", abnormal: true },
+    { text: "Cl⁻ 113 mEq/L", abnormal: true },
+    { text: "Creatinine 0.9 mg/dL", abnormal: false },
+    { text: "Renin: suppressed", abnormal: true },
+    { text: "Aldosterone: low-normal", abnormal: true },
+    { text: "KLHL3 mutation", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Triad", className: "opt1" },
+    { id: "opt2", label: "🟣 WNK → NCC Mechanism", className: "opt2" },
+    { id: "opt3", label: "🔵 Mimics", className: "opt3" },
+    { id: "opt4", label: "🟡 Diagnosis & Rx", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Gordon Syndrome — The Classic Triad",
+      infoRows: [
+        { k: "Also called", v: "PHA II / FHHt" },
+        { k: "Triad", v: "HTN + hyperK + acidosis" },
+        { k: "Inheritance", v: "Autosomal dominant" },
+        { k: "Renin / Aldo", v: "Suppressed / low-normal" },
+        { k: "Key drug", v: "Thiazide diuretic" }
+      ],
+      svgTitle: "Gordon Syndrome (PHA II) — The Classic Triad",
+      svgSubtitle: "Hypertension + hyperkalemia + hyperchloremic metabolic acidosis, with suppressed renin",
+      bannerBg: "#dc2626",
+      bannerText1: "Gordon syndrome = Hypertension + Hyperkalemia + Hyperchloremic acidosis",
+      bannerText2: "The one cause of hyperkalemia that is treated with a diuretic",
+      panel1Title: "🧩 What is Gordon syndrome?",
+      panel1Tagline: "Familial hyperkalemic hypertension",
+      panel1List: [
+        "Also called <strong>pseudohypoaldosteronism type II (PHA II)</strong> or <strong>familial hyperkalemic hypertension (FHHt)</strong>",
+        "<strong>Hypertension</strong> — volume-mediated, often severe and early-onset",
+        "<strong>Hyperkalemia</strong> — out of proportion to GFR",
+        "<strong>Hyperchloremic metabolic acidosis</strong> — non-anion gap",
+        "<strong>Suppressed renin</strong> with <strong>low-normal aldosterone</strong> — key distinction from PHA I",
+        "<strong>Normal kidney function</strong> — unlike CKD, the GFR is preserved"
+      ],
+      panel2Title: "🧬 Genetics — four genes, one pathway",
+      panel2Tagline: "All converge on WNK signaling",
+      panel2List: [
+        "<strong>WNK1</strong> — gain-of-function (intronic deletion)",
+        "<strong>WNK4</strong> — gain-of-function (missense mutations)",
+        "<strong>KLHL3</strong> — loss-of-function (this patient) — normally degrades WNK",
+        "<strong>CUL3</strong> — loss-of-function — part of the same E3 ligase complex",
+        "All four mutations → <strong>↑ WNK signaling → ↑ NCC activity</strong>",
+        "Inheritance is typically <strong>autosomal dominant</strong> (some recessive forms for KLHL3/CUL3)"
+      ],
+      alertIcon: "🧩",
+      alertTitle: "Board Pearl — The hyperkalemia that responds to a diuretic",
+      alertText: "Gordon syndrome is the classic cause of hyperkalemia treated with a <strong>thiazide diuretic</strong>. The thiazide blocks the overactive NCC — the exact transporter driving the phenotype."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Mechanism — WNK → NCC → ↓ K⁺ Secretion",
+      infoRows: [
+        { k: "KLHL3 function", v: "Degrades WNK kinases" },
+        { k: "Mutation effect", v: "↑ WNK signaling" },
+        { k: "Downstream", v: "↑ NCC activity in DCT" },
+        { k: "Consequence", v: "↓ distal Na⁺ delivery" },
+        { k: "Result", v: "↓ K⁺ secretion → hyperkalemia" }
+      ],
+      svgTitle: "Mechanism — KLHL3 Loss → WNK↑ → NCC↑ → ↓ K⁺ Secretion",
+      svgSubtitle: "The pathway from gene mutation to hyperkalemia",
+      bannerBg: "#7c3aed",
+      bannerText1: "KLHL3 loss → WNK kinases accumulate → ↑ NCC activity in the DCT",
+      bannerText2: "↑ NCC → ↓ distal Na⁺ delivery → ↓ ENaC → ↓ lumen-negative potential → ↓ K⁺ secretion",
+      panel1Title: "🔬 Step 1–3 — From gene to transporter",
+      panel1Tagline: "WNK kinases are master regulators",
+      panel1List: [
+        "<strong>KLHL3</strong> is part of a Cullin-RING E3 ubiquitin ligase that normally <strong>degrades WNK kinases</strong>",
+        "Loss-of-function KLHL3 → <strong>WNK kinases accumulate</strong>",
+        "WNK → activates <strong>SPAK/OSR1</strong> → phosphorylates and activates <strong>NCC</strong>",
+        "Result: <strong>↑ NCC activity</strong> on the apical membrane of the DCT",
+        "The DCT now reabsorbs more Na⁺ and Cl⁻ than normal"
+      ],
+      panel2Title: "🔬 Step 4–5 — Why K⁺ rises",
+      panel2Tagline: "The distal consequence",
+      panel2List: [
+        "↑ NCC activity → <strong>↓ Na⁺ delivery to the collecting duct</strong>",
+        "The collecting duct's ENaC has <strong>less substrate</strong> to reabsorb",
+        "↓ ENaC → <strong>↓ lumen-negative potential</strong> in the collecting duct",
+        "↓ electrochemical driving force for K⁺ secretion through <strong>ROMK</strong>",
+        "Result: <strong>hyperkalemia</strong>",
+        "Plus: volume expansion → <strong>suppressed renin</strong> → low aldosterone → ↓ K⁺ secretion further"
+      ],
+      alertIcon: "✅",
+      alertTitle: "Answer: B — ↑ NCC → ↓ distal Na⁺ → ↓ K⁺ secretion",
+      alertText: "Increased NCC activity in the DCT, reducing distal sodium delivery and potassium secretion, is the mechanism that best explains the hyperkalemia."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Mimics — How to Tell Them Apart",
+      infoRows: [
+        { k: "Gordon (PHA II)", v: "HTN + hyperK + acidosis" },
+        { k: "PHA I", v: "Hypotension + high renin/aldo" },
+        { k: "Bartter", v: "HypoK + alkalosis + low BP" },
+        { k: "Liddle", v: "HTN + hypoK + alkalosis" },
+        { k: "Key test", v: "Renin + aldosterone" }
+      ],
+      svgTitle: "Mimics — Distinguishing the Tubulopathies",
+      svgSubtitle: "The renin-aldosterone axis separates Gordon syndrome from PHA I",
+      bannerBg: "#0891b2",
+      bannerText1: "Gordon: HTN + hyperkalemia + acidosis · PHA I: hypotension + high renin/aldo",
+      bannerText2: "Bartter: hypokalemia + alkalosis · Liddle: HTN + hypokalemia + alkalosis",
+      panel1Title: "🧪 PHA I — the closest mimic",
+      panel1Tagline: "Aldosterone resistance, not overactivity",
+      panel1List: [
+        "PHA type I is caused by <strong>defective mineralocorticoid receptor (MR)</strong> or <strong>ENaC</strong>",
+        "Presents with <strong>hypotension</strong>, hyperkalemia, and metabolic acidosis",
+        "<strong>Renin and aldosterone are HIGH</strong> — the kidney senses hypovolemia",
+        "Contrast with Gordon syndrome: <strong>hypertension</strong> + <strong>suppressed renin/aldo</strong>",
+        "PHA I is treated with salt and potassium binders — <strong>not</strong> thiazides"
+      ],
+      panel2Title: "🧪 Bartter, Gitelman, Liddle — the other lookalikes",
+      panel2Tagline: "Different transporters, different phenotypes",
+      panel2List: [
+        "<strong>Bartter syndrome:</strong> NKCC2 (TAL) defect → hypokalemia, metabolic <strong>alkalosis</strong>, low/normal BP, hypercalciuria",
+        "<strong>Gitelman syndrome:</strong> NCC (DCT) defect → hypokalemia, alkalosis, hypomagnesemia, hypocalciuria",
+        "<strong>Liddle syndrome:</strong> ENaC gain-of-function → <strong>hypertension, hypokalemia, alkalosis</strong>, suppressed aldosterone",
+        "<strong>Key point:</strong> Gordon has <strong>hyperkalemia + acidosis</strong> — the opposite of Bartter/Gitelman/Liddle",
+        "The <strong>renin-aldosterone axis</strong> is the fastest way to sort them out"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Renin and aldosterone make the diagnosis",
+      alertText: "In any patient with hypertension + hyperkalemia, check <strong>renin and aldosterone</strong>. Suppressed both → Gordon syndrome. High both → PHA I (aldosterone resistance)."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Diagnosis & Treatment",
+      infoRows: [
+        { k: "Diagnosis", v: "Clinical + genetic" },
+        { k: "Confirm", v: "Renin↓, Aldo↓" },
+        { k: "First-line Rx", v: "Thiazide diuretic" },
+        { k: "Adjunct", v: "Low-salt diet" },
+        { k: "Expected", v: "K⁺ normalizes, BP ↓" }
+      ],
+      svgTitle: "Diagnosis and Treatment of Gordon Syndrome",
+      svgSubtitle: "Thiazide diuretics are the treatment — they block the overactive NCC",
+      bannerBg: "#ca8a04",
+      bannerText1: "Diagnose with the clinical triad + suppressed renin/aldo + genetic confirmation",
+      bannerText2: "Treat with a thiazide diuretic (HCTZ or chlorthalidone) + low-salt diet",
+      panel1Title: "🔍 Diagnosis — four key findings",
+      panel1Tagline: "Clinical + biochemical + genetic",
+      panel1List: [
+        "<strong>Hypertension</strong> — often severe and early-onset",
+        "<strong>Hyperkalemia</strong> — out of proportion to GFR",
+        "<strong>Hyperchloremic metabolic acidosis</strong> — non-anion gap",
+        "<strong>Suppressed renin + low-normal aldosterone</strong> — distinguishes from PHA I",
+        "<strong>Genetic testing</strong> — WNK1, WNK4, KLHL3, CUL3"
+      ],
+      panel2Title: "💊 Treatment — thiazides + low salt",
+      panel2Tagline: "Block the overactive NCC",
+      panel2List: [
+        "<strong>Thiazide diuretic</strong> (hydrochlorothiazide or chlorthalidone) — blocks the overactive NCC",
+        "<strong>Low-salt diet</strong> (< 2 g/day) — reduces the volume load driving hypertension",
+        "Expected response: <strong>K⁺ normalizes</strong>, <strong>BP improves</strong>, <strong>acidosis corrects</strong>",
+        "Monitor for <strong>hypokalemia, hyponatremia, and volume depletion</strong>",
+        "Genetic counseling for family members — autosomal dominant pattern"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: B",
+      alertText: "Increased NCC activity in the distal convoluted tubule, reducing distal sodium delivery and potassium secretion, best explains the hyperkalemia. The treatment is a <strong>thiazide diuretic</strong>."
+    }
+  },
+  comparison: {
+    title: "📊 Differential Diagnosis — Hypertension and Hyperkalemia",
+    sub: "The renin-aldosterone axis is the fastest way to distinguish these syndromes.",
+    head: ["Syndrome", "BP", "K⁺", "Acid-base", "Renin / Aldo", "Treatment"],
+    rows: [
+      { cells: ["Gordon (PHA II)", "↑ HTN", "↑ hyperK", "Non-AG acidosis", "↓ / ↓", "Thiazide + low salt"], hero: true },
+      { cells: ["PHA I (MR defect)", "↓ hypotension", "↑ hyperK", "Non-AG acidosis", "↑↑ / ↑↑", "Salt + K⁺ binders"], hero: false },
+      { cells: ["CKD stage 4–5", "↑ HTN", "↑ hyperK", "Non-AG acidosis", "↑ / ↑", "K⁺ binders, diet, dialysis"], hero: false },
+      { cells: ["Primary adrenal insufficiency", "↓ hypotension", "↑ hyperK", "Non-AG acidosis", "↑↑ / ↓↓", "Steroid + mineralocorticoid"], hero: false },
+      { cells: ["Type 4 RTA", "Variable", "↑ hyperK", "Non-AG acidosis", "↓ / ↓", "Low-K diet, diuretics, fludrocortisone"], hero: false },
+      { cells: ["Liddle syndrome", "↑ HTN", "↓ hypoK", "Alkalosis", "↓ / ↓", "Amiloride"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 42-year-old man has hypertension, hyperkalemia (K⁺ 6.1), HCO₃⁻ 18, Cl⁻ 113, Cr 0.9, suppressed renin, and low-normal aldosterone. Genetic testing shows a loss-of-function KLHL3 mutation. Which mechanism best explains the hyperkalemia?",
+      options: [
+        { text: "Increased NCC activity in the distal convoluted tubule, reducing distal sodium delivery and potassium secretion.", correct: true,
+          explanation: "KLHL3 loss → WNK↑ → NCC↑ in the DCT. The DCT reabsorbs more Na⁺, so less Na⁺ reaches the collecting duct. ↓ ENaC → ↓ lumen-negative potential → ↓ K⁺ secretion → hyperkalemia." },
+        { text: "Increased ENaC activity causing excessive potassium secretion.", correct: false,
+          explanation: "↑ ENaC would cause hypokalemia and metabolic alkalosis — the opposite of this case. That is Liddle syndrome." },
+        { text: "Reduced NKCC2 activity in the thick ascending limb.", correct: false,
+          explanation: "Reduced NKCC2 causes Bartter syndrome: hypokalemia, metabolic alkalosis, low/normal BP — the opposite of this case." }
+      ]
+    },
+    {
+      question: "What is the function of KLHL3 in normal physiology?",
+      options: [
+        { text: "It is part of an E3 ubiquitin ligase complex that degrades WNK kinases.", correct: true,
+          explanation: "KLHL3 forms a Cullin-RING E3 ubiquitin ligase with CUL3 that targets WNK kinases for degradation. Loss-of-function → WNK accumulation." },
+        { text: "It directly transports sodium in the proximal tubule.", correct: false,
+          explanation: "KLHL3 is not a transporter. It regulates WNK kinase abundance." },
+        { text: "It activates the mineralocorticoid receptor.", correct: false,
+          explanation: "KLHL3 does not interact with the mineralocorticoid receptor. It regulates WNK kinases." }
+      ]
+    },
+    {
+      question: "Which transporter is overactive in Gordon syndrome, and what drug blocks it?",
+      options: [
+        { text: "NCC; blocked by thiazide diuretics.", correct: true,
+          explanation: "NCC (Na-Cl cotransporter) in the DCT is overactive. Thiazide diuretics block NCC, which is why they are the treatment of choice for Gordon syndrome." },
+        { text: "NKCC2; blocked by loop diuretics.", correct: false,
+          explanation: "NKCC2 is the loop diuretic target. It is not the overactive transporter in Gordon syndrome." },
+        { text: "ENaC; blocked by amiloride.", correct: false,
+          explanation: "ENaC is not overactive in Gordon syndrome. Amiloride is used for Liddle syndrome." }
+      ]
+    },
+    {
+      question: "A patient with hypertension and hyperkalemia has HIGH renin and HIGH aldosterone. What is the most likely diagnosis?",
+      options: [
+        { text: "Pseudohypoaldosteronism type I (aldosterone resistance).", correct: true,
+          explanation: "PHA I is caused by defective mineralocorticoid receptor or ENaC. The kidney senses hypovolemia and elevates renin and aldosterone, but the tubule cannot respond — hyperkalemia and acidosis result, with HYPOtension." },
+        { text: "Gordon syndrome (PHA II).", correct: false,
+          explanation: "Gordon syndrome has suppressed renin and low-normal aldosterone, and the patient is hypertensive." },
+        { text: "Liddle syndrome.", correct: false,
+          explanation: "Liddle syndrome has suppressed renin and aldosterone, and the patient has hypokalemia (not hyperkalemia)." }
+      ]
+    },
+    {
+      question: "Why does hyperkalemia occur in Gordon syndrome even though the GFR is normal?",
+      options: [
+        { text: "Because NCC overactivity reduces distal Na⁺ delivery to the collecting duct, decreasing the driving force for K⁺ secretion.", correct: true,
+          explanation: "The hyperkalemia is tubular, not glomerular. The DCT reabsorbs too much Na⁺, so less Na⁺ reaches the collecting duct. This decreases ENaC activity and the lumen-negative potential that drives K⁺ secretion." },
+        { text: "Because the kidneys cannot filter potassium at all.", correct: false,
+          explanation: "The GFR is normal, so filtration is intact. The problem is impaired tubular secretion." },
+        { text: "Because of aldosterone excess.", correct: false,
+          explanation: "Aldosterone is low-normal, not elevated. The mechanism is independent of aldosterone." }
+      ]
+    },
+    {
+      question: "What acid-base disturbance is typical of Gordon syndrome?",
+      options: [
+        { text: "Hyperchloremic (non-anion gap) metabolic acidosis.", correct: true,
+          explanation: "Impaired distal Na⁺ delivery → impaired H⁺ and K⁺ secretion in the collecting duct → non-anion gap metabolic acidosis. Hyperkalemia also impairs ammoniagenesis." },
+        { text: "Metabolic alkalosis.", correct: false,
+          explanation: "Alkalosis occurs with Bartter, Gitelman, and Liddle syndromes — not Gordon syndrome." },
+        { text: "High-anion gap metabolic acidosis.", correct: false,
+          explanation: "The acidosis in Gordon syndrome is hyperchloremic (non-anion gap), not high-anion gap." }
+      ]
+    },
+    {
+      question: "Which of the following genes is NOT associated with Gordon syndrome?",
+      options: [
+        { text: "SCNN1A (ENaC alpha subunit).", correct: true,
+          explanation: "SCNN1A mutations cause Liddle syndrome (ENaC gain-of-function) with hypertension + hypokalemia + alkalosis. Gordon syndrome is caused by WNK1, WNK4, KLHL3, or CUL3 mutations." },
+        { text: "WNK1.", correct: false,
+          explanation: "WNK1 gain-of-function causes Gordon syndrome." },
+        { text: "KLHL3.", correct: false,
+          explanation: "KLHL3 loss-of-function causes Gordon syndrome (this patient)." }
+      ]
+    },
+    {
+      question: "A patient with Gordon syndrome is started on hydrochlorothiazide. What is the expected effect?",
+      options: [
+        { text: "K⁺ normalizes, BP improves, acidosis corrects.", correct: true,
+          explanation: "Thiazides block the overactive NCC, reducing Na⁺ reabsorption in the DCT. This increases distal Na⁺ delivery, restores K⁺ secretion, and corrects the acidosis. BP also improves from volume reduction." },
+        { text: "K⁺ rises further.", correct: false,
+          explanation: "Thiazides lower K⁺ in most patients, but in Gordon syndrome they CORRECT the hyperkalemia by restoring distal Na⁺ delivery." },
+        { text: "No effect — thiazides are contraindicated.", correct: false,
+          explanation: "Thiazides are the treatment of choice for Gordon syndrome. They block the exact transporter causing the phenotype." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Hypertension / Genetics",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER — randomizes option order at render time.
+   CONFIG.quiz keeps the correct answer first (easy authoring),
+   but RUNTIME_QUIZ shuffles the options on every page load.
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : '') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   MODE SWITCH
+   ============================================================ */
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+/* ============================================================
+   COLLAPSE TOGGLE
+   ============================================================ */
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+/* ============================================================
+   QUIZ HANDLER — reads from RUNTIME_QUIZ (shuffled)
+   ============================================================ */
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

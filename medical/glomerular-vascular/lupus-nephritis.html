@@ -3,83 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>APS Nephropathy Microscopy — A Gift by Dr. Malik</title>
+<title>Lupus Nephritis — Induction, Maintenance & Refractory Treatment</title>
 <style>
   :root{
-    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
-    --lupus:#d97706; --aps:#2563eb; --ok:#16a34a; --warn:#dc2626;
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
   }
   *{box-sizing:border-box;}
-  body{margin:0; font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
-    background:linear-gradient(160deg,#f8fafc 0%,#eef2f7 100%); color:var(--ink); line-height:1.5;}
-  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
 
-  /* HEADER */
-  header.top{background:#fff; border-radius:18px; padding:22px 26px;
-    box-shadow:0 6px 24px rgba(15,23,42,.07); border:1px solid var(--line);
-    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
-  header.top h1{margin:0; font-size:1.5rem; letter-spacing:-.4px;}
-  header.top p{margin:4px 0 0; font-size:.9rem; color:var(--muted);}
-  .badge{background:#0f172a; color:#fff; font-size:.72rem; letter-spacing:.08em;
-    text-transform:uppercase; padding:7px 14px; border-radius:999px; white-space:nowrap;}
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
 
-  /* MICROSCOPY STAGE */
-  .stage{background:#fff; border:1px solid var(--line); border-radius:18px; padding:26px 24px;
-    box-shadow:0 6px 24px rgba(15,23,42,.07); margin-top:24px; text-align:center;}
-  .stage h2{margin:0 0 4px; font-size:1.15rem; color:#0f172a;}
-  .stage .sub{margin:0 0 18px; font-size:.85rem; color:var(--muted);}
-  
-  .toggle-bar{display:flex; justify-content:center; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
-  .pill{border:2px solid transparent; background:#f1f5f9; padding:10px 20px; border-radius:999px;
-    font-size:.9rem; font-weight:700; cursor:pointer; transition:all .25s ease; color:var(--muted);}
-  .pill:hover{transform:translateY(-2px);}
-  .pill.lupus.active{background:#fef3c7; border-color:var(--lupus); color:#92400e;}
-  .pill.aps.active{background:#dbeafe; border-color:var(--aps); color:#1e40af;}
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
 
-  svg.microscopy{width:100%; max-width:800px; height:auto; border-radius:12px; box-shadow:inset 0 0 20px rgba(0,0,0,0.1);}
-  
-  /* Animations */
-  @keyframes pulse-thrombus { 0%,100%{opacity:0.8; transform:scale(1);} 50%{opacity:1; transform:scale(1.05);} }
-  @keyframes flow-rbc { 0%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-20;} }
-  .thrombus { animation: pulse-thrombus 2s infinite ease-in-out; transform-origin: center; }
-  .rbc-flow { stroke-dasharray: 4 6; animation: flow-rbc 1s linear infinite; }
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
 
-  /* DIFFERENTIAL TABLE */
-  .diff-section{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px; overflow-x:auto;}
-  .diff-section h2{margin:0 0 16px; font-size:1.15rem; color:#0f172a;}
-  table{width:100%; border-collapse:collapse; font-size:.85rem; min-width:800px;}
-  th{text-align:left; padding:12px 14px; background:#f1f5f9; font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); border-bottom:2px solid var(--line);}
-  td{padding:14px; border-bottom:1px solid #f1f5f9; vertical-align:top;}
-  tr.highlight-aps { background-color: #eff6ff; box-shadow: inset 4px 0 0 var(--aps); }
-  tr.highlight-aps td { font-weight: 600; color: #1e3a8a; }
-  tr:hover { background-color: #f8fafc; }
-  tr.highlight-aps:hover { background-color: #dbeafe; }
-  .badge-lupus { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-  .badge-aps { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-  .badge-normal { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
 
-  /* QUIZ */
-  .quiz{background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 6px 24px rgba(15,23,42,.07); padding:22px 24px; margin-top:24px;}
-  .quiz h2{margin:0 0 16px; font-size:1.1rem;}
-  .q{border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px; transition:border-color .25s ease;}
-  .q:hover{border-color:#cbd5e1;}
-  .q p{margin:0 0 10px; font-weight:600; font-size:.95rem;}
-  .opts{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
-  .opt{border:1.5px solid var(--line); background:#fff; padding:8px 14px; border-radius:9px; font-size:.85rem; cursor:pointer; transition:all .2s ease; font-weight:600; color:var(--ink);}
-  .opt:hover{border-color:#94a3b8; transform:translateY(-1px);}
-  .opt.correct{background:#dcfce7; border-color:var(--ok); color:#166534;}
-  .opt.wrong{background:#fee2e2; border-color:var(--warn); color:#991b1b;}
-  .explain{display:none; background:#f8fafc; border-left:4px solid #94a3b8; padding:11px 14px; border-radius:0 10px 10px 0; font-size:.85rem; color:#334155;}
-  .explain.show{display:block; animation:fade .35s ease;}
-  @keyframes fade{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
 
-  /* FOOTER */
-  .gift-footer{margin-top:36px; padding:26px 24px; background:#0f172a; border-radius:18px; color:#e2e8f0; text-align:center; border:1px solid #1e293b;}
-  .gift-footer h3{margin:0 0 6px; font-size:1.25rem; color:#f8fafc;}
-  .gift-footer .byline{font-size:1rem; color:#94a3b8; margin-bottom:18px;}
-  .gift-footer .byline strong{color:#60a5fa;}
-  .disclaimer-box{background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; border-radius:12px; padding:14px 18px; font-size:.82rem; text-align:left; line-height:1.6; max-width:900px; margin:0 auto;}
-  .disclaimer-box strong{color:#c2410c;}
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
 </style>
 </head>
 <body>
@@ -87,279 +200,827 @@
 
   <header class="top">
     <div>
-      <h1>SLE vs. APS Nephropathy</h1>
-      <p>Interactive Microscopy: Distinguishing Lupus Nephritis from Thrombotic Microangiopathy</p>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
     </div>
-    <div class="badge">Educational Gift</div>
+    <div class="badge" id="pageBadge"></div>
   </header>
 
-  <!-- MICROSCOPY STAGE -->
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
   <section class="stage">
-    <h2>Renal Pathology Visualizer (H&E + IF)</h2>
-    <p class="sub">Toggle between the two differential diagnoses to compare the microscopic findings.</p>
-    
-    <div class="toggle-bar">
-      <button class="pill lupus active" id="btnLupus" onclick="setMode('lupus')">Lupus Nephritis (Immune Complex)</button>
-      <button class="pill aps" id="btnAps" onclick="setMode('aps')">APS Nephropathy / TMA (Fibrin Thrombi)</button>
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — INDUCTION THERAPY
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#991b1b">INITIAL (INDUCTION) THERAPY</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#7f1d1d">Glucocorticoids + one of the following regimens</text>
+            <text x="0" y="48" text-anchor="middle" font-size="14" fill="#991b1b">KDIGO 2024 / ACR 2024</text>
+          </g>
+
+          <!-- MPAA -->
+          <g transform="translate(220, 400)">
+            <rect x="-180" y="-150" width="360" height="300" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-180" y="-150" width="360" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-180" y="-115" width="360" height="25" fill="#7c3aed"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">MPAA</text>
+            <text x="0" y="-60" text-anchor="middle" font-size="20" font-weight="800" fill="#5b21b6">Mycophenolate</text>
+            <line x1="-150" y1="-30" x2="150" y2="-30" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="5" text-anchor="middle" font-size="14" fill="#6d28d9">MMF 1–2 g/day</text>
+            <text x="0" y="30" text-anchor="middle" font-size="14" fill="#6d28d9">or MPA 1.08–1.44 g/day</text>
+            <text x="0" y="60" text-anchor="middle" font-size="13" fill="#6d28d9">Preferred in patients at high</text>
+            <text x="0" y="82" text-anchor="middle" font-size="13" fill="#6d28d9">risk of infertility</text>
+            <text x="0" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Dual therapy</text>
+          </g>
+
+          <!-- Low-dose CYC -->
+          <g transform="translate(700, 400)">
+            <rect x="-180" y="-150" width="360" height="300" rx="20" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-180" y="-150" width="360" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-180" y="-115" width="360" height="25" fill="#dc2626"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">LOW-DOSE IV CYC</text>
+            <text x="0" y="-60" text-anchor="middle" font-size="20" font-weight="800" fill="#991b1b">Cyclophosphamide</text>
+            <line x1="-150" y1="-30" x2="150" y2="-30" stroke="#fecaca" stroke-width="2"/>
+            <text x="0" y="5" text-anchor="middle" font-size="14" fill="#7f1d1d">Euro-Lupus regimen</text>
+            <text x="0" y="30" text-anchor="middle" font-size="14" fill="#7f1d1d">500 mg IV q2 weeks × 6</text>
+            <text x="0" y="60" text-anchor="middle" font-size="13" fill="#7f1d1d">Preferred if adherence</text>
+            <text x="0" y="82" text-anchor="middle" font-size="13" fill="#7f1d1d">to oral regimen is difficult</text>
+            <text x="0" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Dual therapy</text>
+          </g>
+
+          <!-- Triple therapy -->
+          <g transform="translate(1180, 400)">
+            <rect x="-200" y="-150" width="400" height="300" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-150" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-115" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-113" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">TRIPLE THERAPY</text>
+            <text x="0" y="-60" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">Preferred first-line</text>
+            <line x1="-170" y1="-30" x2="170" y2="-30" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="5" text-anchor="middle" font-size="13" fill="#15803d">MPAA + Belimumab</text>
+            <text x="0" y="28" text-anchor="middle" font-size="13" fill="#15803d">or</text>
+            <text x="0" y="51" text-anchor="middle" font-size="13" fill="#15803d">MPAA + CNI (voclosporin)</text>
+            <text x="0" y="74" text-anchor="middle" font-size="13" fill="#15803d">or</text>
+            <text x="0" y="97" text-anchor="middle" font-size="13" fill="#15803d">Low-dose CYC + Belimumab</text>
+            <text x="0" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">2024 guideline emphasis</text>
+          </g>
+
+          <!-- Steroid strategy -->
+          <g transform="translate(700, 650)">
+            <rect x="-620" y="-50" width="1240" height="100" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="800" fill="#713f12">GLUCOCORTICOID STRATEGY — LOWER DOSES, RAPID TAPER</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" fill="#a16207">IV pulse methylprednisolone → oral prednisone 0.5 mg/kg/day (max 40 mg/day)</text>
+            <text x="0" y="40" text-anchor="middle" font-size="16" font-weight="700" fill="#713f12">Taper to ≤ 5 mg/day by 6 months</text>
+          </g>
+
+          <g transform="translate(700, 820)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#166534">Hydroxychloroquine for all patients unless contraindicated</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — MAINTENANCE THERAPY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#5b21b6">MAINTENANCE THERAPY</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#6d28d9">Sustain remission, prevent flares, minimize toxicity</text>
+            <text x="0" y="48" text-anchor="middle" font-size="14" fill="#5b21b6">Duration ≥ 36 months for proliferative LN</text>
+          </g>
+
+          <!-- MPAA first choice -->
+          <g transform="translate(350, 450)">
+            <rect x="-290" y="-180" width="580" height="360" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-290" y="-180" width="580" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-290" y="-125" width="580" height="25" fill="#16a34a"/>
+            <text x="0" y="-125" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">MPAA — FIRST CHOICE</text>
+
+            <g font-size="16">
+              <text x="-260" y="-60" font-weight="800" fill="#166534">Mycophenolate Mofetil (MMF)</text>
+              <text x="-260" y="-25" font-weight="700" fill="#15803d">750–1000 mg twice daily</text>
+              <text x="-260" y="10" font-weight="800" fill="#166534">or Mycophenolic Acid (MPA)</text>
+              <text x="-260" y="45" font-weight="700" fill="#15803d">540–720 mg twice daily</text>
+              <text x="-260" y="85" font-weight="700" fill="#15803d">Lower flare rate than azathioprine</text>
+              <text x="-260" y="115" font-weight="700" fill="#15803d">Preferred in most patients</text>
+            </g>
+
+            <rect x="-260" y="145" width="520" height="50" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="175" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">Continue triple therapy for 2–3 years if started on it</text>
+          </g>
+
+          <!-- Azathioprine alternative -->
+          <g transform="translate(1050, 450)">
+            <rect x="-290" y="-180" width="580" height="360" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-290" y="-180" width="580" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-290" y="-125" width="580" height="25" fill="#dc2626"/>
+            <text x="0" y="-125" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">AZATHIOPRINE — ALTERNATIVE</text>
+
+            <g font-size="16">
+              <text x="-260" y="-60" font-weight="800" fill="#991b1b">When to use</text>
+              <text x="-260" y="-25" font-weight="700" fill="#7f1d1d">• MMF not tolerated</text>
+              <text x="-260" y="10" font-weight="700" fill="#7f1d1d">• MMF not available</text>
+              <text x="-260" y="45" font-weight="700" fill="#7f1d1d">• Pregnancy planning</text>
+              <text x="-260" y="85" font-weight="800" fill="#991b1b">Caveat</text>
+              <text x="-260" y="115" font-weight="700" fill="#7f1d1d">Higher flare rate than MPAA</text>
+            </g>
+
+            <rect x="-260" y="145" width="520" height="50" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="175" text-anchor="middle" font-size="14" font-weight="800" fill="#991b1b">Only if MPAA is not an option</text>
+          </g>
+
+          <!-- Treatment duration -->
+          <g transform="translate(700, 720)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">DURATION AND DISCONTINUATION</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#0e7490">Total immunosuppression for proliferative LN ≥ 36 months</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="#155e75">Consider stopping glucocorticoids after ≥ 12 months of sustained complete renal response</text>
+          </g>
+
+          <g transform="translate(700, 880)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">MPAA is preferred — azathioprine is a fallback — duration ≥ 36 months</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — REFRACTORY / RELAPSING
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#0f172a"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#fff">REFRACTORY OR RELAPSING DISEASE</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#cbd5e1">Escalation and alternative strategies</text>
+          </g>
+
+          <!-- Rituximab -->
+          <g transform="translate(250, 420)">
+            <rect x="-200" y="-170" width="400" height="340" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-200" y="-170" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-135" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">RITUXIMAB</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#5b21b6">Anti-CD20</text>
+            <line x1="-170" y1="-50" x2="170" y2="-50" stroke="#ddd6fe" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#6d28d9">For persistent disease or</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" fill="#6d28d9">inadequate response</text>
+            <text x="0" y="40" text-anchor="middle" font-size="14" fill="#6d28d9">Response rates 50–80%</text>
+            <text x="0" y="70" text-anchor="middle" font-size="14" fill="#6d28d9">Can combine with belimumab</text>
+            <text x="0" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">Second-line / refractory</text>
+          </g>
+
+          <!-- Obinutuzumab -->
+          <g transform="translate(700, 420)">
+            <rect x="-200" y="-170" width="400" height="340" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="60" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-135" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">OBINUTUZUMAB</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">Anti-CD20 (newer)</text>
+            <line x1="-170" y1="-50" x2="170" y2="-50" stroke="#bbf7d0" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#15803d">Recently approved for LN</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" fill="#15803d">More potent than rituximab</text>
+            <text x="0" y="40" text-anchor="middle" font-size="14" fill="#15803d">Included in EULAR 2025</text>
+            <text x="0" y="70" text-anchor="middle" font-size="14" fill="#15803d">Combined with MMF</text>
+            <text x="0" y="100" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">Emerging second-line</text>
+          </g>
+
+          <!-- Voclosporin -->
+          <g transform="translate(1150, 420)">
+            <rect x="-200" y="-170" width="400" height="340" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <rect x="-200" y="-170" width="400" height="60" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-135" width="400" height="25" fill="#0891b2"/>
+            <text x="0" y="-133" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">VOCLOSPORIN</text>
+            <text x="0" y="-80" text-anchor="middle" font-size="22" font-weight="800" fill="#155e75">Calcineurin inhibitor</text>
+            <line x1="-170" y1="-50" x2="170" y2="-50" stroke="#cffafe" stroke-width="2"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="14" fill="#0e7490">For non-responsive or</text>
+            <text x="0" y="10" text-anchor="middle" font-size="14" fill="#0e7490">relapsing disease</text>
+            <text x="0" y="40" text-anchor="middle" font-size="14" fill="#0e7490">Add to MMF or azathioprine</text>
+            <text x="0" y="70" text-anchor="middle" font-size="14" fill="#0e7490">Rapid proteinuria reduction</text>
+            <text x="0" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#155e75">Second-line / add-on</text>
+          </g>
+
+          <!-- Other -->
+          <g transform="translate(700, 680)">
+            <rect x="-620" y="-80" width="1240" height="160" rx="20" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-40" text-anchor="middle" font-size="22" font-weight="800" fill="#713f12">OTHER OPTIONS FOR REFRACTORY DISEASE</text>
+            <g font-size="16">
+              <text x="-560" y="5" font-weight="700" fill="#a16207">• Rituximab + Belimumab combination</text>
+              <text x="-560" y="35" font-weight="700" fill="#a16207">• Prolonged IV cyclophosphamide course</text>
+              <text x="-560" y="65" font-weight="700" fill="#a16207">• Enrollment in clinical trials (CAR T-cell, anifrolumab, ianalumab)</text>
+            </g>
+          </g>
+
+          <g transform="translate(700, 880)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Rituximab, obinutuzumab, voclosporin, or clinical trials</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — GUIDELINE COMPARISON
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 140)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="22" fill="#0f172a"/>
+            <text x="0" y="-15" text-anchor="middle" font-size="28" font-weight="800" fill="#fff">GUIDELINE COMPARISON — 2024</text>
+            <text x="0" y="20" text-anchor="middle" font-size="18" fill="#cbd5e1">KDIGO, ACR, and EULAR align on key principles</text>
+          </g>
+
+          <!-- KDIGO -->
+          <g transform="translate(350, 450)">
+            <rect x="-290" y="-200" width="580" height="400" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-290" y="-200" width="580" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-290" y="-145" width="580" height="25" fill="#0891b2"/>
+            <text x="0" y="-145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">KDIGO 2024</text>
+
+            <g font-size="16">
+              <text x="-260" y="-80" font-weight="800" fill="#155e75">Initial Therapy</text>
+              <text x="-260" y="-45" font-weight="700" fill="#0e7490">• MPAA + GCs</text>
+              <text x="-260" y="-15" font-weight="700" fill="#0e7490">• Low-dose CYC + GCs</text>
+              <text x="-260" y="15" font-weight="700" fill="#0e7490">• Triple therapy (BEL or CNI)</text>
+              <text x="-260" y="55" font-weight="800" fill="#155e75">Maintenance</text>
+              <text x="-260" y="90" font-weight="700" fill="#0e7490">• MPAA is first choice</text>
+              <text x="-260" y="120" font-weight="700" fill="#0e7490">• Continue triple therapy 2–3 years</text>
+            </g>
+
+            <rect x="-260" y="155" width="520" height="50" rx="12" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="185" text-anchor="middle" font-size="14" font-weight="800" fill="#155e75">Triple therapy = first-line for severe LN</text>
+          </g>
+
+          <!-- ACR -->
+          <g transform="translate(1050, 450)">
+            <rect x="-290" y="-200" width="580" height="400" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-290" y="-200" width="580" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-290" y="-145" width="580" height="25" fill="#7c3aed"/>
+            <text x="0" y="-145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">ACR 2024</text>
+
+            <g font-size="16">
+              <text x="-260" y="-80" font-weight="800" fill="#5b21b6">Initial Therapy</text>
+              <text x="-260" y="-45" font-weight="700" fill="#6d28d9">• MPAA + BEL + GCs</text>
+              <text x="-260" y="-15" font-weight="700" fill="#6d28d9">• MPAA + CNI + GCs</text>
+              <text x="-260" y="15" font-weight="700" fill="#6d28d9">• Low-dose CYC + BEL + GCs</text>
+              <text x="-260" y="55" font-weight="800" fill="#5b21b6">Steroid Strategy</text>
+              <text x="-260" y="90" font-weight="700" fill="#6d28d9">• Start prednisone 0.5 mg/kg/day</text>
+              <text x="-260" y="120" font-weight="700" fill="#6d28d9">• Taper to ≤ 5 mg/day by 6 months</text>
+            </g>
+
+            <rect x="-260" y="155" width="520" height="50" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="185" text-anchor="middle" font-size="14" font-weight="800" fill="#5b21b6">Triple therapy is the most desirable approach</text>
+          </g>
+
+          <g transform="translate(700, 740)">
+            <rect x="-620" y="-60" width="1240" height="120" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="22" font-weight="800" fill="#166534">CONVERGENCE</text>
+            <text x="0" y="10" text-anchor="middle" font-size="17" fill="#15803d">All 2024 guidelines endorse triple therapy as first-line for active, severe LN</text>
+            <text x="0" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">All emphasize lower glucocorticoid doses and rapid taper</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
     </div>
 
-    <!-- Realistic Microscopy SVG -->
-    <svg class="microscopy" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Tissue Texture Filters -->
-        <filter id="hne-texture">
-          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 0.8 0 0 0  0 0.8 0 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
-          <feBlend in="SourceGraphic" in2="coloredNoise" mode="multiply" />
-        </filter>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="2" result="blur" />
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        
-        <!-- H&E Colors -->
-        <radialGradient id="bowmansCapsule" cx="50%" cy="50%" r="50%">
-          <stop offset="80%" stop-color="#fce7f3" stop-opacity="0.1"/>
-          <stop offset="100%" stop-color="#f9a8d4" stop-opacity="0.4"/>
-        </radialGradient>
-      </defs>
-
-      <!-- Background Tissue (H&E pink/purple) -->
-      <rect width="800" height="450" fill="#fdf2f8" filter="url(#hne-texture)"/>
-      
-      <!-- Surrounding Tubules (Simplified) -->
-      <g stroke="#d8b4fe" stroke-width="2" fill="none" opacity="0.6">
-        <ellipse cx="100" cy="100" rx="60" ry="40" />
-        <ellipse cx="700" cy="350" rx="80" ry="50" />
-        <ellipse cx="150" cy="380" rx="70" ry="45" />
-        <ellipse cx="680" cy="80" rx="50" ry="30" />
-      </g>
-
-      <!-- Main Glomerulus (H&E) -->
-      <circle cx="400" cy="225" r="160" fill="url(#bowmansCapsule)" stroke="#db2777" stroke-width="4"/>
-      
-      <!-- Capillary Tuft Network (H&E) -->
-      <g id="capillaryTuft" fill="none" stroke="#e11d48" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M 300 150 Q 400 80 500 150 Q 560 220 500 300 Q 400 370 300 300 Q 240 220 300 150 Z" />
-        <path d="M 330 180 Q 400 140 470 180 Q 510 225 470 270 Q 400 310 330 270 Q 290 225 330 180 Z" />
-        <path d="M 360 200 Q 400 180 440 200 Q 460 225 440 250 Q 400 270 360 250 Q 340 225 360 200 Z" />
-      </g>
-
-      <!-- Nuclei (Mesangial & Endothelial Cells) - H&E purple/blue -->
-      <g fill="#4c1d95" opacity="0.8">
-        <circle cx="350" cy="140" r="5"/><circle cx="370" cy="120" r="6"/><circle cx="450" cy="130" r="5"/>
-        <circle cx="480" cy="170" r="6"/><circle cx="520" cy="220" r="5"/><circle cx="490" cy="280" r="6"/>
-        <circle cx="430" cy="320" r="5"/><circle cx="350" cy="310" r="6"/><circle cx="290" cy="270" r="5"/>
-        <circle cx="270" cy="210" r="6"/><circle cx="300" cy="160" r="5"/><circle cx="400" cy="160" r="5"/>
-        <circle cx="420" cy="200" r="6"/><circle cx="380" cy="230" r="5"/><circle cx="430" cy="250" r="6"/>
-        <circle cx="380" cy="280" r="5"/><circle cx="340" cy="250" r="6"/>
-      </g>
-
-      <!-- ========================================== -->
-      <!-- LUPUS NEPHRITIS FEATURES (Hidden by default)-->
-      <!-- ========================================== -->
-      <g id="lupusFeatures" opacity="0" style="transition: opacity 0.5s ease;">
-        <!-- Wire Loops (Thickened GBM) -->
-        <g fill="none" stroke="#f59e0b" stroke-width="4" opacity="0.9">
-          <path d="M 330 180 Q 400 140 470 180 Q 510 225 470 270 Q 400 310 330 270 Q 290 225 330 180 Z" />
-          <path d="M 360 200 Q 400 180 440 200 Q 460 225 440 250 Q 400 270 360 250 Q 340 225 360 200 Z" />
-        </g>
-        <!-- Immune Complex Deposits (Subendothelial) -->
-        <g fill="#f59e0b" opacity="0.8">
-          <circle cx="350" cy="150" r="4"/><circle cx="420" cy="130" r="4"/><circle cx="490" cy="180" r="4"/>
-          <circle cx="500" cy="250" r="4"/><circle cx="450" cy="300" r="4"/><circle cx="360" cy="310" r="4"/>
-          <circle cx="290" cy="250" r="4"/><circle cx="290" cy="190" r="4"/>
-        </g>
-        <!-- Inflammatory Cells (Neutrophils/Macrophages) -->
-        <g fill="#1e3a8a" opacity="0.9">
-          <circle cx="380" cy="220" r="7"/><circle cx="420" cy="240" r="8"/><circle cx="340" cy="260" r="6"/>
-        </g>
-        
-        <!-- IF Inset Panel -->
-        <rect x="580" y="20" width="200" height="160" rx="10" fill="#0f172a" stroke="#334155" stroke-width="3"/>
-        <text x="680" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#94a3b8">IF: IgG / C3</text>
-        <!-- Granular IF Pattern -->
-        <g fill="none" stroke="#4ade80" stroke-width="3" opacity="0.9">
-          <path d="M 620 80 Q 680 60 740 80 Q 760 110 740 140 Q 680 160 620 140 Q 600 110 620 80 Z" />
-          <path d="M 640 100 Q 680 90 720 100 Q 730 115 720 130 Q 680 140 640 130 Q 630 115 640 100 Z" />
-        </g>
-        <g fill="#4ade80" opacity="0.8">
-          <circle cx="620" cy="80" r="3"/><circle cx="680" cy="60" r="3"/><circle cx="740" cy="80" r="3"/>
-          <circle cx="760" cy="110" r="3"/><circle cx="740" cy="140" r="3"/><circle cx="680" cy="160" r="3"/>
-          <circle cx="620" cy="140" r="3"/><circle cx="600" cy="110" r="3"/>
-        </g>
-        <text x="680" y="175" text-anchor="middle" font-family="Arial" font-size="10" fill="#4ade80">Granular (Full House)</text>
-      </g>
-
-      <!-- ========================================== -->
-      <!-- APS / TMA FEATURES (Hidden by default)     -->
-      <!-- ========================================== -->
-      <g id="apsFeatures" opacity="0" style="transition: opacity 0.5s ease;">
-        <!-- Fibrin Thrombi (Occluding capillaries) -->
-        <g fill="#2563eb" filter="url(#glow)">
-          <ellipse cx="380" cy="160" rx="18" ry="12" class="thrombus"/>
-          <ellipse cx="450" cy="200" rx="22" ry="14" class="thrombus"/>
-          <ellipse cx="480" cy="270" rx="16" ry="10" class="thrombus"/>
-          <ellipse cx="320" cy="280" rx="20" ry="15" class="thrombus"/>
-          <ellipse cx="300" cy="200" rx="15" ry="10" class="thrombus"/>
-          <ellipse cx="410" cy="300" rx="18" ry="12" class="thrombus"/>
-        </g>
-        <!-- Schistocytes (Fragmented RBCs) -->
-        <g fill="#ef4444" opacity="0.9">
-          <path d="M 420 170 L 430 175 L 425 180 Z"/>
-          <path d="M 340 190 L 350 185 L 345 195 Z"/>
-          <path d="M 460 240 L 470 235 L 465 245 Z"/>
-          <path d="M 360 260 L 370 255 L 365 265 Z"/>
-        </g>
-        <!-- Endothelial Swelling (Capillary wall thickening) -->
-        <g fill="none" stroke="#1e40af" stroke-width="3" opacity="0.6">
-          <path d="M 300 150 Q 400 80 500 150 Q 560 220 500 300 Q 400 370 300 300 Q 240 220 300 150 Z" stroke-dasharray="6 4"/>
-          <path d="M 330 180 Q 400 140 470 180 Q 510 225 470 270 Q 400 310 330 270 Q 290 225 330 180 Z" stroke-dasharray="6 4"/>
-        </g>
-        
-        <!-- IF Inset Panel -->
-        <rect x="580" y="20" width="200" height="160" rx="10" fill="#0f172a" stroke="#334155" stroke-width="3"/>
-        <text x="680" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#94a3b8">IF: Fibrinogen</text>
-        <!-- Bright Fibrinogen Deposition -->
-        <g fill="#f97316" opacity="0.9">
-          <ellipse cx="650" cy="100" rx="12" ry="8" class="thrombus"/>
-          <ellipse cx="700" cy="110" rx="14" ry="9" class="thrombus"/>
-          <ellipse cx="680" cy="130" rx="10" ry="7" class="thrombus"/>
-        </g>
-        <text x="680" y="175" text-anchor="middle" font-family="Arial" font-size="10" fill="#f97316">Bright Fibrinogen in Thrombi</text>
-      </g>
-      
-      <!-- Blood Flow Animation -->
-      <path d="M 280 225 Q 400 120 520 225 Q 400 330 280 225 Z" fill="none" stroke="#ef4444" stroke-width="2" class="rbc-flow" opacity="0.3"/>
-
-    </svg>
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
   </section>
 
-  <!-- DIFFERENTIAL TABLE -->
-  <section class="diff-section">
-    <h2>Differential Diagnosis: Key Features</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Disease</th>
-          <th>Typical Clinical Clues</th>
-          <th>Urine Sediment</th>
-          <th>Complement Levels</th>
-          <th>Kidney Biopsy Findings</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="highlight-aps">
-          <td><strong>APS Nephropathy</strong> <span class="badge-aps">Correct</span></td>
-          <td>Known SLE or primary APS; thrombosis, recurrent fetal loss, livedo reticularis</td>
-          <td><strong>Bland</strong> (isomorphic RBCs, trace protein/blood)</td>
-          <td>Low (if SLE) or Normal</td>
-          <td><strong>TMA</strong>: Intracapillary thrombi, capillary wall thickening, NO immune complexes</td>
-        </tr>
-        <tr>
-          <td><strong>Lupus Nephritis</strong> <span class="badge-lupus">Distractor</span></td>
-          <td>Malar rash, alopecia, joint pain, serositis</td>
-          <td><strong>Active</strong> (dysmorphic RBCs, RBC casts, heavy proteinuria)</td>
-          <td>Low C3 and C4</td>
-          <td>Immune complex deposition, "full house" on IF, wire loops, proliferative changes</td>
-        </tr>
-        <tr>
-          <td><strong>ANCA Vasculitis</strong></td>
-          <td>Sinusitis, hemoptysis, palpable purpura, mononeuritis multiplex</td>
-          <td><strong>Active</strong> (dysmorphic RBCs, RBC casts)</td>
-          <td><span class="badge-normal">Normal</span></td>
-          <td>Pauci-immune crescentic GN, granulomas (GPA), no immune complexes</td>
-        </tr>
-        <tr>
-          <td><strong>Cryoglobulinemia</strong></td>
-          <td>Palpable purpura, hepatitis C, neuropathy, Raynaud's</td>
-          <td><strong>Active</strong> (dysmorphic RBCs, RBC casts)</td>
-          <td>Low C4, Normal C3</td>
-          <td>MPGN pattern, intracapillary thrombi (cryoglobulins), immune complexes</td>
-        </tr>
-        <tr>
-          <td><strong>Atypical HUS</strong></td>
-          <td>No systemic autoimmune features; often triggered by infection, pregnancy, or drugs</td>
-          <td>Bland or active</td>
-          <td><span class="badge-normal">Normal</span></td>
-          <td>TMA without systemic features or immune complexes</td>
-        </tr>
-      </tbody>
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
     </table>
   </section>
 
-  <!-- QUIZ -->
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
   <section class="quiz">
-    <h2>Check Your Understanding</h2>
-    <div class="q">
-      <p>1. Which test is MOST useful to confirm the diagnosis in this patient?</p>
-      <div class="opts">
-        <button class="opt" onclick="answer(this,false)">A. ANCA</button>
-        <button class="opt" onclick="answer(this,false)">B. Anti-double-stranded DNA antibody</button>
-        <button class="opt" onclick="answer(this,true)">C. Antiphospholipid antibodies</button>
-        <button class="opt" onclick="answer(this,false)">D. Genetic testing for alternative complement pathway defects</button>
-        <button class="opt" onclick="answer(this,false)">E. Serum cryoglobulins</button>
-      </div>
-      <div class="explain"><strong>Correct: C.</strong> The patient has SLE features but presents with a bland urinary sediment and TMA on biopsy. This points away from Lupus Nephritis (which causes active sediment and immune complex deposition) and toward secondary Antiphospholipid Syndrome (APS) causing renal TMA. Testing for antiphospholipid antibodies (Lupus anticoagulant, anticardiolipin, anti-β2GPI) is essential.</div>
-    </div>
-    <div class="q">
-      <p>2. Why is Anti-dsDNA (Choice B) less useful here?</p>
-      <div class="opts">
-        <button class="opt" onclick="answer(this,true)">It supports SLE but does not explain the TMA or identify APS as the cause.</button>
-        <button class="opt" onclick="answer(this,false)">It is always negative in patients with SLE.</button>
-      </div>
-      <div class="explain"><strong>Correct: It supports SLE but does not explain the TMA.</strong> While Anti-dsDNA is a marker of SLE, it does not directly diagnose APS. The patient's kidney biopsy shows TMA, not the typical immune complex-mediated lupus nephritis. Therefore, you must specifically test for APS.</div>
-    </div>
-    <div class="q">
-      <p>3. What is the key urinary finding that points AWAY from classic Lupus Nephritis?</p>
-      <div class="opts">
-        <button class="opt" onclick="answer(this,false)">Nephrotic-range proteinuria</button>
-        <button class="opt" onclick="answer(this,true)">Bland urinary sediment (isomorphic RBCs, trace blood)</button>
-      </div>
-      <div class="explain"><strong>Correct: Bland urinary sediment.</strong> Classic Lupus Nephritis typically presents with active urinary sediment (dysmorphic RBCs, RBC casts, leukocytes). This patient has isomorphic RBCs and only trace blood, which is characteristic of a vascular/TMA process rather than active glomerulonephritis.</div>
-    </div>
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="gift-footer">
-    <h3>A Gift by Dr. Malik</h3>
-    <p class="byline">Created for students and educators in nephrology and pathology</p>
-    <div class="disclaimer-box">
-      <strong>⚠️ Disclaimer:</strong> This interactive module is provided strictly for <strong>educational purposes only</strong>. It is not intended as medical advice, diagnosis, or treatment. It is not a medical record. The information and animations presented here should not be used as a substitute for professional clinical judgment, formal medical training, or consultation with a licensed healthcare provider. Always rely on official guidelines and institutional protocols for patient care.
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
     </div>
   </footer>
 
 </div>
 
 <script>
-  function setMode(mode) {
-    const lup = document.getElementById('lupusFeatures');
-    const aps = document.getElementById('apsFeatures');
-    const btnLup = document.getElementById('btnLupus');
-    const btnAps = document.getElementById('btnAps');
-
-    if (mode === 'lupus') {
-      lup.style.opacity = '1';
-      aps.style.opacity = '0';
-      btnLup.classList.add('active');
-      btnAps.classList.remove('active');
-    } else {
-      lup.style.opacity = '0';
-      aps.style.opacity = '1';
-      btnAps.classList.add('active');
-      btnLup.classList.remove('active');
+const CONFIG = {
+  title: "Lupus Nephritis — Induction, Maintenance & Refractory Treatment",
+  subtitle: "2024 guidelines: triple therapy for induction, MPAA for maintenance, and emerging options for refractory disease",
+  badge: "NEPHROLOGY · RHEUMATOLOGY · IMMUNOSUPPRESSION",
+  caseTitle: "Case: 42-year-old man with class IV/V lupus nephritis, persistent proteinuria after cyclophosphamide induction",
+  caseDescription: "Lupus nephritis class IV/V with foci of necrosis and 15% crescents. Treated with IV cyclophosphamide and steroids. Persistent proteinuria 1.7 g/d, albumin 3.6 g/dL, GFR ~92 mL/min/1.73 m². Minimal hematuria. No extrarenal manifestations.",
+  labChips: [
+    { text: "Proteinuria 1.7 g/d", abnormal: true },
+    { text: "Albumin 3.6 g/dL", abnormal: true },
+    { text: "GFR ~92 mL/min/1.73m²", abnormal: false },
+    { text: "Minimal hematuria", abnormal: false },
+    { text: "No extrarenal disease", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Induction", className: "opt1" },
+    { id: "opt2", label: "🟣 Maintenance", className: "opt2" },
+    { id: "opt3", label: "🔵 Refractory", className: "opt3" },
+    { id: "opt4", label: "🟡 Guidelines", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Initial (Induction) Therapy",
+      infoRows: [
+        { k: "Goal", v: "Rapid remission" },
+        { k: "Backbone", v: "Glucocorticoids" },
+        { k: "Options", v: "MPAA, low-dose CYC, triple therapy" },
+        { k: "Preferred", v: "Triple therapy (2024)" },
+        { k: "Steroid strategy", v: "Low dose, rapid taper" }
+      ],
+      svgTitle: "Initial (Induction) Therapy — 2024 Guidelines",
+      svgSubtitle: "Glucocorticoids + one of: MPAA, low-dose CYC, or triple therapy",
+      bannerBg: "#dc2626",
+      bannerText1: "Triple therapy is now the preferred first-line approach for active, severe LN",
+      bannerText2: "MPAA + belimumab, MPAA + CNI, or low-dose CYC + belimumab",
+      panel1Title: "💊 The evolution to triple therapy",
+      panel1Tagline: "Why combination therapy",
+      panel1List: [
+        "<strong>KDIGO 2024</strong> now recommends triple immunosuppressive therapy as first-line for active, severe class III/IV LN[reference:22]",
+        "<strong>ACR 2024</strong> conditionally recommends triple therapy as the most desirable approach[reference:23]",
+        "Triple therapy combines glucocorticoids with <strong>two</strong> immunosuppressive agents targeting different pathways",
+        "This approach achieves <strong>higher remission rates</strong> without excessive serious adverse events compared with dual therapy[reference:24]",
+        "The goal is to <strong>rapidly control inflammation</strong> and prevent irreversible kidney damage"
+      ],
+      panel2Title: "🔬 The three triple-therapy regimens",
+      panel2Tagline: "Which combination for which patient",
+      panel2List: [
+        "<strong>MPAA + Belimumab:</strong> Preferred when there is significant <strong>extra-renal SLE activity</strong>[reference:25]",
+        "<strong>MPAA + CNI (voclosporin):</strong> Preferred for patients with <strong>preserved kidney function and severe proteinuria</strong> — CNIs cause rapid proteinuria reduction[reference:26]",
+        "<strong>Low-dose CYC + Belimumab:</strong> An alternative triple regimen",
+        "For patients not on triple therapy, <strong>MPAA + glucocorticoids</strong> or <strong>low-dose IV CYC + glucocorticoids</strong> remain valid dual-therapy options[reference:27]",
+        "All patients should receive <strong>hydroxychloroquine</strong> unless contraindicated[reference:28]"
+      ],
+      alertIcon: "💊",
+      alertTitle: "Board Pearl — Triple therapy is the new standard",
+      alertText: "The 2024 KDIGO and ACR guidelines represent a <strong>conceptual shift</strong> from sequential induction-maintenance to <strong>combination, ongoing therapy</strong>. Triple therapy is now the preferred first-line approach for active, severe lupus nephritis."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Maintenance Therapy",
+      infoRows: [
+        { k: "First choice", v: "MPAA (MMF/MPA)" },
+        { k: "Alternative", v: "Azathioprine" },
+        { k: "Duration", v: "≥ 36 months" },
+        { k: "Triple therapy", v: "Continue 2–3 years" },
+        { k: "Steroid goal", v: "≤ 5 mg/day by 6 months" }
+      ],
+      svgTitle: "Maintenance Therapy — Sustaining Remission",
+      svgSubtitle: "MPAA is the first-choice agent; azathioprine is an alternative",
+      bannerBg: "#7c3aed",
+      bannerText1: "MPAA is preferred over azathioprine due to a lower flare rate",
+      bannerText2: "Total immunosuppression duration for proliferative LN is ≥ 36 months",
+      panel1Title: "🔬 MPAA — the first choice",
+      panel1Tagline: "Why it is preferred",
+      panel1List: [
+        "<strong>KDIGO 2024 strongly recommends MPAA for maintenance</strong> after completion of initial therapy[reference:29]",
+        "<strong>Lower flare rate</strong> compared with azathioprine[reference:30]",
+        "Typical dose: <strong>MMF 750–1000 mg twice daily</strong> or <strong>MPA 540–720 mg twice daily</strong>[reference:31]",
+        "Patients who started on a <strong>triple regimen</strong> (e.g., MMF + belimumab) can <strong>continue it for 2–3 years</strong>[reference:32]",
+        "Duration of total immunosuppression should be <strong>at least 36 months</strong>[reference:33]"
+      ],
+      panel2Title: "🔬 Azathioprine — the alternative",
+      panel2Tagline: "When MPAA is not an option",
+      panel2List: [
+        "Azathioprine is an acceptable alternative when:",
+        "• <strong>MPAA is not tolerated</strong>",
+        "• <strong>MPAA is not available</strong>",
+        "• The patient is <strong>considering pregnancy</strong>[reference:34]",
+        "Caveat: <strong>higher flare rate</strong> than MPAA",
+        "<strong>Glucocorticoids</strong> should be tapered to the lowest possible dose and can be discontinued after ≥ 12 months of sustained complete renal response[reference:35]"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — MPAA is the maintenance drug of choice",
+      alertText: "For maintenance therapy, <strong>MPAA (mycophenolate)</strong> is preferred. Azathioprine is a fallback for intolerance, unavailability, or pregnancy planning. Continue treatment for <strong>at least 36 months</strong>."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Refractory or Relapsing Disease",
+      infoRows: [
+        { k: "Rituximab", v: "Anti-CD20, second-line" },
+        { k: "Obinutuzumab", v: "Newer anti-CD20" },
+        { k: "Voclosporin", v: "CNI, add-on" },
+        { k: "Combination", v: "Rituximab + belimumab" },
+        { k: "Clinical trials", v: "CAR T-cell, anifrolumab" }
+      ],
+      svgTitle: "Refractory or Relapsing Disease — Escalation Strategies",
+      svgSubtitle: "Options when first-line therapy fails or flares occur",
+      bannerBg: "#0891b2",
+      bannerText1: "Rituximab and obinutuzumab target CD20; voclosporin is a CNI add-on",
+      bannerText2: "Combination rituximab + belimumab is used in refractory disease",
+      panel1Title: "🔬 Rituximab and obinutuzumab",
+      panel1Tagline: "Anti-CD20 therapies",
+      panel1List: [
+        "<strong>Rituximab</strong> is recommended for patients with <strong>persistent disease activity or inadequate response</strong> to initial therapy[reference:36]",
+        "Response rates in refractory LN are <strong>50–80%</strong>[reference:37]",
+        "<strong>Obinutuzumab</strong> is a newer, more potent anti-CD20 antibody that has recently been <strong>approved for LN</strong>[reference:38]",
+        "Obinutuzumab is now included in the <strong>EULAR 2025 recommendations</strong> as an initial option in combination with MMF[reference:39]",
+        "<strong>Combination of rituximab + belimumab</strong> has been used successfully in refractory disease to achieve durable B-cell suppression[reference:40][reference:41]"
+      ],
+      panel2Title: "🔬 Voclosporin and other options",
+      panel2Tagline: "Beyond anti-CD20",
+      panel2List: [
+        "<strong>Voclosporin</strong> (a CNI) can be added to MMF or azathioprine for patients who are non-responsive to first-line therapy[reference:42]",
+        "It causes <strong>rapid reduction in proteinuria</strong> and is particularly useful in patients with severe proteinuria[reference:43]",
+        "<strong>Prolonged IV cyclophosphamide</strong> course is an option in selected refractory cases[reference:44]",
+        "<strong>Clinical trials</strong> are recommended for eligible patients, including <strong>CAR T-cell therapy, anifrolumab, and ianalumab</strong>[reference:45][reference:46]",
+        "Always <strong>re-biopsy</strong> to confirm active LN and rule out other causes of worsening kidney function before escalating therapy"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Re-biopsy before escalating",
+      alertText: "In patients with refractory or relapsing LN, <strong>re-biopsy</strong> is essential to confirm ongoing active inflammation and to rule out chronic damage or other diagnoses before escalating immunosuppression."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Guideline Comparison — 2024",
+      infoRows: [
+        { k: "KDIGO 2024", v: "Triple therapy first-line" },
+        { k: "ACR 2024", v: "Triple therapy most desirable" },
+        { k: "EULAR 2023", v: "Early combination therapy" },
+        { k: "Key convergence", v: "Lower steroid doses" },
+        { k: "Shared goal", v: "Preserve kidney function" }
+      ],
+      svgTitle: "Guideline Comparison — 2024",
+      svgSubtitle: "KDIGO, ACR, and EULAR align on key principles",
+      bannerBg: "#ca8a04",
+      bannerText1: "All 2024 guidelines endorse triple therapy as first-line for active, severe LN",
+      bannerText2: "All emphasize lower glucocorticoid doses and rapid taper",
+      panel1Title: "📋 KDIGO 2024 — the global standard",
+      panel1Tagline: "Key recommendations",
+      panel1List: [
+        "<strong>Initial therapy:</strong> glucocorticoids + one of: MPAA, low-dose IV CYC, <strong>belimumab + (MPAA or CYC)</strong>, or <strong>MPAA + CNI</strong>[reference:47]",
+        "<strong>Maintenance:</strong> MPAA is the recommended first-choice agent[reference:48]",
+        "<strong>Triple therapy:</strong> recommended as first-line for active, severe class III/IV LN[reference:49]",
+        "<strong>Steroid strategy:</strong> reduced-dose glucocorticoids after short pulse course[reference:50]"
+      ],
+      panel2Title: "📋 ACR 2024 — the US perspective",
+      panel2Tagline: "Key recommendations",
+      panel2List: [
+        "<strong>Conditional recommendation for triple therapy</strong> in active class III/IV LN: MPAA + belimumab, MPAA + CNI, or low-dose CYC + belimumab[reference:51]",
+        "<strong>Triple therapy for pure class V</strong> with proteinuria > 1 g/g: glucocorticoid + MMF + CNI[reference:52]",
+        "<strong>Steroid regimen:</strong> start prednisone 0.5 mg/kg/day (max 40 mg) after pulse therapy, taper to ≤ 5 mg/day by 6 months[reference:53]",
+        "<strong>Monitoring:</strong> quantify proteinuria every 3 months until complete response, then every 3–6 months[reference:54]"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Key convergence across guidelines",
+      alertText: "All 2024 guidelines endorse <strong>triple therapy as first-line</strong> for active, severe LN and emphasize <strong>lower glucocorticoid doses with rapid taper</strong>. The goal is to maximize efficacy while minimizing steroid toxicity."
     }
+  },
+  comparison: {
+    title: "📊 Treatment Phases — Key Regimens and Recommendations",
+    sub: "Summary of 2024 guideline recommendations",
+    head: ["Phase", "First-line / Preferred", "Alternatives", "Duration"],
+    rows: [
+      { cells: ["Induction (Class III/IV)", "Triple therapy: MPAA + BEL, MPAA + CNI, or low-dose CYC + BEL", "MPAA + GCs; low-dose CYC + GCs", "3–6 months to remission"], hero: true },
+      { cells: ["Maintenance", "MPAA (MMF/MPA)", "Azathioprine (if MPAA not tolerated/available or pregnancy)", "≥ 36 months total"], hero: false },
+      { cells: ["Refractory / Relapsing", "Rituximab, obinutuzumab, voclosporin, rituximab + belimumab", "Clinical trials (CAR T-cell, anifrolumab)", "Individualized"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 42-year-old man with class IV/V lupus nephritis has persistent proteinuria after cyclophosphamide induction. Kidney function is preserved. What is the most appropriate maintenance immunosuppression?",
+      options: [
+        { text: "Mycophenolate mofetil (MMF).", correct: true,
+          explanation: "KDIGO 2024 recommends MPAA (MMF or MPA) as the first-choice maintenance agent due to a lower flare rate compared to azathioprine." },
+        { text: "Continue cyclophosphamide.", correct: false,
+          explanation: "Cyclophosphamide is an induction agent, not for maintenance, due to cumulative toxicity." },
+        { text: "Rituximab.", correct: false,
+          explanation: "Rituximab is reserved for refractory or relapsing disease, not standard first-line maintenance." }
+      ]
+    },
+    {
+      question: "According to the 2024 KDIGO and ACR guidelines, what is the preferred first-line treatment approach for active, severe class III/IV lupus nephritis?",
+      options: [
+        { text: "Triple immunosuppressive therapy.", correct: true,
+          explanation: "The 2024 guidelines represent a shift toward combination therapy. Triple therapy (glucocorticoids + MPAA + belimumab, or MPAA + CNI, or low-dose CYC + belimumab) is now the preferred first-line approach." },
+        { text: "High-dose cyclophosphamide monotherapy.", correct: false,
+          explanation: "High-dose CYC monotherapy is outdated. Current guidelines emphasize combination therapy with lower steroid doses." },
+        { text: "Glucocorticoids alone.", correct: false,
+          explanation: "Glucocorticoids alone are insufficient for severe lupus nephritis and cause significant toxicity." }
+      ]
+    },
+    {
+      question: "Which triple therapy regimen is preferred for a patient with lupus nephritis and significant extra-renal SLE manifestations?",
+      options: [
+        { text: "MPAA + belimumab.", correct: true,
+          explanation: "Belimumab is particularly effective for extra-renal SLE manifestations, making MPAA + belimumab the preferred triple regimen in this setting." },
+        { text: "MPAA + voclosporin.", correct: false,
+          explanation: "Voclosporin is preferred for patients with preserved kidney function and severe proteinuria, not specifically for extra-renal disease." },
+        { text: "Low-dose CYC + belimumab.", correct: false,
+          explanation: "While this is a valid triple regimen, MPAA + belimumab is more commonly preferred for extra-renal disease." }
+      ]
+    },
+    {
+      question: "What is the recommended duration of total immunosuppression for proliferative lupus nephritis?",
+      options: [
+        { text: "At least 36 months.", correct: true,
+          explanation: "KDIGO 2024 recommends a total duration of initial immunosuppression plus maintenance therapy of at least 36 months for proliferative LN." },
+        { text: "6 months.", correct: false,
+          explanation: "Six months is far too short and would lead to high relapse rates." },
+        { text: "Lifelong.", correct: false,
+          explanation: "Lifelong immunosuppression is not routinely recommended. The optimal duration beyond 36 months is individualized." }
+      ]
+    },
+    {
+      question: "Which agent is the preferred alternative to mycophenolate for maintenance therapy in a patient planning pregnancy?",
+      options: [
+        { text: "Azathioprine.", correct: true,
+          explanation: "Azathioprine is the preferred alternative when mycophenolate is not an option, including in patients considering pregnancy. Mycophenolate is teratogenic." },
+        { text: "Cyclophosphamide.", correct: false,
+          explanation: "Cyclophosphamide is teratogenic and gonadotoxic, not appropriate for maintenance, especially in pregnancy planning." },
+        { text: "Rituximab.", correct: false,
+          explanation: "Rituximab is not standard maintenance therapy and is not specifically preferred for pregnancy planning." }
+      ]
+    },
+    {
+      question: "A patient with refractory lupus nephritis has failed initial therapy. Which of the following is a guideline-endorsed option for escalation?",
+      options: [
+        { text: "Rituximab.", correct: true,
+          explanation: "KDIGO 2024 recommends rituximab for patients with persistent disease activity or inadequate response to initial standard-of-care therapy." },
+        { text: "Increasing the glucocorticoid dose indefinitely.", correct: false,
+          explanation: "Prolonged high-dose glucocorticoids cause significant toxicity and are not a recommended escalation strategy." },
+        { text: "Stopping all immunosuppression.", correct: false,
+          explanation: "Stopping immunosuppression would lead to disease flare and further kidney damage." }
+      ]
+    },
+    {
+      question: "What is the steroid strategy recommended by the 2024 ACR guideline for lupus nephritis?",
+      options: [
+        { text: "Start prednisone 0.5 mg/kg/day (max 40 mg) and taper to ≤ 5 mg/day by 6 months.", correct: true,
+          explanation: "The ACR 2024 guideline conditionally recommends a lower-dose glucocorticoid regimen: start at 0.5 mg/kg/day (max 40 mg) after pulse therapy, with a taper to ≤ 5 mg/day by 6 months." },
+        { text: "High-dose prednisone (1 mg/kg/day) for 6 months.", correct: false,
+          explanation: "High-dose prolonged steroids cause excessive toxicity and are no longer recommended." },
+        { text: "No glucocorticoids at all.", correct: false,
+          explanation: "Glucocorticoids remain a cornerstone of induction therapy, but at lower doses and with rapid taper." }
+      ]
+    },
+    {
+      question: "Which newer anti-CD20 antibody has recently been approved for lupus nephritis and is included in the EULAR 2025 recommendations?",
+      options: [
+        { text: "Obinutuzumab.", correct: true,
+          explanation: "Obinutuzumab is a newer, more potent anti-CD20 antibody that has been approved for LN and is included in the EULAR 2025 recommendations as an initial option in combination with MMF." },
+        { text: "Belimumab.", correct: false,
+          explanation: "Belimumab is a BAFF inhibitor, not an anti-CD20 antibody." },
+        { text: "Voclosporin.", correct: false,
+          explanation: "Voclosporin is a calcineurin inhibitor, not an anti-CD20 antibody." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Rheumatology / Immunosuppression",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
   }
 
-  function answer(btn, correct) {
-    const box = btn.closest('.q');
-    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
-    btn.classList.add(correct ? 'correct' : 'wrong');
-    box.querySelector('.explain').classList.add('show');
-  }
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
 
-  // Initialize with APS view
-  setMode('aps');
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
 </script>
 </body>
 </html>

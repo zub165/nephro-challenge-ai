@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daugirdas spKt/V — Delivered Dialysis Dose Calculation</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">DAUGIRDAS spKt/V — DELIVERED DOSE</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">Conventional HD 3× weekly · 4 hours · K 220 mL/min · V 44 L</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">Pre-BUN 72 · Post-BUN 22 · UF 2.5 L · Postdialysis weight 70 kg</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">PRE-BUN</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">72</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mg/dL</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">Elevated</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#7f1d1d">Concerns for underdialysis</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">But BUN alone is misleading</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">POST-BUN</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="44" font-weight="800" fill="#dc2626">22</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">mg/dL</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">R = 22/72 = 0.31</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#7f1d1d">69% reduction in BUN</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Significant clearance</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">TARGET</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="44" font-weight="800" fill="#16a34a">≥1.2</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">spKt/V minimum</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#15803d">Per KDOQI guidelines</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#15803d">Target ≥ 1.4 for best outcomes</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Calculate the delivered dose</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 SECOND-GENERATION DAUGIRDAS EQUATION</text>
+            <text x="0" y="5" text-anchor="middle" font-size="20" font-weight="700" fill="#6d28d9">spKt/V = −ln(R − 0.008t) + (4 − 3.5R) × (UF / W)</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">Accounts for both diffusive clearance and convective UF losses</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Compute R, apply the equation, interpret against target</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — STEP-BY-STEP CALCULATION
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">STEP-BY-STEP CALCULATION</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Apply the second-generation Daugirdas equation systematically</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(700, 250)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#155e75">STEP 1 — Calculate R</text>
+            <text x="-580" y="15" font-size="20" font-weight="700" fill="#0e7490">R = Post-BUN / Pre-BUN = 22 / 72 = 0.306</text>
+            <text x="-580" y="43" font-size="15" fill="#155e75">R represents the fraction of urea remaining after dialysis</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 390)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#5b21b6">STEP 2 — Calculate the first term: −ln(R − 0.008t)</text>
+            <text x="-580" y="15" font-size="20" font-weight="700" fill="#6d28d9">R − 0.008t = 0.306 − (0.008 × 4) = 0.306 − 0.032 = 0.274</text>
+            <text x="-580" y="43" font-size="20" font-weight="700" fill="#6d28d9">−ln(0.274) ≈ 1.296</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(700, 530)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#713f12">STEP 3 — Calculate the second term: (4 − 3.5R) × UF/W</text>
+            <text x="-580" y="15" font-size="20" font-weight="700" fill="#a16207">(4 − 3.5 × 0.306) × (2.5 / 70) = (4 − 1.071) × 0.0357 = 2.929 × 0.0357 ≈ 0.105</text>
+            <text x="-580" y="43" font-size="15" fill="#713f12">This accounts for convective urea removal from ultrafiltration</text>
+          </g>
+
+          <!-- Step 4 -->
+          <g transform="translate(700, 670)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="-580" y="-18" font-size="18" font-weight="800" fill="#991b1b">STEP 4 — Sum the terms</text>
+            <text x="-580" y="15" font-size="20" font-weight="700" fill="#7f1d1d">spKt/V = 1.296 + 0.105 ≈ 1.40</text>
+            <text x="-580" y="43" font-size="15" fill="#991b1b">The delivered dose exceeds the minimum target of 1.2</text>
+          </g>
+
+          <!-- Answer -->
+          <g transform="translate(700, 830)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-25" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER: spKt/V ≈ 1.3–1.4</text>
+            <text x="0" y="15" text-anchor="middle" font-size="18" fill="#15803d">Delivered dose meets the usual minimum target</text>
+            <text x="0" y="45" text-anchor="middle" font-size="18" fill="#15803d">Fatigue requires evaluation of other causes</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">R = 0.31 · −ln(0.274) = 1.296 · UF term = 0.105 · Total ≈ 1.40</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — INTERPRETATION OF spKt/V
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">INTERPRETING spKt/V VALUES</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">KDOQI targets for thrice-weekly hemodialysis</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#dc2626"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">BELOW TARGET</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Inadequate dialysis</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="24" font-weight="800" fill="#991b1b">&lt;1.2</text>
+            <text x="0" y="-65" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">spKt/V</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#991b1b">• Associated with:</text>
+              <text x="-60" y="0" font-weight="800" fill="#991b1b">↑ mortality</text>
+              <text x="-180" y="28" font-weight="700" fill="#991b1b">  morbidity</text>
+              <text x="-180" y="56" font-weight="700" fill="#991b1b">• Causes:</text>
+              <text x="-60" y="56" font-weight="800" fill="#991b1b">access issues</text>
+              <text x="-180" y="84" font-weight="700" fill="#991b1b">  ↓ blood flow</text>
+              <text x="-180" y="112" font-weight="700" fill="#991b1b">  ↓ dialyzer</text>
+              <text x="-180" y="140" font-weight="700" fill="#991b1b">  shortened time</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Action: investigate</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">and adjust prescription</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#fef9c3" stroke="#ca8a04" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#ca8a04"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#ca8a04"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">MINIMUM TARGET</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#713f12">Adequate dialysis</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#fef3c7" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="24" font-weight="800" fill="#713f12">1.2</text>
+            <text x="0" y="-65" text-anchor="middle" font-size="14" font-weight="700" fill="#713f12">spKt/V</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#713f12">• KDOQI:</text>
+              <text x="-60" y="0" font-weight="800" fill="#713f12">≥1.2 minimum</text>
+              <text x="-180" y="28" font-weight="700" fill="#713f12">• Every treatment</text>
+              <text x="-180" y="56" font-weight="700" fill="#713f12">• Single-pool</text>
+              <text x="-180" y="84" font-weight="700" fill="#713f12">  (spKt/V)</text>
+              <text x="-180" y="112" font-weight="700" fill="#713f12">• Checked</text>
+              <text x="-180" y="140" font-weight="700" fill="#713f12">  monthly</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#713f12">Meets minimum</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#713f12">but aim higher</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">TARGET FOR BEST OUTCOMES</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">✅ THIS PATIENT</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="24" font-weight="800" fill="#166534">1.4</text>
+            <text x="0" y="-65" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">spKt/V</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Delivered:</text>
+              <text x="-60" y="0" font-weight="800" fill="#166534">1.40</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Status:</text>
+              <text x="-60" y="28" font-weight="800" fill="#166534">Meets target</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Action:</text>
+              <text x="-60" y="56" font-weight="800" fill="#166534">Continue HD</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Next:</text>
+              <text x="-60" y="84" font-weight="800" fill="#166534">Evaluate fatigue</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">  (other causes)</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Adequacy achieved</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">— look elsewhere for fatigue</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Minimum target 1.2 · Delivered 1.40 · Meets adequacy · Fatigue is not from underdialysis</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER C</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">spKt/V ≈ 1.3–1.4; delivered dose meets the usual minimum target</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Other causes of fatigue still require evaluation</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — spKt/V ≈ 1.3; delivered dose meets target</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Calculated 1.40; meets minimum 1.2; investigate other causes of fatigue</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — spKt/V ≈ 0.9 (substantially below target)</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Actual calculation gives ~1.40; the value 0.9 is inconsistent with R = 0.31</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — spKt/V ≈ 1.1 (barely meets target)</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">1.1 is below minimum target 1.2 and inconsistent with the calculated value</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — spKt/V ≈ 1.7 (excessive dialysis)</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">1.7 is higher than the calculated value; also, higher spKt/V does not mandate reduction</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — spKt/V cannot be calculated without residual kidney clearance</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">spKt/V is calculated from the delivered treatment alone — residual kidney function is not needed</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: C — spKt/V ≈ 1.3; dose meets target; evaluate other fatigue causes</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Daugirdas spKt/V — Delivered Dialysis Dose Calculation",
+  subtitle: "Second-generation equation accounts for diffusive clearance and convective UF losses",
+  badge: "NEPHROLOGY · HEMODIALYSIS · UREA KINETICS",
+  caseTitle: "Case: 68-year-old man on conventional HD 3× weekly with persistent fatigue",
+  caseDescription: "Attends all treatments but reports persistent fatigue and has an elevated predialysis BUN. HD prescription: 4 hours, K 220 mL/min, V 44 L. Pre-BUN 72 mg/dL, post-BUN 22 mg/dL. UF 2.5 L, postdialysis weight 70 kg. Calculate the delivered single-pool Kt/V using the second-generation Daugirdas equation.",
+  labChips: [
+    { text: "Dialysis duration 4 h", abnormal: false },
+    { text: "K 220 mL/min", abnormal: false },
+    { text: "V 44 L", abnormal: false },
+    { text: "Pre-BUN 72 mg/dL", abnormal: true },
+    { text: "Post-BUN 22 mg/dL", abnormal: false },
+    { text: "UF 2.5 L", abnormal: false },
+    { text: "Postdialysis weight 70 kg", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 Calculation", className: "opt2" },
+    { id: "opt3", label: "🔵 Interpretation", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Fatigue and Elevated Pre-BUN",
+      infoRows: [
+        { k: "Pre-BUN", v: "72 mg/dL" },
+        { k: "Post-BUN", v: "22 mg/dL" },
+        { k: "R", v: "22/72 = 0.31" },
+        { k: "Target spKt/V", v: "≥ 1.2" },
+        { k: "Question", v: "Delivered dose?" }
+      ],
+      svgTitle: "Daugirdas spKt/V — The Case",
+      svgSubtitle: "Conventional HD 3× weekly · pre-BUN 72 · post-BUN 22 · UF 2.5 L",
+      bannerBg: "#dc2626",
+      bannerText1: "Compute R, apply the equation, interpret against target",
+      bannerText2: "An elevated pre-BUN alone does not prove underdialysis",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the values tell you",
+      panel1List: [
+        "<strong>Pre-BUN 72 mg/dL</strong> — elevated, raises concern for underdialysis",
+        "<strong>Post-BUN 22 mg/dL</strong> — significant clearance during treatment",
+        "<strong>R = 22/72 = 0.31</strong> — 69% reduction in BUN during the session",
+        "<strong>Conventional HD 3× weekly</strong> — the standard regimen",
+        "<strong>Persistent fatigue</strong> — needs evaluation; is it from underdialysis or something else?"
+      ],
+      panel2Title: "🧬 Why calculate the delivered dose?",
+      panel2Tagline: "Prescribed ≠ delivered",
+      panel2List: [
+        "The <strong>prescribed</strong> Kt/V may differ from the <strong>delivered</strong> Kt/V",
+        "Reasons for discrepancy: access recirculation, ↓ effective dialyzer clearance, ↓ treatment time",
+        "<strong>spKt/V</strong> is the standard measure of dialysis adequacy in the US",
+        "KDOQI target: <strong>spKt/V ≥ 1.2</strong> per treatment (thrice weekly)",
+        "Best outcomes achieved with <strong>spKt/V ≥ 1.4</strong>"
+      ],
+      alertIcon: "🩸",
+      alertTitle: "Board Pearl — Calculate, don't estimate",
+      alertText: "Never assume the delivered dose matches the prescription. Always <strong>calculate spKt/V</strong> from pre- and post-dialysis BUN to confirm adequacy."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Step-by-Step Calculation",
+      infoRows: [
+        { k: "Equation", v: "spKt/V = −ln(R−0.008t) + (4−3.5R)(UF/W)" },
+        { k: "R", v: "0.306" },
+        { k: "First term", v: "≈ 1.296" },
+        { k: "Second term", v: "≈ 0.105" },
+        { k: "spKt/V", v: "≈ 1.40" }
+      ],
+      svgTitle: "Step-by-Step Calculation — Second-Generation Daugirdas",
+      svgSubtitle: "Apply the equation systematically to compute the delivered dose",
+      bannerBg: "#7c3aed",
+      bannerText1: "R = 0.31 · −ln(0.274) = 1.296 · UF term = 0.105 · Total ≈ 1.40",
+      bannerText2: "The second-generation equation incorporates both diffusive and convective clearance",
+      panel1Title: "🔬 The two components of the equation",
+      panel1Tagline: "Diffusive + convective",
+      panel1List: [
+        "<strong>First term: −ln(R − 0.008t)</strong> — accounts for diffusive urea clearance",
+        "This is the primary driver of the Kt/V calculation",
+        "<strong>Second term: (4 − 3.5R) × (UF/W)</strong> — adjusts for convective urea removal from ultrafiltration",
+        "Without the second term, spKt/V would be underestimated in patients with large UF volumes",
+        "The second-generation equation is more accurate at higher UF rates"
+      ],
+      panel2Title: "🔬 Applying the numbers",
+      panel2Tagline: "Step by step",
+      panel2List: [
+        "<strong>Step 1:</strong> R = 22/72 = <strong>0.306</strong>",
+        "<strong>Step 2:</strong> R − 0.008t = 0.306 − 0.032 = <strong>0.274</strong>",
+        "<strong>Step 3:</strong> −ln(0.274) = <strong>1.296</strong>",
+        "<strong>Step 4:</strong> (4 − 3.5 × 0.306) × (2.5/70) = <strong>0.105</strong>",
+        "<strong>Step 5:</strong> spKt/V = 1.296 + 0.105 = <strong>1.40</strong>"
+      ],
+      alertIcon: "🧮",
+      alertTitle: "Pearl — Second-generation vs first-generation",
+      alertText: "The second-generation equation <strong>adds a convective term</strong> to account for UF-related urea removal. It is the standard in modern dialysis practice."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Interpretation of spKt/V",
+      infoRows: [
+        { k: "< 1.2", v: "Below target — inadequate" },
+        { k: "1.2", v: "Minimum target" },
+        { k: "1.4", v: "Best-outcomes target" },
+        { k: "This patient", v: "1.40 — meets target" },
+        { k: "Next step", v: "Evaluate other fatigue causes" }
+      ],
+      svgTitle: "Interpreting spKt/V — KDOQI Targets",
+      svgSubtitle: "Minimum target 1.2 · Best-outcomes target 1.4",
+      bannerBg: "#0891b2",
+      bannerText1: "This patient's spKt/V ≈ 1.40 — meets the minimum target of 1.2",
+      bannerText2: "Fatigue is not from underdialysis — investigate other causes",
+      panel1Title: "🔬 KDOQI spKt/V targets",
+      panel1Tagline: "Guideline-based thresholds",
+      panel1List: [
+        "<strong>Minimum target: spKt/V ≥ 1.2</strong> per treatment (thrice weekly)",
+        "<strong>Best-outcomes target: spKt/V ≥ 1.4</strong>",
+        "Delivered dose is assessed <strong>monthly</strong>",
+        "Below 1.2 → associated with <strong>increased mortality and morbidity</strong>",
+        "Above 1.4 → no additional survival benefit demonstrated in most studies"
+      ],
+      panel2Title: "🧬 What to do with this result",
+      panel2Tagline: "Beyond the number",
+      panel2List: [
+        "This patient <strong>meets adequacy</strong> — the prescription is appropriate",
+        "<strong>Fatigue is not from underdialysis</strong> — investigate other causes",
+        "Consider: <strong>anemia</strong> (check Hgb, iron studies), <strong>malnutrition</strong> (albumin, PNA), <strong>depression</strong>",
+        "Also: <strong>sleep disorders</strong>, <strong>hyperparathyroidism</strong>, <strong>uremic neuropathy</strong>, <strong>middle-molecule retention</strong>",
+        "Consider <strong>increasing treatment time</strong> or adding <strong>HDF</strong> if symptoms persist despite adequacy"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Adequacy does not equal wellness",
+      alertText: "Meeting spKt/V target <strong>does not exclude</strong> other causes of fatigue. Uremic symptoms can persist despite adequate small-molecule clearance — consider middle-molecule retention."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "C — spKt/V ≈ 1.3" },
+        { k: "Calculated", v: "1.40" },
+        { k: "Target", v: "≥1.2 (minimum)" },
+        { k: "Status", v: "Meets adequacy" },
+        { k: "Next step", v: "Evaluate other fatigue causes" }
+      ],
+      svgTitle: "Answer Summary — spKt/V Delivered Dose",
+      svgSubtitle: "Delivered dose meets the usual minimum target — investigate other causes of fatigue",
+      bannerBg: "#ca8a04",
+      bannerText1: "C — spKt/V ≈ 1.3–1.4; delivered dose meets the usual minimum target",
+      bannerText2: "Fatigue requires evaluation of other causes",
+      panel1Title: "✅ The correct answer (C)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>R = 22/72 = 0.31</strong>",
+        "<strong>First term: −ln(0.274) ≈ 1.296</strong>",
+        "<strong>Second term: (4 − 3.5 × 0.306) × (2.5/70) ≈ 0.105</strong>",
+        "<strong>Total spKt/V = 1.296 + 0.105 ≈ 1.40</strong>",
+        "Meets the usual minimum target of 1.2 (option C states ≈1.3, closest choice)",
+        "<strong>Fatigue requires evaluation of other causes</strong>"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (spKt/V ≈ 0.9):</strong> Inconsistent with the calculation — a value of 0.9 would require much less clearance",
+        "<strong>B (spKt/V ≈ 1.1):</strong> Below the target and inconsistent with the calculation",
+        "<strong>D (spKt/V ≈ 1.7):</strong> Higher than the calculated value; also, high spKt/V does not mandate reducing treatment time",
+        "<strong>E (Cannot calculate without residual kidney function):</strong> spKt/V is calculated from the delivered treatment alone — residual kidney function is not needed"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "The delivered <strong>spKt/V ≈ 1.3–1.4</strong> (calculated 1.40). This <strong>meets the usual minimum target</strong> of 1.2 for thrice-weekly hemodialysis. <strong>Other causes of fatigue must still be evaluated.</strong>"
+    }
+  },
+  comparison: {
+    title: "📊 spKt/V Interpretation — KDOQI Targets",
+    sub: "The delivered dose determines whether the prescription is adequate",
+    head: ["spKt/V", "Interpretation", "Action"],
+    rows: [
+      { cells: ["< 1.2", "Below minimum target", "Investigate and adjust prescription"], hero: false },
+      { cells: ["1.2", "Minimum target", "Meets adequacy — evaluate other causes of symptoms"], hero: false },
+      { cells: ["1.3–1.4", "Best-outcomes range", "Continue current prescription"], hero: true },
+      { cells: ["≥ 1.4", "Best-outcomes target", "Maintain; no additional benefit above 1.4"], hero: false },
+      { cells: ["> 1.7 (very high)", "Above goal", "Consider if treatment can be shortened without losing adequacy"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 68-year-old man on conventional HD 3× weekly has pre-BUN 72, post-BUN 22, K 220 mL/min, V 44 L, t 4 h, UF 2.5 L, weight 70 kg. Calculate the spKt/V. What does it mean?",
+      options: [
+        { text: "spKt/V ≈ 1.3; the delivered dose meets the usual minimum target, although other causes of fatigue still require evaluation.", correct: true,
+          explanation: "R = 22/72 = 0.31. −ln(0.31 − 0.032) = 1.296. (4 − 3.5 × 0.31) × (2.5/70) = 0.105. Total ≈ 1.40, which meets the minimum target of 1.2. Fatigue requires evaluation of other causes." },
+        { text: "spKt/V ≈ 0.9; dialysis adequacy is substantially below the usual minimum target.", correct: false,
+          explanation: "This is inconsistent with the calculation. A spKt/V of 0.9 would correspond to much less urea clearance (higher R value)." },
+        { text: "spKt/V ≈ 1.7; this demonstrates excessive dialysis and mandates reducing treatment time.", correct: false,
+          explanation: "The calculated value is ~1.40, not 1.7. Also, higher spKt/V does not automatically mandate reducing treatment time." }
+      ]
+    },
+    {
+      question: "What is the second-generation Daugirdas equation used to calculate?",
+      options: [
+        { text: "Delivered single-pool Kt/V (spKt/V).", correct: true,
+          explanation: "The second-generation Daugirdas equation calculates spKt/V using pre- and post-dialysis BUN, treatment time, ultrafiltration volume, and postdialysis weight." },
+        { text: "Residual kidney urea clearance.", correct: false,
+          explanation: "Residual kidney urea clearance is measured separately from a 24-hour urine collection." },
+        { text: "Urea distribution volume (V).", correct: false,
+          explanation: "V is a separate parameter — often estimated from anthropometric formulas (Watson, Hume) or bioimpedance." }
+      ]
+    },
+    {
+      question: "What is the target spKt/V for thrice-weekly hemodialysis?",
+      options: [
+        { text: "Minimum 1.2 per treatment, with best outcomes at ≥ 1.4.", correct: true,
+          explanation: "KDOQI recommends a minimum spKt/V of 1.2 per treatment for thrice-weekly hemodialysis, with best outcomes at ≥ 1.4." },
+        { text: "Minimum 0.8 per treatment.", correct: false,
+          explanation: "0.8 is far below the recommended minimum and would be considered inadequate dialysis." },
+        { text: "Minimum 2.0 per treatment.", correct: false,
+          explanation: "2.0 is above the target range; no additional survival benefit has been demonstrated above 1.4." }
+      ]
+    },
+    {
+      question: "In the second-generation Daugirdas equation, what does the second term account for?",
+      options: [
+        { text: "Convective urea removal from ultrafiltration.", correct: true,
+          explanation: "The second term (4 − 3.5R) × (UF/W) accounts for convective urea removal during ultrafiltration, which the first-generation equation did not fully account for." },
+        { text: "Dialyzer membrane permeability.", correct: false,
+          explanation: "Dialyzer permeability is not directly included in the Daugirdas equation." },
+        { text: "Residual kidney urea clearance.", correct: false,
+          explanation: "Residual kidney function is not part of the Daugirdas equation — it contributes to total clearance but is assessed separately." }
+      ]
+    },
+    {
+      question: "A patient on HD has a calculated spKt/V of 1.45. What is the appropriate interpretation?",
+      options: [
+        { text: "The dose meets the minimum target and falls within the best-outcomes range.", correct: true,
+          explanation: "spKt/V of 1.45 exceeds the minimum target of 1.2 and falls within the best-outcomes range of ≥ 1.4. This is appropriate." },
+        { text: "The dose is excessive and treatment time should be reduced.", correct: false,
+          explanation: "spKt/V of 1.45 is not excessive. There is no demonstrated benefit to reducing treatment time when the dose is at target." },
+        { text: "The dose is below target and treatment time should be increased.", correct: false,
+          explanation: "1.45 is above the minimum target of 1.2 — it is not below target." }
+      ]
+    },
+    {
+      question: "A patient on HD has a calculated spKt/V of 1.05. What is the appropriate next step?",
+      options: [
+        { text: "Investigate the cause of inadequate dialysis and adjust the prescription.", correct: true,
+          explanation: "spKt/V below 1.2 indicates inadequate dialysis. Causes include access issues, inadequate blood flow, shortened treatment time, and dialyzer problems. These should be investigated and corrected." },
+        { text: "Continue the current prescription — 1.05 is acceptable.", correct: false,
+          explanation: "1.05 is below the minimum target of 1.2 and is considered inadequate." },
+        { text: "Immediately reduce treatment time.", correct: false,
+          explanation: "Reducing treatment time would further reduce the dose. It should be increased or the prescription optimized." }
+      ]
+    },
+    {
+      question: "Which of the following does NOT contribute to the delivered spKt/V in hemodialysis?",
+      options: [
+        { text: "Residual kidney urea clearance.", correct: true,
+          explanation: "Residual kidney urea clearance contributes to total urea clearance but is not part of the spKt/V calculation. The spKt/V measures the delivered dialysis dose only." },
+        { text: "Effective urea clearance (K).", correct: false,
+          explanation: "K is part of the Kt/V calculation." },
+        { text: "Ultrafiltration volume (UF).", correct: false,
+          explanation: "UF is part of the second-generation Daugirdas equation." }
+      ]
+    },
+    {
+      question: "What does the R value represent in the Daugirdas equation?",
+      options: [
+        { text: "The post-dialysis BUN divided by the pre-dialysis BUN (fraction of urea remaining).", correct: true,
+          explanation: "R = post-BUN / pre-BUN. It represents the fraction of urea remaining after dialysis. Lower R values indicate more urea clearance." },
+        { text: "The pre-dialysis BUN divided by the post-dialysis BUN.", correct: false,
+          explanation: "This is the inverse of R (1/R). R is post/pre." },
+        { text: "The ratio of dialyzer clearance to blood flow.", correct: false,
+          explanation: "This is not R. R is the ratio of post- to pre-dialysis BUN." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Hemodialysis / Urea Kinetics",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

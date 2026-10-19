@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APOL1-Associated Kidney Disease After Transplantation — Donor Genotype Matters</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+  .verdict-bad{color:#991b1b; font-weight:800;}
+  .verdict-good{color:#166534; font-weight:800;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  /* ---------- FOOTER ---------- */
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="accent1Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#dc2626"/>
+          </radialGradient>
+          <radialGradient id="accent2Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f5f3ff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </radialGradient>
+          <radialGradient id="accent3Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#0891b2"/>
+          </radialGradient>
+          <radialGradient id="accent4Grad" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#fef9c3"/><stop offset="100%" stop-color="#ca8a04"/>
+          </radialGradient>
+          <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+          </marker>
+          <marker id="arrowAccent1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowAccent2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowAccent3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+          </marker>
+          <marker id="arrowAccent4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="50" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="82" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="30" font-weight="800" fill="#991b1b">APOL1-ASSOCIATED KIDNEY DISEASE</text>
+            <text x="0" y="22" text-anchor="middle" font-size="19" fill="#7f1d1d">Donor with two APOL1 risk variants (G1/G2) · Recipient with no risk variants</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#991b1b">3 years post-transplant · progressive proteinuria + declining graft → FSGS</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#7c3aed"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#7c3aed"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">DONOR GENOTYPE</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="36" font-weight="800" fill="#5b21b6">G1/G2</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#5b21b6">High-risk</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#ddd6fe" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#6d28d9">Two APOL1 risk variants</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#6d28d9">African genetic ancestry</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">Kidney at increased risk</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#16a34a"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#16a34a"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">RECIPIENT GENOTYPE</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="36" font-weight="800" fill="#16a34a">No risk</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#166534">Low risk</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#bbf7d0" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#15803d">No APOL1 risk variants</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#15803d">Not a carrier</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Donor kidney is the issue</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-200" y="-170" width="400" height="340" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-170" width="400" height="70" rx="24" fill="#dc2626"/>
+            <rect x="-200" y="-125" width="400" height="25" fill="#dc2626"/>
+            <text x="0" y="-123" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">3 YEARS LATER</text>
+            <text x="0" y="-25" text-anchor="middle" font-size="36" font-weight="800" fill="#dc2626">FSGS</text>
+            <text x="0" y="15" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">Progressive</text>
+            <line x1="-160" y1="50" x2="160" y2="50" stroke="#fecaca" stroke-width="3"/>
+            <text x="0" y="85" text-anchor="middle" font-size="15" fill="#7f1d1d">Proteinuria</text>
+            <text x="0" y="110" text-anchor="middle" font-size="15" fill="#7f1d1d">Declining graft function</text>
+            <text x="0" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Donor genotype at fault</text>
+          </g>
+
+          <g transform="translate(700, 800)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-30" text-anchor="middle" font-size="24" font-weight="800" fill="#5b21b6">🔑 DONOR GENOTYPE MATTERS MORE THAN RECIPIENT</text>
+            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#6d28d9">The kidney is the affected organ — its genotype determines its risk</text>
+            <text x="0" y="42" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">→ Two APOL1 risk variants in the donor = increased risk of allograft failure</text>
+          </g>
+
+          <g transform="translate(700, 940)">
+            <rect x="-620" y="-32" width="1240" height="64" rx="16" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Donor G1/G2 genotype → increased risk of allograft failure (not absolute)</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — APOL1 GENETICS
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">APOL1 RISK VARIANTS — G1 AND G2</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">Two risk variants = high-risk genotype — carries a substantial risk of kidney disease</text>
+          </g>
+
+          <g transform="translate(350, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#0891b2"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#0891b2"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">APOL1 RISK VARIANTS</text>
+
+            <g font-size="16">
+              <text x="-260" y="-160" font-weight="800" fill="#155e75">What are G1 and G2?</text>
+              <text x="-260" y="-125" font-weight="700" fill="#0e7490">• G1: two missense mutations (S342G + I384M)</text>
+              <text x="-260" y="-90" font-weight="700" fill="#0e7490">• G2: 6-bp deletion (delN388/Y389)</text>
+              <text x="-260" y="-55" font-weight="700" fill="#0e7490">• Common in individuals of African ancestry</text>
+              <text x="-260" y="-20" font-weight="800" fill="#155e75">Why they matter</text>
+              <text x="-260" y="15" font-weight="700" fill="#0e7490">• They confer protection against Trypanosoma brucei</text>
+              <text x="-260" y="50" font-weight="700" fill="#0e7490">• BUT they also increase risk of kidney disease</text>
+              <text x="-260" y="85" font-weight="700" fill="#0e7490">• Two copies = high-risk genotype</text>
+            </g>
+
+            <rect x="-260" y="130" width="520" height="110" rx="14" fill="#fff" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="162" text-anchor="middle" font-size="16" font-weight="800" fill="#155e75">Risk variants are common</text>
+            <text x="0" y="192" text-anchor="middle" font-size="14" fill="#0e7490">~13% of African Americans carry two APOL1 risk variants</text>
+            <text x="0" y="216" text-anchor="middle" font-size="14" fill="#0e7490">— but not all develop kidney disease</text>
+          </g>
+
+          <g transform="translate(1050, 480)">
+            <rect x="-290" y="-280" width="580" height="560" rx="24" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-290" y="-280" width="580" height="80" rx="24" fill="#ca8a04"/>
+            <rect x="-290" y="-225" width="580" height="25" fill="#ca8a04"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">KIDNEY DISEASES ASSOCIATED WITH APOL1</text>
+
+            <g font-size="16">
+              <text x="-260" y="-160" font-weight="800" fill="#713f12">Classic APOL1-associated nephropathies</text>
+              <text x="-260" y="-125" font-weight="700" fill="#a16207">• FSGS (focal segmental glomerulosclerosis)</text>
+              <text x="-260" y="-90" font-weight="700" fill="#a16207">• HIV-associated nephropathy (HIVAN)</text>
+              <text x="-260" y="-55" font-weight="700" fill="#a16207">• Hypertension-attributed ESKD (now called APOL1 nephropathy)</text>
+              <text x="-260" y="-20" font-weight="800" fill="#713f12">After transplantation</text>
+              <text x="-260" y="15" font-weight="700" fill="#a16207">• Donor APOL1 high-risk genotype increases risk of allograft failure</text>
+              <text x="-260" y="50" font-weight="700" fill="#a16207">• Manifests as FSGS in the allograft</text>
+              <text x="-260" y="85" font-weight="700" fill="#a16207">• Usually presents years after transplant</text>
+            </g>
+
+            <rect x="-260" y="130" width="520" height="110" rx="14" fill="#fff" stroke="#ca8a04" stroke-width="3"/>
+            <text x="0" y="162" text-anchor="middle" font-size="16" font-weight="800" fill="#713f12">Effect is not absolute</text>
+            <text x="0" y="192" text-anchor="middle" font-size="14" fill="#a16207">Many donor kidneys with G1/G2 function well for years</text>
+            <text x="0" y="216" text-anchor="middle" font-size="14" fill="#a16207">Genotype is a risk factor, not a certainty</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Donor G1/G2 = increased risk · Many function well · Genotype ≠ destiny</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — DONOR VS RECIPIENT
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#0f172a"/>
+            <text x="0" y="-5" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">DONOR VS RECIPIENT GENOTYPE — WHO MATTERS?</text>
+            <text x="0" y="28" text-anchor="middle" font-size="17" fill="#cbd5e1">The kidney is the target organ — its genotype drives the risk</text>
+          </g>
+
+          <g transform="translate(250, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#16a34a"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#16a34a"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">DONOR GENOTYPE</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="800" fill="#166534">MORE PREDICTIVE</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#166534">G1/G2</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">in donor</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#166534">• Organ:</text>
+              <text x="-70" y="0" font-weight="800" fill="#166534">Donor kidney</text>
+              <text x="-180" y="28" font-weight="700" fill="#166534">• Cells:</text>
+              <text x="-70" y="28" font-weight="800" fill="#166534">Podocytes, tubules</text>
+              <text x="-180" y="56" font-weight="700" fill="#166534">• Effect:</text>
+              <text x="-70" y="56" font-weight="800" fill="#166534">↑ FSGS risk</text>
+              <text x="-180" y="84" font-weight="700" fill="#166534">• Timing:</text>
+              <text x="-70" y="84" font-weight="800" fill="#166534">Years after transplant</text>
+              <text x="-180" y="112" font-weight="700" fill="#166534">• Predictive:</text>
+              <text x="-70" y="112" font-weight="800" fill="#166534">YES</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Mechanism: intrinsic</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#166534">kidney cell injury</text>
+          </g>
+
+          <g transform="translate(700, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#7c3aed"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#7c3aed"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">RECIPIENT GENOTYPE</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">Less predictive</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="18" font-weight="800" fill="#5b21b6">No risk</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">in recipient</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#5b21b6">• Role:</text>
+              <text x="-70" y="0" font-weight="800" fill="#5b21b6">Limited</text>
+              <text x="-180" y="28" font-weight="700" fill="#5b21b6">• Mechanism:</text>
+              <text x="-70" y="28" font-weight="800" fill="#5b21b6">Not antibody-mediated</text>
+              <text x="-180" y="56" font-weight="700" fill="#5b21b6">• Rejection:</text>
+              <text x="-70" y="56" font-weight="800" fill="#5b21b6">Not APOL1</text>
+              <text x="-180" y="84" font-weight="700" fill="#5b21b6">• Impact on FSGS:</text>
+              <text x="-70" y="84" font-weight="800" fill="#5b21b6">Small</text>
+              <text x="-180" y="112" font-weight="700" fill="#5b21b6">• Predictive:</text>
+              <text x="-70" y="112" font-weight="800" fill="#5b21b6">NO</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">APOL1 is not the</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">recipient's problem</text>
+          </g>
+
+          <g transform="translate(1150, 500)">
+            <rect x="-210" y="-280" width="420" height="560" rx="24" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <rect x="-210" y="-280" width="420" height="80" rx="24" fill="#dc2626"/>
+            <rect x="-210" y="-225" width="420" height="25" fill="#dc2626"/>
+            <text x="0" y="-225" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">CLINICAL IMPLICATION</text>
+            <text x="0" y="-190" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Donor genotype guides decisions</text>
+
+            <circle cx="0" cy="-90" r="60" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-95" text-anchor="middle" font-size="16" font-weight="800" fill="#991b1b">Donor</text>
+            <text x="0" y="-70" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">genotype</text>
+
+            <g font-size="14">
+              <text x="-180" y="0" font-weight="700" fill="#991b1b">• Not a</text>
+              <text x="-70" y="0" font-weight="800" fill="#991b1b">contraindication</text>
+              <text x="-180" y="28" font-weight="700" fill="#991b1b">• Consider:</text>
+              <text x="-70" y="28" font-weight="800" fill="#991b1b">Risk vs benefit</text>
+              <text x="-180" y="56" font-weight="700" fill="#991b1b">• Many:</text>
+              <text x="-70" y="56" font-weight="800" fill="#991b1b">Function for years</text>
+              <text x="-180" y="84" font-weight="700" fill="#991b1b">• Monitor:</text>
+              <text x="-70" y="84" font-weight="800" fill="#991b1b">Proteinuria</text>
+              <text x="-180" y="112" font-weight="700" fill="#991b1b">• Individualize:</text>
+              <text x="-70" y="112" font-weight="800" fill="#991b1b">Always</text>
+            </g>
+
+            <rect x="-180" y="180" width="360" height="80" rx="12" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">Donor G1/G2 is a risk</text>
+            <text x="0" y="232" text-anchor="middle" font-size="13" font-weight="800" fill="#991b1b">factor — not absolute</text>
+          </g>
+
+          <g transform="translate(700, 930)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#0f172a"/>
+            <text x="0" y="8" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">Donor genotype > recipient genotype · Not a contraindication · Many function well</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — ANSWER SUMMARY
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 180)">
+            <rect x="-620" y="-70" width="1240" height="140" rx="24" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-20" text-anchor="middle" font-size="28" font-weight="800" fill="#166534">✅ ANSWER B</text>
+            <text x="0" y="22" text-anchor="middle" font-size="18" fill="#15803d">Two APOL1 kidney-risk variants in the donor are associated with increased risk of allograft failure</text>
+            <text x="0" y="52" text-anchor="middle" font-size="16" fill="#15803d">Many such kidneys function well · Donor genotype is more predictive than recipient genotype</text>
+          </g>
+
+          <g transform="translate(700, 340)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#16a34a"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">B</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#166534">✅ CORRECT — Donor G1/G2 increases risk of allograft failure</text>
+            <text x="-500" y="18" font-size="14" fill="#15803d">Donor genotype more predictive than recipient · Many kidneys function well</text>
+          </g>
+
+          <g transform="translate(700, 465)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">A</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Says recipient genotype is the principal determinant</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">The DONOR kidney is the target organ — donor genotype matters more</text>
+          </g>
+
+          <g transform="translate(700, 590)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">C</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Says one risk variant in the recipient causes FSGS in the first month</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">One variant is not enough; APOL1 is recessive at the kidney level; timing is wrong</text>
+          </g>
+
+          <g transform="translate(700, 715)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">D</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — APOL1 injury is not mediated by anti-APOL1 antibodies</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">APOL1 injury is intrinsic to kidney cells (podocytes, tubules), not antibody-mediated</text>
+          </g>
+
+          <g transform="translate(700, 840)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="-560" cy="0" r="32" fill="#dc2626"/>
+            <text x="-560" y="10" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">E</text>
+            <text x="-500" y="-12" font-size="18" font-weight="800" fill="#991b1b">❌ WRONG — Donor high-risk genotype is NOT an absolute contraindication</text>
+            <text x="-500" y="18" font-size="14" fill="#7f1d1d">Many such kidneys function well for years · Decision is individualized</text>
+          </g>
+
+          <g transform="translate(700, 960)">
+            <rect x="-620" y="-26" width="1240" height="52" rx="14" fill="#0f172a"/>
+            <text x="0" y="5" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">Answer: B — Donor G1/G2 increases risk · Many function well · Not a contraindication</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="13" fill="#fee2e2"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "APOL1-Associated Kidney Disease After Transplantation",
+  subtitle: "Donor G1/G2 genotype increases allograft failure risk — but is not a contraindication",
+  badge: "TRANSPLANT NEPHROLOGY · GENETICS · RENAL PATHOLOGY",
+  caseTitle: "Case: 46-year-old man, 3 years post-deceased-donor kidney transplant",
+  caseDescription: "Donor of African genetic ancestry carries two APOL1 kidney-risk variants (G1/G2). Recipient has no APOL1 risk variants. At 3 years post-transplant, the recipient develops progressive proteinuria and declining graft function. Biopsy shows FSGS.",
+  labChips: [
+    { text: "Donor: G1/G2 (high-risk)", abnormal: true },
+    { text: "Recipient: no risk variants", abnormal: false },
+    { text: "3 years post-transplant", abnormal: false },
+    { text: "Progressive proteinuria", abnormal: true },
+    { text: "Declining graft function", abnormal: true },
+    { text: "Biopsy: FSGS", abnormal: true },
+    { text: "Donor ancestry: African", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case", className: "opt1" },
+    { id: "opt2", label: "🟣 APOL1 Genetics", className: "opt2" },
+    { id: "opt3", label: "🔵 Donor vs Recipient", className: "opt3" },
+    { id: "opt4", label: "🟡 Answer Summary", className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — APOL1-Associated Kidney Disease",
+      infoRows: [
+        { k: "Donor genotype", v: "G1/G2 (high-risk)" },
+        { k: "Recipient genotype", v: "No risk variants" },
+        { k: "Timing", v: "3 years post-transplant" },
+        { k: "Biopsy", v: "FSGS" },
+        { k: "Implication", v: "Donor kidney at risk" }
+      ],
+      svgTitle: "APOL1-Associated Kidney Disease — The Case",
+      svgSubtitle: "Donor G1/G2 · recipient no risk variants · FSGS at 3 years post-transplant",
+      bannerBg: "#dc2626",
+      bannerText1: "Donor G1/G2 genotype → increased risk of allograft failure",
+      bannerText2: "Donor genotype matters more than recipient genotype",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "What the findings tell you",
+      panel1List: [
+        "<strong>Donor has two APOL1 risk variants (G1/G2)</strong> — high-risk genotype",
+        "<strong>Recipient has none</strong> — the recipient's genotype is not the issue",
+        "<strong>3 years post-transplant</strong> — typical timing for APOL1-associated allograft failure",
+        "<strong>Progressive proteinuria + declining graft function</strong> — classic presentation",
+        "<strong>Biopsy: FSGS</strong> — the classic APOL1-associated lesion"
+      ],
+      panel2Title: "🧬 Why the donor kidney is at risk",
+      panel2Tagline: "Intrinsic kidney cell injury",
+      panel2List: [
+        "<strong>APOL1 is expressed in kidney cells</strong> — podocytes, tubules, endothelium",
+        "The <strong>donor kidney carries the risk variants</strong> → the kidney cells are susceptible",
+        "APOL1 injury is <strong>intrinsic to the kidney</strong>, not mediated by circulating factors from the recipient",
+        "This is why <strong>donor genotype matters more than recipient genotype</strong>",
+        "The kidney was 'programmed' to fail under certain stressors (interferon, viral infection, hypertension)"
+      ],
+      alertIcon: "🧬",
+      alertTitle: "Board Pearl — Donor genotype matters",
+      alertText: "For APOL1-associated kidney disease after transplant, the <strong>donor's genotype</strong> is the principal determinant. The kidney is the affected organ — its cells carry the risk variants."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 APOL1 Genetics — G1 and G2",
+      infoRows: [
+        { k: "G1", v: "Two missense mutations" },
+        { k: "G2", v: "6-bp deletion" },
+        { k: "Prevalence", v: "~13% of African Americans carry 2 variants" },
+        { k: "Benefit", v: "Protection against Trypanosoma" },
+        { k: "Risk", v: "FSGS, HIVAN, hypertension-attributed ESKD" }
+      ],
+      svgTitle: "APOL1 Risk Variants — G1 and G2",
+      svgSubtitle: "Two risk variants = high-risk genotype — carries substantial kidney disease risk",
+      bannerBg: "#7c3aed",
+      bannerText1: "G1 and G2 are common in individuals of African ancestry",
+      bannerText2: "They confer protection against Trypanosoma brucei but increase kidney disease risk",
+      panel1Title: "🧬 What are G1 and G2?",
+      panel1Tagline: "The two risk variants",
+      panel1List: [
+        "<strong>G1:</strong> two missense mutations (S342G and I384M)",
+        "<strong>G2:</strong> a 6-bp deletion (delN388/Y389)",
+        "Common in individuals of <strong>African ancestry</strong>",
+        "~13% of African Americans carry <strong>two</strong> risk variants",
+        "Heterozygotes (one variant) are not at increased risk — <strong>two copies are needed</strong>"
+      ],
+      panel2Title: "🧬 Why APOL1 matters",
+      panel2Tagline: "Evolutionary trade-off",
+      panel2List: [
+        "APOL1 risk variants confer protection against <strong>Trypanosoma brucei rhodesiense</strong> (African sleeping sickness)",
+        "This evolutionary advantage explains their high frequency in African populations",
+        "BUT the same variants increase risk of <strong>kidney disease</strong> under stress",
+        "<strong>APOL1-associated nephropathies:</strong> FSGS, HIVAN, hypertension-attributed ESKD",
+        "Second hits (interferon, viral infection, hypertension) trigger disease in genetically susceptible individuals"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Two variants are needed",
+      alertText: "The APOL1 effect is <strong>recessive at the kidney level</strong>. Two risk variants (G1/G1, G2/G2, or G1/G2) are required to increase risk. A single variant is not enough."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Donor vs Recipient Genotype",
+      infoRows: [
+        { k: "Donor genotype", v: "More predictive" },
+        { k: "Recipient genotype", v: "Less predictive" },
+        { k: "Mechanism", v: "Intrinsic kidney cell injury" },
+        { k: "Contraindication?", v: "No — not absolute" },
+        { k: "Many kidneys", v: "Function well for years" }
+      ],
+      svgTitle: "Donor vs Recipient Genotype — Who Matters?",
+      svgSubtitle: "The kidney is the target organ — its genotype drives the risk",
+      bannerBg: "#0891b2",
+      bannerText1: "Donor G1/G2 increases risk · Recipient genotype is less important",
+      bannerText2: "Donor high-risk genotype is NOT an absolute contraindication",
+      panel1Title: "🧪 Why donor genotype matters more",
+      panel1Tagline: "The kidney is the affected organ",
+      panel1List: [
+        "<strong>APOL1 is expressed in kidney cells</strong> — podocytes, tubules, endothelium",
+        "The <strong>donor kidney carries the risk variants</strong> — its cells are the target",
+        "The kidney was <strong>'programmed' at the time of donation</strong>",
+        "Recipient APOL1 genotype does <strong>not</strong> directly cause allograft FSGS",
+        "Donor genotype is therefore <strong>more predictive</strong> of allograft failure"
+      ],
+      panel2Title: "⚠️ Clinical implications",
+      panel2Tagline: "How to use this information",
+      panel2List: [
+        "Donor G1/G2 is <strong>NOT an absolute contraindication</strong> to transplantation",
+        "Many such kidneys <strong>function well for years</strong>",
+        "Decision is <strong>individualized</strong> — balance waitlist time vs risk of allograft failure",
+        "Recipients should be <strong>monitored for proteinuria</strong> after transplant",
+        "If FSGS develops: consider <strong>RAS blockade</strong>, and no specific APOL1-targeted therapy exists"
+      ],
+      alertIcon: "🔵",
+      alertTitle: "Pearl — Not a contraindication",
+      alertText: "Donor APOL1 high-risk genotype is <strong>not</strong> an absolute contraindication. Many such kidneys function well for years. The decision is individualized."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Answer Summary",
+      infoRows: [
+        { k: "Correct answer", v: "B — Donor G1/G2 increases risk" },
+        { k: "Donor genotype", v: "More predictive" },
+        { k: "Not absolute", v: "Many function well" },
+        { k: "Mechanism", v: "Intrinsic kidney cell injury" },
+        { k: "Timing", v: "Usually years post-transplant" }
+      ],
+      svgTitle: "Answer Summary — APOL1-Associated Kidney Disease",
+      svgSubtitle: "Donor G1/G2 increases risk of allograft failure — but many function well",
+      bannerBg: "#ca8a04",
+      bannerText1: "B — Donor G1/G2 increases risk of allograft failure; donor genotype is more predictive",
+      bannerText2: "Not an absolute contraindication · Many such kidneys function well",
+      panel1Title: "✅ The correct answer (B)",
+      panel1Tagline: "Why it fits",
+      panel1List: [
+        "<strong>Donor has two APOL1 risk variants (G1/G2)</strong> — high-risk genotype",
+        "<strong>Donor genotype is more predictive</strong> than recipient genotype",
+        "<strong>The donor kidney is the target organ</strong> — its cells carry the risk variants",
+        "The risk is <strong>increased but not absolute</strong> — many kidneys function well",
+        "<strong>Donor high-risk genotype is NOT a contraindication</strong> to transplantation"
+      ],
+      panel2Title: "❌ Why the other options fail",
+      panel2Tagline: "Each has a factual error",
+      panel2List: [
+        "<strong>A (Recipient genotype is the principal determinant):</strong> Wrong — <strong>donor</strong> genotype is more predictive",
+        "<strong>C (One variant in the recipient causes FSGS in the first month):</strong> Wrong — two variants are needed; effect is recessive; timing is years, not months",
+        "<strong>D (Requires anti-APOL1 antibodies):</strong> Wrong — APOL1 injury is <strong>intrinsic to kidney cells</strong>, not antibody-mediated",
+        "<strong>E (Absolute contraindication):</strong> Wrong — many donor kidneys with G1/G2 function well for years; decision is individualized"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: B",
+      alertText: "<strong>Two APOL1 kidney-risk variants in the donor</strong> are associated with increased risk of allograft failure, although many such kidneys function well. <strong>Donor genotype is more predictive than recipient genotype.</strong>"
+    }
+  },
+  comparison: {
+    title: "📊 APOL1 Genotype — Donor vs Recipient",
+    sub: "The kidney is the target organ — its genotype matters most",
+    head: ["Feature", "Donor genotype", "Recipient genotype"],
+    rows: [
+      { cells: ["Predictive value for allograft FSGS", "HIGH", "Low"], hero: true },
+      { cells: ["Mechanism", "Intrinsic kidney cell injury", "Not directly involved"], hero: false },
+      { cells: ["Timing of disease", "Years post-transplant", "Not applicable"], hero: false },
+      { cells: ["Two risk variants needed", "Yes (G1/G2, G1/G1, G2/G2)", "Not the driver"], hero: false },
+      { cells: ["Role in clinical decision-making", "Consider risk vs benefit", "Not a primary factor"], hero: false },
+      { cells: ["Absolute contraindication?", "No", "N/A"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 46-year-old man received a kidney from a deceased donor with two APOL1 risk variants (G1/G2). Recipient has no APOL1 risk variants. At 3 years post-transplant, he develops progressive proteinuria and FSGS on biopsy. Which statement is most accurate?",
+      options: [
+        { text: "Two APOL1 kidney-risk variants in the donor are associated with increased risk of allograft failure, although many such kidneys function well; donor genotype is more predictive than recipient genotype.", correct: true,
+          explanation: "The donor kidney carries the APOL1 risk variants, and its cells are the target of the disease. Donor genotype is more predictive of allograft failure than recipient genotype. Importantly, many such kidneys function well for years — so this is not an absolute contraindication." },
+        { text: "Recipient APOL1 genotype is the principal determinant of APOL1-associated allograft failure, regardless of donor genotype.", correct: false,
+          explanation: "Recipient genotype is NOT the principal determinant. The kidney is the affected organ, and its genotype (the donor's) determines the risk." },
+        { text: "A single APOL1 risk variant in the recipient invariably causes recurrent FSGS within the first month.", correct: false,
+          explanation: "Two risk variants are needed for increased risk (recessive effect at the kidney level). Also, APOL1-associated allograft failure typically occurs years after transplant, not within the first month." }
+      ]
+    },
+    {
+      question: "Which cells in the kidney express APOL1 and are relevant to APOL1-associated kidney disease?",
+      options: [
+        { text: "Podocytes, tubular epithelial cells, and endothelial cells.", correct: true,
+          explanation: "APOL1 is expressed in multiple kidney cell types, including podocytes, tubules, and endothelium. Injury to these cells underlies FSGS, HIVAN, and other APOL1-associated nephropathies." },
+        { text: "Only mesangial cells.", correct: false,
+          explanation: "APOL1 is expressed in multiple cell types, not just mesangial cells." },
+        { text: "Only cells of the immune system.", correct: false,
+          explanation: "APOL1 is expressed in kidney cells — the kidney is the target organ." }
+      ]
+    },
+    {
+      question: "What are the two APOL1 kidney-risk variants?",
+      options: [
+        { text: "G1 and G2.", correct: true,
+          explanation: "G1 (two missense mutations) and G2 (a 6-bp deletion) are the two APOL1 kidney-risk variants. Two copies of either (or one of each) increase kidney disease risk." },
+        { text: "G1 and G3.", correct: false,
+          explanation: "There is no G3 risk variant. The two are G1 and G2." },
+        { text: "G1 only.", correct: false,
+          explanation: "There are two risk variants: G1 and G2." }
+      ]
+    },
+    {
+      question: "How many APOL1 risk variants are required to increase the risk of kidney disease?",
+      options: [
+        { text: "Two risk variants (G1/G1, G2/G2, or G1/G2).", correct: true,
+          explanation: "The APOL1 effect is recessive at the kidney level. Two risk variants are required — one from each parent (or two copies of the same variant) — to increase kidney disease risk." },
+        { text: "One risk variant.", correct: false,
+          explanation: "A single variant is not sufficient. Two are required." },
+        { text: "Four risk variants.", correct: false,
+          explanation: "Humans have two APOL1 alleles. The maximum is two risk variants." }
+      ]
+    },
+    {
+      question: "What is the mechanism of APOL1-associated kidney injury after transplantation?",
+      options: [
+        { text: "Intrinsic kidney cell injury — the donor kidney's cells carry the risk variants.", correct: true,
+          explanation: "APOL1 injury is intrinsic to kidney cells (podocytes, tubules, endothelium). The donor kidney carries the risk variants, and its cells are the target of the disease. It is NOT mediated by circulating antibodies." },
+        { text: "Circulating anti-APOL1 antibodies produced by the recipient.", correct: false,
+          explanation: "APOL1-associated kidney disease is NOT antibody-mediated. There are no anti-APOL1 antibodies involved." },
+        { text: "Passive transfer of APOL1 protein from the recipient.", correct: false,
+          explanation: "APOL1 is not transferred — it is expressed by the kidney cells themselves." }
+      ]
+    },
+    {
+      question: "What timing is typical for APOL1-associated allograft failure after transplantation?",
+      options: [
+        { text: "Years after transplant.", correct: true,
+          explanation: "APOL1-associated allograft failure typically presents years after transplant, often 3–5 years or later. It is not an early complication." },
+        { text: "Within the first month.", correct: false,
+          explanation: "APOL1-associated FSGS does not present within the first month. It takes years to develop." },
+        { text: "Immediately after reperfusion.", correct: false,
+          explanation: "APOL1-associated disease is not an immediate post-reperfusion event." }
+      ]
+    },
+    {
+      question: "Is donor APOL1 high-risk genotype (G1/G2) an absolute contraindication to kidney transplantation?",
+      options: [
+        { text: "No — many such kidneys function well for years; the decision is individualized.", correct: true,
+          explanation: "Donor high-risk APOL1 genotype is NOT an absolute contraindication. Many such kidneys function well for years. The decision is individualized, balancing the risk of allograft failure with the risk of prolonged waiting on dialysis." },
+        { text: "Yes — such kidneys should never be transplanted.", correct: false,
+          explanation: "This is not current practice. The genotype is a risk factor, not a contraindication." },
+        { text: "Yes — only if the recipient has two APOL1 risk variants.", correct: false,
+          explanation: "Even with a high-risk recipient genotype, the decision is not absolute. It remains individualized." }
+      ]
+    },
+    {
+      question: "Which of the following is NOT an APOL1-associated nephropathy?",
+      options: [
+        { text: "Membranous nephropathy.", correct: true,
+          explanation: "Membranous nephropathy is an immune-complex-mediated disease (PLA2R, THSD7A, EXT1/EXT2), not an APOL1-associated nephropathy. APOL1 is associated with FSGS, HIVAN, and hypertension-attributed ESKD." },
+        { text: "Focal segmental glomerulosclerosis (FSGS).", correct: false,
+          explanation: "FSGS is the classic APOL1-associated nephropathy." },
+        { text: "HIV-associated nephropathy (HIVAN).", correct: false,
+          explanation: "HIVAN is a classic APOL1-associated nephropathy." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Transplant Nephrology / Genetics / Renal Pathology",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   SHUFFLE HELPER
+   ============================================================ */
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function(q){
+  return {
+    question: q.question,
+    options: shuffleOptions(q.options)
+  };
+});
+
+/* ============================================================
+   RENDER ENGINE
+   ============================================================ */
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function(c){
+    var cls = c.abnormal ? ' abn' : ' ok';
+    return '<span class="lab-chip' + cls + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function(t){
+    return '<button class="tab ' + t.className + '" id="tab' + t.id + '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function(r){
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function(c){ return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function(q, qi){
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function(o, oi){
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function(t){
+    document.getElementById('tab' + t.id).classList.remove('active');
+  });
+  document.getElementById('tab' + mode).classList.add('active');
+
+  ['opt1','opt2','opt3','opt4'].forEach(function(id){
+    document.getElementById('diagram-' + id).style.display = 'none';
+  });
+  document.getElementById('diagram-' + mode).style.display = 'block';
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass +
+    (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function(r){
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function(li){
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+var panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function(e){
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var q = RUNTIME_QUIZ[qi];
+  var o = q.options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode('opt1');
+</script>
+</body>
+</html>

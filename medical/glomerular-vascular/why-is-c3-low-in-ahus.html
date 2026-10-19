@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Is C3 Low in aHUS? — Alternative Pathway Consumption</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+
+  @keyframes floatDown {
+    0% { transform: translateY(-50px); opacity: 0; }
+    20% { opacity: 1; }
+    80% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+  .adh-mol { animation: floatDown 3s ease-in-out infinite; }
+
+  @keyframes waterIn {
+    0% { transform: translateY(0); opacity: 0; }
+    20% { opacity: 1; }
+    80% { transform: translateY(60px); opacity: 1; }
+    100% { transform: translateY(60px); opacity: 0; }
+  }
+  @keyframes waterBlocked {
+    0% { transform: translateY(0); opacity: 0; }
+    20% { opacity: 1; }
+    40% { transform: translateY(10px); opacity: 1; }
+    60% { transform: translateY(-5px); opacity: 1; }
+    80% { transform: translateY(10px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+  .water-in { animation: waterIn 2s linear infinite; }
+  .water-blocked { animation: waterBlocked 2s ease-in-out infinite; }
+
+  @keyframes vesicleInsert {
+    0% { transform: translateY(30px); opacity: 0; }
+    20% { opacity: 1; }
+    80% { transform: translateY(0px); opacity: 1; }
+    100% { transform: translateY(0px); opacity: 0; }
+  }
+  .aqp2-vesicle { animation: vesicleInsert 3s ease-out infinite; }
+
+  @keyframes blockReceptor {
+    0% { transform: translateY(-30px); opacity: 0; }
+    20% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+  }
+  .tolv-mol { animation: blockReceptor 2.5s ease-in-out infinite; }
+
+  @keyframes drawLine {0%{stroke-dashoffset:1;}100%{stroke-dashoffset:0;}}
+  .egfr-line { stroke-dasharray: 1; animation: drawLine 4s ease-out forwards; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cellGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef9c3"/>
+            <stop offset="100%" stop-color="#fde047"/>
+          </radialGradient>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <linearGradient id="endoGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fbcfe8"/>
+            <stop offset="100%" stop-color="#f9a8d4"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — WHY C3 IS LOW: CONCEPT OVERVIEW
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#991b1b">WHY IS C3 LOW IN aHUS?</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="16" fill="#7f1d1d">C3 is CONSUMED by an alternative pathway that never switches off — not underproduced</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">C4 stays normal because the classical and lectin pathways are untouched</text>
+          </g>
+
+          <!-- Card 1: C3 consumed -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-180" width="400" height="360" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-180" width="400" height="60" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-140" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-142" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff">C3 IS CONSUMED</text>
+
+            <text x="0" y="-72" text-anchor="middle" font-family="Arial" font-size="44" font-weight="800" fill="#dc2626">C3 ↓↓</text>
+            <line x1="-150" y1="-40" x2="150" y2="-40" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#334155">Cleaved to C3b faster</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#334155">than the liver replaces it</text>
+            <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Consumption</text>
+            <text x="0" y="76" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">NOT deficiency</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">synthesis is normal</text>
+          </g>
+
+          <!-- Card 2: C4 normal -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-180" width="400" height="360" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-180" width="400" height="60" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-140" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-142" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff">C4 IS NORMAL</text>
+
+            <text x="0" y="-72" text-anchor="middle" font-family="Arial" font-size="44" font-weight="800" fill="#166534">C4 =</text>
+            <line x1="-150" y1="-40" x2="150" y2="-40" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#334155">Alternative pathway</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#334155">bypasses C4 entirely</text>
+            <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Classical &amp; lectin</text>
+            <text x="0" y="76" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">untouched</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">low C4 points elsewhere</text>
+          </g>
+
+          <!-- Card 3: frequency -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-180" width="400" height="360" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-180" width="400" height="60" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-140" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-142" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff">HOW OFTEN?</text>
+
+            <text x="0" y="-72" text-anchor="middle" font-family="Arial" font-size="40" font-weight="800" fill="#0891b2">30–50%</text>
+            <line x1="-150" y1="-40" x2="150" y2="-40" stroke="#cffafe" stroke-width="2"/>
+
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#334155">Only about a third to</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#334155">a half have low C3</text>
+            <text x="0" y="52" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">Activation is often</text>
+            <text x="0" y="76" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">surface-restricted</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">normal C3 does not exclude</text>
+          </g>
+
+          <!-- Bottom: mechanism chain -->
+          <g transform="translate(700, 705)">
+            <rect x="-560" y="-55" width="1120" height="110" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+            <text x="0" y="-28" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#334155">THE MECHANISM IN ONE LINE</text>
+            <text x="0" y="4" text-anchor="middle" font-family="Arial" font-size="16" fill="#334155">Brake failure → <tspan font-weight="800" fill="#7c3aed">C3 convertase persists</tspan> → <tspan font-weight="800" fill="#dc2626">continuous C3 cleavage</tspan> → <tspan font-weight="800" fill="#dc2626">C3 consumed</tspan></text>
+            <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748b">Meanwhile, C3b deposits on endothelium and drives the thrombotic microangiopathy</text>
+          </g>
+
+          <!-- Conclusion -->
+          <g transform="translate(700, 840)">
+            <rect x="-560" y="-40" width="1120" height="80" rx="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#166534">LOW C3 = CONSUMPTION, NOT UNDERPRODUCTION</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">The liver is making C3 normally — the alternative pathway is destroying it faster than it can be replaced</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — NORMAL ALTERNATIVE PATHWAY WITH BRAKES
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          <g transform="translate(700, 470)">
+
+            <rect x="-620" y="180" width="1240" height="22" rx="6" fill="#fbcfe8" stroke="#ec4899" stroke-width="2"/>
+            <text x="-600" y="196" font-family="Arial" font-size="12" font-weight="700" fill="#831843">HOST CELL SURFACE — alternative pathway is continuously ticking over here</text>
+
+            <g transform="translate(-560, 0)">
+              <circle r="42" fill="#86efac" stroke="#16a34a" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#14532d">C3</text>
+              <text y="72" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#166534">native C3</text>
+            </g>
+
+            <path d="M -512,0 L -442,0" stroke="#16a34a" stroke-width="4" marker-end="url(#arrowGreen)" class="flow-anim"/>
+            <text x="-477" y="-14" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#15803d">spontaneous</text>
+            <text x="-477" y="12" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#15803d">tick-over</text>
+
+            <g transform="translate(-400, 0)">
+              <circle r="38" fill="#22c55e" stroke="#15803d" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">C3b</text>
+              <text y="64" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#166534">C3b</text>
+            </g>
+
+            <g transform="translate(-400, -200)">
+              <circle r="32" fill="#93c5fd" stroke="#2563eb" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#1e3a8a">B</text>
+              <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#1d4ed8">Factor B</text>
+            </g>
+            <path d="M -400,-168 L -400,-42" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowBlue)"/>
+
+            <path d="M -358,0 L -298,0" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" class="flow-anim"/>
+
+            <g transform="translate(-160, 0)">
+              <rect x="-130" y="-52" width="260" height="104" rx="16" fill="#fbbf24" stroke="#b45309" stroke-width="3"/>
+              <text y="-6" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#78350f">C3bBb</text>
+              <text y="22" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#92400e">C3 CONVERTASE</text>
+              <text y="42" text-anchor="middle" font-family="Arial" font-size="11" fill="#a16207">on the surface</text>
+            </g>
+
+            <g transform="translate(-160, -240)">
+              <circle r="30" fill="#c4b5fd" stroke="#7c3aed" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#4c1d95">P</text>
+              <text y="-44" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#5b21b6">Properdin</text>
+            </g>
+            <path d="M -160,-208 L -160,-58" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrowPurple)"/>
+            <text x="-108" y="-135" font-family="Arial" font-size="11" font-weight="700" fill="#5b21b6">briefly stabilizes</text>
+
+            <g transform="translate(90, -240)">
+              <circle r="32" fill="#fca5a5" stroke="#dc2626" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7f1d1d">H</text>
+              <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#991b1b">Factor H</text>
+            </g>
+            <path d="M 62,-212 Q -30,-160 -70,-56" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowRed)" fill="none"/>
+            <text x="32" y="-160" font-family="Arial" font-size="11" font-weight="700" fill="#991b1b">decays</text>
+
+            <g transform="translate(300, -240)">
+              <circle r="32" fill="#fdba74" stroke="#ea580c" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7c2d12">I</text>
+              <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#9a3412">Factor I</text>
+            </g>
+            <path d="M 272,-212 Q 170,-160 105,-56" stroke="#ea580c" stroke-width="3" marker-end="url(#arrowRed)" fill="none" stroke-dasharray="6 4"/>
+            <text x="215" y="-160" font-family="Arial" font-size="11" font-weight="700" fill="#9a3412">cleaves C3b</text>
+
+            <g transform="translate(260, 0)">
+              <circle r="38" fill="#86efac" stroke="#16a34a" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#14532d">C3</text>
+              <text y="64" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#166534">substrate</text>
+            </g>
+            <path d="M 0,-20 Q 140,-30 222,-6" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" fill="none"/>
+            <text x="115" y="-30" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#15803d">cleaves</text>
+
+            <g transform="translate(430, 0)">
+              <circle r="38" fill="#22c55e" stroke="#15803d" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">C3b</text>
+              <text y="64" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#166534">product</text>
+            </g>
+            <path d="M 298,0 L 388,0" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" class="flow-anim"/>
+
+            <g transform="translate(260, 100)">
+              <circle r="24" fill="#fda4af" stroke="#e11d48" stroke-width="3"/>
+              <text y="6" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#881337">C3a</text>
+              <text y="-38" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#9f1239">anaphylatoxin</text>
+            </g>
+            <path d="M 246,40 L 254,70" stroke="#e11d48" stroke-width="3" marker-end="url(#arrowRed)" stroke-dasharray="5 3"/>
+
+            <path d="M 430,40 L 430,150 L -160,150 L -160,58" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" fill="none" stroke-dasharray="8 6" class="flow-anim"/>
+            <text x="140" y="172" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#15803d">AMPLIFICATION LOOP — each C3b seeds more C3bBb</text>
+
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — aHUS: BRAKE FAILURE AND C3 CONSUMPTION
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          <g transform="translate(700, 470)">
+
+            <rect x="-620" y="180" width="1240" height="22" rx="6" fill="#fbcfe8" stroke="#ec4899" stroke-width="2"/>
+            <text x="-600" y="196" font-family="Arial" font-size="12" font-weight="700" fill="#831843">ENDOTHELIAL SURFACE — where the damage happens</text>
+
+            <!-- Serum C3 badge -->
+            <g transform="translate(520, -290)">
+              <rect x="-95" y="-42" width="190" height="84" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text y="-18" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">SERUM</text>
+              <text y="10" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#dc2626">C3 ↓↓</text>
+              <text y="30" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#b91c1c">C4 normal</text>
+            </g>
+
+            <!-- C3b -->
+            <g transform="translate(-400, 0)">
+              <circle r="38" fill="#22c55e" stroke="#15803d" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">C3b</text>
+            </g>
+
+            <path d="M -358,0 L -298,0" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" class="flow-anim"/>
+
+            <!-- Convertase unstoppable -->
+            <g transform="translate(-160, 0)">
+              <rect x="-130" y="-52" width="260" height="104" rx="16" fill="#fbbf24" stroke="#dc2626" stroke-width="5"/>
+              <text y="-6" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#78350f">C3bBb</text>
+              <text y="22" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#92400e">C3 CONVERTASE</text>
+              <text y="42" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#b91c1c">NEVER SHUT OFF</text>
+            </g>
+
+            <!-- Defective regulator H -->
+            <g transform="translate(90, -240)">
+              <circle r="32" fill="#fca5a5" stroke="#dc2626" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7f1d1d">H</text>
+              <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#991b1b">Factor H</text>
+              <text y="-64" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic" fill="#b91c1c">mutated / blocked</text>
+            </g>
+            <path d="M 62,-212 Q -30,-160 -70,-56" stroke="#dc2626" stroke-width="3" fill="none" stroke-dasharray="6 4" opacity="0.3"/>
+            <g transform="translate(-20, -150)">
+              <circle r="22" fill="#fecaca" stroke="#dc2626" stroke-width="3"/>
+              <path d="M -10,-10 L 10,10 M 10,-10 L -10,10" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+            </g>
+            <text x="28" y="-186" font-family="Arial" font-size="11" font-weight="800" fill="#991b1b">cannot decay</text>
+
+            <!-- Factor I blocked -->
+            <g transform="translate(300, -240)">
+              <circle r="32" fill="#fdba74" stroke="#ea580c" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7c2d12">I</text>
+              <text y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#9a3412">Factor I</text>
+            </g>
+            <path d="M 272,-212 Q 170,-160 105,-56" stroke="#ea580c" stroke-width="3" fill="none" stroke-dasharray="6 4" opacity="0.3"/>
+            <g transform="translate(210, -150)">
+              <circle r="22" fill="#fed7aa" stroke="#ea580c" stroke-width="3"/>
+              <path d="M -10,-10 L 10,10 M 10,-10 L -10,10" stroke="#ea580c" stroke-width="4" stroke-linecap="round"/>
+            </g>
+            <text x="245" y="-186" font-family="Arial" font-size="11" font-weight="800" fill="#9a3412">no cofactor</text>
+
+            <!-- C3 substrate -->
+            <g transform="translate(260, 0)">
+              <circle r="38" fill="#86efac" stroke="#16a34a" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#14532d">C3</text>
+            </g>
+            <path d="M 0,-20 Q 140,-30 222,-6" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" fill="none" class="flow-anim"/>
+
+            <!-- C3b product -->
+            <g transform="translate(430, 0)">
+              <circle r="38" fill="#22c55e" stroke="#15803d" stroke-width="3"/>
+              <text y="7" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">C3b</text>
+            </g>
+            <path d="M 298,0 L 388,0" stroke="#15803d" stroke-width="4" marker-end="url(#arrowGreen)" class="flow-anim"/>
+
+            <!-- Runaway loop -->
+            <path d="M 430,40 L 430,150 L -160,150 L -160,58" stroke="#15803d" stroke-width="6" marker-end="url(#arrowGreen)" fill="none" stroke-dasharray="10 6" class="flow-anim"/>
+            <text x="140" y="172" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#b91c1c">RUNAWAY AMPLIFICATION → continuous C3 consumption</text>
+
+          </g>
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — CLINICAL & DIAGNOSTIC IMPLICATIONS
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          <g transform="translate(700, 470)">
+
+            <!-- Left: frequency bar -->
+            <g transform="translate(-300, -200)">
+              <rect x="-260" y="-90" width="520" height="260" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+              <text x="0" y="-60" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">HOW MANY aHUS PATIENTS HAVE LOW C3?</text>
+
+              <!-- bar low -->
+              <rect x="-230" y="-20" width="200" height="50" rx="8" fill="#dc2626"/>
+              <text x="-130" y="12" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">30–50%</text>
+              <text x="-130" y="52" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#991b1b">C3 LOW</text>
+
+              <!-- bar normal -->
+              <rect x="30" y="-20" width="200" height="50" rx="8" fill="#16a34a"/>
+              <text x="130" y="12" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#fff">50–70%</text>
+              <text x="130" y="52" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#166534">C3 NORMAL</text>
+
+              <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Normal C3 does NOT exclude aHUS</text>
+              <text x="0" y="122" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">activation is often restricted to the endothelial surface</text>
+            </g>
+
+            <!-- Right: test panel -->
+            <g transform="translate(320, -200)">
+              <rect x="-210" y="-90" width="420" height="260" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+              <text x="0" y="-60" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">COMPLEMENT WORK-UP IN SUSPECTED aHUS</text>
+
+              <g font-family="Arial" font-size="13" fill="#334155">
+                <text x="-190" y="-24" font-weight="800" fill="#0f172a">FIRST-LINE</text>
+                <text x="-190" y="-2">• C3, C4 (low C3 + normal C4 → alternative pathway)</text>
+                <text x="-190" y="20">• ADAMTS13 (to exclude TTP)</text>
+                <text x="-190" y="42">• Stool Shiga toxin (to exclude STEC-HUS)</text>
+
+                <text x="-190" y="74" font-weight="800" fill="#0f172a">SECOND-LINE</text>
+                <text x="-190" y="96">• Factor H, factor I, MCP levels and function</text>
+                <text x="-190" y="118">• Anti-factor H antibodies</text>
+                <text x="-190" y="140">• CFH / CFI / MCP / C3 / CFB genotyping</text>
+              </g>
+            </g>
+
+            <!-- Bottom: pearls -->
+            <g transform="translate(0, 200)">
+              <rect x="-620" y="-70" width="1240" height="140" rx="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+              <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#166534">CLINICAL PEARLS</text>
+              <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">• Low C3 + normal C4 → think alternative pathway dysregulation (aHUS, C3 glomerulopathy)</text>
+              <text x="0" y="12" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d">• Low C3 + low C4 → classical pathway (lupus, cryoglobulinemia, immune-complex disease)</text>
+              <text x="0" y="36" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">• aHUS is a clinical diagnosis — complement results support but never rule it out</text>
+              <text x="0" y="60" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Start eculizumab on clinical suspicion; do not wait for complement results</text>
+            </g>
+
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  title: "Why Is C3 Low in aHUS? — Alternative Pathway Consumption",
+  subtitle: "C3 is consumed, not underproduced; C4 stays normal because the classical pathway is untouched",
+  badge: "NEPHROLOGY · aHUS · COMPLEMENT",
+  caseTitle: "Question: why is C3 low in atypical hemolytic uremic syndrome?",
+  caseDescription: "A patient with aHUS has a low serum C3 but a normal C4. Is C3 low because the liver is failing to make it, or because it is being consumed? And why does C4 stay normal?",
+  labChips: [
+    { text: "C3 low (~30–50% of aHUS)", abnormal: true },
+    { text: "C4 normal", abnormal: false },
+    { text: "Alternative pathway", abnormal: true },
+    { text: "Factor H most commonly affected", abnormal: true },
+    { text: "ADAMTS13 usually normal", abnormal: false },
+    { text: "Shiga toxin negative", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Why C3 Falls",       className: "opt1" },
+    { id: "opt2", label: "🟣 Normal Pathway",      className: "opt2" },
+    { id: "opt3", label: "🔵 aHUS Mechanism",      className: "opt3" },
+    { id: "opt4", label: "🟡 Clinical & Work-up",  className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Why C3 Falls in aHUS",
+      infoRows: [
+        { k: "C3 level",     v: "Low (consumed)" },
+        { k: "C4 level",     v: "Normal" },
+        { k: "Cause",        v: "Alternative pathway stuck on" },
+        { k: "Synthesis",    v: "Normal" },
+        { k: "Frequency",    v: "30–50% of aHUS" },
+        { k: "Caveat",       v: "Normal C3 does not exclude aHUS" }
+      ],
+      svgTitle: "Why Is C3 Low in aHUS?",
+      svgSubtitle: "The alternative pathway is stuck in the ON position and consumes C3 faster than it can be replaced",
+      bannerBg: "#dc2626",
+      bannerText1: "Low C3 in aHUS = consumption, not underproduction",
+      bannerText2: "C4 stays normal because the classical and lectin pathways are untouched",
+      panel1Title: "🧪 The three key facts",
+      panel1Tagline: "What explains the complement pattern",
+      panel1List: [
+        "<strong>C3 is consumed</strong> — cleaved to C3b faster than the liver can replace it",
+        "<strong>C4 is normal</strong> — the alternative pathway bypasses C4 entirely",
+        "<strong>Only 30–50%</strong> of aHUS patients have a low C3, because activation is often surface-restricted",
+        "A <strong>normal C3 does not exclude aHUS</strong>",
+        "The liver is making C3 normally — this is not a synthetic failure"
+      ],
+      panel2Title: "🧬 Root cause",
+      panel2Tagline: "Why the pathway never switches off",
+      panel2List: [
+        "<strong>Loss-of-function</strong> in regulators: factor H (most common), factor I, MCP, thrombomodulin",
+        "<strong>Gain-of-function</strong> in C3 or factor B — convertase resists regulation",
+        "<strong>Anti-factor H antibodies</strong> — functional factor H deficiency",
+        "Final common pathway: unchecked C3 convertase → continuous C3 cleavage → low serum C3",
+        "C3b deposits on endothelium → endothelial injury → thrombotic microangiopathy"
+      ],
+      alertIcon: "💡",
+      alertTitle: "The one-line answer",
+      alertText: "C3 is low in aHUS because the <strong>alternative pathway is locked in the ON position</strong> — the convertase keeps firing, C3 is continuously cleaved, and serum C3 falls from <strong>consumption</strong>, not from underproduction."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Normal Alternative Pathway — The Brakes",
+      infoRows: [
+        { k: "Trigger",    v: "Spontaneous C3 tick-over" },
+        { k: "Convertase", v: "C3bBb" },
+        { k: "Stabilizer", v: "Properdin" },
+        { k: "Regulators", v: "Factor H & Factor I" },
+        { k: "Loop",       v: "Amplification" },
+        { k: "C4 role",    v: "Bypassed" }
+      ],
+      svgTitle: "Normal Alternative Pathway — and Its Brakes",
+      svgSubtitle: "C3 tick-over → C3bBb convertase → amplification loop — shut down almost immediately by factor H and factor I",
+      bannerBg: "#7c3aed",
+      bannerText1: "C3bBb is the alternative pathway C3 convertase",
+      bannerText2: "Factor H decays it and factor I cleaves C3b — in health the loop barely runs",
+      panel1Title: "🔬 How the pathway runs",
+      panel1Tagline: "Tick-over to amplification",
+      panel1List: [
+        "Native C3 undergoes spontaneous <strong>tick-over</strong>, generating a small amount of C3b",
+        "C3b binds factor B, which is cleaved to Bb → forms <strong>C3bBb</strong> (C3 convertase)",
+        "<strong>Properdin</strong> transiently stabilizes C3bBb on surfaces",
+        "C3bBb cleaves more C3 → more C3b → <strong>amplification loop</strong>",
+        "C3a is released as an anaphylatoxin"
+      ],
+      panel2Title: "🛡️ The brakes",
+      panel2Tagline: "What stops it in health",
+      panel2List: [
+        "<strong>Factor H</strong> displaces Bb and accelerates decay of C3bBb",
+        "<strong>Factor I</strong> cleaves C3b to iC3b, permanently inactivating it",
+        "Together they keep the loop almost silent on host surfaces",
+        "When these brakes fail, the loop runs unchecked",
+        "<strong>C4 is not involved</strong> — that is why C4 stays normal"
+      ],
+      alertIcon: "🛡️",
+      alertTitle: "The brakes are the point",
+      alertText: "In health, factor H and factor I dismantle C3bBb within seconds. <strong>aHUS is a disease of failed brakes</strong> — the convertase survives and keeps consuming C3."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 aHUS — Brake Failure and C3 Consumption",
+      infoRows: [
+        { k: "Lesion",         v: "Complement dysregulation" },
+        { k: "Most common",    v: "Factor H (CFH) mutation" },
+        { k: "Also",           v: "CFI, MCP, C3, CFB, anti-FH" },
+        { k: "Convertase",     v: "Persists — not decayed" },
+        { k: "Serum C3",       v: "Low (consumed)" },
+        { k: "Consequence",    v: "Endothelial TMA" }
+      ],
+      svgTitle: "aHUS — The Convertase That Cannot Be Stopped",
+      svgSubtitle: "Factor H cannot decay it, factor I cannot cleave it → runaway alternative pathway → continuous C3 consumption",
+      bannerBg: "#0891b2",
+      bannerText1: "Brake failure → persistent C3 convertase → continuous C3 cleavage → low serum C3",
+      bannerText2: "C3b deposits on endothelium → endothelial injury → thrombotic microangiopathy",
+      panel1Title: "🔬 What goes wrong",
+      panel1Tagline: "The dysregulation",
+      panel1List: [
+        "<strong>Factor H</strong> is the most commonly affected regulator — mutations cluster at the C3b binding site",
+        "<strong>Factor I, MCP, thrombomodulin</strong> loss-of-function also impair convertase control",
+        "<strong>C3 or factor B gain-of-function</strong> mutations make the convertase harder to regulate",
+        "<strong>Anti-factor H antibodies</strong> produce a functional factor H deficiency",
+        "Result: <strong>C3bBb persists</strong> and keeps cleaving C3"
+      ],
+      panel2Title: "🩸 Consequences",
+      panel2Tagline: "Why the patient gets sick",
+      panel2List: [
+        "Serum <strong>C3 falls</strong> from continuous cleavage — consumption, not deficiency",
+        "<strong>C4 stays normal</strong> — the classical and lectin pathways are not activated",
+        "C3b deposits on <strong>endothelial surfaces</strong> (kidney, sometimes brain, gut)",
+        "Endothelial injury → platelet activation, microthrombi → <strong>thrombotic microangiopathy</strong>",
+        "Schistocytes, thrombocytopenia, acute kidney injury, and a low C3 in 30–50%"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Consumption, not deficiency",
+      alertText: "C3 is low because it is being <strong>cleaved continuously</strong>. The liver is making it normally — the alternative pathway is destroying it faster than it can be replaced."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Clinical Use — What the Complement Pattern Tells You",
+      infoRows: [
+        { k: "Low C3 + normal C4", v: "Alternative pathway" },
+        { k: "Low C3 + low C4",    v: "Classical pathway" },
+        { k: "Low C3 frequency",   v: "30–50% of aHUS" },
+        { k: "Normal C3",          v: "Does NOT exclude aHUS" },
+        { k: "Must exclude",       v: "TTP, STEC-HUS" },
+        { k: "Decision",           v: "Treat on clinical grounds" }
+      ],
+      svgTitle: "Clinical Use — Complement Pattern and Work-up",
+      svgSubtitle: "Low C3 with normal C4 points to the alternative pathway; a normal C3 does not exclude aHUS",
+      bannerBg: "#ca8a04",
+      bannerText1: "Low C3 + normal C4 → think alternative pathway: aHUS or C3 glomerulopathy",
+      bannerText2: "Low C3 + low C4 → think classical pathway: lupus, cryoglobulinemia, immune-complex disease",
+      panel1Title: "✅ How to read the complement pattern",
+      panel1Tagline: "Four patterns",
+      panel1List: [
+        "<strong>Low C3 + normal C4</strong> → alternative pathway: aHUS, C3 glomerulopathy, C3NeF",
+        "<strong>Low C3 + low C4</strong> → classical pathway: lupus nephritis, cryoglobulinemia, endocarditis",
+        "<strong>Normal C3 + normal C4</strong> → membranous, fibrillary GN, pauci-immune",
+        "<strong>Low C3 does not rule aHUS in</strong> — only 30–50% have it",
+        "<strong>Normal C3 does not rule aHUS out</strong> — most patients have a normal C3"
+      ],
+      panel2Title: "🧪 What to order",
+      panel2Tagline: "Excluding the mimics first",
+      panel2List: [
+        "<strong>ADAMTS13</strong> — to exclude TTP (activity &lt;10% is diagnostic)",
+        "<strong>Stool Shiga toxin</strong> — to exclude STEC-HUS",
+        "<strong>C3, C4</strong> — establish the complement pattern",
+        "<strong>Factor H, factor I, MCP levels and function</strong>; anti-factor H antibodies",
+        "<strong>CFH / CFI / MCP / C3 / CFB genotyping</strong> — supports but does not define the diagnosis",
+        "<strong>Do not delay eculizumab</strong> waiting for complement results — aHUS is a clinical diagnosis"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Treat first, test second",
+      alertText: "aHUS is a <strong>clinical diagnosis</strong>. Complement testing supports it but never rules it out. Start eculizumab on suspicion — <strong>do not wait for the C3 result</strong>."
+    }
+  },
+  comparison: {
+    title: "📊 Complement Patterns — What They Point To",
+    sub: "Reading C3 and C4 together",
+    head: ["C3 / C4", "Pathway involved", "Typical diagnoses"],
+    rows: [
+      { cells: ["C3 low · C4 normal", "Alternative", "aHUS · C3 glomerulopathy · C3NeF · factor H/I deficiency"], hero: true },
+      { cells: ["C3 low · C4 low",    "Classical",   "Lupus nephritis · cryoglobulinemia · endocarditis-associated GN"], hero: false },
+      { cells: ["C3 normal · C4 normal", "None",     "Membranous · fibrillary GN · pauci-immune GN"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "Why is serum C3 low in atypical hemolytic uremic syndrome?",
+      options: [
+        { text: "It is consumed by an uncontrolled alternative pathway that cleaves C3 faster than it can be replaced.", correct: true,
+          explanation: "aHUS is a disease of complement dysregulation. The C3 convertase persists, C3 is continuously cleaved, and serum C3 falls from consumption." },
+        { text: "The liver fails to synthesize C3.", correct: false,
+          explanation: "Synthesis is normal. This is consumption, not underproduction." },
+        { text: "C3 is lost in the urine due to proteinuria.", correct: false,
+          explanation: "Urinary C3 loss is not the mechanism of low serum C3 in aHUS." }
+      ]
+    },
+    {
+      question: "Why is C4 typically normal in aHUS?",
+      options: [
+        { text: "The alternative pathway bypasses C4; the classical and lectin pathways are not activated.", correct: true,
+          explanation: "C4 is consumed only when the classical or lectin pathway is activated. In aHUS, only the alternative pathway is dysregulated." },
+        { text: "C4 is produced in excess to compensate for low C3.", correct: false,
+          explanation: "There is no compensatory overproduction of C4." },
+        { text: "C4 is not measured accurately in aHUS.", correct: false,
+          explanation: "C4 is measured reliably; it is normal because the classical pathway is untouched." }
+      ]
+    },
+    {
+      question: "In roughly what proportion of aHUS patients is serum C3 low?",
+      options: [
+        { text: "About 30–50%.", correct: true,
+          explanation: "Low C3 is present in only about a third to a half of aHUS patients, because complement activation is often restricted to endothelial surfaces." },
+        { text: "Nearly 100%.", correct: false,
+          explanation: "If C3 were low in nearly all patients, the test would be far more useful than it is." },
+        { text: "Less than 5%.", correct: false,
+          explanation: "The true figure is around 30–50%." }
+      ]
+    },
+    {
+      question: "A patient with suspected aHUS has a normal serum C3. Does this exclude aHUS?",
+      options: [
+        { text: "No — aHUS is a clinical diagnosis, and most patients have a normal C3.", correct: true,
+          explanation: "Complement activation in aHUS is often surface-restricted, so serum C3 can be normal. Normal C3 does not exclude aHUS." },
+        { text: "Yes — aHUS always causes low C3.", correct: false,
+          explanation: "Only 30–50% of aHUS patients have a low C3." },
+        { text: "Yes — a normal C3 means the alternative pathway is intact.", correct: false,
+          explanation: "A normal fluid-phase C3 does not mean the pathway is intact on endothelial surfaces." }
+      ]
+    },
+    {
+      question: "Which regulator is most commonly affected by mutations in aHUS?",
+      options: [
+        { text: "Factor H (CFH).", correct: true,
+          explanation: "Factor H mutations are the most common genetic abnormality in aHUS, often clustering at the C3b binding site." },
+        { text: "C1 inhibitor.", correct: false,
+          explanation: "C1 inhibitor deficiency causes hereditary angioedema, not aHUS." },
+        { text: "CD59.", correct: false,
+          explanation: "CD59 deficiency causes a different complement-mediated disorder (PNH-like), not typical aHUS." }
+      ]
+    },
+    {
+      question: "What is the consequence of persistent C3b deposition on endothelial surfaces in aHUS?",
+      options: [
+        { text: "Endothelial injury leading to thrombotic microangiopathy.", correct: true,
+          explanation: "C3b deposition injures endothelium, promoting platelet activation and microthrombi — the TMA that defines aHUS." },
+        { text: "Direct glomerular basement membrane thickening without inflammation.", correct: false,
+          explanation: "That describes membranous nephropathy, not aHUS." },
+        { text: "Isolated tubulointerstitial nephritis.", correct: false,
+          explanation: "aHUS is a vascular/glomerular microangiopathy, not tubulointerstitial disease." }
+      ]
+    },
+    {
+      question: "Which test should be ordered first to exclude TTP in a patient with suspected aHUS?",
+      options: [
+        { text: "ADAMTS13 activity.", correct: true,
+          explanation: "ADAMTS13 activity <10% is diagnostic of TTP and must be excluded before attributing the TMA to aHUS." },
+        { text: "Serum C3 level.", correct: false,
+          explanation: "C3 supports the aHUS diagnosis but does not exclude TTP." },
+        { text: "Anti-factor H antibody titer.", correct: false,
+          explanation: "Anti-factor H antibodies support aHUS but do not exclude TTP." }
+      ]
+    },
+    {
+      question: "A patient has low C3 and low C4. Which pathway is most likely activated?",
+      options: [
+        { text: "Classical pathway — e.g., lupus nephritis or cryoglobulinemia.", correct: true,
+          explanation: "C4 is consumed only in the classical or lectin pathways. Low C3 with low C4 points to classical pathway activation." },
+        { text: "Alternative pathway — e.g., aHUS.", correct: false,
+          explanation: "The alternative pathway bypasses C4, so C4 would be normal." },
+        { text: "No pathway — this pattern is normal.", correct: false,
+          explanation: "Low C3 with low C4 is abnormal and indicates classical or lectin pathway activation." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / aHUS / Complement",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drug Dialyzability — High-Flux Hemodialysis Reference</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --dial:#dc2626; --mod:#ca8a04; --nodial:#0891b2; --green:#16a34a; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;
+    animation:slideDown .6s cubic-bezier(.4,0,.2,1);}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .search-bar{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;
+    animation:slideDown .7s cubic-bezier(.4,0,.2,1);}
+  .search-bar input{flex:1; min-width:200px; padding:11px 16px; border:1px solid var(--line);
+    border-radius:10px; font-size:.9rem; font-family:inherit; color:var(--ink);
+    transition:border-color .2s, box-shadow .2s;}
+  .search-bar input:focus{outline:none; border-color:var(--dial);
+    box-shadow:0 0 0 3px rgba(220,38,38,.12);}
+  .search-bar select{padding:11px 14px; border:1px solid var(--line); border-radius:10px;
+    font-size:.85rem; font-family:inherit; background:#fff; color:var(--ink); cursor:pointer;
+    transition:border-color .2s;}
+  .search-bar select:focus{outline:none; border-color:var(--dial);}
+
+  .stats-strip{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+  .stat{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 18px; min-width:130px; flex:1;
+    animation:statPop .5s cubic-bezier(.34,1.56,.64,1) backwards;
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .stat:nth-child(1){animation-delay:.05s;}
+  .stat:nth-child(2){animation-delay:.12s;}
+  .stat:nth-child(3){animation-delay:.19s;}
+  .stat:hover{transform:translateY(-3px); box-shadow:0 6px 16px rgba(15,23,42,.1);}
+  .stat .k{font-size:.68rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); margin-bottom:4px;}
+  .stat .v{font-size:1.5rem; font-weight:800; line-height:1.1;}
+  .stat .v.red{color:var(--dial);}
+  .stat .v.amber{color:var(--mod);}
+  .stat .v.cyan{color:var(--nodial);}
+
+  .drug-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+    gap:12px; margin-bottom:20px;}
+  .drug-card{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; cursor:pointer;
+    border-left:5px solid var(--line);
+    transition:transform .22s cubic-bezier(.34,1.56,.64,1),
+               box-shadow .22s ease, border-color .22s ease;
+    animation:cardFadeIn .45s cubic-bezier(.4,0,.2,1) backwards;
+    position:relative; overflow:hidden;}
+  .drug-card::before{content:""; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(220,38,38,.08) 50%, transparent 70%);
+    transform:translateX(-100%); transition:transform .6s ease;}
+  .drug-card:hover::before{transform:translateX(100%);}
+  .drug-card:hover{transform:translateY(-4px) scale(1.015);
+    box-shadow:0 8px 22px rgba(15,23,42,.12); border-color:#94a3b8;}
+  .drug-card.active{border-left-color:var(--dial);
+    box-shadow:0 6px 20px rgba(220,38,38,.15);}
+  .drug-card h3{margin:0 0 4px; font-size:.92rem; font-weight:800;}
+  .drug-card .tag{font-size:.68rem; font-weight:800; padding:2px 9px;
+    border-radius:999px; text-transform:uppercase; letter-spacing:.04em;}
+  .tag.dial{background:#fef2f2; color:#991b1b;}
+  .tag.mod{background:#fef9c3; color:#713f12;}
+  .tag.nodial{background:#cffafe; color:#155e75;}
+  .drug-card .meta{font-size:.72rem; color:var(--muted); margin-top:6px;}
+
+  .detail-panel{background:#fff; border-radius:16px; padding:24px 26px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); display:none;}
+  .detail-panel.show{display:block; animation:panelReveal .45s cubic-bezier(.4,0,.2,1);}
+  .detail-header{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:16px;}
+  .detail-header h2{margin:0; font-size:1.25rem; font-weight:800;}
+  .detail-header .badges{display:flex; gap:6px; flex-wrap:wrap;}
+  .badge-pill{font-size:.7rem; font-weight:800; padding:4px 12px;
+    border-radius:999px; text-transform:uppercase; letter-spacing:.04em;
+    animation:pillPop .4s cubic-bezier(.34,1.56,.64,1) backwards;}
+  .badge-pill.dial{background:#dc2626; color:#fff;}
+  .badge-pill.mod{background:#ca8a04; color:#fff;}
+  .badge-pill.nodial{background:#0891b2; color:#fff;}
+
+  .detail-body{font-size:.88rem; color:#334155; line-height:1.7;}
+  .detail-body h4{margin:18px 0 8px; font-size:.95rem; font-weight:800; color:var(--ink);}
+  .detail-body h4:first-of-type{margin-top:0;}
+  .detail-body ul{margin:0 0 12px; padding-left:20px;}
+  .detail-body ul li{margin-bottom:5px;
+    animation:listSlide .35s cubic-bezier(.4,0,.2,1) backwards;}
+  .detail-body ul li:nth-child(1){animation-delay:.03s;}
+  .detail-body ul li:nth-child(2){animation-delay:.08s;}
+  .detail-body ul li:nth-child(3){animation-delay:.13s;}
+  .detail-body ul li:nth-child(4){animation-delay:.18s;}
+  .detail-body ul li:nth-child(5){animation-delay:.23s;}
+  .detail-body ul li strong{color:var(--ink);}
+  .detail-body .info-box{padding:12px 16px; border-radius:0 8px 8px 0;
+    margin:0 0 12px; font-size:.85rem;
+    animation:boxSlide .45s cubic-bezier(.4,0,.2,1) backwards;}
+  .detail-body .info-box.dial{background:#fef2f2; border-left:4px solid var(--dial);}
+  .detail-body .info-box.mod{background:#fef9c3; border-left:4px solid var(--mod);}
+  .detail-body .info-box.nodial{background:#cffafe; border-left:4px solid var(--nodial);}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    animation:slideDown .8s cubic-bezier(.4,0,.2,1);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px; border:1px solid var(--line);
+    animation:cardFadeIn .45s cubic-bezier(.4,0,.2,1) backwards;
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .q:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.06);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer;
+    transition:all .18s ease; font-weight:600; color:var(--ink);
+    font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8; transform:translateX(3px);}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;
+    animation:correctPop .4s cubic-bezier(.34,1.56,.64,1);}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;
+    animation:shake .4s cubic-bezier(.36,.07,.19,.97);}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block; animation:boxSlide .35s cubic-bezier(.4,0,.2,1);}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:24px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem; line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes slideDown{0%{opacity:0; transform:translateY(-16px);}100%{opacity:1; transform:translateY(0);}}
+  @keyframes cardFadeIn{0%{opacity:0; transform:translateY(12px) scale(.97);}100%{opacity:1; transform:translateY(0) scale(1);}}
+  @keyframes panelReveal{0%{opacity:0; transform:translateY(10px);}100%{opacity:1; transform:translateY(0);}}
+  @keyframes statPop{0%{opacity:0; transform:scale(.85);}100%{opacity:1; transform:scale(1);}}
+  @keyframes pillPop{0%{opacity:0; transform:scale(.7);}100%{opacity:1; transform:scale(1);}}
+  @keyframes boxSlide{0%{opacity:0; transform:translateX(-14px);}100%{opacity:1; transform:translateX(0);}}
+  @keyframes listSlide{0%{opacity:0; transform:translateX(-8px);}100%{opacity:1; transform:translateX(0);}}
+  @keyframes correctPop{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
+  @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+
+  @media(max-width:600px){.drug-grid{grid-template-columns:1fr;}.detail-panel{padding:18px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Drug Dialyzability — High-Flux Hemodialysis</h1>
+      <p>Pharmacokinetic properties and supplemental dosing for common medications in ESKD</p>
+    </div>
+    <div class="badge">Clinical Reference</div>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat"><div class="k">Substances</div><div class="v" id="statTotal">0</div></div>
+    <div class="stat"><div class="k">Dialyzable</div><div class="v red" id="statDial">0</div></div>
+    <div class="stat"><div class="k">Moderately Dialyzable</div><div class="v amber" id="statMod">0</div></div>
+    <div class="stat"><div class="k">Not Dialyzable</div><div class="v cyan" id="statNo">0</div></div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search drug name (e.g., cefazolin, vancomycin, lithium, metformin)…" oninput="filterDrugs()">
+    <select id="filterSelect" onchange="filterDrugs()">
+      <option value="all">All drugs</option>
+      <option value="dial">Dialyzable</option>
+      <option value="mod">Moderately dialyzable</option>
+      <option value="nodial">Not dialyzable</option>
+    </select>
+  </div>
+
+  <div class="drug-grid" id="drugGrid"></div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <h2 id="detailTitle"></h2>
+      <div class="badges" id="detailBadges"></div>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <strong>Drug Dialyzability Reference</strong> · Educational use only · Verify with institutional protocols and current drug references
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================================
+   DRUG DATA — high-flux hemodialysis dialyzability
+   ============================================================================ */
+const DRUGS = [
+  /* ---- ANTIBIOTICS ---- */
+  {
+    id: "cefazolin", name: "Cefazolin", category: "dial",
+    mw: "454.5 Da", pb: "80%", vd: "0.13–0.22 L/kg",
+    summary: "Low MW and small Vd overcome moderate protein binding — significantly removed by high-flux HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>Molecular weight:</strong> 454.5 Da (low)</li>
+        <li><strong>Protein binding:</strong> ~80%</li>
+        <li><strong>Volume of distribution:</strong> 0.13–0.22 L/kg (small)</li>
+        <li><strong>Elimination:</strong> Predominantly renal</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Significantly removed by high-flux HD.</strong> Mean dialytic clearance 30.9 ± 6.52 mL/min with high-flux dialyzers. The small Vd keeps a high concentration in the vascular space, allowing efficient removal despite moderate protein binding.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Supplemental dose required:</strong> Administer after dialysis to maintain therapeutic levels</li>
+        <li><strong>Typical post-HD dose:</strong> 500 mg–1 g IV after each session</li>
+        <li><strong>TDM:</strong> Therapeutic drug monitoring recommended in ESKD</li>
+      </ul>
+      <h4>Key Point</h4>
+      <ul>
+        <li>Among the cephalosporins, <strong>cefazolin is the most dialyzable</strong> due to its low MW and small Vd</li>
+        <li>Compare: ceftriaxone (85–95% PB) is less dialyzable despite similar MW</li>
+      </ul>
+    `
+  },
+  {
+    id: "ceftazidime", name: "Ceftazidime", category: "dial",
+    mw: "546.6 Da", pb: "5–24%", vd: "0.18–0.4 L/kg",
+    summary: "Low protein binding and low Vd — efficiently cleared by high-flux HD. Post-dialysis dosing recommended.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 546.6 Da</li>
+        <li><strong>Protein binding:</strong> 5–24% (low)</li>
+        <li><strong>Vd:</strong> 0.18–0.4 L/kg (low)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Low PB and low Vd make it an excellent candidate for removal by high-flux HD. Dose as eGFR 10–20 mL/min with post-dialysis administration.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>TDM</strong> recommended in ESKD</li>
+      </ul>
+    `
+  },
+  {
+    id: "cefepime", name: "Cefepime", category: "dial",
+    mw: "480.6 Da", pb: "< 20%", vd: "0.2–0.3 L/kg",
+    summary: "Low protein binding and small Vd — removed by high-flux HD. Risk of neurotoxicity with accumulation.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 480.6 Da</li>
+        <li><strong>Protein binding:</strong> < 20%</li>
+        <li><strong>Vd:</strong> 0.2–0.3 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> High-flux HD removes a significant fraction. Post-dialysis dosing recommended.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Neurotoxicity risk:</strong> Elevated with higher doses (1–2 g post-HD) — monitor for encephalopathy</li>
+        <li><strong>Post-HD dosing:</strong> 0.5 g daily or 1–2 g post-HD (monitor levels)</li>
+        <li><strong>TDM</strong> recommended</li>
+      </ul>
+    `
+  },
+  {
+    id: "meropenem", name: "Meropenem", category: "dial",
+    mw: "383.5 Da", pb: "2%", vd: "0.35 L/kg",
+    summary: "Very low protein binding and small Vd — significantly removed by high-flux HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 383.5 Da</li>
+        <li><strong>Protein binding:</strong> 2% (very low)</li>
+        <li><strong>Vd:</strong> 0.35 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Very low PB and small Vd — excellent removal by high-flux HD.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-HD dose:</strong> 2000 mg post-dialysis is likely effective and safe for thrice-weekly IHD</li>
+        <li><strong>Neurotoxicity risk:</strong> Negligible</li>
+        <li><strong>TDM</strong> recommended</li>
+      </ul>
+    `
+  },
+  {
+    id: "vancomycin", name: "Vancomycin", category: "dial",
+    mw: "1449 Da", pb: "10–60%", vd: "0.47–1.1 L/kg",
+    summary: "Middle MW and moderate Vd — significantly removed by high-flux HD. Supplemental dosing required.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 1449 Da (middle)</li>
+        <li><strong>Protein binding:</strong> 10–60%</li>
+        <li><strong>Vd:</strong> 0.47–1.1 L/kg</li>
+        <li><strong>Elimination:</strong> > 80% renal</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Significantly removed by high-flux HD.</strong> Vancomycin was thought to be poorly dialyzable with low-flux membranes, but high-flux HD and HDF remove it efficiently. Supplemental dosing after each dialysis treatment is often required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Loading dose:</strong> 20 mg/kg IV</li>
+        <li><strong>Maintenance:</strong> 15 mg/kg every 7 days, or 500 mg after each dialysis session</li>
+        <li><strong>TDM:</strong> Weekly pre-dialysis levels</li>
+        <li><strong>Note:</strong> Switching from standard HD to HDF may require intensified dosing</li>
+      </ul>
+    `
+  },
+  {
+    id: "gentamicin", name: "Gentamicin", category: "dial",
+    mw: "477.6 Da", pb: "< 30%", vd: "0.2–0.3 L/kg",
+    summary: "Low protein binding and small Vd — significantly removed by HD. Post-dialysis dosing recommended.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 477.6 Da</li>
+        <li><strong>Protein binding:</strong> < 30%</li>
+        <li><strong>Vd:</strong> 0.2–0.3 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Aminoglycosides have significant and variable clearance during HD. Dialytic clearance ~103.5 mL/min for gentamicin.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>Extended interval dosing</strong> preferred</li>
+        <li><strong>TDM</strong> essential</li>
+      </ul>
+    `
+  },
+  {
+    id: "tobramycin", name: "Tobramycin", category: "dial",
+    mw: "467.5 Da", pb: "< 30%", vd: "0.2–0.3 L/kg",
+    summary: "Similar to gentamicin — low PB and small Vd. Significantly removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 467.5 Da</li>
+        <li><strong>Protein binding:</strong> < 30%</li>
+        <li><strong>Vd:</strong> 0.2–0.3 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Mean dialytic clearance 54.7 ± 18.8 mL/min.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>TDM</strong> essential</li>
+      </ul>
+    `
+  },
+  {
+    id: "amikacin", name: "Amikacin", category: "dial",
+    mw: "585.6 Da", pb: "< 20%", vd: "0.2–0.3 L/kg",
+    summary: "Low protein binding and small Vd — significantly removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 585.6 Da</li>
+        <li><strong>Protein binding:</strong> < 20%</li>
+        <li><strong>Vd:</strong> 0.2–0.3 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Hemodialysis increases amikacin clearance significantly.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>TDM</strong> essential</li>
+      </ul>
+    `
+  },
+  {
+    id: "ciprofloxacin", name: "Ciprofloxacin", category: "mod",
+    mw: "331.3 Da", pb: "20–40%", vd: "2–3 L/kg",
+    summary: "Low MW but large Vd — partially removed by high-flux HD. Supplement if clinical response is inadequate.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 331.3 Da</li>
+        <li><strong>Protein binding:</strong> 20–40%</li>
+        <li><strong>Vd:</strong> 2–3 L/kg (large)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box mod">
+        <strong>Moderately dialyzable.</strong> The large Vd limits the fraction available for removal, but significant amounts are still cleared by high-flux HD. The quinolones exhibit minimal removal by high-flux HD and HDF due to their large Vd.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Supplement with 250–500 mg post-dialysis</strong></li>
+        <li><strong>Administer after dialysis</strong> if significant removal is suspected</li>
+      </ul>
+    `
+  },
+  {
+    id: "levofloxacin", name: "Levofloxacin", category: "mod",
+    mw: "361.4 Da", pb: "24–38%", vd: "1.1–1.5 L/kg",
+    summary: "Moderate Vd — partially removed by high-flux HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 361.4 Da</li>
+        <li><strong>Protein binding:</strong> 24–38%</li>
+        <li><strong>Vd:</strong> 1.1–1.5 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box mod">
+        <strong>Moderately dialyzable.</strong> Partially removed by HD. Administer after dialysis when possible.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> may be required</li>
+        <li><strong>TDM</strong> not routinely available</li>
+      </ul>
+    `
+  },
+  {
+    id: "azithromycin", name: "Azithromycin", category: "nodial",
+    mw: "749 Da", pb: "7–50%", vd: "31 L/kg",
+    summary: "Very large Vd — extensive tissue distribution. Not significantly removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 749 Da</li>
+        <li><strong>Protein binding:</strong> 7–50%</li>
+        <li><strong>Vd:</strong> 31 L/kg (very large)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not significantly dialyzable.</strong> The very large Vd means the drug is widely distributed into tissues and very little is in the vascular space for removal. Macrolides are not efficiently removed by HD or HDF.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No supplemental dose required</strong></li>
+        <li><strong>No dose adjustment</strong> needed for HD</li>
+      </ul>
+    `
+  },
+  {
+    id: "doxycycline", name: "Doxycycline", category: "nodial",
+    mw: "444.4 Da", pb: "~90%", vd: "0.7 L/kg",
+    summary: "High protein binding and non-renal elimination — not significantly removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 444.4 Da</li>
+        <li><strong>Protein binding:</strong> ~90% (high)</li>
+        <li><strong>Vd:</strong> 0.7 L/kg</li>
+        <li><strong>Elimination:</strong> Non-renal (biliary/fecal)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not dialyzable.</strong> Hemodialysis does not alter doxycycline half-life. No supplemental dose required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No dose adjustment</strong> needed for HD</li>
+        <li><strong>No supplemental dose</strong> required</li>
+      </ul>
+    `
+  },
+  {
+    id: "clindamycin", name: "Clindamycin", category: "nodial",
+    mw: "425 Da", pb: "~90%", vd: "1.1 L/kg",
+    summary: "High protein binding and large Vd — not significantly removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 425 Da</li>
+        <li><strong>Protein binding:</strong> ~90%</li>
+        <li><strong>Vd:</strong> 1.1 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not dialyzable.</strong> FDA labeling states hemodialysis is not effective in removing clindamycin from the serum. No supplemental dose required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No dose adjustment</strong> needed for HD</li>
+        <li><strong>No supplemental dose</strong> required</li>
+      </ul>
+    `
+  },
+  {
+    id: "rifampin", name: "Rifampin", category: "nodial",
+    mw: "823 Da", pb: "~80%", vd: "1.6 L/kg",
+    summary: "High protein binding and large Vd — not significantly removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 823 Da</li>
+        <li><strong>Protein binding:</strong> ~80%</li>
+        <li><strong>Vd:</strong> 1.6 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not significantly dialyzable.</strong> Studies show only ~4% of the dose recovered in dialysate. No supplemental dose required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No dose adjustment</strong> needed for HD</li>
+        <li><strong>No supplemental dose</strong> required</li>
+      </ul>
+    `
+  },
+  {
+    id: "metronidazole", name: "Metronidazole", category: "nodial",
+    mw: "171.2 Da", pb: "~20%", vd: "0.6–0.8 L/kg",
+    summary: "Low MW and low PB, but moderate Vd — no additional HDF removal compared with HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 171.2 Da</li>
+        <li><strong>Protein binding:</strong> ~20%</li>
+        <li><strong>Vd:</strong> 0.6–0.8 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not significantly dialyzable by HDF.</strong> No additional HDF removal compared with HD is anticipated. No supplemental dose required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No dose adjustment</strong> needed for HD</li>
+      </ul>
+    `
+  },
+  {
+    id: "flucloxacillin", name: "Flucloxacillin", category: "nodial",
+    mw: "453.9 Da", pb: "95%", vd: "0.13 L/kg",
+    summary: "Very high protein binding despite small Vd — not dialyzable.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 453.9 Da</li>
+        <li><strong>Protein binding:</strong> 95% (very high)</li>
+        <li><strong>Vd:</strong> 0.13 L/kg (small)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not dialyzable.</strong> Despite the small Vd, the very high protein binding (95%) prevents significant removal by dialysis.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No supplemental dose</strong> required</li>
+      </ul>
+    `
+  },
+  {
+    id: "ertapenem", name: "Ertapenem", category: "nodial",
+    mw: "475.5 Da", pb: "85–95%", vd: "0.1 L/kg",
+    summary: "Very high protein binding — not significantly removed by HDF.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 475.5 Da</li>
+        <li><strong>Protein binding:</strong> 85–95%</li>
+        <li><strong>Vd:</strong> 0.1 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not dialyzable.</strong> Removal by convection is unlikely due to very high protein binding.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No supplemental dose</strong> required</li>
+      </ul>
+    `
+  },
+
+  /* ---- ANTIVIRALS ---- */
+  {
+    id: "acyclovir", name: "Acyclovir", category: "dial",
+    mw: "225.2 Da", pb: "9–33%", vd: "0.7 L/kg",
+    summary: "Low MW, low PB — significantly removed by HD. Post-dialysis dosing required.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 225.2 Da</li>
+        <li><strong>Protein binding:</strong> 9–33%</li>
+        <li><strong>Vd:</strong> 0.7 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Acyclovir is removed by hemodialysis. Administer after dialysis on dialysis days.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose:</strong> 2.5–5 mg/kg every 24 hours after dialysis</li>
+        <li><strong>Dose adjustment</strong> required for ESKD</li>
+      </ul>
+    `
+  },
+  {
+    id: "ganciclovir", name: "Ganciclovir", category: "dial",
+    mw: "255.2 Da", pb: "1–2%", vd: "0.7 L/kg",
+    summary: "Very low protein binding — significantly removed by HD. Post-dialysis dosing required.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 255.2 Da</li>
+        <li><strong>Protein binding:</strong> 1–2%</li>
+        <li><strong>Vd:</strong> 0.7 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Very low PB — efficiently removed by HD. Administer after dialysis.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose:</strong> 2.5 mg/kg every 24 hours after dialysis</li>
+      </ul>
+    `
+  },
+
+  /* ---- CARDIOVASCULAR ---- */
+  {
+    id: "atenolol", name: "Atenolol", category: "dial",
+    mw: "266.3 Da", pb: "< 5%", vd: "0.7 L/kg",
+    summary: "Low protein binding and low MW — extensively cleared by high-flux HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 266.3 Da</li>
+        <li><strong>Protein binding:</strong> < 5% (very low)</li>
+        <li><strong>Vd:</strong> 0.7 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Extensively cleared by high-flux HD.</strong> Mean dialysis clearance 235 ± 53 mL/min. Atenolol is almost entirely cleared during high-permeability hemodialysis.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>50% of normal dose</strong> on dialysis days, given after HD</li>
+        <li><strong>Monitor</strong> for bradycardia and hypotension</li>
+      </ul>
+    `
+  },
+  {
+    id: "sotalol", name: "Sotalol", category: "dial",
+    mw: "308.4 Da", pb: "< 0.1%", vd: "1.2–2.0 L/kg",
+    summary: "Very low protein binding — removed by HD. Max 80 mg/day, administered after dialysis.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 308.4 Da</li>
+        <li><strong>Protein binding:</strong> < 0.1% (negligible)</li>
+        <li><strong>Vd:</strong> 1.2–2.0 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Sotalol is removed by hemodialysis with subsequent partial rebound in concentrations when dialysis is completed. Elimination half-life during HD: 5.8 ± 2.1 h.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Max 80 mg/day</strong> in ESKD</li>
+        <li><strong>Administer after dialysis</strong> on dialysis days</li>
+        <li><strong>Monitor QTc</strong> and heart rate</li>
+      </ul>
+    `
+  },
+  {
+    id: "metoprolol", name: "Metoprolol", category: "dial",
+    mw: "684.8 Da", pb: "10–12%", vd: "5.6 L/kg",
+    summary: "Low protein binding — cleared by HD despite large Vd.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 684.8 Da</li>
+        <li><strong>Protein binding:</strong> 10–12%</li>
+        <li><strong>Vd:</strong> 5.6 L/kg (large)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Extensively cleared by hemodialysis.</strong> Dialytic clearance 87 mL/min. Metoprolol is extensively cleared by hemodialysis compared with the negligible dialytic clearance of carvedilol.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Dose as in GFR < 10 mL/min</strong></li>
+        <li><strong>Start with small doses</strong> and titrate to response</li>
+        <li><strong>Monitor</strong> for bradycardia</li>
+      </ul>
+    `
+  },
+  {
+    id: "procainamide", name: "Procainamide", category: "dial",
+    mw: "271.4 Da", pb: "~15%", vd: "2.0 L/kg",
+    summary: "Readily dialyzable — both procainamide and NAPA are removed by HD.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 271.4 Da</li>
+        <li><strong>Protein binding:</strong> ~15%</li>
+        <li><strong>Vd:</strong> 2.0 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Readily dialyzable.</strong> Both procainamide and its active metabolite NAPA are removed from circulation by hemodialysis. Peritoneal dialysis is not effective.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>Monitor levels</strong> of both procainamide and NAPA</li>
+        <li><strong>Avoid</strong> in ESKD if possible due to active metabolite accumulation</li>
+      </ul>
+    `
+  },
+  {
+    id: "carvedilol", name: "Carvedilol", category: "nodial",
+    mw: "406.5 Da", pb: "98%", vd: "115 L/kg",
+    summary: "Very high protein binding and very large Vd — negligible dialytic clearance.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 406.5 Da</li>
+        <li><strong>Protein binding:</strong> 98% (very high)</li>
+        <li><strong>Vd:</strong> 115 L/kg (very large)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Negligible dialytic clearance.</strong> Carvedilol is highly protein-bound and extensively distributed into tissues. Dialytic clearance 0.2 mL/min.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No dose adjustment</strong> needed for HD</li>
+        <li><strong>Preferred beta-blocker</strong> in HD patients due to lack of dialyzability</li>
+      </ul>
+    `
+  },
+  {
+    id: "propranolol", name: "Propranolol", category: "nodial",
+    mw: "259.3 Da", pb: "~90%", vd: "4 L/kg",
+    summary: "High protein binding and large Vd — not dialyzable.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 259.3 Da</li>
+        <li><strong>Protein binding:</strong> ~90%</li>
+        <li><strong>Vd:</strong> 4 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box nodial">
+        <strong>Not dialyzable.</strong> Propranolol is highly protein-bound and lipophilic — not amenable to extracorporeal removal.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>No supplemental dose</strong> required</li>
+      </ul>
+    `
+  },
+
+  /* ---- CNS / PSYCH ---- */
+  {
+    id: "lithium", name: "Lithium", category: "dial",
+    mw: "6.94 Da", pb: "0%", vd: "0.7–0.9 L/kg",
+    summary: "No protein binding and small Vd — highly dialyzable. First-line ECTR for severe poisoning.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 6.94 Da (very low)</li>
+        <li><strong>Protein binding:</strong> 0% (none)</li>
+        <li><strong>Vd:</strong> 0.7–0.9 L/kg (small)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Highly dialyzable.</strong> Lithium clearances of 70–170 mL/min have been reported with hemodialysis. Hemodialysis is the preferred extracorporeal treatment for severe lithium poisoning (1D).
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Indications for HD:</strong> [Li⁺] > 4.0 mEq/L with kidney impairment; decreased LOC, seizures, or dysrhythmias regardless of level</li>
+        <li><strong>Cessation:</strong> Continue until clinical improvement or [Li⁺] < 1.0 mEq/L</li>
+        <li><strong>Rebound:</strong> Monitor levels after cessation due to two-compartment distribution</li>
+      </ul>
+    `
+  },
+  {
+    id: "phenobarbital", name: "Phenobarbital", category: "dial",
+    mw: "232.2 Da", pb: "40–60%", vd: "0.5–0.7 L/kg",
+    summary: "Low MW and moderate PB — readily dialyzed. Reserved for severe toxicity.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 232.2 Da</li>
+        <li><strong>Protein binding:</strong> 40–60%</li>
+        <li><strong>Vd:</strong> 0.5–0.7 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Readily dialyzed.</strong> Phenobarbital can be readily dialyzed. Hemodialysis is generally reserved for patients with severe phenobarbital toxicity (serum concentration > 100 μg/L).
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Indications:</strong> Prolonged coma, respiratory depression requiring ventilation, shock, or persistent toxicity despite MDAC</li>
+        <li><strong>Post-dialysis level</strong> should be obtained and supplemental dose provided</li>
+        <li><strong>Continue MDAC</strong> during ECTR</li>
+      </ul>
+    `
+  },
+  {
+    id: "gabapentin", name: "Gabapentin", category: "dial",
+    mw: "171.2 Da", pb: "< 3%", vd: "0.8 L/kg",
+    summary: "Low MW, negligible PB — dialyzable in kidney impairment. Post-dialysis dose required.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 171.2 Da</li>
+        <li><strong>Protein binding:</strong> < 3%</li>
+        <li><strong>Vd:</strong> 0.8 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable in kidney impairment.</strong> Significantly removed by HD. Post-dialysis dose required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>Dose reduction</strong> for ESKD</li>
+      </ul>
+    `
+  },
+  {
+    id: "pregabalin", name: "Pregabalin", category: "dial",
+    mw: "159.2 Da", pb: "< 1%", vd: "0.5 L/kg",
+    summary: "Low MW, negligible PB — dialyzable in kidney impairment. Post-dialysis dose required.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 159.2 Da</li>
+        <li><strong>Protein binding:</strong> < 1%</li>
+        <li><strong>Vd:</strong> 0.5 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable in kidney impairment.</strong> Post-dialysis dose required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Post-dialysis dose</strong> required</li>
+        <li><strong>Dose reduction</strong> for ESKD</li>
+      </ul>
+    `
+  },
+  {
+    id: "topiramate", name: "Topiramate", category: "dial",
+    mw: "339.4 Da", pb: "15–41%", vd: "0.6–0.8 L/kg",
+    summary: "Dialyzable — dose reduction and post-HD top-up required.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 339.4 Da</li>
+        <li><strong>Protein binding:</strong> 15–41%</li>
+        <li><strong>Vd:</strong> 0.6–0.8 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Dose reduction + top-up dose post-HD required.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Dose reduction</strong> for ESKD</li>
+        <li><strong>Post-HD top-up</strong> required</li>
+      </ul>
+    `
+  },
+
+  /* ---- METABOLIC / OTHER ---- */
+  {
+    id: "metformin", name: "Metformin", category: "dial",
+    mw: "129.2 Da", pb: "Negligible", vd: "1.1–2.5 L/kg",
+    summary: "Negligible protein binding — highly dialyzable. Used for overdose removal.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 129.2 Da</li>
+        <li><strong>Protein binding:</strong> Negligible</li>
+        <li><strong>Vd:</strong> 1.1–2.5 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Highly dialyzable.</strong> Dialysis clearance up to 170 mL/min under good hemodynamic conditions. Hemodialysis may be useful for removal of accumulated drug in metformin overdosage.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Indications for HD:</strong> Lactate > 20 mmol/L, pH ≤ 7.0, or shock refractory to standard care</li>
+        <li><strong>Avoid</strong> in ESKD unless for overdose</li>
+      </ul>
+    `
+  },
+  {
+    id: "methotrexate", name: "Methotrexate", category: "dial",
+    mw: "454.4 Da", pb: "~50%", vd: "0.4–0.8 L/kg",
+    summary: "High-flux dialyzers can effectively clear MTX. Glucarpidase is preferred when available.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 454.4 Da</li>
+        <li><strong>Protein binding:</strong> ~50%</li>
+        <li><strong>Vd:</strong> 0.4–0.8 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable with high-flux HD.</strong> Effective clearance of methotrexate has been reported with acute, intermittent hemodialysis using a high-flux dialyzer. However, glucarpidase is the preferred treatment when available.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Glucarpidase preferred</strong> when available</li>
+        <li><strong>High-flux HD</strong> is effective for MTX removal if glucarpidase unavailable</li>
+        <li><strong>Leucovorin rescue</strong> continues alongside</li>
+      </ul>
+    `
+  },
+  {
+    id: "theophylline", name: "Theophylline", category: "dial",
+    mw: "180 Da", pb: "40–60%", vd: "0.5 L/kg",
+    summary: "Low MW and moderate PB — readily removed. Reserved for severe toxicity.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 180 Da</li>
+        <li><strong>Protein binding:</strong> 40–60%</li>
+        <li><strong>Vd:</strong> 0.5 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Readily removed.</strong> Theophylline is removed in toxicity. Monitor levels if chronic use. Dose as in normal renal function.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Indications:</strong> Acute concentration > 100 mg/L; seizures; life-threatening dysrhythmias; shock</li>
+        <li><strong>IHD preferred</strong> with MDAC if airway protected</li>
+      </ul>
+    `
+  },
+  {
+    id: "salicylate", name: "Salicylates (Aspirin)", category: "dial",
+    mw: "180.2 Da", pb: "80–90%", vd: "0.1–0.2 L/kg",
+    summary: "Small Vd overcomes high protein binding — dialyzable. IHD for severe poisoning.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 180.2 Da</li>
+        <li><strong>Protein binding:</strong> 80–90%</li>
+        <li><strong>Vd:</strong> 0.1–0.2 L/kg (small)</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> The small Vd keeps a high concentration in the vascular space, allowing efficient removal despite high protein binding.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Indications:</strong> Salicylate > 100 mg/dL regardless of symptoms; altered mental status; severe acidosis</li>
+        <li><strong>IHD preferred</strong></li>
+        <li><strong>Urinary alkalinization</strong> is an adjunct, not a substitute</li>
+      </ul>
+    `
+  },
+  {
+    id: "acetaminophen", name: "Acetaminophen", category: "mod",
+    mw: "151.2 Da", pb: "10–25%", vd: "0.8–1.0 L/kg",
+    summary: "Low MW and low PB but moderate Vd — partially removed. NAC is the mainstay.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 151.2 Da</li>
+        <li><strong>Protein binding:</strong> 10–25%</li>
+        <li><strong>Vd:</strong> 0.8–1.0 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box mod">
+        <strong>Moderately dialyzable.</strong> ECTR is reserved for excessively large overdoses with mitochondrial dysfunction when NAC efficacy is uncertain.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>NAC is the mainstay</strong> — ECTR is not warranted in most cases</li>
+        <li><strong>Indications:</strong> APAP > 1000 mg/L if NAC not given; mitochondrial dysfunction + APAP > 700–900 mg/L</li>
+        <li><strong>IHD preferred</strong></li>
+      </ul>
+    `
+  },
+  {
+    id: "ranitidine", name: "Ranitidine", category: "dial",
+    mw: "314 Da", pb: "15%", vd: "1.4 L/kg",
+    summary: "Low protein binding — dialyzable. Dose as GFR < 10 mL/min.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 314 Da</li>
+        <li><strong>Protein binding:</strong> 15%</li>
+        <li><strong>Vd:</strong> 1.4 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Dose as in GFR < 10 mL/min. Oral: 50–100% of normal dose. IV: 50 mg every 12 hours.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Dose reduction</strong> for ESKD</li>
+      </ul>
+    `
+  },
+  {
+    id: "morphine", name: "Morphine", category: "dial",
+    mw: "285 Da", pb: "20–35%", vd: "3–5 L/kg",
+    summary: "Active metabolites are removed significantly. Use small doses with extended intervals.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 285 Da</li>
+        <li><strong>Protein binding:</strong> 20–35%</li>
+        <li><strong>Vd:</strong> 3–5 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> The active metabolites are removed significantly. Dose as in GFR < 10 mL/min; use small doses (25% of dose), and extended dosing intervals.
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Avoid</strong> if possible due to active metabolite accumulation</li>
+        <li><strong>Hydromorphone or fentanyl</strong> preferred in ESKD</li>
+      </ul>
+    `
+  },
+  {
+    id: "oxycodone", name: "Oxycodone", category: "dial",
+    mw: "351.8 Da", pb: "45%", vd: "1.2–6.3 L/kg",
+    summary: "Dialyzable — dose as GFR < 10 mL/min.",
+    detail: `
+      <h4>Pharmacokinetics</h4>
+      <ul>
+        <li><strong>MW:</strong> 351.8 Da</li>
+        <li><strong>Protein binding:</strong> 45%</li>
+        <li><strong>Vd:</strong> 1.2–6.3 L/kg</li>
+      </ul>
+      <h4>Dialyzability</h4>
+      <div class="info-box dial">
+        <strong>Dialyzable.</strong> Dose as in GFR < 10 mL/min. Start with small doses (e.g., 50% of dose).
+      </div>
+      <h4>Clinical Implication</h4>
+      <ul>
+        <li><strong>Dose reduction</strong> for ESKD</li>
+        <li><strong>Titrate slowly</strong> to response</li>
+      </ul>
+    `
+  }
+];
+
+/* ============================================================================
+   QUIZ DATA
+   ============================================================================ */
+const QUIZ = [
+  {
+    question: "A patient on high-flux hemodialysis is started on cefazolin for a severe infection. What is the most appropriate dosing strategy?",
+    options: [
+      { text: "A. No dose adjustment needed", correct: false, explanation: "Cefazolin is significantly removed by high-flux HD. A post-dialysis supplemental dose is required to maintain therapeutic levels." },
+      { text: "B. Administer a supplemental dose after each dialysis session", correct: true, explanation: "Cefazolin has a low MW (454.5 Da) and small Vd (0.13–0.22 L/kg), making it significantly dialyzable despite 80% protein binding. <strong>Post-dialysis supplemental dosing</strong> is required." },
+      { text: "C. Double the dose on non-dialysis days", correct: false, explanation: "The correct approach is to give a supplemental dose <em>after</em> dialysis, not to double doses on non-dialysis days." }
+    ]
+  },
+  {
+    question: "Which antibiotic is LEAST likely to be removed by high-flux hemodialysis?",
+    options: [
+      { text: "A. Cefazolin", correct: false, explanation: "Cefazolin is significantly dialyzable due to its low MW and small Vd." },
+      { text: "B. Azithromycin", correct: true, explanation: "Azithromycin has a <strong>very large Vd (31 L/kg)</strong> and extensive tissue distribution, so very little is in the vascular space for removal. It is <strong>not significantly dialyzable</strong>." },
+      { text: "C. Vancomycin", correct: false, explanation: "Vancomycin is significantly removed by high-flux HD and requires supplemental dosing." }
+    ]
+  },
+  {
+    question: "What pharmacokinetic property is MOST important in determining dialyzability?",
+    options: [
+      { text: "A. Molecular weight", correct: false, explanation: "MW matters, but it is not the most important. Many low-MW drugs are still not dialyzable due to large Vd or high protein binding." },
+      { text: "B. Volume of distribution (Vd)", correct: true, explanation: "<strong>Vd is the most important determinant.</strong> Drugs with a small Vd (< 1 L/kg) are mostly in the vascular space and are more readily removed. Drugs with a large Vd (> 2 L/kg) are extensively distributed into tissues and are poorly dialyzable." },
+      { text: "C. Half-life", correct: false, explanation: "Half-life does not directly determine dialyzability. The key factors are MW, protein binding, and Vd." }
+    ]
+  },
+  {
+    question: "A patient on hemodialysis develops lithium toxicity with a level of 5.5 mEq/L and confusion. What is the preferred treatment?",
+    options: [
+      { text: "A. Urinary alkalinization", correct: false, explanation: "Urinary alkalinization is not effective for lithium. Hemodialysis is the preferred extracorporeal treatment." },
+      { text: "B. Hemodialysis", correct: true, explanation: "Lithium has <strong>no protein binding</strong> and a <strong>small Vd (0.7–0.9 L/kg)</strong>, making it highly dialyzable. Hemodialysis is the preferred ECTR for severe lithium poisoning (1D)." },
+      { text: "C. Multiple-dose activated charcoal", correct: false, explanation: "Activated charcoal does not bind lithium. Hemodialysis is the treatment of choice." }
+    ]
+  },
+  {
+    question: "Which of the following drugs requires a post-dialysis supplemental dose due to significant removal by high-flux HD?",
+    options: [
+      { text: "A. Carvedilol", correct: false, explanation: "Carvedilol has negligible dialytic clearance (0.2 mL/min) due to 98% protein binding and a very large Vd. No supplemental dose is needed." },
+      { text: "B. Vancomycin", correct: true, explanation: "Vancomycin is significantly removed by high-flux HD. A <strong>post-dialysis supplemental dose</strong> is required to maintain therapeutic levels." },
+      { text: "C. Doxycycline", correct: false, explanation: "Doxycycline is highly protein-bound (~90%) and predominantly non-renally eliminated. It is not significantly removed by HD." }
+    ]
+  },
+  {
+    question: "What is the approximate Vd threshold above which drugs are generally considered non-dialyzable?",
+    options: [
+      { text: "A. > 0.5 L/kg", correct: false, explanation: "Drugs with a Vd of 0.5 L/kg can still be dialyzable. The threshold for non-dialyzability is higher." },
+      { text: "B. > 2.0 L/kg", correct: true, explanation: "Drugs with a <strong>Vd > 2.0 L/kg</strong> are generally considered non-dialyzable because they are extensively distributed into tissues, leaving little in the vascular space for removal." },
+      { text: "C. > 10 L/kg", correct: false, explanation: "10 L/kg is far above the threshold. Drugs with a Vd > 2 L/kg are already considered poorly dialyzable." }
+    ]
+  },
+  {
+    question: "A patient on hemodialysis is prescribed metformin for diabetes. What is the most appropriate action?",
+    options: [
+      { text: "A. Continue metformin at the same dose", correct: false, explanation: "Metformin is contraindicated in ESKD due to the risk of lactic acidosis. It should be avoided, not continued." },
+      { text: "B. Avoid metformin — it is contraindicated in ESKD", correct: true, explanation: "Metformin is <strong>contraindicated</strong> in ESKD (eGFR < 30 mL/min) due to the risk of metformin-associated lactic acidosis (MALA). While metformin is highly dialyzable and used for overdose removal, it should not be used chronically in dialysis patients." },
+      { text: "C. Use metformin only on dialysis days", correct: false, explanation: "Metformin should be avoided entirely in ESKD, not just restricted to dialysis days." }
+    ]
+  },
+  {
+    question: "Which beta-blocker is preferred in hemodialysis patients because of its lack of dialyzability?",
+    options: [
+      { text: "A. Atenolol", correct: false, explanation: "Atenolol is extensively cleared by high-flux HD (dialytic clearance 235 mL/min) and requires post-dialysis dosing. It is not preferred." },
+      { text: "B. Carvedilol", correct: true, explanation: "Carvedilol has <strong>negligible dialytic clearance</strong> (0.2 mL/min) due to 98% protein binding and a very large Vd. It does not require post-dialysis dose adjustment and is preferred in HD patients." },
+      { text: "C. Sotalol", correct: false, explanation: "Sotalol is removed by hemodialysis and requires dose reduction (max 80 mg/day) and post-dialysis administration. It is not preferred." }
+    ]
+  }
+];
+
+/* ============================================================================
+   RENDER ENGINE
+   ============================================================================ */
+let activeId = null;
+
+function getCategoryLabel(cat) {
+  return { dial: "Dialyzable", mod: "Moderately Dialyzable", nodial: "Not Dialyzable" }[cat];
+}
+
+function renderGrid(filtered) {
+  const grid = document.getElementById("drugGrid");
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:12px;animation:pulse 1.8s ease-in-out infinite;">🔍</div>
+      <p>No drugs match your search.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map((d, i) => `
+    <div class="drug-card ${d.id === activeId ? 'active' : ''}"
+         style="animation-delay:${Math.min(i * 0.04, 0.5)}s"
+         onclick="showDetail('${d.id}')">
+      <h3>${d.name}</h3>
+      <span class="tag ${d.category}">${getCategoryLabel(d.category)}</span>
+      <div class="meta">${d.mw} · PB ${d.pb} · Vd ${d.vd}</div>
+    </div>
+  `).join("");
+}
+
+function filterDrugs() {
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const cat = document.getElementById("filterSelect").value;
+  const filtered = DRUGS.filter(d => {
+    const haystack = (d.name + " " + d.summary + " " + d.detail).toLowerCase();
+    const matchesSearch = !q || haystack.includes(q);
+    const matchesCat = cat === "all" || d.category === cat;
+    return matchesSearch && matchesCat;
+  });
+  renderGrid(filtered);
+}
+
+function showDetail(id) {
+  const d = DRUGS.find(x => x.id === id);
+  if (!d) return;
+  activeId = id;
+
+  document.querySelectorAll(".drug-card").forEach(c => c.classList.remove("active"));
+  document.querySelectorAll(".drug-card").forEach(c => {
+    if (c.querySelector("h3").textContent === d.name) c.classList.add("active");
+  });
+
+  const panel = document.getElementById("detailPanel");
+  document.getElementById("detailTitle").textContent = d.name;
+  document.getElementById("detailBadges").innerHTML = `
+    <span class="badge-pill ${d.category}" style="animation-delay:.05s">${getCategoryLabel(d.category)}</span>
+  `;
+  document.getElementById("detailBody").innerHTML = d.detail;
+  panel.classList.remove("show");
+  void panel.offsetWidth;
+  panel.classList.add("show");
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updateStats() {
+  document.getElementById("statTotal").textContent = DRUGS.length;
+  document.getElementById("statDial").textContent = DRUGS.filter(d => d.category === "dial").length;
+  document.getElementById("statMod").textContent = DRUGS.filter(d => d.category === "mod").length;
+  document.getElementById("statNo").textContent = DRUGS.filter(d => d.category === "nodial").length;
+}
+
+function renderQuiz() {
+  document.getElementById("quizCount").textContent = QUIZ.length;
+  const grid = document.getElementById("quizGrid");
+  grid.innerHTML = QUIZ.map((q, qi) => `
+    <div class="q" data-q="${qi}" style="animation-delay:${qi * 0.06}s">
+      <p>${qi + 1}. ${q.question}</p>
+      <div class="opts">
+        ${q.options.map((o, oi) => `
+          <button class="opt" data-q="${qi}" data-o="${oi}">${o.text}</button>
+        `).join("")}
+      </div>
+      <div class="explain"></div>
+    </div>
+  `).join("");
+
+  grid.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const qi = parseInt(btn.dataset.q, 10);
+      const oi = parseInt(btn.dataset.o, 10);
+      const q = QUIZ[qi];
+      const opt = q.options[oi];
+      const box = btn.closest(".q");
+      box.querySelectorAll(".opt").forEach(b => b.classList.remove("correct", "wrong"));
+      btn.classList.add(opt.correct ? "correct" : "wrong");
+      const explain = box.querySelector(".explain");
+      if (opt.correct) {
+        explain.className = "explain show correct-explain";
+        explain.innerHTML = "<strong class='correct'>✔ Correct.</strong> " + opt.explanation;
+      } else {
+        explain.className = "explain show wrong-explain";
+        explain.innerHTML = "<strong class='wrong'>✘ Incorrect.</strong> " + opt.explanation;
+      }
+    });
+  });
+}
+
+updateStats();
+renderGrid(DRUGS);
+renderQuiz();
+</script>
+</body>
+</html>

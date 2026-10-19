@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCDD — Light Chain Deposition Disease (MGRS) with Real Pathology</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9; --a1:#dc2626; --a2:#7c3aed; --a3:#0891b2; --a4:#ca8a04; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px;}
+  
+  header.top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  h1{margin:0; font-size:1.4rem; font-weight:800;}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:6px 12px; border-radius:99px; font-weight:700;}
+  
+  .case-strip{background:#fff; border-radius:12px; padding:16px; border-left:5px solid var(--a1); box-shadow:0 1px 3px rgba(0,0,0,.05); margin-bottom:14px;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; margin-bottom:8px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{background:#f1f5f9; padding:4px 8px; border-radius:6px; font-size:.75rem; font-weight:700; border:1px solid var(--line);}
+  .chip.abn{background:#fef2f2; color:#991b1b; border-color:#fecaca;}
+  
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 16px; border-radius:8px; font-size:.85rem; font-weight:700; cursor:pointer; color:var(--muted); transition:all .2s;}
+  .tab.active{background:#f0fdf4; border-color:#16a34a; color:#166534;}
+  
+  .stage{background:#fff; border-radius:12px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.05); display:grid; grid-template-columns:1fr 320px; gap:16px; align-items:start;}
+  @media(max-width:1000px){ .stage{grid-template-columns:1fr;} }
+  .diagram-col{min-width:0;}
+  
+  .info-float{background:#fff; border-radius:10px; border:1px solid var(--line); box-shadow:0 4px 12px rgba(0,0,0,.08);}
+  .info-header{display:flex; justify-content:space-between; padding:12px; background:#fef2f2; cursor:pointer; border-radius:10px 10px 0 0;}
+  .info-header h4{margin:0; font-size:.85rem;}
+  .info-body{padding:12px; max-height:500px; overflow:hidden; transition:max-height .3s;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 12px;}
+  .row{display:flex; justify-content:space-between; padding:8px 0; font-size:.8rem; border-bottom:1px solid var(--line);}
+  .row:last-child{border:0;}
+  .k{color:var(--muted); font-weight:600;}
+  .v{font-weight:800; text-align:right;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:768px){ .panels{grid-template-columns:1fr;} }
+  .panel{background:#fff; border-radius:12px; padding:16px; border-top:4px solid var(--a1); box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1rem;}
+  .panel .tagline{font-size:.8rem; color:var(--muted); margin:0 0 10px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.6;}
+
+  .alert{background:var(--a1); color:#fff; border-radius:12px; padding:16px; margin-top:14px; display:flex; gap:12px; align-items:center;}
+  .alert .icon{font-size:2rem;}
+  .alert h3{margin:0 0 4px; font-size:1rem;}
+  .alert p{margin:0; font-size:.85rem;}
+
+  .quiz{background:#fff; border-radius:12px; padding:20px; margin-top:14px; box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .quiz h3{margin:0 0 14px; font-size:1rem;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:768px){ .quiz-grid{grid-template-columns:1fr;} }
+  .q{background:#f8fafc; padding:14px; border-radius:8px; border:1px solid var(--line);}
+  .q p{margin:0 0 10px; font-weight:700; font-size:.85rem;}
+  .opts{display:flex; flex-direction:column; gap:6px;}
+  .opt{background:#fff; border:1px solid var(--line); padding:8px 12px; border-radius:6px; font-size:.8rem; cursor:pointer; text-align:left;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; margin-top:8px; padding:8px; font-size:.78rem; border-left:3px solid #cbd5e1; background:#fff;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-color:#16a34a;}
+  .explain.wrong-explain{border-color:#ef4444;}
+
+  .footer{margin-top:16px; padding:16px; background:#0f172a; border-radius:12px; color:#94a3b8; text-align:center; font-size:.8rem;}
+  .footer-gift{font-size:1rem; font-weight:800; color:#fbbf24; margin-bottom:6px;}
+
+  .img-wrap{position:relative; display:inline-block; width:100%; margin-bottom:12px; border-radius:8px; overflow:hidden; border:1px solid var(--line);}
+  .img-wrap img{width:100%; display:block;}
+  .img-label{position:absolute; background:rgba(15,23,42,.85); color:#fff; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700; z-index:10;}
+  .arrow-svg{position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;}
+
+  .vs-table{width:100%; border-collapse:collapse; font-size:.8rem; margin-top:10px;}
+  .vs-table th{background:#475569; color:#fff; padding:8px; text-align:left;}
+  .vs-table td{padding:8px; border-bottom:1px solid var(--line); vertical-align:top;}
+  .vs-table tr:nth-child(even){background:#f8fafc;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>LCDD — Light Chain Deposition Disease (MGRS)</h1>
+    <div class="badge">NEPHROLOGY · HEMATOLOGY</div>
+  </header>
+
+  <div class="case-strip">
+    <h2>Clinical Scenario: Nephrotic Syndrome + Monoclonal Protein</h2>
+    <p>72-year-old man with progressive kidney dysfunction and proteinuria (6.2 g/day). Serum immunofixation shows a small IgG-κ monoclonal protein. Bone marrow plasma cells = 6% (no myeloma).</p>
+    <div class="labs">
+      <span class="chip abn">Cr 3.1</span>
+      <span class="chip abn">UP 6.2 g/d</span>
+      <span class="chip abn">IF: Linear κ</span>
+      <span class="chip abn">EM: Powdery deposits</span>
+      <span class="chip">Congo Red Negative</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('opt1')">🔴 LM (Nodular Sclerosis)</button>
+    <button class="tab" onclick="setMode('opt2')">🟣 IF (Linear κ)</button>
+    <button class="tab" onclick="setMode('opt3')">🔵 EM (Powdery Deposits)</button>
+    <button class="tab" onclick="setMode('opt4')">🟡 MGRS vs PTLD</button>
+  </div>
+
+  <section class="stage">
+    <div class="diagram-col" id="diagram-col"></div>
+    <aside class="info-col">
+      <div class="info-float" id="infoPanel">
+        <div class="info-header" onclick="togglePanel(event)">
+          <h4 id="infoTitle"></h4>
+          <span id="toggleBtn" style="font-size:.75rem; font-weight:700; color:var(--muted);">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <div class="panels">
+    <div class="panel one"><h3 id="p1t"></h3><p class="tagline" id="p1tag"></p><ul id="p1list"></ul></div>
+    <div class="panel two"><h3 id="p2t"></h3><p class="tagline" id="p2tag"></p><ul id="p2list"></ul></div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div><h3 id="alertTitle"></h3><p id="alertText"></p></div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by Dr. Malik</div>
+    <div>Teaching Animation Template · Nephrology / Hematology</div>
+  </footer>
+</div>
+
+<script>
+const CONFIG = {
+  opt1: {
+    title: "🔴 LM — Nodular Mesangial Sclerosis",
+    panel1Title: "🔬 Light Microscopy Findings",
+    panel1Tagline: "PAS and Silver Stain",
+    panel1List: [
+      "<strong>Nodular mesangial sclerosis:</strong> The glomerulus shows expanded mesangial areas forming nodules.",
+      "<strong>PAS-positive:</strong> The nodules stain brightly with Periodic acid-Schiff.",
+      "<strong>Silver stain:</strong> Often shows weakly positive or silver-negative material within the nodules, with ribbon-like thickening of tubular basement membranes.",
+      "<strong>Mimic:</strong> This nodular pattern closely resembles diabetic nephropathy (Kimmelstiel-Wilson nodules), but the patient has no diabetes."
+    ],
+    panel2Title: "🧬 Why This Matters",
+    panel2Tagline: "Chronic Matrix Expansion",
+    panel2List: [
+      "The nodules represent chronic deposition of monoclonal light chains and matrix expansion.",
+      "They are a late finding in LCDD, indicating established chronic damage.",
+      "The absence of diabetes and the presence of monotypic staining confirm it is not diabetic nephropathy."
+    ],
+    alertIcon: "🔬",
+    alertTitle: "Nodular Sclerosis",
+    alertText: "PAS-positive nodules in a non-diabetic patient should raise suspicion for LCDD, especially if a monoclonal protein is present.",
+    infoRows: [
+      {k:"LM Finding", v:"Nodular sclerosis"},
+      {k:"PAS Stain", v:"Positive nodules"},
+      {k:"Silver Stain", v:"Weakly positive/negative"},
+      {k:"Mimic", v:"Diabetic nephropathy"}
+    ]
+  },
+  opt2: {
+    title: "🟣 IF — Linear κ Staining",
+    panel1Title: "🔬 Immunofluorescence Pattern",
+    panel1Tagline: "The Diagnostic Hallmark",
+    panel1List: [
+      "<strong>Linear staining:</strong> Strong, smooth, continuous staining for κ light chains along the glomerular basement membrane (GBM) and tubular basement membrane (TBM).",
+      "<strong>Monotypic:</strong> Only one light chain (κ or λ) is present. In LCDD, κ is more common (>90% of cases).",
+      "<strong>Why linear?</strong> The light chains bind directly to the structural components of the basement membrane, not as discrete immune complexes."
+    ],
+    panel2Title: "🧬 Distinguishing from Other Patterns",
+    panel2Tagline: "Granular vs Linear",
+    panel2List: [
+      "<strong>Linear (LCDD):</strong> Smooth, ribbon-like staining along the GBM and TBM.",
+      "<strong>Granular (PGNMID):</strong> Discrete, dot-like deposits of monoclonal immunoglobulin.",
+      "<strong>Full house (Lupus):</strong> Multiple immunoglobulins and complement components."
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Linear κ Staining",
+    alertText: "Strong, diffuse linear κ staining along the GBM and TBM is the definitive diagnostic finding for LCDD.",
+    infoRows: [
+      {k:"Pattern", v:"Linear"},
+      {k:"Light Chain", v:"κ (most common)"},
+      {k:"Location", v:"GBM and TBM"},
+      {k:"Diagnostic", v:"Yes — hallmark"}
+    ]
+  },
+  opt3: {
+    title: "🔵 EM — Powdery Deposits",
+    panel1Title: "🔬 Electron Microscopy",
+    panel1Tagline: "Powdery, Non-organized Deposits",
+    panel1List: [
+      "<strong>Powdery appearance:</strong> Finely granular, punctate, or 'salt-and-pepper' electron-dense deposits.",
+      "<strong>Location:</strong> Along the inner aspect of the GBM (lamina rara interna) and the TBM.",
+      "<strong>Non-organized:</strong> Unlike amyloid (fibrils) or cryoglobulinemia (microtubules), the deposits are amorphous and non-fibrillar."
+    ],
+    panel2Title: "🧬 Why EM is Important",
+    panel2Tagline: "Ruling Out Amyloid",
+    panel2List: [
+      "EM confirms the deposits are not organized into fibrils, which rules out amyloidosis.",
+      "The powdery appearance is characteristic of LCDD.",
+      "Combined with a negative Congo red stain, EM provides definitive evidence against amyloid."
+    ],
+    alertIcon: "🔵",
+    alertTitle: "Powdery Deposits",
+    alertText: "Finely granular, powdery deposits along the basement membranes confirm the non-amyloid nature of the deposition.",
+    infoRows: [
+      {k:"EM Appearance", v:"Powdery/granular"},
+      {k:"Location", v:"Lamina rara interna"},
+      {k:"Organization", v:"Non-fibrillar"},
+      {k:"Rules Out", v:"Amyloidosis"}
+    ]
+  },
+  opt4: {
+    title: "🟡 MGRS vs PTLD",
+    panel1Title: "🧬 MGRS — A Kidney Disease",
+    panel1Tagline: "Monoclonal Gammopathy of Renal Significance",
+    panel1List: [
+      "<strong>Definition:</strong> A small B-cell or plasma-cell clone produces a nephrotoxic monoclonal immunoglobulin that damages the kidney.",
+      "<strong>The clone:</strong> Does not meet criteria for overt malignancy (myeloma/lymphoma).",
+      "<strong>The danger:</strong> The monoclonal protein itself causes kidney lesions (e.g., LCDD).",
+      "<strong>Treatment rationale:</strong> Treat the clone to preserve kidney function, even without overt hematologic malignancy."
+    ],
+    panel2Title: "🧬 PTLD — A Malignancy",
+    panel2Tagline: "Post-Transplant Lymphoproliferative Disorder",
+    panel2List: [
+      "<strong>Definition:</strong> A true lymphoproliferative malignancy (e.g., DLBCL) occurring after solid-organ transplant.",
+      "<strong>The driver:</strong> Often Epstein-Barr virus (EBV) in the setting of immunosuppression.",
+      "<strong>The danger:</strong> The malignancy itself (mass, infiltration, systemic symptoms).",
+      "<strong>Treatment rationale:</strong> Reduce immunosuppression, rituximab, chemotherapy."
+    ],
+    alertIcon: "⚠️",
+    alertTitle: "MGRS ≠ PTLD",
+    alertText: "MGRS is a clone-directed kidney disease; PTLD is a post-transplant malignancy. They are distinct entities requiring different treatments.",
+    infoRows: [
+      {k:"MGRS", v:"Small clone, kidney damage"},
+      {k:"PTLD", v:"Malignancy, EBV-driven"},
+      {k:"MGRS Rx", v:"Clone-directed therapy"},
+      {k:"PTLD Rx", v:"Reduce immunosuppression, chemo"}
+    ]
+  }
+};
+
+const SVG_1 = `
+<div class="img-wrap">
+  <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/a633/11675341/00ce13f14a09/diagnostics-14-02892-g006.jpg" alt="LCDD nodular mesangial sclerosis">
+  <div class="img-label">PAS-positive mesangial nodules (black arrow) and silver-positive nodules (white arrow)</div>
+  <svg class="arrow-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <marker id="arrowHeadGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+      </marker>
+    </defs>
+    <line x1="20" y1="20" x2="45" y2="45" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowHeadGreen)"/>
+  </svg>
+</div>
+`;
+
+const SVG_2 = `
+<div class="img-wrap">
+  <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/8be0/5011253/5eac3711e6b8/WJN-5-461-g004.jpg" alt="LCDD immunofluorescence linear kappa">
+  <div class="img-label">Linear κ light chain staining along capillary loops and tubular basement membranes</div>
+  <svg class="arrow-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <marker id="arrowHeadRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+      </marker>
+    </defs>
+    <line x1="30" y1="30" x2="55" y2="50" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowHeadRed)"/>
+  </svg>
+</div>
+`;
+
+const SVG_3 = `
+<div class="img-wrap">
+  <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/8be0/5011253/5eac3711e6b8/WJN-5-461-g004.jpg" alt="LCDD electron microscopy powdery deposits">
+  <div class="img-label">Powdery, finely granular deposits along the basement membrane</div>
+  <svg class="arrow-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <marker id="arrowHeadBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0891b2"/>
+      </marker>
+    </defs>
+    <line x1="40" y1="40" x2="65" y2="55" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowHeadBlue)"/>
+  </svg>
+</div>
+`;
+
+const SVG_4 = `
+<div class="vs-table">
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>MGRS (LCDD)</th><th>PTLD</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Nature</strong></td><td>Small B-cell/plasma-cell clone</td><td>Frank lymphoproliferative malignancy</td></tr>
+      <tr><td><strong>Malignancy?</strong></td><td>No (pre-malignant)</td><td>Yes</td></tr>
+      <tr><td><strong>Kidney involvement</strong></td><td>Directly caused by monoclonal protein</td><td>Can infiltrate allograft as a mass</td></tr>
+      <tr><td><strong>Driver</strong></td><td>Nephrotoxic monoclonal immunoglobulin</td><td>EBV + immunosuppression</td></tr>
+      <tr><td><strong>Treatment</strong></td><td>Clone-directed therapy (bortezomib, daratumumab)</td><td>Reduce immunosuppression, rituximab, chemotherapy</td></tr>
+      <tr><td><strong>Goal</strong></td><td>Preserve kidney function</td><td>Treat the malignancy</td></tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+const QUIZ = [
+  { question: "What is the hallmark IF finding in LCDD?", options: [ { text: "Linear staining of light chains along the GBM and TBM", correct: true, explanation: "LCDD is characterized by strong, diffuse linear staining of a single light chain (usually κ) along the basement membranes." }, { text: "Granular staining of IgG", correct: false, explanation: "This would suggest PGNMID." }, { text: "Full house staining (IgG, IgA, IgM, C3, C1q)", correct: false, explanation: "This is seen in lupus nephritis." } ] },
+  { question: "Which stain rules out AL amyloidosis in this patient?", options: [ { text: "Congo red (negative in LCDD, positive in amyloidosis)", correct: true, explanation: "Congo red is negative in LCDD because the deposits are not organized into amyloid fibrils." }, { text: "PAS stain", correct: false, explanation: "PAS is positive in both." }, { text: "Silver stain", correct: false, explanation: "Silver stains the basement membrane, not the deposits." } ] },
+  { question: "What is the EM finding in LCDD?", options: [ { text: "Powdery, finely granular deposits", correct: true, explanation: "LCDD deposits are amorphous and non-organized, appearing powdery on EM." }, { text: "Organized microtubules", correct: false, explanation: "Microtubules are seen in cryoglobulinemia or immunotactoid glomerulopathy." }, { text: "Fibrils 8–12 nm", correct: false, explanation: "This is seen in amyloidosis." } ] },
+  { question: "Which of the following mimics LCDD on light microscopy?", options: [ { text: "Diabetic nodular glomerulosclerosis", correct: true, explanation: "Both LCDD and diabetic nephropathy show nodular mesangial sclerosis. IF distinguishes them." }, { text: "Minimal change disease", correct: false, explanation: "MCD has normal LM." }, { text: "Membranous nephropathy", correct: false, explanation: "Membranous shows thickened GBM, not nodular sclerosis." } ] },
+  { question: "What is MGRS?", options: [ { text: "Monoclonal gammopathy of renal significance — a small clone causing kidney damage that requires treatment", correct: true, explanation: "MGRS refers to a small B-cell or plasma cell clone that does not meet myeloma criteria but causes severe kidney disease." }, { text: "A type of multiple myeloma", correct: false, explanation: "MGRS is distinct from myeloma; it lacks myeloma-defining events." }, { text: "A benign condition requiring no treatment", correct: false, explanation: "MGRS requires clone-directed therapy to prevent kidney failure." } ] },
+  { question: "How does MGRS differ from PTLD?", options: [ { text: "MGRS is a small clone causing kidney damage; PTLD is a post-transplant malignancy", correct: true, explanation: "MGRS is driven by a nephrotoxic monoclonal protein from a small clone, while PTLD is a true lymphoproliferative malignancy often driven by EBV." }, { text: "They are the same disease", correct: false, explanation: "They are distinct entities with different biology and treatment." }, { text: "PTLD is a type of MGRS", correct: false, explanation: "PTLD is a malignancy, not a form of MGRS." } ] },
+  { question: "What is the primary treatment for LCDD?", options: [ { text: "Clone-directed therapy (e.g., bortezomib, daratumumab)", correct: true, explanation: "The goal is to eradicate the underlying plasma cell clone and prevent further kidney damage." }, { text: "Observation only", correct: false, explanation: "Untreated LCDD progresses to ESKD." }, { text: "High-dose steroids alone", correct: false, explanation: "Steroids alone are insufficient to control the clone." } ] },
+  { question: "Why is Congo red negative in LCDD?", options: [ { text: "The light chains are not organized into amyloid fibrils", correct: true, explanation: "Congo red binds to the cross-β pleated sheet structure of amyloid fibrils. LCDD deposits are amorphous, not fibrillar." }, { text: "The light chains are not monoclonal", correct: false, explanation: "The light chains are monoclonal, just not organized into fibrils." }, { text: "Congo red only stains heavy chains", correct: false, explanation: "Congo red stains amyloid fibrils regardless of the protein type." } ] }
+];
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = QUIZ.map(function(q){
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+function setMode(mode) {
+  const d = CONFIG[mode];
+  if (!d) return;
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const idx = ['opt1','opt2','opt3','opt4'].indexOf(mode);
+  if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+
+  const col = document.getElementById('diagram-col');
+  if (mode === 'opt1') col.innerHTML = SVG_1;
+  else if (mode === 'opt2') col.innerHTML = SVG_2;
+  else if (mode === 'opt3') col.innerHTML = SVG_3;
+  else if (mode === 'opt4') col.innerHTML = SVG_4;
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + (panelCollapsed ? 'collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(r => `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`).join('');
+
+  document.getElementById('p1t').textContent = d.panel1Title;
+  document.getElementById('p1tag').textContent = d.panel1Tagline;
+  document.getElementById('p1list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('p2t').textContent = d.panel2Title;
+  document.getElementById('p2tag').textContent = d.panel2Tagline;
+  document.getElementById('p2list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function buildQuiz() {
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map((q, qi) => {
+    return `
+      <div class="q" data-qi="${qi}">
+        <p>${qi + 1}. ${q.question}</p>
+        <div class="opts">
+          ${q.options.map((o, oi) => `<button class="opt" data-qi="${qi}" data-oi="${oi}">${o.text}</button>`).join('')}
+        </div>
+        <div class="explain"></div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('quizGrid').addEventListener('click', function(e) {
+    const btn = e.target.closest('.opt');
+    if (!btn) return;
+    const qi = parseInt(btn.dataset.qi, 10);
+    const oi = parseInt(btn.dataset.oi, 10);
+    const q = RUNTIME_QUIZ[qi];
+    const o = q.options[oi];
+    const box = btn.closest('.q');
+
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct', 'wrong'));
+    btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+    const explain = box.querySelector('.explain');
+    explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+    explain.innerHTML = `<strong style="color:${o.correct ? '#166534' : '#991b1b'}">${o.correct ? '✔ Correct.' : '✘ Not quite.'}</strong> ${o.explanation}`;
+  });
+}
+
+buildQuiz();
+setMode('opt1');
+</script>
+</body>
+</html>

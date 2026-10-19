@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interactive CRRT Flow — CVVH, CVVHD, CVVHDF</title>
+<style>
+:root{--red:#d62828;--blue:#1976d2;--cyan:#00a6d6;--gold:#d99a00;--ink:#10233f;--bg:#eef7ff}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1100px;margin:auto;padding:18px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+h1{font-size:26px;margin:0}.badge{background:#fff;padding:8px 12px;border-radius:14px;font-weight:700}
+.card{background:white;border-radius:20px;padding:18px;margin-top:14px;box-shadow:0 8px 28px #183b5b22}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.controls button{border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+.mode{background:#dbeeff}.mode.active{background:#123d68;color:white}.nav{background:#123d68;color:white}.nav:disabled{opacity:.35}
+svg{width:100%;height:auto;background:#f9fcff;border-radius:16px}
+.label{font-weight:700;font-size:18px}.small{font-size:14px}.formula{font-size:19px;font-weight:700;background:#eef6ff;padding:12px;border-radius:12px;margin-top:12px}
+.flow{stroke-dasharray:10 12;animation:move 1s linear infinite}@keyframes move{to{stroke-dashoffset:-22}}
+.drop{animation:drop 1.3s linear infinite}@keyframes drop{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(65px);opacity:0}}
+.pulse{animation:pulse 1s ease-in-out infinite alternate}@keyframes pulse{from{opacity:.45}to{opacity:1}}
+.note{font-size:14px;line-height:1.4;margin-top:10px}.stepTitle{font-size:21px;font-weight:800;margin:8px 0}
+</style>
+</head>
+<body><div class="wrap">
+<div class="top"><h1>CRRT: Blood Flow, Effluent & Filtration Fraction</h1><div class="badge">Interactive • Click Next</div></div>
+<div class="card">
+<div class="controls">
+<button class="mode active" onclick="setMode('CVVH',this)">CVVH</button>
+<button class="mode" onclick="setMode('CVVHD',this)">CVVHD</button>
+<button class="mode" onclick="setMode('CVVHDF',this)">CVVHDF</button>
+</div>
+<div class="stepTitle" id="stepTitle"></div>
+<svg viewBox="0 0 1000 560" aria-label="CRRT circuit">
+<!-- patient -->
+<circle cx="105" cy="150" r="42" fill="#f2c6a0"/><rect x="55" y="195" width="105" height="175" rx="40" fill="#cfe4f7"/>
+<text x="58" y="420" class="label">PATIENT</text>
+<!-- blood circuit -->
+<path d="M145 235 C235 235 230 105 365 105 L455 105" fill="none" stroke="#d62828" stroke-width="15" class="flow"/>
+<path d="M620 330 C500 455 260 455 145 315" fill="none" stroke="#1976d2" stroke-width="15" class="flow"/>
+<text x="240" y="78" class="label" fill="#b51515">Blood to filter (Qb)</text>
+<text x="270" y="485" class="label" fill="#155fa8">Blood back to patient</text>
+<!-- filter -->
+<rect x="455" y="65" width="165" height="300" rx="28" fill="#eaf5fb" stroke="#234b6d" stroke-width="5"/>
+<line x1="485" y1="85" x2="485" y2="340" stroke="#aac9dc" stroke-width="5"/><line x1="520" y1="85" x2="520" y2="340" stroke="#aac9dc" stroke-width="5"/>
+<line x1="555" y1="85" x2="555" y2="340" stroke="#aac9dc" stroke-width="5"/><line x1="590" y1="85" x2="590" y2="340" stroke="#aac9dc" stroke-width="5"/>
+<text x="490" y="210" class="label">FILTER</text>
+<!-- pre RF -->
+<path id="preLine" d="M390 20 L390 105" fill="none" stroke="#00a6d6" stroke-width="10" class="flow"/>
+<text id="preText" x="280" y="22" class="label" fill="#007c9e">Pre-RF</text>
+<!-- post RF -->
+<path id="postLine" d="M670 270 L610 300" fill="none" stroke="#00a6d6" stroke-width="10" class="flow"/>
+<text id="postText" x="675" y="260" class="label" fill="#007c9e">Post-RF</text>
+<!-- dialysate -->
+<path id="dialLine" d="M785 85 L620 135" fill="none" stroke="#5b67d8" stroke-width="10" class="flow"/>
+<text id="dialText" x="790" y="75" class="label" fill="#434db5">Dialysate (Qd)</text>
+<!-- effluent -->
+<path d="M540 365 L540 465" fill="none" stroke="#d99a00" stroke-width="12" class="flow"/>
+<rect x="465" y="465" width="150" height="72" rx="10" fill="#fff0b8" stroke="#b57b00" stroke-width="4"/>
+<text x="486" y="507" class="label">EFFLUENT</text>
+<circle cx="540" cy="390" r="9" fill="#e0a000" class="drop"/>
+<!-- urine separate -->
+<path d="M118 370 C118 410 165 425 165 475" fill="none" stroke="#f0b000" stroke-width="7"/>
+<rect x="125" y="472" width="82" height="55" rx="8" fill="#ffe18a" stroke="#b57b00" stroke-width="3"/>
+<text x="130" y="550" class="label">URINE</text>
+<text x="28" y="450" class="small">Kidney urine is separate</text>
+<!-- FF bracket -->
+<text x="650" y="360" class="label">FF = fraction of plasma water</text>
+<text x="650" y="385" class="label">filtered across membrane</text>
+<text x="650" y="420" class="small">Higher FF → hemoconcentration → clotting risk</text>
+</svg>
+<div class="formula" id="formula"></div>
+<div class="controls" style="justify-content:space-between">
+<button class="nav" id="prev" onclick="move(-1)">← Previous</button>
+<div id="counter" class="badge"></div>
+<button class="nav" id="next" onclick="move(1)">Next →</button>
+</div>
+<div class="note"><b>Important:</b> The yellow “urine” bag represents native kidney urine only. It is <b>not</b> CRRT effluent. CRRT effluent is the waste fluid leaving the hemofilter into the effluent bag.</div>
+</div></div>
+<script>
+let step=0, mode='CVVH';
+const steps=[
+["1. Blood enters the hemofilter","Watch the red dashed flow: Qb is blood flow, usually expressed in mL/min."],
+["2. Therapy fluid enters","CVVH uses replacement fluid; CVVHD uses dialysate; CVVHDF uses both."],
+["3. Solute + water cross the membrane","CVVH emphasizes convection; CVVHD diffusion; CVVHDF combines both."],
+["4. Effluent goes to the waste bag","Effluent is CRRT waste fluid. It is not the patient's urine."],
+["5. Filtration fraction (FF)","FF describes the fraction of plasma water filtered; high FF promotes hemoconcentration and circuit clotting."],
+["6. Keep urine separate","Native kidneys may still make urine during CRRT. Urine output is measured separately from the CRRT effluent."]
+];
+function setMode(m,b){mode=m;document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()}
+function move(d){step=Math.max(0,Math.min(steps.length-1,step+d));render()}
+function render(){
+ document.getElementById('stepTitle').textContent=steps[step][0]+" — "+steps[step][1];
+ document.getElementById('counter').textContent=(step+1)+" / "+steps.length;
+ document.getElementById('prev').disabled=step===0; document.getElementById('next').disabled=step===steps.length-1;
+ let pre=mode!=='CVVHD', post=mode!=='CVVHD', dial=mode!=='CVVH';
+ ['preLine','preText'].forEach(id=>document.getElementById(id).style.opacity=pre?1:.12);
+ ['postLine','postText'].forEach(id=>document.getElementById(id).style.opacity=post?1:.12);
+ ['dialLine','dialText'].forEach(id=>document.getElementById(id).style.opacity=dial?1:.12);
+ let f= mode==='CVVH' ? 'CVVH: convection • effluent ≈ replacement fluid + net fluid removal' :
+        mode==='CVVHD' ? 'CVVHD: diffusion • effluent ≈ dialysate + net fluid removal' :
+        'CVVHDF: diffusion + convection • effluent ≈ dialysate + replacement fluid + net fluid removal';
+ document.getElementById('formula').textContent=f;
+}
+render();
+</script></body></html>

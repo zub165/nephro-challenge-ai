@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TLS Management — A Gift by Dr. Malik</title>
+<style>
+  :root{ --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --rask:#dc2626; --saline:#2563eb; --bad:#ef4444; --good:#16a34a; }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1300px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.35rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.82rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.72rem; padding:7px 14px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:16px 20px;
+    border:1px solid var(--line); border-left:5px solid var(--rask);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip .cs-main{flex:1; min-width:240px;}
+  .case-strip h2{margin:0 0 4px; font-size:1rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.85rem; color:#334155; line-height:1.55;}
+  .case-strip .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:6px 12px;
+    font-size:.75rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:10px 18px;
+    border-radius:10px; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.saline.active{background:#eff6ff; border-color:var(--saline); color:#1e40af;}
+  .tab.wrong.active{background:#fef2f2; border-color:var(--bad); color:#991b1b;}
+  .tab.alg.active{background:#f5f3ff; border-color:#7c3aed; color:#5b21b6;}
+
+  .stage{background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); position:relative;}
+  svg.diagram{width:100%; height:auto; max-height:520px; display:block;}
+
+  .info-float{position:absolute; top:20px; right:20px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(6px);
+    border-radius:12px; padding:0; border:1px solid var(--line);
+    box-shadow:0 4px 16px rgba(15,23,42,.1); width:280px;
+    max-width:calc(100% - 40px); transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden;}
+  .info-float.highlight-saline{border-color:var(--saline);}
+  .info-float.highlight-wrong{border-color:var(--bad);}
+  .info-float.highlight-alg{border-color:#7c3aed;}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:12px 14px; cursor:pointer; user-select:none;
+    background:#eff6ff; border-bottom:1px solid transparent; transition:all .2s ease;}
+  .info-float.highlight-wrong .info-header{background:#fee2e2;}
+  .info-float.highlight-alg .info-header{background:#ede9fe;}
+
+  .info-header h4{margin:0; font-size:.82rem; font-weight:800;
+    color:#0f172a; display:flex; align-items:center; gap:6px;}
+  .info-header .toggle-btn{font-size:.72rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:3px 8px; border-radius:999px;
+    font-weight:700; transition:all .2s ease;}
+  .info-header:hover .toggle-btn{background:rgba(0,0,0,.12);}
+
+  .info-body{padding:12px 14px 14px; max-height:500px;
+    transition:all .3s cubic-bezier(.4,0,.2,1); overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 14px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:8px 0; font-size:.78rem; border-bottom:1px solid var(--line);}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:170px; line-height:1.35;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid;}
+  .panel.good{border-top-color:var(--good);}
+  .panel.bad{border-top-color:var(--bad);}
+  .panel h3{margin:0 0 4px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.78rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:18px; font-size:.85rem; color:#334155; line-height:1.65;}
+  .panel ul li{margin-bottom:6px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff;
+    border-radius:14px; padding:20px 24px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(22,163,74,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.4rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .alert p{margin:0; font-size:.88rem; line-height:1.55; opacity:.95;}
+  .alert strong{color:#fef9c3;}
+
+  .quiz{background:#fff; border-radius:16px; padding:22px 24px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 16px; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:16px 18px;
+    border:1px solid var(--line);}
+  .q p{margin:0 0 12px; font-weight:700; font-size:.88rem; line-height:1.5;}
+  .opts{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:9px 14px;
+    border-radius:8px; font-size:.82rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.78rem;
+    color:#334155; line-height:1.55; margin-top:6px;}
+  .explain.show{display:block;}
+  .explain strong{color:#1e3a8a;}
+
+  .footer{margin-top:16px; padding:16px 22px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center; font-size:.78rem;
+    line-height:1.6;}
+  .footer strong{color:#60a5fa;}
+
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:.6; transform:scale(1.08);}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>TLS Management — Saline vs. Bicarbonate</h1>
+      <p>What to give (and NOT give) alongside rasburicase</p>
+    </div>
+    <div class="badge">Educational Gift</div>
+  </header>
+
+  <!-- CASE STRIP -->
+  <div class="case-strip">
+    <div class="cs-main">
+      <h2>58-year-old woman with acute myelomonocytic leukemia</h2>
+      <p>Fatigue, weakness, new-onset lower extremity swelling. Classic presentation of <strong>tumor lysis syndrome (TLS)</strong> — hyperuricemia, hyperphosphatemia, hypocalcemia, and AKI.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">WBC 210K</span>
+      <span class="lab-chip abn">Uric acid 11.1</span>
+      <span class="lab-chip abn">PO₄ 9.5</span>
+      <span class="lab-chip abn">Ca 7.4</span>
+      <span class="lab-chip abn">Cr 2.5</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab saline active" id="tabSaline" onclick="setMode('saline')">💧 IV Normal Saline ✓</button>
+    <button class="tab wrong" id="tabWrong" onclick="setMode('wrong')">🚫 Bicarbonate / Allopurinol ✗</button>
+    <button class="tab alg" id="tabAlg" onclick="setMode('alg')">📋 Full Algorithm</button>
+  </div>
+
+  <!-- DIAGRAM -->
+  <section class="stage">
+    <svg class="diagram" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="raskGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#dc2626"/>
+        </radialGradient>
+        <radialGradient id="salineGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#2563eb"/>
+        </radialGradient>
+        <radialGradient id="badGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#fee2e2"/><stop offset="100%" stop-color="#ef4444"/>
+        </radialGradient>
+        <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8"/>
+        </marker>
+      </defs>
+
+      <rect width="1200" height="620" fill="#fdfdfd"/>
+
+      <text x="600" y="30" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">
+        Tumor Lysis Syndrome — Management Strategy
+      </text>
+
+      <!-- PATIENT -->
+      <g transform="translate(150, 300)">
+        <ellipse cx="0" cy="0" rx="100" ry="125" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5"/>
+        <ellipse cx="0" cy="-65" rx="45" ry="55" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="0" y="-55" text-anchor="middle" font-size="24">🤒</text>
+        <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#1e40af">TLS</text>
+        <text x="0" y="45" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b82f6">Uric acid 11.1</text>
+        <text x="0" y="62" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b82f6">PO₄ 9.5 · Ca 7.4</text>
+        <text x="0" y="79" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b82f6">Cr 2.5</text>
+      </g>
+
+      <path d="M 255 300 L 330 300" stroke="#dc2626" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+
+      <!-- RASBURICASE -->
+      <g transform="translate(430, 300)">
+        <circle r="80" fill="url(#raskGrad)" stroke="#991b1b" stroke-width="3"/>
+        <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#fff">RASBURICASE</text>
+        <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="11" fill="#fecaca">✓ Given</text>
+        <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">converts uric acid</text>
+        <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="10" fill="#fecaca">→ allantoin</text>
+      </g>
+
+      <path d="M 510 300 L 570 300" stroke="#94a3b8" stroke-width="3" fill="none"
+            stroke-dasharray="6 4" marker-end="url(#arrowGray)"/>
+
+      <g transform="translate(640, 300)">
+        <circle r="55" fill="#f1f5f9" stroke="#64748b" stroke-width="3"/>
+        <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="32" font-weight="800" fill="#334155">?</text>
+      </g>
+
+      <!-- GOOD BRANCH -->
+      <g id="outcome-saline">
+        <path d="M 695 270 Q 780 200 870 180" stroke="#2563eb" stroke-width="4" fill="none" marker-end="url(#arrowBlue)"/>
+        <rect x="880" y="140" width="290" height="95" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="3.5"/>
+        <text x="1025" y="165" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#1e40af">
+          💧 IV NORMAL SALINE ✓
+        </text>
+        <text x="1025" y="185" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">
+          Restores volume · maintains urine output
+        </text>
+        <text x="1025" y="202" text-anchor="middle" font-family="Arial" font-size="11" fill="#1e3a8a">
+          Prevents crystal deposition
+        </text>
+        <text x="1025" y="222" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#16a34a">
+          ✅ Correct answer
+        </text>
+      </g>
+
+      <!-- BAD BRANCH -->
+      <g id="outcome-bicarb">
+        <path d="M 695 340 Q 780 400 870 430" stroke="#ef4444" stroke-width="3" fill="none"
+              stroke-dasharray="6 4" marker-end="url(#arrowRed)" opacity="0.7"/>
+        <rect x="880" y="400" width="290" height="95" rx="14" fill="#fef2f2" stroke="#ef4444" stroke-width="2.5" opacity="0.9"/>
+        <text x="1025" y="425" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">
+          🚫 IV BICARBONATE
+        </text>
+        <text x="1025" y="445" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">
+          Worsens Ca-PO₄ precipitation
+        </text>
+        <text x="1025" y="462" text-anchor="middle" font-family="Arial" font-size="11" fill="#7f1d1d">
+          Not needed with rasburicase
+        </text>
+        <text x="1025" y="482" text-anchor="middle" font-family="Arial" font-size="11" font-weight="800" fill="#dc2626">
+          ❌ Avoid
+        </text>
+        <line x1="890" y1="410" x2="1160" y2="485" stroke="#dc2626" stroke-width="4" opacity="0.55"/>
+        <line x1="1160" y1="410" x2="890" y2="485" stroke="#dc2626" stroke-width="4" opacity="0.55"/>
+      </g>
+
+      <!-- Bottom label -->
+      <g transform="translate(600, 565)">
+        <rect x="-500" y="-30" width="1000" height="60" rx="14" fill="#1e3a8a" opacity="0.95"/>
+        <text x="0" y="-4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">
+          💧 IVF + Rasburicase — NOT bicarbonate, NOT additional allopurinol/febuxostat
+        </text>
+        <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#bfdbfe">
+          Bicarbonate worsens Ca-PO₄ deposition · Allopurinol + rasburicase = redundant and harmful
+        </text>
+      </g>
+
+    </svg>
+
+    <!-- INFO PANEL -->
+    <div class="info-float highlight-saline" id="infoPanel">
+      <div class="info-header" onclick="togglePanel()">
+        <h4 id="infoTitle">💧 IV Normal Saline</h4>
+        <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+      </div>
+      <div class="info-body" id="infoBody">
+        <div class="row"><span class="k">Purpose</span><span class="v" id="iPurpose">Volume expansion · maintain UOP</span></div>
+        <div class="row"><span class="k">Rate</span><span class="v" id="iRate">2–3× maintenance</span></div>
+        <div class="row"><span class="k">Target UOP</span><span class="v" id="iUop">≥ 80–100 mL/m²/h</span></div>
+        <div class="row"><span class="k">Why NOT bicarb</span><span class="v" id="iWhy">Worsens Ca-PO₄ precipitation</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHING PANELS -->
+  <div class="panels">
+    <div class="panel good">
+      <h3>✅ Do This</h3>
+      <p class="tagline">The correct combination in acute TLS</p>
+      <ul>
+        <li><strong>Rasburicase</strong> — rapidly converts uric acid to allantoin (soluble)</li>
+        <li><strong>IV normal saline</strong> — 2–3× maintenance to maintain high urine output</li>
+        <li><strong>Monitor K⁺, PO₄, Ca</strong> every 4–6 hours</li>
+        <li><strong>Consider dialysis</strong> for refractory hyperkalemia, severe hyperphosphatemia, or oliguric AKI</li>
+        <li><strong>Target UOP</strong> ≥ 80–100 mL/m²/h</li>
+      </ul>
+    </div>
+
+    <div class="panel bad">
+      <h3>🚫 Do NOT Do</h3>
+      <p class="tagline">Common mistakes in TLS management</p>
+      <ul>
+        <li><strong>Routine bicarbonate</strong> — worsens calcium-phosphate precipitation → metastatic calcification</li>
+        <li><strong>Combine allopurinol + rasburicase</strong> — redundant; increases xanthine nephropathy risk</li>
+        <li><strong>High-dose febuxostat</strong> — no role in acute TLS; slower than rasburicase</li>
+        <li><strong>Calcium supplementation</strong> — only if symptomatic; Ca binds PO₄ → tissue deposits</li>
+        <li><strong>Delaying dialysis</strong> — if oliguric AKI + severe electrolyte derangement</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert">
+    <div class="icon">💧</div>
+    <div>
+      <h3>Board Pearl — Saline is the Answer</h3>
+      <p>In TLS, the answer to "what do you give with rasburicase?" is almost always <strong>IV normal saline</strong>. Bicarbonate has fallen out of favor because it worsens <strong>calcium-phosphate precipitation</strong> in tissues. Rasburicase handles the uric acid; saline flushes the system.</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <section class="quiz">
+    <h3>✅ Quick Check — 5 Questions</h3>
+    <div class="quiz-grid">
+
+      <div class="q">
+        <p>1. In addition to rasburicase, what is the most appropriate next step in TLS?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">IV sodium bicarbonate</button>
+          <button class="opt" onclick="answer(this,true)">IV normal saline</button>
+          <button class="opt" onclick="answer(this,false)">High-dose febuxostat</button>
+          <button class="opt" onclick="answer(this,false)">High-dose allopurinol</button>
+        </div>
+        <div class="explain"><strong>IV normal saline.</strong> Aggressive hydration maintains urine output and prevents crystal deposition — the cornerstone of TLS management.</div>
+      </div>
+
+      <div class="q">
+        <p>2. Why should bicarbonate be avoided in this patient?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">It causes hypernatremia</button>
+          <button class="opt" onclick="answer(this,true)">It worsens calcium-phosphate precipitation</button>
+          <button class="opt" onclick="answer(this,false)">It reduces rasburicase efficacy</button>
+        </div>
+        <div class="explain"><strong>Correct.</strong> Alkalinizing the urine in the presence of hyperphosphatemia + hypocalcemia promotes calcium-phosphate deposition in tissues → metastatic calcification.</div>
+      </div>
+
+      <div class="q">
+        <p>3. What is the target urine output in acute TLS?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">20–30 mL/h</button>
+          <button class="opt" onclick="answer(this,true)">80–100 mL/m²/h</button>
+          <button class="opt" onclick="answer(this,false)">500 mL/h</button>
+        </div>
+        <div class="explain"><strong>80–100 mL/m²/h.</strong> High urine output prevents uric acid and calcium-phosphate crystal deposition in renal tubules.</div>
+      </div>
+
+      <div class="q">
+        <p>4. Why should allopurinol NOT be added to rasburicase?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,true)">Redundant mechanism; risks xanthine nephropathy</button>
+          <button class="opt" onclick="answer(this,false)">It worsens hyperkalemia</button>
+          <button class="opt" onclick="answer(this,false)">It causes hypercalcemia</button>
+        </div>
+        <div class="explain"><strong>Correct.</strong> Both lower uric acid, but allopurinol blocks xanthine oxidase → xanthine accumulates (poorly soluble → nephropathy). Rasburicase alone is sufficient.</div>
+      </div>
+
+      <div class="q">
+        <p>5. Which lab pattern best characterizes TLS?</p>
+        <div class="opts">
+          <button class="opt" onclick="answer(this,false)">↑Ca, ↓PO₄, ↓K⁺, ↓uric acid</button>
+          <button class="opt" onclick="answer(this,true)">↑K⁺, ↑PO₄, ↓Ca, ↑uric acid</button>
+          <button class="opt" onclick="answer(this,false)">↑Ca, ↑PO₄, ↑K⁺, ↑uric acid</button>
+        </div>
+        <div class="explain"><strong>↑K⁺, ↑PO₄, ↓Ca, ↑uric acid.</strong> Classic TLS tetrad — hyperkalemia, hyperphosphatemia, hypocalcemia (from Ca-PO₄ precipitation), and hyperuricemia.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>A Gift by Dr. Malik</strong> · Educational use only · Not medical advice
+  </footer>
+
+</div>
+
+<script>
+  const modes = {
+    saline: {
+      panelClass: 'highlight-saline',
+      title: '💧 IV Normal Saline',
+      purpose: 'Volume expansion · maintain UOP',
+      rate: '2–3× maintenance',
+      uop: '≥ 80–100 mL/m²/h',
+      why: 'Bicarbonate worsens Ca-PO₄ precipitation',
+      activeTab: 'tabSaline'
+    },
+    wrong: {
+      panelClass: 'highlight-wrong',
+      title: '🚫 What NOT to Give',
+      purpose: 'Bicarbonate → Ca-PO₄ deposits',
+      rate: 'Allopurinol → xanthine nephropathy',
+      uop: 'Febuxostat → no role in acute TLS',
+      why: 'Redundant with rasburicase',
+      activeTab: 'tabWrong'
+    },
+    alg: {
+      panelClass: 'highlight-alg',
+      title: '📋 Full TLS Algorithm',
+      purpose: 'Rasburicase + aggressive IVF',
+      rate: 'Monitor K⁺ · PO₄ · Ca every 4–6h',
+      uop: 'Dialysis if refractory',
+      why: 'Avoid bicarbonate & extra XO inhibitors',
+      activeTab: 'tabAlg'
+    }
+  };
+
+  function setMode(mode) {
+    const d = modes[mode];
+    ['tabSaline','tabWrong','tabAlg'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    document.getElementById(d.activeTab).classList.add('active');
+
+    const panel = document.getElementById('infoPanel');
+    panel.className = 'info-float ' + d.panelClass +
+      (panel.classList.contains('collapsed') ? ' collapsed' : '');
+    document.getElementById('infoTitle').textContent = d.title;
+    document.getElementById('iPurpose').textContent = d.purpose;
+    document.getElementById('iRate').textContent = d.rate;
+    document.getElementById('iUop').textContent = d.uop;
+    document.getElementById('iWhy').textContent = d.why;
+  }
+
+  let panelCollapsed = false;
+  function togglePanel() {
+    panelCollapsed = !panelCollapsed;
+    const panel = document.getElementById('infoPanel');
+    const btn = document.getElementById('toggleBtn');
+    panel.classList.toggle('collapsed', panelCollapsed);
+    btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+  }
+
+  function answer(btn, correct) {
+    const box = btn.closest('.q');
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+    box.querySelector('.explain').classList.add('show');
+  }
+
+  setMode('saline');
+</script>
+</body>
+</html>

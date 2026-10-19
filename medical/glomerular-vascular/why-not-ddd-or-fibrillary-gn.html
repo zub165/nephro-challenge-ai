@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Not DDD or Fibrillary GN? — Reading the EM and IF</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){
+    .stage{grid-template-columns: 1fr;}
+  }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){
+    .info-col{position:static;}
+  }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+
+  @keyframes floatDown {
+    0% { transform: translateY(-50px); opacity: 0; }
+    20% { opacity: 1; }
+    80% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+  .adh-mol { animation: floatDown 3s ease-in-out infinite; }
+
+  @keyframes waterIn {
+    0% { transform: translateY(0); opacity: 0; }
+    20% { opacity: 1; }
+    80% { transform: translateY(60px); opacity: 1; }
+    100% { transform: translateY(60px); opacity: 0; }
+  }
+  @keyframes waterBlocked {
+    0% { transform: translateY(0); opacity: 0; }
+    20% { opacity: 1; }
+    40% { transform: translateY(10px); opacity: 1; }
+    60% { transform: translateY(-5px); opacity: 1; }
+    80% { transform: translateY(10px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+  .water-in { animation: waterIn 2s linear infinite; }
+  .water-blocked { animation: waterBlocked 2s ease-in-out infinite; }
+
+  @keyframes vesicleInsert {
+    0% { transform: translateY(30px); opacity: 0; }
+    20% { opacity: 1; }
+    80% { transform: translateY(0px); opacity: 1; }
+    100% { transform: translateY(0px); opacity: 0; }
+  }
+  .aqp2-vesicle { animation: vesicleInsert 3s ease-out infinite; }
+
+  @keyframes blockReceptor {
+    0% { transform: translateY(-30px); opacity: 0; }
+    20% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+  }
+  .tolv-mol { animation: blockReceptor 2.5s ease-in-out infinite; }
+
+  @keyframes drawLine {0%{stroke-dashoffset:1;}100%{stroke-dashoffset:0;}}
+  .egfr-line { stroke-dasharray: 1; animation: drawLine 4s ease-out forwards; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cellGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef9c3"/>
+            <stop offset="100%" stop-color="#fde047"/>
+          </radialGradient>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             DIAGRAM 1 — TWO AXES
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#991b1b">TWO AXES DECIDE THE DIAGNOSIS</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#7f1d1d">EM organization (organized vs non-organized) × dominant deposit on IF (C3 vs immunoglobulin)</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">"Non-organized" answers the fibril question — it does not, by itself, exclude DDD</text>
+          </g>
+
+          <!-- axes -->
+          <line x1="700" y1="735" x2="700" y2="248" stroke="#334155" stroke-width="4" marker-end="url(#arrowSlate)"/>
+          <line x1="245" y1="485" x2="1165" y2="485" stroke="#334155" stroke-width="4" marker-end="url(#arrowSlate)"/>
+
+          <text x="700" y="228" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">ORGANIZED — fibrils or microtubules visible</text>
+          <text x="700" y="768" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#0f172a">NON-ORGANIZED — amorphous / granular, no substructure</text>
+          <text x="236" y="466" text-anchor="end" font-family="Arial" font-size="13" font-weight="800" fill="#7c3aed">C3-DOMINANT</text>
+          <text x="1172" y="466" text-anchor="start" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">Ig-DOMINANT</text>
+
+          <!-- TL: organized + C3 -->
+          <g transform="translate(490, 360)">
+            <rect x="-170" y="-80" width="340" height="160" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7 5"/>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#475569">ORGANIZED + C3-DOMINANT</text>
+            <line x1="-140" y1="-24" x2="140" y2="-24" stroke="#cbd5e1" stroke-width="2"/>
+            <text y="4" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#64748b">Not a recognised category</text>
+            <text y="30" text-anchor="middle" font-family="Arial" font-size="13" fill="#94a3b8">organized deposits are not</text>
+            <text y="50" text-anchor="middle" font-family="Arial" font-size="13" fill="#94a3b8">C3-dominant</text>
+          </g>
+
+          <!-- TR: organized + Ig -->
+          <g transform="translate(910, 360)">
+            <rect x="-170" y="-80" width="340" height="160" rx="16" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">ORGANIZED + Ig-DOMINANT</text>
+            <line x1="-140" y1="-24" x2="140" y2="-24" stroke="#fde68a" stroke-width="2"/>
+            <text y="4" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#854d0e">AL amyloidosis</text>
+            <text y="28" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#854d0e">Fibrillary GN</text>
+            <text y="52" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#854d0e">Immunotactoid</text>
+          </g>
+
+          <!-- BL: non-organized + C3 -->
+          <g transform="translate(490, 610)">
+            <rect x="-170" y="-80" width="340" height="160" rx="16" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">NON-ORGANIZED + C3-DOMINANT</text>
+            <line x1="-140" y1="-24" x2="140" y2="-24" stroke="#ddd6fe" stroke-width="2"/>
+            <text y="6" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">Dense deposit disease</text>
+            <text y="34" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#5b21b6">C3 glomerulonephritis</text>
+            <text y="58" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#8b5cf6">excluded by IF here</text>
+          </g>
+
+          <!-- BR: non-organized + Ig -->
+          <g transform="translate(910, 610)">
+            <rect x="-170" y="-80" width="340" height="160" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <text y="-40" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">NON-ORGANIZED + Ig-DOMINANT</text>
+            <line x1="-140" y1="-24" x2="140" y2="-24" stroke="#bbf7d0" stroke-width="2"/>
+            <text y="8" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#166534">PGNMID</text>
+            <text y="38" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#15803d">← THIS PATIENT</text>
+            <text y="60" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#65a30d">IgG3-κ · granular</text>
+          </g>
+
+          <!-- bottom summary -->
+          <g transform="translate(700, 855)">
+            <rect x="-600" y="-45" width="1200" height="90" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+            <text y="-14" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">TWO SEPARATE QUESTIONS, TWO SEPARATE ANSWERS</text>
+            <text y="12" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d"><tspan font-weight="800">EM asks:</tspan> are there fibrils or microtubules? → if no, the fibrillar diseases are out</text>
+            <text y="34" text-anchor="middle" font-family="Arial" font-size="14" fill="#15803d"><tspan font-weight="800">IF asks:</tspan> is it C3-dominant or immunoglobulin-dominant? → this is what excludes DDD</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 2 — ORGANIZED vs NON-ORGANIZED
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#5b21b6">WHAT DOES "ORGANIZED" MEAN ON EM?</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">Organized = visible substructure at high magnification: fibrils, microtubules, or other patterns</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">Non-organized = amorphous / granular immune-complex deposits with no substructure</text>
+          </g>
+
+          <!-- Card 1: Fibrils -->
+          <g transform="translate(280, 480)">
+            <rect x="-190" y="-215" width="380" height="430" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-190" y="-215" width="380" height="58" rx="20" fill="#ca8a04"/>
+            <rect x="-190" y="-177" width="380" height="20" fill="#ca8a04"/>
+            <text x="0" y="-179" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">FIBRILS</text>
+
+            <!-- fibril drawing -->
+            <g transform="translate(0, -100)">
+              <line x1="-150" y1="-26" x2="150" y2="-26" stroke="#a16207" stroke-width="3"/>
+              <line x1="-150" y1="-10" x2="150" y2="-10" stroke="#a16207" stroke-width="3"/>
+              <line x1="-150" y1="6"   x2="150" y2="6"   stroke="#a16207" stroke-width="3"/>
+              <line x1="-150" y1="22"  x2="150" y2="22"  stroke="#a16207" stroke-width="3"/>
+              <line x1="-150" y1="38"  x2="150" y2="38"  stroke="#a16207" stroke-width="3"/>
+              <text x="0" y="-46" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#a16207">randomly arranged, non-branching</text>
+            </g>
+
+            <text y="-14" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#854d0e">AL amyloidosis</text>
+            <text y="8" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">8–10 nm · Congo red positive</text>
+            <text y="38" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#854d0e">Fibrillary GN</text>
+            <text y="60" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">10–30 nm · DNAJB9 positive</text>
+
+            <line x1="-150" y1="86" x2="150" y2="86" stroke="#fde68a" stroke-width="2"/>
+            <text y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">→ EXCLUDED by "non-organized"</text>
+            <text y="140" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">fibrils are the defining feature</text>
+            <text y="160" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">no fibrils = no fibrillary disease</text>
+          </g>
+
+          <!-- Card 2: Microtubules -->
+          <g transform="translate(700, 480)">
+            <rect x="-190" y="-215" width="380" height="430" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-190" y="-215" width="380" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-190" y="-177" width="380" height="20" fill="#0891b2"/>
+            <text x="0" y="-179" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">MICROTUBULES</text>
+
+            <g transform="translate(0, -100)">
+              <rect x="-150" y="-30" width="120" height="14" rx="7" fill="#0e7490"/>
+              <rect x="-150" y="-8"  width="160" height="14" rx="7" fill="#0e7490"/>
+              <rect x="-150" y="14"  width="140" height="14" rx="7" fill="#0e7490"/>
+              <rect x="-150" y="36"  width="180" height="14" rx="7" fill="#0e7490"/>
+              <text x="0" y="-52" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#0e7490">parallel tubular structures</text>
+            </g>
+
+            <text y="-14" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">Immunotactoid</text>
+            <text y="10" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">organized microtubules</text>
+            <text y="34" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">often monoclonal</text>
+
+            <line x1="-150" y1="60" x2="150" y2="60" stroke="#cffafe" stroke-width="2"/>
+            <text y="90" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">→ EXCLUDED by "non-organized"</text>
+            <text y="114" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">microtubules absent here</text>
+
+            <rect x="-165" y="136" width="330" height="48" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+            <text y="158" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#475569">Also organized: "fingerprint"</text>
+            <text y="176" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#475569">pattern of lupus nephritis</text>
+          </g>
+
+          <!-- Card 3: Non-organized -->
+          <g transform="translate(1120, 480)">
+            <rect x="-190" y="-215" width="380" height="430" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-190" y="-215" width="380" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-190" y="-177" width="380" height="20" fill="#16a34a"/>
+            <text x="0" y="-179" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">NON-ORGANIZED</text>
+
+            <g transform="translate(0, -100)">
+              <circle cx="-110" cy="-20" r="10" fill="#16a34a" opacity="0.75"/>
+              <circle cx="-60"  cy="6"   r="12" fill="#16a34a" opacity="0.65"/>
+              <circle cx="0"    cy="-14" r="9"  fill="#16a34a" opacity="0.7"/>
+              <circle cx="50"   cy="12"  r="13" fill="#16a34a" opacity="0.6"/>
+              <circle cx="110"  cy="-8"  r="11" fill="#16a34a" opacity="0.7"/>
+              <circle cx="-30"  cy="30"  r="10" fill="#16a34a" opacity="0.6"/>
+              <circle cx="80"   cy="34"  r="9"  fill="#16a34a" opacity="0.65"/>
+              <text x="0" y="-52" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#15803d">amorphous / granular</text>
+            </g>
+
+            <text y="-14" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">PGNMID</text>
+            <text y="10" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">granular immune-complex deposits</text>
+            <text y="38" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">Also in this group</text>
+            <text y="62" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">Dense deposit disease · C3GN</text>
+            <text y="84" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">most immune-complex GN</text>
+
+            <line x1="-150" y1="110" x2="150" y2="110" stroke="#bbf7d0" stroke-width="2"/>
+            <rect x="-165" y="126" width="330" height="66" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text y="148" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">CAUTION — DDD is in this group</text>
+            <text y="168" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">"non-organized" does NOT exclude it</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 3 — WHY NOT DDD
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#155e75">WHY NOT DENSE DEPOSIT DISEASE?</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">"Non-organized" is not the reason — three other findings exclude DDD</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">Immunofluorescence · deposit location · deposit appearance</text>
+          </g>
+
+          <!-- Card 1: IF -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-190" width="400" height="380" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-190" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-152" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-154" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">1 · IMMUNOFLUORESCENCE</text>
+
+            <text x="0" y="-108" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">DDD</text>
+            <text x="0" y="-84" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#5b21b6">C3 only</text>
+            <text x="0" y="-62" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">minimal immunoglobulin</text>
+            <text x="0" y="-42" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">C3 ≥ 2 orders &gt; Ig</text>
+
+            <line x1="-150" y1="-22" x2="150" y2="-22" stroke="#e2e8f0" stroke-width="2"/>
+
+            <text x="0" y="6" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">THIS PATIENT</text>
+            <text x="0" y="32" text-anchor="middle" font-family="Arial" font-size="19" font-weight="800" fill="#dc2626">IgG3-κ</text>
+            <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">λ negative</text>
+            <text x="0" y="76" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#991b1b">immunoglobulin-dominant</text>
+
+            <rect x="-170" y="96" width="340" height="72" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="122" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">THE DECISIVE FINDING</text>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">DDD definition requires C3 dominance</text>
+            <text x="0" y="160" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">— this biopsy shows the opposite</text>
+          </g>
+
+          <!-- Card 2: Location -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-190" width="400" height="380" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-190" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-152" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-154" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">2 · DEPOSIT LOCATION</text>
+
+            <!-- GBM with ribbon -->
+            <g transform="translate(0, -92)">
+              <text x="-160" y="-8" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">DDD</text>
+              <rect x="-150" y="4" width="300" height="34" rx="4" fill="#fce7f3"/>
+              <rect x="-150" y="14" width="300" height="14" fill="#7c3aed"/>
+              <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#5b21b6">deposits WITHIN the lamina densa</text>
+              <text x="0" y="76" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#8b5cf6">intramembranous</text>
+            </g>
+
+            <line x1="-160" y1="4" x2="160" y2="4" stroke="#e2e8f0" stroke-width="2"/>
+
+            <!-- GBM with subendothelial -->
+            <g transform="translate(0, 90)">
+              <text x="-160" y="-8" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">THIS PATIENT</text>
+              <rect x="-150" y="4" width="300" height="30" rx="4" fill="#fce7f3"/>
+              <circle cx="-110" cy="46" r="7" fill="#dc2626"/>
+              <circle cx="-60"  cy="46" r="7" fill="#dc2626"/>
+              <circle cx="-10"  cy="46" r="7" fill="#dc2626"/>
+              <circle cx="40"   cy="46" r="7" fill="#dc2626"/>
+              <circle cx="90"   cy="46" r="7" fill="#dc2626"/>
+              <text x="0" y="74" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#991b1b">mesangial + subendothelial</text>
+              <text x="0" y="92" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#b91c1c">wrong compartment entirely</text>
+            </g>
+          </g>
+
+          <!-- Card 3: Appearance -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-190" width="400" height="380" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-190" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-152" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-154" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">3 · DEPOSIT APPEARANCE</text>
+
+            <g transform="translate(0, -100)">
+              <text x="-160" y="-6" font-family="Arial" font-size="12" font-weight="800" fill="#5b21b6">DDD</text>
+              <rect x="-150" y="6" width="300" height="26" rx="13" fill="#4c1d95"/>
+              <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#5b21b6">dense, homogenous, ribbon-like</text>
+            </g>
+
+            <line x1="-160" y1="4" x2="160" y2="4" stroke="#e2e8f0" stroke-width="2"/>
+
+            <g transform="translate(0, 90)">
+              <text x="-160" y="-6" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">THIS PATIENT</text>
+              <circle cx="-110" cy="24" r="9" fill="#dc2626" opacity="0.7"/>
+              <circle cx="-60"  cy="36" r="8"  fill="#dc2626" opacity="0.65"/>
+              <circle cx="-10"  cy="20" r="10" fill="#dc2626" opacity="0.7"/>
+              <circle cx="40"   cy="38" r="9"  fill="#dc2626" opacity="0.6"/>
+              <circle cx="90"   cy="22" r="8"  fill="#dc2626" opacity="0.7"/>
+              <text x="0" y="66" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#991b1b">granular</text>
+            </g>
+
+            <rect x="-170" y="112" width="340" height="58" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="136" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">granular ≠ dense ribbon-like</text>
+            <text x="0" y="158" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">"granular" in the stem is doing real work</text>
+          </g>
+
+          <!-- Bottom: the trap -->
+          <g transform="translate(700, 760)">
+            <rect x="-600" y="-70" width="1200" height="140" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#991b1b">THE TRAP — LOW C3 IS SHARED, NOT DISCRIMINATING</text>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Low C3 with normal C4 = alternative pathway activation — seen in BOTH DDD and PGNMID</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Monoclonal IgG can activate the alternative pathway directly, so a low C3 does not make this a C3 glomerulopathy</text>
+            <text x="0" y="44" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">The complement panel tells you a pathway is active — the IF tells you what is depositing</text>
+            <text x="0" y="64" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#b91c1c">IF TRUMPS THE COMPLEMENT PANEL</text>
+          </g>
+
+        </g>
+
+        <!-- ============================================================
+             DIAGRAM 4 — WHY NOT FIBRILLARY / AMYLOID
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="23" font-weight="800" fill="#713f12">WHY NOT FIBRILLARY GN, AMYLOID, OR IMMUNOTACTOID?</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">These diagnoses are DEFINED by their substructure — remove the substructure and the diagnosis disappears</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">"Non-organized" excludes them directly — this is where the term does its clean work</text>
+          </g>
+
+          <!-- Card 1: Fibrillary GN -->
+          <g transform="translate(250, 400)">
+            <rect x="-200" y="-155" width="400" height="310" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-155" width="400" height="56" rx="20" fill="#ca8a04"/>
+            <rect x="-200" y="-119" width="400" height="20" fill="#ca8a04"/>
+            <text x="0" y="-119" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">FIBRILLARY GN</text>
+
+            <text x="0" y="-74" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#854d0e">Fibrils 10–30 nm</text>
+            <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">randomly arranged, non-branching</text>
+            <line x1="-150" y1="-30" x2="150" y2="-30" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-160" y="-4" font-weight="800" fill="#854d0e">DNAJB9</text>
+              <text x="-60" y="-4">positive (highly specific)</text>
+              <text x="-160" y="22" font-weight="800" fill="#854d0e">IF</text>
+              <text x="-60" y="22">usually polyclonal IgG + C3</text>
+              <text x="-160" y="48" font-weight="800" fill="#854d0e">Congo red</text>
+              <text x="-60" y="48">negative</text>
+            </g>
+
+            <rect x="-170" y="72" width="340" height="66" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="96" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">EXCLUDED — no fibrils on EM</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">fibrils are the defining feature</text>
+          </g>
+
+          <!-- Card 2: AL Amyloid -->
+          <g transform="translate(700, 400)">
+            <rect x="-200" y="-155" width="400" height="310" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-155" width="400" height="56" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-119" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-119" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">AL AMYLOIDOSIS</text>
+
+            <text x="0" y="-74" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">Fibrils 8–10 nm</text>
+            <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">randomly arranged, non-branching</text>
+            <line x1="-150" y1="-30" x2="150" y2="-30" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-160" y="-4" font-weight="800" fill="#5b21b6">Congo red</text>
+              <text x="-60" y="-4">POSITIVE, apple-green</text>
+              <text x="-160" y="22" font-weight="800" fill="#5b21b6">IF</text>
+              <text x="-60" y="22">λ &gt; κ, smudgy</text>
+              <text x="-160" y="48" font-weight="800" fill="#5b21b6">Mass spec</text>
+              <text x="-60" y="48">confirms amyloid type</text>
+            </g>
+
+            <rect x="-170" y="72" width="340" height="66" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="96" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">EXCLUDED — no fibrils, no Congo red</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">deposits here are granular</text>
+          </g>
+
+          <!-- Card 3: Immunotactoid -->
+          <g transform="translate(1150, 400)">
+            <rect x="-200" y="-155" width="400" height="310" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-155" width="400" height="56" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-119" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-119" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">IMMUNOTACTOID</text>
+
+            <text x="0" y="-74" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">Microtubules</text>
+            <text x="0" y="-50" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">parallel, organized tubular structures</text>
+            <line x1="-150" y1="-30" x2="150" y2="-30" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-160" y="-4" font-weight="800" fill="#155e75">IF</text>
+              <text x="-60" y="-4">often monoclonal IgG</text>
+              <text x="-160" y="22" font-weight="800" fill="#155e75">Congo red</text>
+              <text x="-60" y="22">negative</text>
+              <text x="-160" y="48" font-weight="800" fill="#155e75">Association</text>
+              <text x="-60" y="48">lymphoproliferative disease</text>
+            </g>
+
+            <rect x="-170" y="72" width="340" height="66" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="96" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">EXCLUDED — no microtubules</text>
+            <text x="0" y="118" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">deposits here are granular</text>
+          </g>
+
+          <!-- Summary table -->
+          <g transform="translate(700, 700)">
+            <rect x="-600" y="-90" width="1200" height="180" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+            <text x="0" y="-60" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#0f172a">ALL FOUR EXCLUSIONS, SIDE BY SIDE</text>
+            <line x1="-560" y1="-44" x2="560" y2="-44" stroke="#cbd5e1" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-560" y="-18" font-weight="800" fill="#ca8a04">Fibrillary GN</text>
+              <text x="-300" y="-18">no fibrils on EM</text>
+
+              <text x="-560" y="8" font-weight="800" fill="#7c3aed">AL amyloid</text>
+              <text x="-300" y="8">no fibrils · Congo red negative</text>
+
+              <text x="-560" y="34" font-weight="800" fill="#0891b2">Immunotactoid</text>
+              <text x="-300" y="34">no microtubules</text>
+
+              <text x="-560" y="60" font-weight="800" fill="#dc2626">DDD</text>
+              <text x="-300" y="60">not C3-dominant · mesangial/subendothelial · granular</text>
+
+              <text x="230" y="-18" font-weight="800" fill="#166534">→ PGNMID</text>
+              <text x="230" y="8">IgG3-κ · light-chain restricted</text>
+              <text x="230" y="34">non-organized granular deposits</text>
+              <text x="230" y="60">mesangial + subendothelial</text>
+            </g>
+          </g>
+
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+  title: "Why Not DDD or Fibrillary GN? — Reading the EM and IF",
+  subtitle: "\"Non-organized\" answers the fibril question; immunofluorescence answers the DDD question",
+  badge: "NEPHROLOGY · RENAL PATHOLOGY · ELECTRON MICROSCOPY",
+  caseTitle: "Question: why is this \"non-organized\" — and why not DDD or fibrillary GN?",
+  caseDescription: "A biopsy shows IgG3-κ deposits negative for λ, non-organized granular mesangial and subendothelial deposits, and an MPGN pattern. Why does \"non-organized\" exclude fibrillary GN directly but not DDD — and what actually excludes DDD?",
+  labChips: [
+    { text: "EM: non-organized granular", abnormal: true },
+    { text: "IF: IgG3-κ, λ negative", abnormal: true },
+    { text: "Deposits: mesangial + subendothelial", abnormal: true },
+    { text: "C3 low (shared by both)", abnormal: true },
+    { text: "No fibrils", abnormal: false },
+    { text: "No microtubules", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 Two Axes",              className: "opt1" },
+    { id: "opt2", label: "🟣 Organized vs Not",      className: "opt2" },
+    { id: "opt3", label: "🔵 Why Not DDD",           className: "opt3" },
+    { id: "opt4", label: "🟡 Why Not Fibrillary",    className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 Two Axes Decide the Diagnosis",
+      infoRows: [
+        { k: "EM axis",        v: "Organized vs non-organized" },
+        { k: "IF axis",        v: "C3-dominant vs Ig-dominant" },
+        { k: "EM question",    v: "Are there fibrils?" },
+        { k: "IF question",    v: "What is depositing?" },
+        { k: "This patient",   v: "Non-organized + Ig-dominant" },
+        { k: "Answer",         v: "PGNMID" }
+      ],
+      svgTitle: "Two Axes Decide the Diagnosis",
+      svgSubtitle: "EM organization on the vertical axis, dominant deposit on IF on the horizontal axis",
+      bannerBg: "#dc2626",
+      bannerText1: "EM asks whether fibrils are present — IF asks what is depositing",
+      bannerText2: "\"Non-organized\" does not exclude DDD; the immunoglobulin-dominant IF does",
+      panel1Title: "🧪 The two questions",
+      panel1Tagline: "Keep them separate",
+      panel1List: [
+        "<strong>EM question:</strong> are there fibrils or microtubules? This is the organized/non-organized axis",
+        "<strong>IF question:</strong> is the deposit C3-dominant or immunoglobulin-dominant?",
+        "Fibrillary GN, amyloid, and immunotactoid are excluded on the <strong>EM axis</strong>",
+        "DDD and C3GN are excluded on the <strong>IF axis</strong>",
+        "Confusing the two axes is the classic mistake — they answer different questions"
+      ],
+      panel2Title: "🎯 Where this case sits",
+      panel2Tagline: "Non-organized + immunoglobulin-dominant",
+      panel2List: [
+        "<strong>Non-organized</strong> → rules out amyloid, fibrillary GN, immunotactoid",
+        "<strong>Immunoglobulin-dominant (IgG3-κ)</strong> → rules out DDD and C3GN",
+        "Non-organized + Ig-dominant = <strong>PGNMID</strong>",
+        "Non-organized + C3-dominant would have been <strong>DDD or C3GN</strong>",
+        "Organized + Ig-dominant would have been <strong>amyloid, fibrillary GN, or immunotactoid</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Two axes, not one",
+      alertText: "\"Non-organized\" is a <strong>structural</strong> statement. DDD exclusion is an <strong>immunofluorescence</strong> statement. They are not the same test and they do not answer the same question."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 What \"Organized\" Means on EM",
+      infoRows: [
+        { k: "Organized",      v: "Visible substructure" },
+        { k: "Fibrils",        v: "8–30 nm, random" },
+        { k: "Microtubules",   v: "Parallel tubules" },
+        { k: "Non-organized",  v: "Amorphous / granular" },
+        { k: "PGNMID",         v: "Non-organized" },
+        { k: "DDD",            v: "Also non-organized group" }
+      ],
+      svgTitle: "What \"Organized\" Means on EM",
+      svgSubtitle: "Organized = fibrils, microtubules, or other visible substructure; non-organized = amorphous granular",
+      bannerBg: "#7c3aed",
+      bannerText1: "Fibrils and microtubules are the organized patterns — they define amyloid, fibrillary GN, and immunotactoid",
+      bannerText2: "Non-organized granular deposits include PGNMID, DDD, C3GN, and most immune-complex GN",
+      panel1Title: "🔬 The organized patterns",
+      panel1Tagline: "Substructure you can see",
+      panel1List: [
+        "<strong>Fibrils 8–10 nm</strong> with Congo red positivity → AL amyloidosis",
+        "<strong>Fibrils 10–30 nm</strong> with DNAJB9 positivity → fibrillary GN",
+        "<strong>Microtubules</strong> (parallel tubular structures) → immunotactoid",
+        "<strong>\"Fingerprint\" pattern</strong> → classically lupus nephritis",
+        "Each of these is <strong>defined by its substructure</strong>"
+      ],
+      panel2Title: "🔬 The non-organized group",
+      panel2Tagline: "Amorphous granular deposits",
+      panel2List: [
+        "<strong>PGNMID</strong> — granular deposits from a monoclonal immunoglobulin",
+        "<strong>Dense deposit disease</strong> — also in this group on EM grounds",
+        "<strong>C3 glomerulonephritis</strong> — amorphous deposits",
+        "<strong>Most immune-complex GN</strong> — granular by definition",
+        "So \"non-organized\" narrows the field but <strong>does not by itself exclude DDD</strong>"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "The word \"organized\" is a structural label",
+      alertText: "It describes <strong>what the deposit looks like</strong>, not what is in it. That is why it can exclude fibrillary GN but cannot exclude DDD on its own."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why Not DDD — Three Findings",
+      infoRows: [
+        { k: "Reason 1",       v: "IF is not C3-dominant" },
+        { k: "Reason 2",       v: "Deposits not intramembranous" },
+        { k: "Reason 3",       v: "Deposits granular, not ribbon-like" },
+        { k: "Decisive",       v: "Immunofluorescence" },
+        { k: "Low C3",         v: "Shared by both — not discriminating" },
+        { k: "Trap",           v: "Low C3 ≠ C3 glomerulopathy" }
+      ],
+      svgTitle: "Why Not Dense Deposit Disease?",
+      svgSubtitle: "IF, deposit location, and deposit appearance — three separate reasons",
+      bannerBg: "#0891b2",
+      bannerText1: "DDD requires C3 dominance with minimal immunoglobulin — this biopsy shows IgG3-κ",
+      bannerText2: "DDD deposits are intramembranous and ribbon-like; these are mesangial/subendothelial and granular",
+      panel1Title: "🔬 The three reasons",
+      panel1Tagline: "Any one would exclude DDD",
+      panel1List: [
+        "<strong>Immunofluorescence:</strong> DDD is C3-dominant with minimal immunoglobulin; this is IgG3-κ with λ negative",
+        "<strong>Location:</strong> DDD deposits are intramembranous (replacing the lamina densa); these are mesangial and subendothelial",
+        "<strong>Appearance:</strong> DDD deposits are extremely electron-dense and ribbon-like; these are granular",
+        "The <strong>IF finding is decisive</strong> — it defines the disease category",
+        "Location and appearance add independent confirmation"
+      ],
+      panel2Title: "⚠️ The low C3 trap",
+      panel2Tagline: "Why the complement panel misleads",
+      panel2List: [
+        "Low C3 with normal C4 = <strong>alternative pathway activation</strong>",
+        "That pattern occurs in <strong>both</strong> DDD and PGNMID",
+        "Monoclonal IgG can activate the alternative pathway directly",
+        "So a low C3 <strong>cannot discriminate</strong> between the two",
+        "<strong>The IF tells you what is depositing</strong> — the complement panel only tells you a pathway is active"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "IF trumps the complement panel",
+      alertText: "The single most useful line: <strong>a low C3 does not make a monoclonal immunoglobulin deposit into a C3 glomerulopathy</strong>."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Why Not Fibrillary GN, Amyloid, or Immunotactoid",
+      infoRows: [
+        { k: "Fibrillary GN",  v: "Fibrils 10–30 nm, DNAJB9+" },
+        { k: "AL amyloid",     v: "Fibrils 8–10 nm, Congo red +" },
+        { k: "Immunotactoid",  v: "Microtubules" },
+        { k: "This patient",   v: "No fibrils, no microtubules" },
+        { k: "Conclusion",     v: "All three excluded directly" },
+        { k: "Remaining",      v: "PGNMID" }
+      ],
+      svgTitle: "Why Not Fibrillary GN, Amyloid, or Immunotactoid?",
+      svgSubtitle: "These diagnoses are defined by their substructure — remove it and the diagnosis disappears",
+      bannerBg: "#ca8a04",
+      bannerText1: "Fibrillary GN, AL amyloid, and immunotactoid are all defined by organized substructure",
+      bannerText2: "No fibrils and no microtubules on EM excludes all three directly",
+      panel1Title: "✅ Why \"non-organized\" works cleanly here",
+      panel1Tagline: "Substructure is the definition",
+      panel1List: [
+        "<strong>Fibrillary GN</strong> is defined by randomly arranged 10–30 nm fibrils with DNAJB9 positivity",
+        "<strong>AL amyloidosis</strong> is defined by 8–10 nm fibrils that are Congo red positive",
+        "<strong>Immunotactoid</strong> is defined by organized microtubules",
+        "Remove the fibrils or microtubules and <strong>the diagnosis ceases to exist</strong>",
+        "This is why \"non-organized\" excludes these three directly"
+      ],
+      panel2Title: "🧬 The contrast with DDD",
+      panel2Tagline: "Why the same word does not exclude DDD",
+      panel2List: [
+        "DDD deposits are <strong>not</strong> primarily defined by fibrils or microtubules",
+        "DDD is defined by <strong>C3 dominance on IF</strong> plus <strong>intramembranous location</strong>",
+        "Its deposits are dense and ribbon-like, not fibrillar",
+        "So \"non-organized\" leaves DDD standing — <strong>you need the IF to remove it</strong>",
+        "This is the asymmetry the question is testing"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The asymmetry, in one line",
+      alertText: "<strong>\"Non-organized\" removes the fibrillar diseases; immunofluorescence removes DDD.</strong> Both are needed to arrive at PGNMID."
+    }
+  },
+  comparison: {
+    title: "📊 Why Each Diagnosis Is Excluded",
+    sub: "Two different tests doing two different jobs",
+    head: ["Diagnosis", "Defining feature", "Excluded by", "Verdict"],
+    rows: [
+      { cells: ["PGNMID",          "Monoclonal IgG, non-organized granular", "—",                                 "✅ Yes"], hero: true },
+      { cells: ["Fibrillary GN",   "Fibrils 10–30 nm, DNAJB9+",             "EM: no fibrils",                    "❌ No"],  hero: false },
+      { cells: ["AL amyloidosis",  "Fibrils 8–10 nm, Congo red +",          "EM: no fibrils, Congo red negative", "❌ No"],  hero: false },
+      { cells: ["Immunotactoid",   "Microtubules",                          "EM: no microtubules",               "❌ No"],  hero: false },
+      { cells: ["Dense deposit disease", "C3-dominant, intramembranous ribbons", "IF: IgG3-κ dominant; wrong location and appearance", "❌ No"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "Why does \"non-organized\" exclude fibrillary GN but not, by itself, exclude dense deposit disease?",
+      options: [
+        { text: "Fibrillary GN is defined by its fibrils, so no fibrils means no fibrillary GN. DDD is defined by C3 dominance and intramembranous location, not by fibrils.", correct: true,
+          explanation: "Fibrillary GN's definition is structural (fibrils). DDD's definition is compositional and locational (C3-dominant, intramembranous). Different tests are needed to exclude each." },
+        { text: "Because DDD deposits are also organized fibrils.", correct: false,
+          explanation: "DDD deposits are dense and ribbon-like, not fibrillar. But the point stands that \"non-organized\" alone does not exclude DDD." },
+        { text: "Because fibrillary GN deposits are not visible on EM.", correct: false,
+          explanation: "Fibrillary GN deposits are clearly visible as fibrils on EM — that is the defining finding." }
+      ]
+    },
+    {
+      question: "Which single finding most decisively excludes dense deposit disease in this case?",
+      options: [
+        { text: "Immunofluorescence showing IgG3-κ with λ negative — an immunoglobulin-dominant deposit.", correct: true,
+          explanation: "DDD is a C3 glomerulopathy, defined by C3 dominance with minimal immunoglobulin. An immunoglobulin-dominant deposit with light-chain restriction is the opposite pattern." },
+        { text: "The non-organized appearance on EM.", correct: false,
+          explanation: "DDD is also in the non-organized group on EM grounds, so this does not exclude it." },
+        { text: "The low serum C3.", correct: false,
+          explanation: "Low C3 is shared by DDD and PGNMID and does not discriminate between them." }
+      ]
+    },
+    {
+      question: "Where are dense deposit disease deposits located on electron microscopy?",
+      options: [
+        { text: "Intramembranous — within the lamina densa of the glomerular basement membrane.", correct: true,
+          explanation: "DDD deposits replace the lamina densa, producing the classic dense ribbon-like appearance." },
+        { text: "Subepithelial.", correct: false,
+          explanation: "Subepithelial deposits are seen in membranous nephropathy and postinfectious GN." },
+        { text: "Mesangial and subendothelial only.", correct: false,
+          explanation: "That is the pattern in this case — which is one reason DDD is excluded." }
+      ]
+    },
+    {
+      question: "Why can a low serum C3 not be used to diagnose a C3 glomerulopathy in this patient?",
+      options: [
+        { text: "Monoclonal immunoglobulin can activate the alternative pathway, so low C3 occurs in PGNMID as well as in DDD.", correct: true,
+          explanation: "Low C3 reflects alternative pathway activation, which both DDD and PGNMID can produce. The immunofluorescence, not the complement level, defines the disease." },
+        { text: "Because C3 is never low in C3 glomerulopathy.", correct: false,
+          explanation: "C3 is characteristically low in C3 glomerulopathy." },
+        { text: "Because C4 is normal.", correct: false,
+          explanation: "A normal C4 indicates the classical pathway is untouched; it does not explain why low C3 is non-specific." }
+      ]
+    },
+    {
+      question: "What defines fibrillary glomerulonephritis on electron microscopy and immunohistochemistry?",
+      options: [
+        { text: "Randomly arranged, non-branching fibrils 10–30 nm in diameter, DNAJB9 positive.", correct: true,
+          explanation: "Fibril size and DNAJB9 positivity are the defining features. Without fibrils, the diagnosis cannot be made." },
+        { text: "Microtubules with a parallel arrangement.", correct: false,
+          explanation: "Microtubules define immunotactoid glomerulopathy." },
+        { text: "Ribbon-like intramembranous deposits.", correct: false,
+          explanation: "That is dense deposit disease." }
+      ]
+    },
+    {
+      question: "What is the defining fibril size and special stain in AL amyloidosis?",
+      options: [
+        { text: "8–10 nm fibrils that are Congo red positive with apple-green birefringence.", correct: true,
+          explanation: "Amyloid fibrils are 8–10 nm and Congo red positive. Fibrillary GN fibrils are thicker (10–30 nm) and Congo red negative." },
+        { text: "10–30 nm fibrils that are DNAJB9 positive.", correct: false,
+          explanation: "This describes fibrillary GN, not amyloid." },
+        { text: "Microtubules that are Congo red positive.", correct: false,
+          explanation: "Amyloid is fibrillar, not microtubular." }
+      ]
+    },
+    {
+      question: "A biopsy shows amorphous granular deposits with no fibrils and no microtubules, but immunofluorescence shows C3 dominance with minimal immunoglobulin. What is the diagnosis?",
+      options: [
+        { text: "A C3 glomerulopathy — dense deposit disease or C3 glomerulonephritis.", correct: true,
+          explanation: "Non-organized granular deposits plus C3 dominance with minimal immunoglobulin defines C3 glomerulopathy. EM then separates DDD from C3GN." },
+        { text: "PGNMID.", correct: false,
+          explanation: "PGNMID requires an immunoglobulin-dominant deposit with light-chain restriction." },
+        { text: "Fibrillary GN.", correct: false,
+          explanation: "Fibrillary GN requires fibrils on EM." }
+      ]
+    },
+    {
+      question: "Which statement best captures the relationship between the EM and IF findings in this case?",
+      options: [
+        { text: "EM removes the fibrillar diseases; IF removes DDD — both are needed to reach PGNMID.", correct: true,
+          explanation: "These are two separate questions with two separate answers. Neither test alone is sufficient; together they define PGNMID." },
+        { text: "EM alone is sufficient to diagnose PGNMID.", correct: false,
+          explanation: "Non-organized granular deposits occur in DDD, C3GN, and PGNMID. EM alone cannot distinguish them." },
+        { text: "IF alone is sufficient to diagnose PGNMID.", correct: false,
+          explanation: "IF proves monoclonality but does not distinguish PGNMID from organized monoclonal deposits such as immunotactoid or AL amyloid." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Renal Pathology / EM & IF",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>
