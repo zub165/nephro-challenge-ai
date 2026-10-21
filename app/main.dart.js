@@ -109876,7 +109876,7 @@ return A.k(A.q3(q,B.hF),$async$qT)
 case 5:case 3:return A.p(null,r)}})
 return A.q($async$qT,r)},
 G(a){var s=null,r=A.ei(s,s,s,B.acL),q=A.y(a).ok.f
-return A.dL(r,A.fU(A.b([B.Te,B.I,A.x("Nephro Challenge AI",s,s,s,s,q==null?s:q.FV(B.x),B.as,s),B.bo,A.x("Version 1.3.20",s,s,s,s,A.hI(s,s,B.am,s,s,s,s,s,s,s,s,s,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),B.as,s),B.aX,A.x("Board review MCQs, high-yield pearls, and AI-powered study tools for nephrology fellowship and board preparation.",s,s,s,s,A.hI(s,s,B.cU,s,s,s,s,s,s,s,s,s,s,s,s,s,1.5,!0,s,s,s,s,s,s,s,s),B.as,s),B.pk,new A.Df(B.up,"Web App",u.h,new A.aex(this),s),new A.Df(B.uE,"Privacy Policy","How we handle your data",new A.aey(this),s),new A.Df(B.SR,"Support","Get help or send feedback",new A.aez(this),s),B.aX,A.eM(B.a1f,B.ru,s,s),B.a0,A.x("API: https://nephro-api.schedulemygroup.com/api",s,s,s,s,A.hI(s,s,B.mv,s,s,s,s,s,s,s,s,11,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),B.as,s)],t.p),B.ax,s,s,!1),s,s,s,s)}}
+return A.dL(r,A.fU(A.b([B.Te,B.I,A.x("Nephro Challenge AI",s,s,s,s,q==null?s:q.FV(B.x),B.as,s),B.bo,A.x("Version 1.3.21",s,s,s,s,A.hI(s,s,B.am,s,s,s,s,s,s,s,s,s,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),B.as,s),B.aX,A.x("Board review MCQs, high-yield pearls, and AI-powered study tools for nephrology fellowship and board preparation.",s,s,s,s,A.hI(s,s,B.cU,s,s,s,s,s,s,s,s,s,s,s,s,s,1.5,!0,s,s,s,s,s,s,s,s),B.as,s),B.pk,new A.Df(B.up,"Web App",u.h,new A.aex(this),s),new A.Df(B.uE,"Privacy Policy","How we handle your data",new A.aey(this),s),new A.Df(B.SR,"Support","Get help or send feedback",new A.aez(this),s),B.aX,A.eM(B.a1f,B.ru,s,s),B.a0,A.x("API: https://nephro-api.schedulemygroup.com/api",s,s,s,s,A.hI(s,s,B.mv,s,s,s,s,s,s,s,s,11,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),B.as,s)],t.p),B.ax,s,s,!1),s,s,s,s)}}
 A.aex.prototype={
 $0(){return this.a.qT(u.h)},
 $S:0}
@@ -129430,7 +129430,7 @@ B.abP=new A.aM("Performance Analytics",null,null,null,null,null,null,null,null,n
 B.abS=new A.aM("Resume",null,null,null,null,null,null,null,null,null)
 B.abU=new A.aM("Start morning questions",null,null,null,null,null,null,null,null,null)
 B.abV=new A.aM("Start Practice Quiz",null,null,null,null,null,null,null,null,null)
-B.abW=new A.aM("Version 1.3.20 (27)",null,null,null,null,null,null,null,null,null)
+B.abW=new A.aM("Version 1.3.21 (28)",null,null,null,null,null,null,null,null,null)
 B.abX=new A.aM("Approve",null,null,null,null,null,null,null,null,null)
 B.abY=new A.aM("See All",null,null,null,null,null,null,null,null,null)
 B.abZ=new A.aM("Study History",null,null,null,null,null,null,null,null,null)
