@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T13:07:03.436824+00:00",
+  "generated_at": "2026-10-21T13:35:45.939124+00:00",
   "chatgpt_board_plan": {
     "title": "25-Day Board Plan (ChatGPT)",
     "url": "https://chatgpt.com/share/6ad63071-6884-83e9-ab31-2acc11fe3649",
@@ -19,7 +19,7 @@
       "transplantation": 69,
       "tubulointerstitial-cystic": 92
     },
-    "note": "ASN BRCU 2025 answer key \u2014 local Desktop study PDF (not redistributed in-app).",
+    "note": "BRCU 2025 answer key \u2014 local Desktop study PDF. \u00a9 Innovators Generation.",
     "desktop_folder": "Desktop/Nephrology Teaching/_organized_by_chapter/_reference/BRCU-2025"
   },
   "animations_index": {
@@ -853,5 +853,92 @@
       }
     ]
   },
+  "lesson_animations": [
+    {
+      "slug": "aeiou-dialysis",
+      "title": "Aeiou Dialysis",
+      "file": "aeiou-dialysis.json"
+    },
+    {
+      "slug": "anion-gap-acidosis",
+      "title": "Anion Gap Acidosis",
+      "file": "anion-gap-acidosis.json"
+    },
+    {
+      "slug": "ckd-mbd-pathway",
+      "title": "Ckd Mbd Pathway",
+      "file": "ckd-mbd-pathway.json"
+    },
+    {
+      "slug": "crrt-circuit-pressures",
+      "title": "Crrt Circuit Pressures",
+      "file": "crrt-circuit-pressures.json"
+    },
+    {
+      "slug": "crrt-dose-effluent",
+      "title": "Crrt Dose Effluent",
+      "file": "crrt-dose-effluent.json"
+    },
+    {
+      "slug": "crrt-modality",
+      "title": "Crrt Modality",
+      "file": "crrt-modality.json"
+    },
+    {
+      "slug": "crrt-monitoring",
+      "title": "Crrt Monitoring",
+      "file": "crrt-monitoring.json"
+    },
+    {
+      "slug": "fena-feuera",
+      "title": "Fena Feuera",
+      "file": "fena-feuera.json"
+    },
+    {
+      "slug": "hd-complications",
+      "title": "Hd Complications",
+      "file": "hd-complications.json"
+    },
+    {
+      "slug": "hyperkalemia-algorithm",
+      "title": "Hyperkalemia Algorithm",
+      "file": "hyperkalemia-algorithm.json"
+    },
+    {
+      "slug": "hyponatremia-correction",
+      "title": "Hyponatremia Correction",
+      "file": "hyponatremia-correction.json"
+    },
+    {
+      "slug": "metabolic-alkalosis",
+      "title": "Metabolic Alkalosis",
+      "file": "metabolic-alkalosis.json"
+    },
+    {
+      "slug": "nephrology-pharmacology",
+      "title": "Nephrology Pharmacology",
+      "file": "nephrology-pharmacology.json"
+    },
+    {
+      "slug": "nephrotic-nephritic",
+      "title": "Nephrotic Nephritic",
+      "file": "nephrotic-nephritic.json"
+    },
+    {
+      "slug": "renovascular-htn",
+      "title": "Renovascular Htn",
+      "file": "renovascular-htn.json"
+    },
+    {
+      "slug": "transplant-rejection",
+      "title": "Transplant Rejection",
+      "file": "transplant-rejection.json"
+    },
+    {
+      "slug": "tubulointerstitial-cystic",
+      "title": "Tubulointerstitial Cystic",
+      "file": "tubulointerstitial-cystic.json"
+    }
+  ],
   "added_this_run": []
 }
