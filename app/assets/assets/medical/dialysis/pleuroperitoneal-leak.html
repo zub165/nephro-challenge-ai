@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pleuroperitoneal Leak — A Complication of Peritoneal Dialysis</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">PLEUROPERITONEAL COMMUNICATION</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">56F · APD × 4 weeks · dyspnea · reduced drainage · large right pleural effusion</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">Pleural fluid glucose 285 · Serum glucose 105 · Protein 0.8 · WBC 60 · Culture negative</text>
+          </g>
+
+          <!-- Card 1: Clinical -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">CLINICAL PICTURE</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="800" fill="#991b1b">• APD for 4 weeks</text>
+              <text x="-170" y="-68" font-weight="800" fill="#991b1b">• Progressive dyspnea</text>
+              <text x="-170" y="-44" font-weight="800" fill="#991b1b">• Reduced dialysate drainage</text>
+              <text x="-170" y="-20" font-weight="800" fill="#991b1b">• Large right pleural effusion</text>
+              <text x="-170" y="4" font-weight="800" fill="#991b1b">• Afebrile</text>
+              <text x="-170" y="28" font-weight="800" fill="#166534">• Clear peritoneal effluent</text>
+            </g>
+
+            <line x1="-170" y1="50" x2="170" y2="50" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Why right-sided?</text>
+            <text x="0" y="104" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Right hemidiaphragm has</text>
+            <text x="0" y="124" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">more congenital weaknesses</text>
+            <text x="0" y="148" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">More common in women</text>
+          </g>
+
+          <!-- Card 2: Pleural Fluid -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">PLEURAL FLUID</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="700">Glucose</text>
+              <text x="50" y="-92" font-weight="800" fill="#dc2626">285 mg/dL</text>
+              <text x="-170" y="-68" font-weight="700">Serum glucose</text>
+              <text x="50" y="-68" font-weight="800" fill="#334155">105 mg/dL</text>
+              <text x="-170" y="-44" font-weight="700">Protein</text>
+              <text x="50" y="-44" font-weight="800" fill="#334155">0.8 g/dL</text>
+              <text x="-170" y="-20" font-weight="700">LDH</text>
+              <text x="50" y="-20" font-weight="800" fill="#334155">45 U/L</text>
+              <text x="-170" y="4" font-weight="700">WBC</text>
+              <text x="50" y="4" font-weight="800" fill="#166534">60/µL</text>
+              <text x="-170" y="28" font-weight="700">Culture</text>
+              <text x="50" y="28" font-weight="800" fill="#166534">Negative</text>
+            </g>
+
+            <line x1="-170" y1="50" x2="170" y2="50" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Key Finding</text>
+            <text x="0" y="104" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#dc2626">Pleural glucose >> serum glucose</text>
+            <text x="0" y="128" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Diagnostic of dialysate in pleural space</text>
+            <text x="0" y="152" text-anchor="middle" font-family="Arial" font-size="12" font-style="italic" fill="#94a3b8">Not possible with any other fluid</text>
+          </g>
+
+          <!-- Card 3: Answer -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE ANSWER</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Stop PD</text>
+            <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Switch to HD</text>
+            <line x1="-150" y1="-44" x2="150" y2="-44" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-14">• Temporarily discontinue PD</text>
+              <text x="-170" y="10">• Transition to hemodialysis</text>
+              <text x="-170" y="34">• Evaluate for communication</text>
+              <text x="-170" y="58">• Consider repair / pleurodesis</text>
+            </g>
+
+            <rect x="-170" y="86" width="340" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="106" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Answer: D</text>
+            <text x="0" y="124" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">HD + evaluate</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — PATHOPHYSIOLOGY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#5b21b6">PATHOPHYSIOLOGY OF PLEUROPERITONEAL LEAK</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">High intra-abdominal pressure + diaphragmatic defect → dialysate enters pleural space</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">More common in women and right-sided</text>
+          </g>
+
+          <!-- Anatomy diagram -->
+          <g transform="translate(700, 460)">
+            
+            <!-- Diaphragm -->
+            <g transform="translate(0, -80)">
+              <!-- Chest -->
+              <rect x="-400" y="-180" width="800" height="180" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+              <text x="-380" y="-150" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">THORACIC CAVITY</text>
+              
+              <!-- Right lung -->
+              <ellipse cx="-200" cy="-80" rx="120" ry="70" fill="#fecaca" stroke="#991b1b" stroke-width="2"/>
+              <text x="-200" y="-76" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Right lung</text>
+              
+              <!-- Left lung -->
+              <ellipse cx="200" cy="-80" rx="120" ry="70" fill="#fecaca" stroke="#991b1b" stroke-width="2"/>
+              <text x="200" y="-76" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Left lung</text>
+
+              <!-- Pleural effusion -->
+              <path d="M -320,-160 Q -200,-100 -80,-160 L -80,-40 Q -200,20 -320,-40 Z" fill="#bae6fd" stroke="#0891b2" stroke-width="2" opacity="0.7"/>
+              <text x="-200" y="-30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#155e75">Pleural effusion</text>
+            </g>
+
+            <!-- Diaphragm line -->
+            <line x1="-400" y1="0" x2="400" y2="0" stroke="#475569" stroke-width="6"/>
+            <text x="-380" y="20" font-family="Arial" font-size="14" font-weight="800" fill="#475569">DIAPHRAGM</text>
+
+            <!-- Defect -->
+            <ellipse cx="-200" cy="0" rx="20" ry="8" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+            <text x="-200" y="30" text-anchor="middle" font-family="Arial" font-size="12" font-weight="800" fill="#dc2626">Defect</text>
+
+            <!-- Abdomen -->
+            <g transform="translate(0, 80)">
+              <rect x="-400" y="0" width="800" height="180" rx="12" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <text x="-380" y="30" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">PERITONEAL CAVITY</text>
+
+              <!-- Dialysate -->
+              <path d="M -380,60 Q 0,100 380,60 L 380,160 Q 0,180 -380,160 Z" fill="#7dd3fc" stroke="#0891b2" stroke-width="2" opacity="0.7"/>
+              <text x="0" y="130" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">Dialysate (high glucose)</text>
+
+              <!-- Arrow up through defect -->
+              <path d="M -200,60 L -200,-10" stroke="#dc2626" stroke-width="4" marker-end="url(#arrowRed)" class="flow-anim"/>
+              <text x="-140" y="20" font-family="Arial" font-size="12" font-weight="800" fill="#991b1b">Dialysate leaks up</text>
+            </g>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 800)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">THE KEY DIAGNOSTIC CLUE</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Pleural fluid glucose is <tspan font-weight="800" fill="#dc2626">higher than serum glucose</tspan></text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">This is only possible if glucose-rich dialysate is entering the pleural space</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">The effusion also enlarges after dialysate instillation</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — WHY OTHERS FAIL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#155e75">WHY THE OTHER OPTIONS FAIL</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">Each option has a critical flaw</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">The correct answer is D</text>
+          </g>
+
+          <!-- Card A -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">A — INCREASE FILL VOLUME</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Worsens the leak</text>
+              <text x="-170" y="-10">• More dialysate volume</text>
+              <text x="-170" y="14">• Higher osmotic gradient</text>
+              <text x="-170" y="38">• More fluid into pleural space</text>
+              <text x="-170" y="62">• Worsens dyspnea</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Makes the leak worse</text>
+          </g>
+
+          <!-- Card B -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">B — TREAT PERITONITIS</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• WBC 60 (not >100)</text>
+              <text x="-170" y="-10">• Culture negative</text>
+              <text x="-170" y="14">• Afebrile</text>
+              <text x="-170" y="38">• Clear effluent</text>
+              <text x="-170" y="62">• No evidence of infection</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">No peritonitis present</text>
+          </g>
+
+          <!-- Card C -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">C — CONTINUE PD + DIURESE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Diuresis does not fix</text>
+              <text x="-150" y="-14">a mechanical defect</text>
+              <text x="-170" y="14">• Continuing PD perpetuates</text>
+              <text x="-150" y="34">the leak</text>
+              <text x="-170" y="58">• Patient has ESKD →</text>
+              <text x="-150" y="78">minimal residual renal function</text>
+            </g>
+
+            <rect x="-170" y="106" width="340" height="42" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="132" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Does not address the leak</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#713f12">MANAGEMENT OF PLEUROPERITONEAL LEAK</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">Stop PD, switch to HD, and evaluate for repair</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">The correct answer is D</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#ca8a04"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#ca8a04"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">1 — STOP PD</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#713f12">Temporarily Discontinue</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Allows the defect to heal</text>
+              <text x="-170" y="-10">• Prevents further dialysate</text>
+              <text x="-150" y="10">leakage into pleural space</text>
+              <text x="-170" y="38">• Reduces dyspnea</text>
+              <text x="-170" y="62">• Improves symptoms</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Stop PD temporarily</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">2 — TRANSITION TO HD</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">Hemodialysis</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Patient has ESKD</text>
+              <text x="-170" y="-10">• Needs renal replacement therapy</text>
+              <text x="-170" y="14">• HD avoids the peritoneal cavity</text>
+              <text x="-170" y="38">• Allows defect to heal</text>
+              <text x="-170" y="62">• Can later return to PD if healed</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Switch to HD</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">3 — EVALUATE / REPAIR</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Consider Repair</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Peritoneal scintigraphy</text>
+              <text x="-170" y="-10">• CT peritoneography</text>
+              <text x="-170" y="14">• Pleurodesis (talc, tetracycline)</text>
+              <text x="-170" y="38">• Surgical repair (VATS)</text>
+              <text x="-170" y="62">• May resume PD if healed</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Evaluate for repair</text>
+          </g>
+
+          <!-- Bottom bar -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE KEY PEARL</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Pleural fluid glucose <tspan font-weight="800" fill="#dc2626">higher than serum glucose</tspan> = dialysate in pleural space</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Stop PD, switch to HD, and evaluate for a pleuroperitoneal communication</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Consider pleurodesis or surgical repair if PD is to be resumed</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Pleuroperitoneal Leak — A Complication of Peritoneal Dialysis",
+  subtitle: "Pleural fluid glucose higher than serum glucose = dialysate in the pleural space",
+  badge: "NEPHROLOGY · PERITONEAL DIALYSIS · COMPLICATIONS",
+  caseTitle: "Case: 56-year-old woman on APD with dyspnea and a large right pleural effusion",
+  caseDescription: "56F on APD for 4 weeks presents with progressive dyspnea, reduced dialysate drainage, and a new large right-sided pleural effusion. Afebrile, clear effluent. Pleural fluid glucose 285 (serum 105), protein 0.8, LDH 45, WBC 60, culture negative. Effusion enlarges after dialysate instillation. What is the next step?",
+  labChips: [
+    { text: "Pleural glucose 285", abnormal: true },
+    { text: "Serum glucose 105", abnormal: false },
+    { text: "Pleural protein 0.8", abnormal: false },
+    { text: "Pleural WBC 60", abnormal: false },
+    { text: "Culture negative", abnormal: false },
+    { text: "Effusion enlarges with dialysate", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",              className: "opt1" },
+    { id: "opt2", label: "🟣 Pathophysiology",       className: "opt2" },
+    { id: "opt3", label: "🔵 Why Others Fail",       className: "opt3" },
+    { id: "opt4", label: "🟡 Management",            className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — Pleuroperitoneal Leak",
+      infoRows: [
+        { k: "Diagnosis",    v: "Pleuroperitoneal communication" },
+        { k: "Key finding",  v: "Pleural glucose >> serum glucose" },
+        { k: "Effusion",     v: "Right-sided, large" },
+        { k: "WBC",          v: "60 (not peritonitis)" },
+        { k: "Culture",      v: "Negative" },
+        { k: "Answer",       v: "D" }
+      ],
+      svgTitle: "The Case — Pleuroperitoneal Leak",
+      svgSubtitle: "Pleural fluid glucose higher than serum glucose confirms dialysate in the pleural space",
+      bannerBg: "#dc2626",
+      bannerText1: "Pleural fluid glucose > serum glucose = dialysate in pleural space",
+      bannerText2: "Effusion enlarging after dialysate instillation confirms the communication",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "Why this is a leak",
+      panel1List: [
+        "<strong>Pleural fluid glucose 285</strong> — higher than serum glucose (105)",
+        "<strong>Transudate</strong> — protein 0.8, LDH 45",
+        "<strong>No infection</strong> — WBC 60, culture negative, afebrile",
+        "<strong>Effusion enlarges after dialysate</strong> — diagnostic",
+        "<strong>Right-sided</strong> — most common side for pleuroperitoneal leak"
+      ],
+      panel2Title: "🧬 Why right-sided?",
+      panel2Tagline: "Anatomy",
+      panel2List: [
+        "The <strong>right hemidiaphragm</strong> has more congenital weaknesses",
+        "More common in <strong>women</strong>",
+        "Can occur <strong>early</strong> after PD initiation",
+        "High intra-abdominal pressure from dialysate",
+        "Supine position (APD) increases pressure"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The correct answer is D",
+      alertText: "<strong>Stop PD, transition to HD, and evaluate for pleuroperitoneal communication.</strong>"
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Pathophysiology",
+      infoRows: [
+        { k: "Mechanism",   v: "Dialysate leaks into pleura" },
+        { k: "Driving force", v: "High intra-abdominal pressure" },
+        { k: "Defect",      v: "Diaphragmatic weakness" },
+        { k: "Side",        v: "Right > left" },
+        { k: "Timing",      v: "Early after PD start" },
+        { k: "Glucose",     v: "High in pleural fluid" }
+      ],
+      svgTitle: "Pathophysiology of Pleuroperitoneal Leak",
+      svgSubtitle: "High intra-abdominal pressure + diaphragmatic defect → dialysate enters pleural space",
+      bannerBg: "#7c3aed",
+      bannerText1: "Dialysate crosses a diaphragmatic defect into the pleural space",
+      bannerText2: "Pleural fluid glucose is higher than serum glucose",
+      panel1Title: "🔬 The mechanism",
+      panel1Tagline: "Why it happens",
+      panel1List: [
+        "<strong>High intra-abdominal pressure</strong> from dialysate",
+        "<strong>Congenital or acquired defect</strong> in the diaphragm",
+        "<strong>Dialysate leaks</strong> into the pleural space",
+        "More common <strong>right-sided</strong> (right hemidiaphragm has more weaknesses)",
+        "More common in <strong>women</strong> and <strong>early</strong> after PD initiation"
+      ],
+      panel2Title: "🧬 The diagnostic clue",
+      panel2Tagline: "Why glucose is key",
+      panel2List: [
+        "Dialysate contains <strong>high glucose</strong> (often 1.5–4.25%)",
+        "Pleural fluid glucose becomes <strong>higher than serum glucose</strong>",
+        "This is not possible with any other fluid (transudate, exudate, nephrotic)",
+        "Effusion <strong>enlarges after dialysate instillation</strong>",
+        "Peritoneal scintigraphy or CT peritoneography can confirm"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Glucose is the clue",
+      alertText: "Pleural fluid glucose <strong>higher than serum glucose</strong> is diagnostic of dialysate in the pleural space."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why Others Fail",
+      infoRows: [
+        { k: "A — Increase fill",  v: "Worsens the leak" },
+        { k: "B — Treat peritonitis", v: "No infection" },
+        { k: "C — Continue PD",   v: "Perpetuates leak" },
+        { k: "E — Nephrotic",     v: "Wrong fluid" },
+        { k: "D — Stop + HD",     v: "Best option" },
+        { k: "Answer",            v: "D" }
+      ],
+      svgTitle: "Why the Other Options Fail",
+      svgSubtitle: "Each option has a critical flaw",
+      bannerBg: "#0891b2",
+      bannerText1: "Increasing fill volume worsens the leak",
+      bannerText2: "No evidence of peritonitis",
+      panel1Title: "❌ Why each fails",
+      panel1Tagline: "The fatal flaws",
+      panel1List: [
+        "<strong>A — Increase fill volume:</strong> more dialysate → more leak → worse dyspnea",
+        "<strong>B — Treat peritonitis:</strong> WBC 60, culture negative, afebrile — no infection",
+        "<strong>C — Continue PD + diurese:</strong> does not fix the mechanical defect",
+        "<strong>E — Nephrotic syndrome:</strong> pleural protein is 0.8 (transudate), and the high glucose points to dialysate"
+      ],
+      panel2Title: "🧬 The correct approach",
+      panel2Tagline: "Why D is best",
+      panel2List: [
+        "<strong>Stop PD</strong> — allows defect to heal",
+        "<strong>Transition to HD</strong> — necessary for ESKD",
+        "<strong>Evaluate the defect</strong> — scintigraphy, CT peritoneography",
+        "<strong>Consider repair/pleurodesis</strong> if PD to be resumed",
+        "<strong>Do not increase fill volume</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Stop the leak",
+      alertText: "The only way to stop a mechanical leak is to <strong>stop PD</strong> and switch to HD."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management",
+      infoRows: [
+        { k: "Step 1",   v: "Stop PD" },
+        { k: "Step 2",   v: "Transition to HD" },
+        { k: "Step 3",   v: "Evaluate for communication" },
+        { k: "Step 4",   v: "Consider repair/pleurodesis" },
+        { k: "Goal",     v: "Heal defect or treat permanently" },
+        { k: "Answer",   v: "D" }
+      ],
+      svgTitle: "Management of Pleuroperitoneal Leak",
+      svgSubtitle: "Stop PD, switch to HD, and evaluate for repair",
+      bannerBg: "#ca8a04",
+      bannerText1: "Temporarily discontinue PD and transition to hemodialysis",
+      bannerText2: "Evaluate for pleuroperitoneal communication; consider repair or pleurodesis",
+      panel1Title: "✅ The management steps",
+      panel1Tagline: "Step by step",
+      panel1List: [
+        "<strong>1. Stop PD</strong> — allows the defect to heal",
+        "<strong>2. Transition to HD</strong> — necessary for ESKD",
+        "<strong>3. Evaluate</strong> — peritoneal scintigraphy or CT peritoneography",
+        "<strong>4. Repair/pleurodesis</strong> — if PD is to be resumed",
+        "<strong>5. Consider permanent HD</strong> — if repair fails"
+      ],
+      panel2Title: "🧬 When to suspect",
+      panel2Tagline: "Clinical clues",
+      panel2List: [
+        "New <strong>pleural effusion</strong> in a PD patient",
+        "Pleural fluid glucose <strong>higher than serum glucose</strong>",
+        "Effusion <strong>enlarges after dialysate instillation</strong>",
+        "More common <strong>right-sided</strong>, in <strong>women</strong>",
+        "Can occur <strong>early</strong> after PD initiation"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: D",
+      alertText: "<strong>Stop PD, transition to HD, and evaluate for a pleuroperitoneal communication.</strong>"
+    }
+  },
+  comparison: {
+    title: "📊 Pleural Effusion in PD Patients",
+    sub: "Differential diagnosis",
+    head: ["Cause", "Glucose", "Protein", "WBC", "Clue"],
+    rows: [
+      { cells: ["Pleuroperitoneal leak", "High (> serum)", "Low", "Low", "Effusion enlarges with dialysate"], hero: true },
+      { cells: ["Peritonitis-related", "Low", "High", "High", "Abdominal pain, cloudy effluent"], hero: false },
+      { cells: ["Heart failure", "Normal", "Low", "Low", "Elevated JVP, edema, cardiomegaly"], hero: false },
+      { cells: ["Nephrotic syndrome", "Normal", "Low", "Low", "Heavy proteinuria, low albumin"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A PD patient presents with dyspnea and a right pleural effusion. Pleural fluid glucose is 285 mg/dL and serum glucose is 105 mg/dL. What is the diagnosis?",
+      options: [
+        { text: "Pleuroperitoneal communication.", correct: true,
+          explanation: "Pleural fluid glucose higher than serum glucose is diagnostic of dialysate in the pleural space, confirming a pleuroperitoneal communication." },
+        { text: "Bacterial peritonitis.", correct: false,
+          explanation: "WBC would be elevated, culture would be positive, and effluent would be cloudy." },
+        { text: "Heart failure.", correct: false,
+          explanation: "Heart failure does not cause high pleural fluid glucose." }
+      ]
+    },
+    {
+      question: "What is the initial management of a pleuroperitoneal leak?",
+      options: [
+        { text: "Stop PD and transition to hemodialysis.", correct: true,
+          explanation: "Stopping PD allows the defect to heal. Transition to HD is necessary for ESKD." },
+        { text: "Increase dialysate fill volume.", correct: false,
+          explanation: "This worsens the leak." },
+        { text: "Treat with antibiotics.", correct: false,
+          explanation: "There is no infection." }
+      ]
+    },
+    {
+      question: "Why is pleuroperitoneal leak more common on the right side?",
+      options: [
+        { text: "The right hemidiaphragm has more congenital weaknesses.", correct: true,
+          explanation: "The right hemidiaphragm has more congenital defects, making it more susceptible to leaks." },
+        { text: "The left lung is smaller.", correct: false,
+          explanation: "The left lung is smaller due to the heart, but this does not explain the leak." },
+        { text: "The right kidney is closer to the diaphragm.", correct: false,
+          explanation: "Kidney position does not explain the leak." }
+      ]
+    },
+    {
+      question: "What is the diagnostic test of choice for pleuroperitoneal communication?",
+      options: [
+        { text: "Peritoneal scintigraphy or CT peritoneography.", correct: true,
+          explanation: "These tests use contrast or radiotracer in the dialysate to demonstrate the communication." },
+        { text: "Chest x-ray.", correct: false,
+          explanation: "CXR shows the effusion but not the communication." },
+        { text: "Pleural fluid culture.", correct: false,
+          explanation: "Culture is negative." }
+      ]
+    },
+    {
+      question: "A PD patient has a pleural effusion. Which finding is most specific for pleuroperitoneal leak?",
+      options: [
+        { text: "Pleural fluid glucose higher than serum glucose.", correct: true,
+          explanation: "This is specific for dialysate in the pleural space." },
+        { text: "Pleural fluid protein 0.8 g/dL.", correct: false,
+          explanation: "Low protein is nonspecific (transudate)." },
+        { text: "Pleural fluid WBC 60/µL.", correct: false,
+          explanation: "Low WBC is nonspecific." }
+      ]
+    },
+    {
+      question: "If a patient with a pleuroperitoneal leak wants to resume PD, what procedure can be considered?",
+      options: [
+        { text: "Pleurodesis or surgical repair (VATS).", correct: true,
+          explanation: "Pleurodesis or surgical repair can allow patients to resume PD." },
+        { text: "Increase fill volume.", correct: false,
+          explanation: "This worsens the leak." },
+        { text: "Continue PD without intervention.", correct: false,
+          explanation: "The leak will persist or worsen." }
+      ]
+    },
+    {
+      question: "What is the mechanism of pleuroperitoneal leak?",
+      options: [
+        { text: "High intra-abdominal pressure from dialysate crosses a diaphragmatic defect.", correct: true,
+          explanation: "Dialysate is pushed through a defect in the diaphragm into the pleural space." },
+        { text: "Infection of the pleura.", correct: false,
+          explanation: "No infection." },
+        { text: "Decreased oncotic pressure.", correct: false,
+          explanation: "This causes transudative effusions, not high-glucose effusions." }
+      ]
+    },
+    {
+      question: "Why is diuresis not effective for pleuroperitoneal leak?",
+      options: [
+        { text: "The problem is mechanical, not volume overload.", correct: true,
+          explanation: "Diuresis does not fix a mechanical defect. The dialysate continues to leak." },
+        { text: "The patient is anuric.", correct: false,
+          explanation: "Even with residual function, diuresis does not fix the leak." },
+        { text: "Diuretics are contraindicated in PD.", correct: false,
+          explanation: "Diuretics are not contraindicated but ineffective for the leak." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Peritoneal Dialysis / Complications",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microvascular Inflammation (MVI) — Banff 2022 Update</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — WHAT IS MVI?
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#991b1b">WHAT IS MICROVASCULAR INFLAMMATION (MVI)?</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Inflammation in the small blood vessels of the kidney allograft</text>
+          </g>
+
+          <!-- Anatomy diagram -->
+          <g transform="translate(700, 430)">
+            
+            <!-- Glomerulus -->
+            <g transform="translate(-350, 0)">
+              <circle r="160" fill="#fef9c3" stroke="#334155" stroke-width="4"/>
+              <text x="0" y="-180" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#854d0e">GLOMERULUS</text>
+              
+              <!-- Capillary loops -->
+              <path d="M -100,-50 C -150,-100 -50,-150 0,-100 C 50,-50 150,-100 100,-50 C 50,0 100,100 0,100 C -100,100 -50,0 -100,-50" fill="none" stroke="#dc2626" stroke-width="3"/>
+              <path d="M -100,20 C -150,-30 -50,-80 0,-30 C 50,20 150,-30 100,20 C 50,70 100,170 0,170 C -100,170 -50,70 -100,20" fill="none" stroke="#dc2626" stroke-width="3"/>
+
+              <!-- Inflammatory cells (dots) -->
+              <circle cx="-80" cy="-80" r="10" fill="#7c3aed"/>
+              <circle cx="60" cy="-90" r="10" fill="#7c3aed"/>
+              <circle cx="-100" cy="40" r="10" fill="#7c3aed"/>
+              <circle cx="100" cy="40" r="10" fill="#7c3aed"/>
+              <circle cx="0" cy="120" r="10" fill="#7c3aed"/>
+
+              <text x="0" y="200" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#dc2626">g = Glomerulitis</text>
+              <text x="0" y="222" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Inflammation within the glomerular capillaries</text>
+            </g>
+
+            <!-- Tubules / PTC -->
+            <g transform="translate(350, 0)">
+              <rect x="-200" y="-160" width="400" height="320" rx="16" fill="#fef9c3" stroke="#334155" stroke-width="4"/>
+              <text x="0" y="-180" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#854d0e">TUBULOINTERSTITIUM</text>
+
+              <!-- Tubules -->
+              <circle cx="-100" cy="-80" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <circle cx="50" cy="-50" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <circle cx="-80" cy="70" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <circle cx="90" cy="80" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+
+              <!-- PTCs with inflammation -->
+              <g fill="#7c3aed">
+                <circle cx="-30" cy="-100" r="8"/>
+                <circle cx="-10" cy="-90" r="8"/>
+                <circle cx="10" cy="-110" r="8"/>
+                <circle cx="30" cy="-90" r="8"/>
+                <circle cx="50" cy="-100" r="8"/>
+                <circle cx="-40" cy="20" r="8"/>
+                <circle cx="-20" cy="30" r="8"/>
+                <circle cx="0" cy="20" r="8"/>
+                <circle cx="20" cy="30" r="8"/>
+                <circle cx="40" cy="20" r="8"/>
+                <circle cx="60" cy="30" r="8"/>
+              </g>
+
+              <text x="0" y="200" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#dc2626">ptc = Peritubular Capillaritis</text>
+              <text x="0" y="222" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Inflammation in capillaries surrounding tubules</text>
+            </g>
+
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 780)">
+            <rect x="-600" y="-70" width="1200" height="140" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">MVI = g + ptc</text>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">The combined score of glomerulitis (g) and peritubular capillaritis (ptc)</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Each scored 0–3 on Banff criteria → total MVI score 0–6</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">Significant MVI = g + ptc ≥ 2</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — SCORING
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#5b21b6">SCORING MVI (BANFF CRITERIA)</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#6d28d9">Glomerulitis (g) and peritubular capillaritis (ptc) are each scored 0–3</text>
+          </g>
+
+          <!-- Scoring table -->
+          <g transform="translate(700, 430)">
+            <rect x="-500" y="-200" width="1000" height="400" rx="20" fill="#fff" stroke="#475569" stroke-width="4"/>
+            
+            <!-- Headers -->
+            <rect x="-480" y="-180" width="960" height="50" rx="8" fill="#f8fafc"/>
+            <text x="-350" y="-148" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">SCORE</text>
+            <text x="-80" y="-148" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">g (Glomerulitis)</text>
+            <text x="280" y="-148" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#5b21b6">ptc (Peritubular Capillaritis)</text>
+
+            <!-- Row 0 -->
+            <line x1="-460" y1="-110" x2="460" y2="-110" stroke="#e2e8f0" stroke-width="2"/>
+            <text x="-350" y="-82" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#166534">0</text>
+            <text x="-80" y="-82" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">No inflammation</text>
+            <text x="280" y="-82" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">No inflammation</text>
+
+            <!-- Row 1 -->
+            <line x1="-460" y1="-60" x2="460" y2="-60" stroke="#e2e8f0" stroke-width="2"/>
+            <text x="-350" y="-32" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#ca8a04">1</text>
+            <text x="-80" y="-32" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">&lt; 25% of glomeruli</text>
+            <text x="280" y="-32" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Mild inflammation</text>
+
+            <!-- Row 2 -->
+            <line x1="-460" y1="-10" x2="460" y2="-10" stroke="#e2e8f0" stroke-width="2"/>
+            <text x="-350" y="18" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#dc2626">2</text>
+            <text x="-80" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">26–50% of glomeruli</text>
+            <text x="280" y="18" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Moderate inflammation</text>
+
+            <!-- Row 3 -->
+            <line x1="-460" y1="40" x2="460" y2="40" stroke="#e2e8f0" stroke-width="2"/>
+            <text x="-350" y="68" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#991b1b">3</text>
+            <text x="-80" y="68" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">&gt; 50% of glomeruli</text>
+            <text x="280" y="68" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Severe inflammation</text>
+
+            <!-- Highlight Threshold -->
+            <rect x="-460" y="105" width="920" height="60" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="130" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">Significant MVI Threshold = g + ptc ≥ 2</text>
+            <text x="0" y="152" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Indicates active inflammation warranting further evaluation for rejection</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 780)">
+            <rect x="-600" y="-70" width="1200" height="140" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">WHY THE THRESHOLD OF 2 MATTERS</text>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">A combined score of ≥ 2 is strongly associated with antibody-mediated rejection</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">But MVI is not exclusive to ABMR — it can be seen in TCMR, infection, and other conditions</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">g + ptc ≥ 2 is the threshold for "significant MVI"</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — BANFF 2022 UPDATE
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#155e75">BANFF 2022 — THE NEW MVI PHENOTYPE</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#0e7490">A distinct category for significant MVI without DSA or C4d</text>
+          </g>
+
+          <!-- Old vs New -->
+          <g transform="translate(350, 400)">
+            <rect x="-290" y="-180" width="580" height="360" rx="18" fill="#fff" stroke="#dc2626" stroke-width="5"/>
+            <rect x="-290" y="-180" width="580" height="58" rx="18" fill="#dc2626"/>
+            <rect x="-290" y="-142" width="580" height="20" fill="#dc2626"/>
+            <text x="0" y="-145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">DEFINITE ABMR</text>
+
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#991b1b">Requires DSA</text>
+            <line x1="-260" y1="-72" x2="260" y2="-72" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-40">• Active injury (g + ptc ≥ 2)</text>
+              <text x="-260" y="-16">• Antibody interaction (C4d+, MVI, or molecular)</text>
+              <text x="-260" y="8">• <tspan font-weight="800" fill="#dc2626">DSA present</tspan> (anti-HLA or non-HLA)</text>
+              <text x="-260" y="32">• All three criteria must be met</text>
+            </g>
+
+            <rect x="-260" y="60" width="520" height="46" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">C4d negativity is allowed</text>
+            <text x="0" y="98" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">But DSA is still required</text>
+          </g>
+
+          <g transform="translate(1050, 400)">
+            <rect x="-290" y="-180" width="580" height="360" rx="18" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-290" y="-180" width="580" height="58" rx="18" fill="#16a34a"/>
+            <rect x="-290" y="-142" width="580" height="20" fill="#16a34a"/>
+            <text x="0" y="-145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">MVI, DSA-NEG, C4D-NEG</text>
+
+            <text x="0" y="-100" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">The New Banff 2022 Phenotype</text>
+            <line x1="-260" y1="-72" x2="260" y2="-72" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="-40">• Active injury (g + ptc ≥ 2)</text>
+              <text x="-260" y="-16">• C4d negative</text>
+              <text x="-260" y="8">• <tspan font-weight="800" fill="#166534">DSA negative</tspan></text>
+              <text x="-260" y="32">• Molecular signature can support but does not replace DSA</text>
+            </g>
+
+            <rect x="-260" y="60" width="520" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Requires further etiologic evaluation</text>
+            <text x="0" y="98" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Not automatically definite ABMR</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 780)">
+            <rect x="-600" y="-70" width="1200" height="140" rx="16" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+            <text x="0" y="-40" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#155e75">WHY WAS THIS NEW CATEGORY CREATED?</text>
+            <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">A substantial proportion of biopsies show significant MVI without detectable DSA or C4d</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">MVI is not specific for ABMR (can occur in TCMR, infection, NK cell activation, non-HLA Abs)</text>
+            <text x="0" y="42" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Requires workup for alternative causes before labeling as definite ABMR</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — CLINICAL WORKUP
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#713f12">WORKUP OF THE MVI, DSA-NEG, C4D-NEG PHENOTYPE</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#854d0e">Do not rush to label as definite ABMR — evaluate for alternatives</text>
+          </g>
+
+          <!-- Algorithm -->
+          <g transform="translate(700, 430)">
+            
+            <!-- Step 1 -->
+            <g transform="translate(0, -180)">
+              <rect x="-250" y="-40" width="500" height="80" rx="14" fill="#f8fafc" stroke="#475569" stroke-width="4"/>
+              <text y="-12" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">BIOPSY SHOWS SIGNIFICANT MVI (g + ptc ≥ 2)</text>
+              <text y="12" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">C4d negative · DSA negative</text>
+            </g>
+
+            <path d="M 0,-100 L 0,-60" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)"/>
+
+            <!-- Step 2 -->
+            <g transform="translate(0, 0)">
+              <rect x="-300" y="-40" width="600" height="80" rx="14" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+              <text y="-12" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">EXTENSIVE ETIOLOGIC EVALUATION</text>
+              <text y="12" text-anchor="middle" font-family="Arial" font-size="13" fill="#0e7490">Extended HLA typing, non-HLA antibodies, infection, TCMR</text>
+            </g>
+
+            <path d="M 0,40 L 0,80" stroke="#475569" stroke-width="4" marker-end="url(#arrowSlate)"/>
+
+            <!-- Step 3 -->
+            <g transform="translate(0, 140)">
+              <rect x="-400" y="-40" width="800" height="80" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+              <text y="-12" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#713f12">RE-EVALUATE BANFF CLASSIFICATION WITH NEW DATA</text>
+              <text y="12" text-anchor="middle" font-family="Arial" font-size="13" fill="#854d0e">If alternative cause found → treat accordingly; if not → consider empiric ABMR treatment</text>
+            </g>
+
+          </g>
+
+          <!-- Workup cards -->
+          <g transform="translate(350, 720)">
+            <rect x="-290" y="-65" width="580" height="130" rx="16" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <text y="-35" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#155e75">IMMUNOLOGIC WORKUP</text>
+            <line x1="-260" y1="-18" x2="260" y2="-18" stroke="#cffafe" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="8">• Extended HLA typing (DQ, DP, C, etc.)</text>
+              <text x="-260" y="30">• Non-HLA antibodies (AT1R, ETAR)</text>
+              <text x="-260" y="52">• Repeat DSA with high-sensitivity assays</text>
+            </g>
+          </g>
+
+          <g transform="translate(1050, 720)">
+            <rect x="-290" y="-65" width="580" height="130" rx="16" fill="#fff" stroke="#16a34a" stroke-width="4"/>
+            <text y="-35" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#166534">NON-IMMUNOLOGIC WORKUP</text>
+            <line x1="-260" y1="-18" x2="260" y2="-18" stroke="#bbf7d0" stroke-width="2"/>
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-260" y="8">• CMV, EBV, parvovirus B19</text>
+              <text x="-260" y="30">• BK virus (PCR)</text>
+              <text x="-260" y="52">• Recurrent glomerulonephritis</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Microvascular Inflammation (MVI) — Banff 2022 Update",
+  subtitle: "g + ptc ≥ 2 defines significant MVI, but not all MVI is ABMR",
+  badge: "NEPHROLOGY · TRANSPLANT PATHOLOGY · BANFF",
+  caseTitle: "Comprehensive guide: What is MVI and how does it fit in Banff 2022?",
+  caseDescription: "A patient with g2 + ptc2, C4d negative, DSA negative, and a positive molecular signature. How do we classify this according to Banff 2022? This module explains MVI (g + ptc ≥ 2), its historical role in ABMR, the new Banff 2022 'MVI, DSA-negative, C4d-negative' phenotype, and the appropriate clinical workup.",
+  labChips: [
+    { text: "g + ptc ≥ 2 = significant MVI", abnormal: true },
+    { text: "MVI is not specific for ABMR", abnormal: true },
+    { text: "Banff 2022 recognizes MVI, DSA-neg, C4d-neg", abnormal: true },
+    { text: "Molecular signature does not replace DSA", abnormal: true },
+    { text: "Requires further etiologic evaluation", abnormal: true }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 What is MVI?",          className: "opt1" },
+    { id: "opt2", label: "🟣 Scoring & Threshold",   className: "opt2" },
+    { id: "opt3", label: "🔵 Banff 2022 Update",     className: "opt3" },
+    { id: "opt4", label: "🟡 Clinical Workup",       className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 What is MVI?",
+      infoRows: [
+        { k: "Definition",  v: "Inflammation in small vessels" },
+        { k: "Components",  v: "g + ptc" },
+        { k: "g",           v: "Glomerulitis (capillaries)" },
+        { k: "ptc",         v: "Peritubular capillaritis" },
+        { k: "Total score", v: "0–6" },
+        { k: "Significant", v: "g + ptc ≥ 2" }
+      ],
+      svgTitle: "What is Microvascular Inflammation (MVI)?",
+      svgSubtitle: "Inflammation in the small blood vessels of the kidney allograft",
+      bannerBg: "#dc2626",
+      bannerText1: "MVI = g (glomerulitis) + ptc (peritubular capillaritis)",
+      bannerText2: "Significant MVI = g + ptc ≥ 2",
+      panel1Title: "🧪 Defining MVI",
+      panel1Tagline: "The anatomy of microvascular inflammation",
+      panel1List: [
+        "<strong>g</strong> — inflammation in the glomerular capillaries",
+        "<strong>ptc</strong> — inflammation in the peritubular capillaries",
+        "<strong>MVI = g + ptc</strong>",
+        "Each is scored <strong>0–3</strong> on Banff criteria",
+        "<strong>Significant MVI = g + ptc ≥ 2</strong>"
+      ],
+      panel2Title: "🧬 Why MVI matters",
+      panel2Tagline: "The clinical relevance",
+      panel2List: [
+        "MVI is the hallmark of <strong>antibody-mediated rejection (ABMR)</strong>",
+        "But it is <strong>not specific</strong> for ABMR",
+        "Can also occur in <strong>T-cell-mediated rejection</strong>",
+        "Can occur in <strong>infection</strong> (CMV, BK)",
+        "Requires context to interpret correctly"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "MVI is not a diagnosis — it is a finding",
+      alertText: "<strong>MVI = g + ptc ≥ 2</strong> is a histologic finding that requires integration with DSA, C4d, and clinical context."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Scoring & Threshold",
+      infoRows: [
+        { k: "g0",  v: "No inflammation" },
+        { k: "g1",  v: "< 25% of glomeruli" },
+        { k: "g2",  v: "26–50% of glomeruli" },
+        { k: "g3",  v: "> 50% of glomeruli" },
+        { k: "ptc0", v: "No inflammation" },
+        { k: "ptc3", v: "Severe inflammation" }
+      ],
+      svgTitle: "Scoring MVI (Banff Criteria)",
+      svgSubtitle: "Glomerulitis (g) and peritubular capillaritis (ptc) are each scored 0–3",
+      bannerBg: "#7c3aed",
+      bannerText1: "g is scored 0–3 based on the percentage of glomeruli involved",
+      bannerText2: "ptc is scored 0–3 based on the severity of inflammation in peritubular capillaries",
+      panel1Title: "🔬 Scoring g and ptc",
+      panel1Tagline: "The Banff criteria",
+      panel1List: [
+        "<strong>g0</strong> — no glomerulitis",
+        "<strong>g1</strong> — < 25% of glomeruli",
+        "<strong>g2</strong> — 26–50% of glomeruli",
+        "<strong>g3</strong> — > 50% of glomeruli",
+        "<strong>ptc0–3</strong> — severity of peritubular capillaritis"
+      ],
+      panel2Title: "🧬 The threshold",
+      panel2Tagline: "Why ≥2 matters",
+      panel2List: [
+        "<strong>g + ptc ≥ 2</strong> = significant MVI",
+        "Strong predictor of poor graft outcomes",
+        "Key criterion for ABMR in C4d-negative biopsies",
+        "The threshold is used in Banff diagnostic criteria",
+        "Below 2, MVI is considered less significant"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The threshold is key",
+      alertText: "<strong>g + ptc ≥ 2</strong> is the threshold for significant MVI. Below this, the inflammation is less likely to be clinically meaningful."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Banff 2022 Update",
+      infoRows: [
+        { k: "Old view",    v: "MVI = ABMR" },
+        { k: "Banff 2022",  v: "MVI can occur without DSA" },
+        { k: "New phenotype", v: "MVI, DSA-neg, C4d-neg" },
+        { k: "Requires",    v: "Further etiologic evaluation" },
+        { k: "Not automatic", v: "Not always ABMR" },
+        { k: "Molecular",   v: "Supports but does not replace DSA" }
+      ],
+      svgTitle: "Banff 2022 — The New MVI Phenotype",
+      svgSubtitle: "A distinct category for significant MVI without DSA or C4d",
+      bannerBg: "#0891b2",
+      bannerText1: "MVI is not always ABMR — Banff 2022 recognizes a distinct phenotype",
+      bannerText2: "The 'MVI, DSA-negative, C4d-negative' category requires further evaluation",
+      panel1Title: "🔬 The new phenotype",
+      panel1Tagline: "What Banff 2022 introduced",
+      panel1List: [
+        "<strong>MVI, DSA-negative, C4d-negative</strong> — a distinct phenotype",
+        "Does not automatically fulfill ABMR criteria",
+        "Requires <strong>further etiologic evaluation</strong>",
+        "Molecular signature can support but <strong>does not replace DSA</strong>",
+        "Many cases remain unexplained"
+      ],
+      panel2Title: "🧬 Why the change?",
+      panel2Tagline: "The rationale",
+      panel2List: [
+        "A substantial proportion of MVI cases have <strong>no detectable DSA</strong>",
+        "MVI can be caused by <strong>TCMR, infection, NK cells, non-HLA Abs</strong>",
+        "Molecular signatures can be present <strong>without DSA</strong>",
+        "The new category allows for <strong>further workup</strong>",
+        "Avoids overdiagnosis of ABMR"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "MVI ≠ ABMR",
+      alertText: "<strong>MVI is not specific for ABMR.</strong> The new Banff 2022 phenotype requires further workup before labeling as definite ABMR."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Clinical Workup",
+      infoRows: [
+        { k: "Step 1",    v: "Extended HLA typing" },
+        { k: "Step 2",    v: "Non-HLA antibodies" },
+        { k: "Step 3",    v: "Repeat DSA (high sensitivity)" },
+        { k: "Step 4",    v: "Infection workup" },
+        { k: "Step 5",    v: "Rule out recurrent GN" },
+        { k: "Step 6",    v: "Consider empiric ABMR Rx" }
+      ],
+      svgTitle: "Workup of the MVI, DSA-neg, C4d-neg Phenotype",
+      svgSubtitle: "Do not rush to label as definite ABMR — evaluate for alternatives",
+      bannerBg: "#ca8a04",
+      bannerText1: "Evaluate for extended HLA, non-HLA antibodies, infection, and TCMR",
+      bannerText2: "Re-evaluate the Banff classification with new data",
+      panel1Title: "✅ Immunologic workup",
+      panel1Tagline: "What to order",
+      panel1List: [
+        "<strong>Extended HLA typing</strong> — DQ, DP, C, etc.",
+        "<strong>Non-HLA antibodies</strong> — AT1R, ETAR",
+        "<strong>Repeat DSA</strong> — high-sensitivity assays",
+        "<strong>Molecular testing</strong> — ABMR transcripts",
+        "<strong>Consider empiric treatment</strong> if no alternative found"
+      ],
+      panel2Title: "🧬 Non-immunologic workup",
+      panel2Tagline: "What else to consider",
+      panel2List: [
+        "<strong>CMV, EBV, parvovirus B19</strong>",
+        "<strong>BK virus</strong> (PCR)",
+        "<strong>Recurrent glomerulonephritis</strong>",
+        "<strong>Drug toxicity</strong> (CNI)",
+        "<strong>Hypertensive injury</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Do not rush to ABMR",
+      alertText: "The new Banff 2022 phenotype requires <strong>further workup</strong> before labeling as definite ABMR."
+    }
+  },
+  comparison: {
+    title: "📊 Definite ABMR vs the New MVI Phenotype",
+    sub: "How Banff 2022 distinguishes the two",
+    head: ["Feature", "Definite ABMR", "MVI, DSA-neg, C4d-neg", "Normal"],
+    rows: [
+      { cells: ["MVI (g + ptc ≥ 2)", "Yes", "Yes", "No"], hero: true },
+      { cells: ["DSA", "Present", "Absent", "Absent"], hero: true },
+      { cells: ["C4d", "May be negative", "Negative", "Negative"], hero: false },
+      { cells: ["Molecular signature", "May be present", "May be present", "Absent"], hero: false },
+      { cells: ["Chronic injury", "May be present", "May be present", "Absent"], hero: false },
+      { cells: ["Diagnosis", "Definite ABMR", "Further workup required", "No rejection"], hero: true }
+    ]
+  },
+  quiz: [
+    {
+      question: "What is the definition of significant MVI?",
+      options: [
+        { text: "g + ptc ≥ 2.", correct: true,
+          explanation: "Significant microvascular inflammation is defined as a combined score of glomerulitis (g) and peritubular capillaritis (ptc) of 2 or greater." },
+        { text: "g + ptc ≥ 1.", correct: false,
+          explanation: "This is too low; significant MVI requires ≥ 2." },
+        { text: "g + ptc ≥ 4.", correct: false,
+          explanation: "This is severe MVI, but the threshold for significant is ≥ 2." }
+      ]
+    },
+    {
+      question: "What does the 'g' in the MVI score represent?",
+      options: [
+        { text: "Glomerulitis.", correct: true,
+          explanation: "g stands for glomerulitis, inflammation within the glomerular capillaries." },
+        { text: "Graft fibrosis.", correct: false,
+          explanation: "This is not part of the MVI score." },
+        { text: "Glomerulosclerosis.", correct: false,
+          explanation: "This is a chronic lesion, not part of the active MVI score." }
+      ]
+    },
+    {
+      question: "Does significant MVI always indicate antibody-mediated rejection?",
+      options: [
+        { text: "No — MVI can occur in TCMR, infection, and other conditions.", correct: true,
+          explanation: "MVI is not specific for ABMR. Banff 2022 recognizes the 'MVI, DSA-negative, C4d-negative' phenotype, which requires further evaluation." },
+        { text: "Yes — MVI is diagnostic of ABMR.", correct: false,
+          explanation: "This is an outdated view. MVI can occur without ABMR." },
+        { text: "Only if C4d is positive.", correct: false,
+          explanation: "C4d negativity does not exclude ABMR." }
+      ]
+    },
+    {
+      question: "What is the Banff 2022 classification for significant MVI with negative DSA and negative C4d?",
+      options: [
+        { text: "MVI, DSA-negative and C4d-negative phenotype.", correct: true,
+          explanation: "This is the new distinct category introduced in Banff 2022, requiring further etiologic evaluation." },
+        { text: "Chronic active ABMR.", correct: false,
+          explanation: "This requires DSA positivity." },
+        { text: "Normal biopsy.", correct: false,
+          explanation: "The MVI is abnormal and requires workup." }
+      ]
+    },
+    {
+      question: "What is the appropriate management for a patient with the 'MVI, DSA-negative, C4d-negative' phenotype?",
+      options: [
+        { text: "Further etiologic evaluation before labeling as definite ABMR.", correct: true,
+          explanation: "The new phenotype requires extended HLA typing, non-HLA antibodies, and evaluation for other causes." },
+        { text: "Immediate treatment for definite ABMR.", correct: false,
+          explanation: "The diagnosis is not definite ABMR; further workup is needed." },
+        { text: "No treatment or workup.", correct: false,
+          explanation: "The MVI is significant and requires evaluation." }
+      ]
+    },
+    {
+      question: "What does the 'ptc' in the MVI score represent?",
+      options: [
+        { text: "Peritubular capillaritis.", correct: true,
+          explanation: "ptc stands for peritubular capillaritis, inflammation in the capillaries surrounding the tubules." },
+        { text: "Peritubular capillary multilayering.", correct: false,
+          explanation: "This is a chronic lesion, not part of the active MVI score." },
+        { text: "Proximal tubular cast.", correct: false,
+          explanation: "This is not part of the MVI score." }
+      ]
+    },
+    {
+      question: "How is the MVI score calculated?",
+      options: [
+        { text: "g + ptc (each scored 0–3, total 0–6).", correct: true,
+          explanation: "The MVI score is the sum of the glomerulitis and peritubular capillaritis scores." },
+        { text: "g × ptc.", correct: false,
+          explanation: "The scores are added, not multiplied." },
+        { text: "Only g is used.", correct: false,
+          explanation: "Both g and ptc are used." }
+      ]
+    },
+    {
+      question: "Why was the new 'MVI, DSA-negative, C4d-negative' category created?",
+      options: [
+        { text: "Because a substantial proportion of MVI cases have no detectable DSA or C4d.", correct: true,
+          explanation: "Banff 2022 recognized that many MVI cases lack conventional evidence of antibody-mediated injury and require further workup." },
+        { text: "Because MVI is no longer relevant.", correct: false,
+          explanation: "MVI remains highly relevant." },
+        { text: "Because C4d is now required for ABMR.", correct: false,
+          explanation: "C4d is not required for ABMR." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Transplant Pathology / Banff",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

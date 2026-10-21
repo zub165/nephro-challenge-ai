@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nephro Challenge AI — Web access</title>
+  <link rel="icon" href="favicon.png" />
+  <style>
+    :root { --navy:#0f2a4a; --teal:#0d9488; --bg:#f4f7fb; --line:#d7e0ea; }
+    body { margin:0; font-family: Inter, system-ui, sans-serif; background:var(--bg); color:#142033; }
+    .wrap { max-width: 560px; margin: 0 auto; padding: 40px 20px 72px; }
+    h1 { margin: 0 0 8px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px; margin:16px 0; }
+    input { width:100%; box-sizing:border-box; padding:12px; border:1px solid var(--line); border-radius:10px; font-size:16px; }
+    button, .btn { display:inline-block; background:var(--navy); color:#fff; border:0; border-radius:10px; padding:12px 16px; text-decoration:none; cursor:pointer; font-size:15px; }
+    .btn-paypal { background:#0070ba; }
+    .muted { color:#64748b; font-size:14px; line-height:1.5; }
+    .err { color:#b91c1c; font-size:14px; min-height:1.2em; }
+    label { display:block; font-weight:600; margin:12px 0 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="muted" style="letter-spacing:.12em; text-transform:uppercase;">Nephro Challenge AI</p>
+    <h1>Unlock the web app</h1>
+    <p class="muted">Pay once with PayPal, then enter the unlock code we email you. Teaching HTML under /medical and /animations stays free.</p>
+
+    <div class="card">
+      <h2>1. Pay with PayPal</h2>
+      <p class="muted">Send <strong id="price">$4.99</strong> via PayPal.Me, then email the receipt to <a href="mailto:zub165@yahoo.com">zub165@yahoo.com</a> with subject “Nephro Challenge AI web access”.</p>
+      <a class="btn btn-paypal" id="paypal" href="https://paypal.me/innovatorgeneration/4.99" target="_blank" rel="noopener">Pay with PayPal</a>
+      <ol class="muted">
+        <li>Pay with PayPal.Me.</li>
+        <li>Email your receipt to zub165@yahoo.com.</li>
+        <li>Enter the unlock code we reply with (once per browser).</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>2. Enter unlock code</h2>
+      <label for="code">Unlock code</label>
+      <input id="code" autocomplete="off" placeholder="Paste your code" />
+      <p class="err" id="code-err"></p>
+      <button type="button" id="unlock">Unlock web app</button>
+    </div>
+
+    <div class="card">
+      <h2>Admin sign-in</h2>
+      <p class="muted">Staff accounts unlock this browser after a successful API login.</p>
+      <label for="admin-id">Email or username</label>
+      <input id="admin-id" autocomplete="username" />
+      <label for="admin-pw">Password</label>
+      <input id="admin-pw" type="password" autocomplete="current-password" />
+      <p class="err" id="admin-err"></p>
+      <button type="button" id="admin">Sign in</button>
+    </div>
+
+    <p class="muted"><a href="privacy.html">Privacy</a> · <a href="support.html">Support</a> · <a href="delete.html">Delete data</a></p>
+  </div>
+  <script src="paypal-config.js"></script>
+  <script>
+    (function () {
+      var cfg = window.NEPHRO_PAYPAL || {};
+      var key = cfg.storageKey || 'nephro_challenge_ai_web_paid_v1';
+      var app = cfg.appPath || '/nephro-challenge-ai/app/';
+      function go() { location.href = app; }
+      try { if (localStorage.getItem(key) === '1') { go(); return; } } catch (e) {}
+      var paypal = document.getElementById('paypal');
+      if (cfg.paypalMeUrl) paypal.href = cfg.paypalMeUrl;
+      if (cfg.priceLabel) document.getElementById('price').textContent = cfg.priceLabel;
+      document.getElementById('unlock').onclick = function () {
+        var code = (document.getElementById('code').value || '').trim();
+        var codes = (cfg.unlockCodes || []).map(function (c) { return String(c).trim(); });
+        if (codes.indexOf(code) >= 0) {
+          try { localStorage.setItem(key, '1'); } catch (e) {}
+          go();
+        } else {
+          document.getElementById('code-err').textContent = 'That code is not valid.';
+        }
+      };
+      document.getElementById('admin').onclick = async function () {
+        var err = document.getElementById('admin-err');
+        err.textContent = '';
+        var id = (document.getElementById('admin-id').value || '').trim();
+        var pw = document.getElementById('admin-pw').value || '';
+        try {
+          var res = await fetch(cfg.loginApi, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: id, username: id, password: pw }),
+          });
+          if (!res.ok) { err.textContent = 'Wrong email/username or password.'; return; }
+          var data = await res.json();
+          if (!data.token && !data.access) { err.textContent = 'Login did not return a token.'; return; }
+          try { localStorage.setItem(key, '1'); } catch (e) {}
+          go();
+        } catch (e) {
+          err.textContent = 'Could not reach the login server.';
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

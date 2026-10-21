@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transplant Glomerulopathy (cg) — Visual Guide & Quiz</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:780px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 20px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  .gallery{display:grid; gap:16px;}
+  .gallery figure{margin:0; background:#f8fafc; border-radius:12px;
+    overflow:hidden; border:1px solid var(--line);}
+  .gallery img{width:100%; height:auto; display:block;}
+  .gallery figcaption{padding:12px 16px; font-size:.8rem; color:#475569;
+    line-height:1.5; border-top:1px solid var(--line);}
+  .gallery figcaption strong{color:#0f172a;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08); overflow:hidden; width:100%;}
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800; color:#0f172a;
+    flex:1; display:flex; align-items:center; pointer-events:none;}
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#0891b2;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  /* ---------- QUIZ ---------- */
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px; padding-bottom:10px;
+    border-bottom:1px solid rgba(255,255,255,.12); display:inline-block;
+    padding-left:18px; padding-right:18px;}
+  .footer .footer-gift strong{color:#fff;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Transplant Glomerulopathy (cg) — Visual Guide & Quiz</h1>
+      <p>Double contours ("tram-tracks") on silver stain · the hallmark of chronic antibody-mediated injury</p>
+    </div>
+    <div class="badge">RENAL PATHOLOGY · TRANSPLANT</div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2>What is cg?</h2>
+      <p><strong>cg</strong> stands for <strong>transplant Glomerulopathy</strong> — the Banff score for chronic glomerular injury in a kidney allograft. It is defined by <strong>duplication of the glomerular basement membrane (GBM)</strong>, seen as "double contours" or "tram-tracks" on silver stain.</p>
+    </div>
+    <div class="labs">
+      <span class="lab-chip abn">cg = chronic GBM duplication</span>
+      <span class="lab-chip">Silver stain (Jones)</span>
+      <span class="lab-chip ok">cg0 → cg3</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab opt1 active" onclick="setMode('opt1')">🔴 Microscopic Images</button>
+    <button class="tab opt2" onclick="setMode('opt2')">🟣 Banff cg Scoring</button>
+    <button class="tab opt3" onclick="setMode('opt3')">🔵 Clinical Significance</button>
+    <button class="tab opt4" onclick="setMode('opt4')">🟡 References</button>
+  </div>
+
+  <section class="stage">
+    <div class="diagram-col" id="diagram-col">
+      <!-- Content will be injected here by JS -->
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" onclick="togglePanel(event)">
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section">
+    <h3>📊 Banff cg Scoring — Summary</h3>
+    <p class="sub">Based on the percentage of glomerular capillary loops showing double contours</p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>% of capillary loops with double contours</th>
+          <th>Severity</th>
+          <th>Clinical meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>cg0</td>
+          <td>0%</td>
+          <td>None</td>
+          <td>No chronic injury</td>
+        </tr>
+        <tr>
+          <td>cg1a</td>
+          <td>Not visible by LM</td>
+          <td>Early (EM only)</td>
+          <td>Duplication only seen on electron microscopy</td>
+        </tr>
+        <tr>
+          <td>cg1b</td>
+          <td>≤25%</td>
+          <td>Mild</td>
+          <td>Early chronic injury</td>
+        </tr>
+        <tr class="hero">
+          <td>cg2</td>
+          <td>26–50%</td>
+          <td>Moderate</td>
+          <td>Established chronic injury</td>
+        </tr>
+        <tr>
+          <td>cg3</td>
+          <td>&gt;50%</td>
+          <td>Severe</td>
+          <td>Extensive chronic injury</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div>Teaching Animation Template · Renal Pathology / Transplant</div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  opt1: {
+    title: "🔴 Microscopic Images",
+    panelClass: "highlight-opt1",
+    infoRows: [
+      { k: "Stain", v: "Jones methenamine silver / PAS" },
+      { k: "Finding", v: "Double contours (tram-tracks)" },
+      { k: "Mechanism", v: "New GBM layer under endothelium" },
+      { k: "Meaning", v: "Chronic endothelial injury" },
+      { k: "Banff score", v: "cg (transplant glomerulopathy)" }
+    ],
+    panel1Title: "🔬 What you see in the images",
+    panel1Tagline: "The microscopic appearance",
+    panel1List: [
+      "<strong>Normal GBM:</strong> a single black line on Jones silver stain",
+      "<strong>Transplant glomerulopathy:</strong> a second black line appears inside the capillary wall — the 'double contour' or 'tram-track'",
+      "<strong>Mechanism:</strong> antibodies injure the endothelium → a new basement membrane forms underneath → two layers of GBM",
+      "<strong>Glomerulitis:</strong> often coexists — endocapillary inflammation",
+      "<strong>cg</strong> is the Banff score that quantifies this chronic change"
+    ],
+    panel2Title: "🧬 Why this matters",
+    panel2Tagline: "Chronic, irreversible injury",
+    panel2List: [
+      "Double contours indicate <strong>chronic endothelial injury</strong>",
+      "This is the morphologic hallmark of <strong>chronic active ABMR</strong>",
+      "Unlike active inflammation (g, ptc), <strong>cg does not reverse</strong> with treatment",
+      "It is a marker of <strong>established, irreversible damage</strong>",
+      "Higher cg scores correlate with <strong>worse graft survival</strong>"
+    ],
+    alertIcon: "🔬",
+    alertTitle: "The key finding",
+    alertText: "A <strong>second black line</strong> tracking along the inside of the capillary wall on silver stain = <strong>double contour</strong> = <strong>transplant glomerulopathy (cg)</strong>."
+  },
+  opt2: {
+    title: "🟣 Banff cg Scoring",
+    panelClass: "highlight-opt2",
+    infoRows: [
+      { k: "cg0", v: "0% — no double contours" },
+      { k: "cg1a", v: "EM only (not seen by LM)" },
+      { k: "cg1b", v: "≤25% of loops" },
+      { k: "cg2", v: "26–50% of loops" },
+      { k: "cg3", v: ">50% of loops" }
+    ],
+    panel1Title: "📊 The scoring system",
+    panel1Tagline: "How cg is graded",
+    panel1List: [
+      "<strong>cg0:</strong> No double contours on light microscopy or EM",
+      "<strong>cg1a:</strong> No double contours by light microscopy, but ≥3 glomerular capillaries show duplication on EM (Banff 2015 addition)",
+      "<strong>cg1b:</strong> ≤25% of capillary loops show double contours by light microscopy",
+      "<strong>cg2:</strong> 26–50% of capillary loops show double contours",
+      "<strong>cg3:</strong> >50% of capillary loops show double contours"
+    ],
+    panel2Title: "🔬 Technical points",
+    panel2Tagline: "What counts",
+    panel2List: [
+      "Scored on the <strong>most affected non-sclerotic glomerulus</strong>",
+      "At least <strong>10 glomeruli</strong> should be sampled for reliable scoring",
+      "<strong>Only global sclerosis</strong> is excluded from the denominator",
+      "<strong>Segmental sclerosis</strong> does not disqualify a glomerulus",
+      "Silver stain (Jones methenamine silver) is the standard stain for identifying double contours"
+    ],
+    alertIcon: "🟣",
+    alertTitle: "Pearl — cg1a is EM-only",
+    alertText: "<strong>cg1a</strong> is diagnosed when double contours are <strong>not visible on light microscopy</strong> but are seen on <strong>electron microscopy</strong> in at least 3 capillaries."
+  },
+  opt3: {
+    title: "🔵 Clinical Significance",
+    panelClass: "highlight-opt3",
+    infoRows: [
+      { k: "Meaning", v: "Chronic GBM duplication" },
+      { k: "Cause", v: "Antibody-mediated endothelial injury" },
+      { k: "Reversibility", v: "Irreversible" },
+      { k: "Prognosis", v: "Worse with higher cg" },
+      { k: "Role in Banff", v: "Criterion 1 (chronic injury)" }
+    ],
+    panel1Title: "🧬 What cg tells you",
+    panel1Tagline: "The clinical picture",
+    panel1List: [
+      "cg indicates <strong>chronic endothelial injury</strong> — the endothelium has been repeatedly damaged by antibodies",
+      "A new basement membrane forms underneath the damaged one → <strong>double contour</strong>",
+      "This is <strong>irreversible</strong> — unlike active inflammation (g, ptc), it does not resolve with treatment",
+      "cg > 0 satisfies <strong>Banff criterion 1</strong> for chronic active ABMR (chronic tissue injury)",
+      "It is the morphologic <strong>hallmark of chronic ABMR</strong>"
+    ],
+    panel2Title: "📊 Prognosis",
+    panel2Tagline: "What it means for the graft",
+    panel2List: [
+      "cg is associated with <strong>progressive graft dysfunction</strong> and <strong>proteinuria</strong>",
+      "Higher cg scores → <strong>worse graft survival</strong>",
+      "<strong>cg3</strong> has the worst prognosis",
+      "<strong>cg1</strong> has a better prognosis than cg2 or cg3",
+      "Early detection allows <strong>timely intervention</strong> (though cg itself does not reverse)",
+      "Treatment focuses on <strong>controlling the antibody response</strong> to prevent further damage"
+    ],
+    alertIcon: "🎯",
+    alertTitle: "Key takeaway",
+    alertText: "cg is the <strong>morphologic hallmark of chronic ABMR</strong>. Once double contours develop, the injury is established. The goal is to <strong>prevent progression</strong>."
+  },
+  opt4: {
+    title: "🟡 References & Sources",
+    panelClass: "highlight-opt4",
+    infoRows: [
+      { k: "Source 1", v: "PMC6451154 — Figure 1" },
+      { k: "Source 2", v: "Wikimedia Commons" },
+      { k: "Source 3", v: "AJKD Blog — PathPointer" },
+      { k: "Stain", v: "Jones methenamine silver / PAS" },
+      { k: "Finding", v: "Double contours (cg)" }
+    ],
+    panel1Title: "🔗 Image sources",
+    panel1Tagline: "Open-access",
+    panel1List: [
+      "<strong>PMC6451154 — Figure 1:</strong> 'A glomerulus shows global, prominent double contours... on Jones methenamine silver stain'",
+      "<strong>Wikimedia Commons:</strong> 'Very high magnification micrograph of transplant glomerulopathy. PAS stain.'",
+      "<strong>AJKD Blog — PathPointer:</strong> 'When a second line appears to track along the inside of the capillary wall, it gives the appearance of a double line, double contour, or tram track'",
+      "These are <strong>real histology images</strong> showing the double contours of transplant glomerulopathy"
+    ],
+    panel2Title: "🧪 What to look for",
+    panel2Tagline: "In the real images",
+    panel2List: [
+      "A <strong>single black line</strong> = normal GBM",
+      "A <strong>second black line</strong> tracking inside the capillary wall = double contour (cg)",
+      "The second line may appear <strong>dashed or fragmented</strong> depending on the plane of section",
+      "<strong>Glomerulitis</strong> (endocapillary inflammation) often coexists",
+      "Compare normal loops (single line) to affected loops (double line)"
+    ],
+    alertIcon: "🔗",
+    alertTitle: "View the real images",
+    alertText: "The images above are from <strong>open-access sources</strong>. Click the links in the gallery to view the original pages."
+  }
+};
+
+const SVG_OPT2 = `
+<svg viewBox="0 0 1000 600" style="width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  
+  <rect width="1000" height="600" fill="#fdfdfd" rx="16"/>
+  
+  <!-- Normal Glomerulus (Left) -->
+  <g transform="translate(250, 300)">
+    <circle cx="0" cy="0" r="180" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+    <!-- Normal single lines -->
+    <g fill="none" stroke="#1a1a1a" stroke-width="5">
+      <path d="M -80 -40 Q -40 -120 0 -60 Q 40 -120 80 -40 Q 40 40 0 0 Q -40 40 -80 -40 Z"/>
+      <path d="M -80 40 Q -40 120 0 60 Q 40 120 80 40 Q 40 -40 0 0 Q -40 -40 -80 40 Z"/>
+    </g>
+    
+    <!-- Arrow pointing to normal loop from left -->
+    <line x1="-190" y1="-80" x2="-120" y2="-50" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowHead)"/>
+    <text x="-200" y="-85" text-anchor="end" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">Normal GBM</text>
+    <text x="-200" y="-65" text-anchor="end" font-family="Arial" font-weight="700" font-size="14" fill="#7f1d1d">(Single black line)</text>
+    <text x="-200" y="-45" text-anchor="end" font-family="Arial" font-size="13" fill="#166534">No double contours</text>
+    
+    <text x="0" y="220" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#166534">cg0</text>
+  </g>
+
+  <!-- Arrow between glomeruli -->
+  <line x1="450" y1="300" x2="530" y2="300" stroke="#dc2626" stroke-width="6" marker-end="url(#arrowHead)"/>
+  <text x="490" y="280" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#dc2626">Injury</text>
+
+  <!-- Abnormal Glomerulus (Right) -->
+  <g transform="translate(750, 300)">
+    <circle cx="0" cy="0" r="180" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+    <!-- Double contour loops -->
+    <g fill="none" stroke="#1a1a1a" stroke-width="4">
+      <!-- Outer -->
+      <path d="M -80 -40 Q -40 -120 0 -60 Q 40 -120 80 -40 Q 40 40 0 0 Q -40 40 -80 -40 Z"/>
+      <!-- Inner (duplicated) -->
+      <path d="M -70 -30 Q -35 -105 0 -45 Q 35 -105 70 -30 Q 35 30 0 -5 Q -35 30 -70 -30 Z" stroke-dasharray="8 4"/>
+      
+      <!-- Outer -->
+      <path d="M -80 40 Q -40 120 0 60 Q 40 120 80 40 Q 40 -40 0 0 Q -40 -40 -80 40 Z"/>
+      <!-- Inner (duplicated) -->
+      <path d="M -70 30 Q -35 105 0 45 Q 35 105 70 30 Q 35 -30 0 5 Q -35 -30 -70 30 Z" stroke-dasharray="8 4"/>
+    </g>
+    
+    <!-- Arrow pointing to double contour from right -->
+    <line x1="190" y1="-80" x2="120" y2="-50" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowHead)"/>
+    <text x="200" y="-85" text-anchor="start" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">Double Contour</text>
+    <text x="200" y="-65" text-anchor="start" font-family="Arial" font-weight="700" font-size="14" fill="#7f1d1d">(Tram-track / cg)</text>
+    <text x="200" y="-45" text-anchor="start" font-family="Arial" font-size="13" fill="#991b1b">Second dashed line = new GBM</text>
+    
+    <text x="0" y="220" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#dc2626">cg1 - cg3</text>
+  </g>
+
+  <!-- Banff Scale at bottom -->
+  <g transform="translate(500, 540)">
+    <rect x="-400" y="-20" width="800" height="40" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    
+    <!-- cg0 -->
+    <rect x="-380" y="-10" width="140" height="20" rx="4" fill="#16a34a"/>
+    <text x="-310" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#fff">cg0 (0%)</text>
+    
+    <!-- cg1a -->
+    <rect x="-230" y="-10" width="140" height="20" rx="4" fill="#ca8a04"/>
+    <text x="-160" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#fff">cg1a (EM)</text>
+    
+    <!-- cg1b -->
+    <rect x="-80" y="-10" width="140" height="20" rx="4" fill="#ca8a04"/>
+    <text x="-10" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#fff">cg1b (≤25%)</text>
+    
+    <!-- cg2 -->
+    <rect x="70" y="-10" width="140" height="20" rx="4" fill="#dc2626"/>
+    <text x="140" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#fff">cg2 (26-50%)</text>
+    
+    <!-- cg3 -->
+    <rect x="220" y="-10" width="140" height="20" rx="4" fill="#7c3aed"/>
+    <text x="290" y="5" text-anchor="middle" font-family="Arial" font-weight="800" font-size="12" fill="#fff">cg3 (>50%)</text>
+  </g>
+</svg>
+`;
+
+const SVG_OPT3 = `
+<svg viewBox="0 0 1000 600" style="width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowHead2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowHeadBad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  
+  <rect width="1000" height="600" fill="#fdfdfd" rx="16"/>
+  
+  <!-- Step 1: Antibodies -->
+  <g transform="translate(150, 100)">
+    <rect x="-120" y="-50" width="240" height="100" rx="16" fill="#cffafe" stroke="#0891b2" stroke-width="3"/>
+    <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#155e75">1. Antibody Binding</text>
+    <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="13" fill="#0e7490">Donor-specific antibodies</text>
+    <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="13" fill="#0e7490">target the endothelium</text>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <line x1="280" y1="100" x2="370" y2="100" stroke="#2563eb" stroke-width="5" marker-end="url(#arrowHead2)"/>
+  
+  <!-- Step 2: Endothelial Injury -->
+  <g transform="translate(500, 100)">
+    <rect x="-120" y="-50" width="240" height="100" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+    <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">2. Endothelial Injury</text>
+    <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Complement activation</text>
+    <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">and cell damage</text>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <line x1="630" y1="100" x2="720" y2="100" stroke="#2563eb" stroke-width="5" marker-end="url(#arrowHead2)"/>
+  
+  <!-- Step 3: New GBM -->
+  <g transform="translate(850, 100)">
+    <rect x="-120" y="-50" width="240" height="100" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+    <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#5b21b6">3. New GBM Layer</text>
+    <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="13" fill="#6d28d9">A second basement</text>
+    <text x="0" y="30" text-anchor="middle" font-family="Arial" font-size="13" fill="#6d28d9">membrane forms</text>
+  </g>
+
+  <!-- Arrow down -->
+  <line x1="850" y1="160" x2="850" y2="250" stroke="#dc2626" stroke-width="5" marker-end="url(#arrowHeadBad)"/>
+
+  <!-- Result: Double Contour -->
+  <g transform="translate(850, 350)">
+    <rect x="-150" y="-60" width="300" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+    <text x="0" y="-25" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#991b1b">4. Double Contour (cg)</text>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">The "tram-track" appearance</text>
+    <text x="0" y="30" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#dc2626">This is IRREVERSIBLE</text>
+  </g>
+
+  <!-- Arrow down -->
+  <line x1="850" y1="420" x2="850" y2="500" stroke="#dc2626" stroke-width="5" marker-end="url(#arrowHeadBad)"/>
+
+  <!-- Result: Graft Dysfunction -->
+  <g transform="translate(850, 550)">
+    <rect x="-150" y="-40" width="300" height="80" rx="16" fill="#0f172a"/>
+    <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-weight="800" font-size="18" fill="#fff">5. Graft Dysfunction</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Arial" font-size="14" fill="#cbd5e1">Proteinuria · Rising Cr · Graft loss</text>
+  </g>
+
+  <!-- Side annotation -->
+  <g transform="translate(300, 350)">
+    <rect x="-150" y="-80" width="300" height="160" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="0" y="-45" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#0f172a">Why it matters:</text>
+    <text x="0" y="-15" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">cg is the morphologic</text>
+    <text x="0" y="10" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">hallmark of chronic ABMR</text>
+    <text x="0" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">It satisfies Banff Criterion 1</text>
+    <text x="0" y="60" text-anchor="middle" font-family="Arial" font-weight="700" font-size="14" fill="#dc2626">(Chronic tissue injury)</text>
+    
+    <!-- Arrow pointing to Double Contour -->
+    <line x1="150" y1="0" x2="280" y2="0" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 3" marker-end="url(#arrowHeadBad)"/>
+  </g>
+</svg>
+`;
+
+const SVG_OPT4 = `
+<svg viewBox="0 0 1000 600" style="width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowHead4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ca8a04"/>
+    </marker>
+  </defs>
+  
+  <rect width="1000" height="600" fill="#fdfdfd" rx="16"/>
+  
+  <!-- Central Node -->
+  <g transform="translate(500, 300)">
+    <circle cx="0" cy="0" r="120" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+    <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#713f12">Real Microscopic</text>
+    <text x="0" y="10" text-anchor="middle" font-family="Arial" font-weight="800" font-size="20" fill="#713f12">Images</text>
+    <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" fill="#a16207">Double contours (cg)</text>
+  </g>
+
+  <!-- Source 1 -->
+  <g transform="translate(150, 150)">
+    <rect x="-120" y="-50" width="240" height="100" rx="14" fill="#fff" stroke="#16a34a" stroke-width="3"/>
+    <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#166534">PMC6451154</text>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Figure 1: Jones silver stain</text>
+    <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Global double contours</text>
+    <line x1="120" y1="30" x2="280" y2="200" stroke="#ca8a04" stroke-width="3" marker-end="url(#arrowHead4)"/>
+  </g>
+
+  <!-- Source 2 -->
+  <g transform="translate(850, 150)">
+    <rect x="-120" y="-50" width="240" height="100" rx="14" fill="#fff" stroke="#7c3aed" stroke-width="3"/>
+    <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#5b21b6">Wikimedia Commons</text>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="13" fill="#6d28d9">PAS stain, very high mag</text>
+    <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="13" fill="#6d28d9">Thickened capillary loops</text>
+    <line x1="-120" y1="30" x2="-280" y2="200" stroke="#ca8a04" stroke-width="3" marker-end="url(#arrowHead4)"/>
+  </g>
+
+  <!-- Source 3 -->
+  <g transform="translate(500, 500)">
+    <rect x="-150" y="-50" width="300" height="100" rx="14" fill="#fff" stroke="#dc2626" stroke-width="3"/>
+    <text x="0" y="-20" text-anchor="middle" font-family="Arial" font-weight="800" font-size="16" fill="#991b1b">AJKD Blog — PathPointer</text>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">"Tram-Tracking in a Transplant"</text>
+    <text x="0" y="25" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Images of double contours</text>
+    <line x1="0" y1="-50" x2="0" y2="-120" stroke="#ca8a04" stroke-width="3" marker-end="url(#arrowHead4)"/>
+  </g>
+
+  <!-- Text Labels -->
+  <text x="500" y="80" text-anchor="middle" font-family="Arial" font-weight="800" font-size="22" fill="#0f172a">Open-Access Sources</text>
+  <text x="500" y="110" text-anchor="middle" font-family="Arial" font-size="15" fill="#64748b">Arrows point to the images provided by each source</text>
+  
+</svg>
+`;
+
+const GALLERY_HTML = `
+<div class="gallery">
+  <figure>
+    <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/6cfb/6451154/267ba9929860/gr1.jpg"
+         alt="Transplant glomerulopathy with double contours on Jones methenamine silver stain"
+         loading="lazy">
+    <figcaption>
+      <strong>Jones methenamine silver stain, ×400.</strong>
+      A glomerulus shows <strong>global, prominent double contours</strong> of glomerular capillary basement membranes.
+      The arrow indicates segmental glomerulitis with a capillary occluded by leukocytes.
+      <em>Source: PMC6451154, Figure 1 (open-access).</em>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Transplant_glomerulopathy_-_very_high_mag.jpg"
+         alt="Very high magnification micrograph of transplant glomerulopathy, PAS stain"
+         loading="lazy">
+    <figcaption>
+      <strong>PAS stain, very high magnification.</strong>
+      Kidney biopsy showing changes characteristic of <strong>transplant glomerulopathy</strong>.
+      Note the thickened capillary loops and the <strong>double-contour</strong> appearance.
+      <em>Source: Wikimedia Commons (open-access).</em>
+    </figcaption>
+  </figure>
+</div>
+`;
+
+const QUIZ = [
+  {
+    question: "What does the abbreviation 'cg' stand for in the Banff classification?",
+    options: [
+      { text: "Transplant glomerulopathy (chronic GBM duplication)", correct: true, explanation: "cg stands for transplant glomerulopathy, a marker of chronic injury." },
+      { text: "Chronic graft fibrosis", correct: false, explanation: "Fibrosis is scored as 'ci' (interstitial fibrosis). cg specifically refers to glomerular changes." },
+      { text: "Cellular glomerulitis", correct: false, explanation: "Active glomerulitis is scored as 'g'. The 'c' in cg stands for chronic." }
+    ]
+  },
+  {
+    question: "Which microscopic finding is the hallmark of transplant glomerulopathy (cg)?",
+    options: [
+      { text: "Double contours ('tram-tracks') of the GBM on silver stain", correct: true, explanation: "Double contours are the morphologic hallmark of cg. A second layer of basement membrane forms underneath the damaged endothelium." },
+      { text: "Subepithelial immune deposits", correct: false, explanation: "Subepithelial deposits are characteristic of membranous nephropathy." },
+      { text: "Mesangial hypercellularity", correct: false, explanation: "Mesangial hypercellularity is seen in IgA nephropathy, not specifically in cg." }
+    ]
+  },
+  {
+    question: "A biopsy shows 26% to 50% of capillary loops with double contours. What is the cg score?",
+    options: [
+      { text: "cg2", correct: true, explanation: "cg2 is defined as 26–50% of capillary loops showing double contours." },
+      { text: "cg1b", correct: false, explanation: "cg1b is ≤25% of loops." },
+      { text: "cg3", correct: false, explanation: "cg3 is >50% of loops." }
+    ]
+  },
+  {
+    question: "How is cg1a diagnosed if no double contours are seen on light microscopy?",
+    options: [
+      { text: "By electron microscopy showing duplication in ≥3 capillaries", correct: true, explanation: "cg1a was introduced in the 2015 Banff classification to capture early chronic injury that is not visible on light microscopy but is evident on EM." },
+      { text: "By immunofluorescence showing C4d positivity", correct: false, explanation: "C4d is a marker of active antibody interaction, not a criterion for cg1a." },
+      { text: "By elevated serum creatinine", correct: false, explanation: "Creatinine is a clinical marker, not a diagnostic criterion for cg scoring." }
+    ]
+  },
+  {
+    question: "Does transplant glomerulopathy (cg) reverse with treatment?",
+    options: [
+      { text: "No, it represents irreversible chronic injury", correct: true, explanation: "cg represents established structural damage. Unlike active inflammation (g, ptc), it does not reverse with immunosuppression." },
+      { text: "Yes, with high-dose steroids", correct: false, explanation: "cg is a chronic, irreversible lesion. Active inflammation (g, ptc) may reverse, but cg does not." },
+      { text: "Yes, but only with plasma exchange", correct: false, explanation: "No treatment reverses established cg." }
+    ]
+  },
+  {
+    question: "Which Banff criterion does cg satisfy in the diagnosis of chronic active ABMR?",
+    options: [
+      { text: "Criterion 1 — Morphologic evidence of chronic tissue injury", correct: true, explanation: "cg > 0 is the morphologic marker of chronic tissue injury and satisfies criterion 1 for chronic active ABMR." },
+      { text: "Criterion 2 — Evidence of antibody interaction with endothelium", correct: false, explanation: "Criterion 2 is satisfied by C4d positivity or microvascular inflammation, not by cg." },
+      { text: "Criterion 3 — Serologic evidence of DSA", correct: false, explanation: "Criterion 3 is satisfied by donor-specific antibodies, not by cg." }
+    ]
+  },
+  {
+    question: "Which stain is standard for identifying double contours in transplant glomerulopathy?",
+    options: [
+      { text: "Jones methenamine silver stain", correct: true, explanation: "Silver stain highlights the basement membrane, making double contours visible." },
+      { text: "H&E stain", correct: false, explanation: "H&E can show thickening but is less reliable for identifying double contours." },
+      { text: "Congo red stain", correct: false, explanation: "Congo red is for amyloidosis." }
+    ]
+  },
+  {
+    question: "What is the mechanism that causes the double contour in cg?",
+    options: [
+      { text: "Antibodies injure the endothelium, and a new basement membrane forms underneath", correct: true, explanation: "Endothelial injury leads to the formation of a second layer of GBM." },
+      { text: "Deposition of amyloid fibrils in the GBM", correct: false, explanation: "Amyloidosis is a different disease." },
+      { text: "Direct toxic effect of calcineurin inhibitors", correct: false, explanation: "CNI toxicity causes different changes, such as isometric vacuolization or nodular hyalinosis." }
+    ]
+  }
+];
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = QUIZ.map(function(q){
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+function setMode(mode) {
+  const d = CONFIG[mode];
+  if (!d) return;
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const idx = ['opt1','opt2','opt3','opt4'].indexOf(mode);
+  if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+
+  const col = document.getElementById('diagram-col');
+  if (mode === 'opt1') {
+    col.innerHTML = GALLERY_HTML;
+  } else if (mode === 'opt2') {
+    col.innerHTML = SVG_OPT2;
+  } else if (mode === 'opt3') {
+    col.innerHTML = SVG_OPT3;
+  } else if (mode === 'opt4') {
+    col.innerHTML = SVG_OPT4;
+  }
+
+  const panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(r =>
+    `<div class="row"><span class="k">${r.k}</span><span class="v">${r.v}</span></div>`
+  ).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(li => `<li>${li}</li>`).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+let panelCollapsed = false;
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  const panel = document.getElementById('infoPanel');
+  const btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+function buildQuiz() {
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map((q, qi) => {
+    return `
+      <div class="q" data-qi="${qi}">
+        <p>${qi + 1}. ${q.question}</p>
+        <div class="opts">
+          ${q.options.map((o, oi) => `<button class="opt" data-qi="${qi}" data-oi="${oi}">${o.text}</button>`).join('')}
+        </div>
+        <div class="explain"></div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('quizGrid').addEventListener('click', function(e) {
+    const btn = e.target.closest('.opt');
+    if (!btn) return;
+    const qi = parseInt(btn.dataset.qi, 10);
+    const oi = parseInt(btn.dataset.oi, 10);
+    const q = RUNTIME_QUIZ[qi];
+    const o = q.options[oi];
+    const box = btn.closest('.q');
+
+    box.querySelectorAll('.opt').forEach(b => b.classList.remove('correct', 'wrong'));
+    btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+    const explain = box.querySelector('.explain');
+    explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+    explain.innerHTML = `<strong class="${o.correct ? 'correct' : 'wrong'}">${o.correct ? '✔ Correct.' : '✘ Not quite.'}</strong> ${o.explanation}`;
+  });
+}
+
+document.getElementById('tabs').innerHTML = `
+  <button class="tab opt1 active" onclick="setMode('opt1')">🔴 Microscopic Images</button>
+  <button class="tab opt2" onclick="setMode('opt2')">🟣 Banff cg Scoring</button>
+  <button class="tab opt3" onclick="setMode('opt3')">🔵 Clinical Significance</button>
+  <button class="tab opt4" onclick="setMode('opt4')">🟡 References</button>
+`;
+
+buildQuiz();
+setMode('opt1');
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T15:32:51.189360+00:00",
+  "generated_at": "2026-10-21T13:07:03.436824+00:00",
   "chatgpt_board_plan": {
     "title": "25-Day Board Plan (ChatGPT)",
     "url": "https://chatgpt.com/share/6ad63071-6884-83e9-ab31-2acc11fe3649",
@@ -21,6 +21,11 @@
     },
     "note": "ASN BRCU 2025 answer key \u2014 local Desktop study PDF (not redistributed in-app).",
     "desktop_folder": "Desktop/Nephrology Teaching/_organized_by_chapter/_reference/BRCU-2025"
+  },
+  "animations_index": {
+    "title": "Teaching HTML & animations catalog",
+    "url": "https://zub165.github.io/nephro-challenge-ai/animations/index.html",
+    "description": "All Nephrology Teaching HTML lessons organized by chapter."
   },
   "html_lessons": {
     "base_path": "medical",
@@ -49,6 +54,11 @@
             "slug": "diarrhea-and-laxative",
             "title": "Diarrhea And Laxative",
             "path": "acid-base-disorders/diarrhea-and-laxative.html"
+          },
+          {
+            "slug": "distal-renal-tubular-acidosis1",
+            "title": "Distal Renal Tubular Acidosis1",
+            "path": "acid-base-disorders/distal-renal-tubular-acidosis1.html"
           },
           {
             "slug": "fanconi-syndrome",
@@ -381,6 +391,11 @@
             "path": "dialysis/interactive-crrt-flow.html"
           },
           {
+            "slug": "intradialytic-hypotension-prescription-optimization",
+            "title": "Intradialytic Hypotension Prescription Optimization",
+            "path": "dialysis/intradialytic-hypotension-prescription-optimization.html"
+          },
+          {
             "slug": "operitoneal-dialysis",
             "title": "Operitoneal Dialysis",
             "path": "dialysis/operitoneal-dialysis.html"
@@ -394,6 +409,11 @@
             "slug": "peritoneal-dialysis-volume-overload",
             "title": "Peritoneal Dialysis Volume Overload",
             "path": "dialysis/peritoneal-dialysis-volume-overload.html"
+          },
+          {
+            "slug": "pleuroperitoneal-leak",
+            "title": "Pleuroperitoneal Leak",
+            "path": "dialysis/pleuroperitoneal-leak.html"
           },
           {
             "slug": "spktv",
@@ -639,6 +659,11 @@
             "path": "transplantation/apol1-associated-kidney-disease-after-transplantation.html"
           },
           {
+            "slug": "banff-classification-active-vs-chronic-active-abmr",
+            "title": "Banff Classification Active Vs Chronic Active Abmr",
+            "path": "transplantation/banff-classification-active-vs-chronic-active-abmr.html"
+          },
+          {
             "slug": "belatacept-costimulation-blockade-and-ebv-serostatus",
             "title": "Belatacept Costimulation Blockade And Ebv Serostatus",
             "path": "transplantation/belatacept-costimulation-blockade-and-ebv-serostatus.html"
@@ -679,6 +704,21 @@
             "path": "transplantation/dgf.html"
           },
           {
+            "slug": "glomerulitis-vs-transplant-glomerulopathy",
+            "title": "Glomerulitis Vs Transplant Glomerulopathy",
+            "path": "transplantation/glomerulitis-vs-transplant-glomerulopathy.html"
+          },
+          {
+            "slug": "lomerulitis-vs-transplant-glomerulopathy",
+            "title": "Lomerulitis Vs Transplant Glomerulopathy",
+            "path": "transplantation/lomerulitis-vs-transplant-glomerulopathy.html"
+          },
+          {
+            "slug": "microvascular-inflammation",
+            "title": "Microvascular Inflammation",
+            "path": "transplantation/microvascular-inflammation.html"
+          },
+          {
             "slug": "recurrent-fsgs-vs-genetic-fsgs-after-transplant",
             "title": "Recurrent Fsgs Vs Genetic Fsgs After Transplant",
             "path": "transplantation/recurrent-fsgs-vs-genetic-fsgs-after-transplant.html"
@@ -692,6 +732,11 @@
             "slug": "tc-rejection",
             "title": "Tc Rejection",
             "path": "transplantation/tc-rejection.html"
+          },
+          {
+            "slug": "transplant-glomerulopathy-cg-visual-guide",
+            "title": "Transplant Glomerulopathy Cg Visual Guide",
+            "path": "transplantation/transplant-glomerulopathy-cg-visual-guide.html"
           },
           {
             "slug": "transplant-glomerulopathy-cg",
@@ -807,5 +852,6 @@
         ]
       }
     ]
-  }
+  },
+  "added_this_run": []
 }

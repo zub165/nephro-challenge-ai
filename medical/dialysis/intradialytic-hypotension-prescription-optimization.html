@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intradialytic Hypotension — Prescription Optimization</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lumenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e0f2fe"/>
+            <stop offset="100%" stop-color="#bae6fd"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#991b1b">RECURRENT INTRADIALYTIC HYPOTENSION</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">74F · ESKD on HD · 3.8 L UF over 3.5 h · Nadir BP 76/42 · Presyncope in final hour</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#991b1b">Post-dialysis weight 70 kg · Dialysate 37°C · LVEF 55%</text>
+          </g>
+
+          <!-- Card 1: The Problem -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE PROBLEM</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="700">UF volume</text>
+              <text x="50" y="-92" font-weight="800" fill="#dc2626">3.8 L</text>
+              <text x="-170" y="-68" font-weight="700">Time</text>
+              <text x="50" y="-68" font-weight="800" fill="#dc2626">3.5 hours</text>
+              <text x="-170" y="-44" font-weight="700">UF rate</text>
+              <text x="50" y="-44" font-weight="800" fill="#dc2626">~15.5 mL/kg/h</text>
+              <text x="-170" y="-20" font-weight="700">Nadir BP</text>
+              <text x="50" y="-20" font-weight="800" fill="#dc2626">76/42 mmHg</text>
+              <text x="-170" y="4" font-weight="700">Symptoms</text>
+              <text x="50" y="4" font-weight="800" fill="#dc2626">Presyncope, nausea</text>
+            </g>
+
+            <line x1="-170" y1="28" x2="170" y2="28" stroke="#fecaca" stroke-width="2"/>
+
+            <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">UF Rate > 13 mL/kg/h</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Associated with IDH and</text>
+            <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">myocardial stunning</text>
+
+            <rect x="-170" y="118" width="340" height="42" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">The UF rate is too high</text>
+          </g>
+
+          <!-- Card 2: Clinical Findings -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">CLINICAL FINDINGS</text>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-92" font-weight="700">LVEF</text>
+              <text x="50" y="-92" font-weight="800" fill="#166534">55% (normal)</text>
+              <text x="-170" y="-68" font-weight="700">Interdialytic weight gain</text>
+              <text x="50" y="-68" font-weight="800" fill="#dc2626">3.8 kg</text>
+              <text x="-170" y="-44" font-weight="700">Residual urine output</text>
+              <text x="50" y="-44" font-weight="800" fill="#334155">Minimal</text>
+              <text x="-170" y="-20" font-weight="700">Post-dialysis exam</text>
+              <text x="50" y="-20" font-weight="800" fill="#166534">No edema/congestion</text>
+              <text x="-170" y="4" font-weight="700">Dialysate temp</text>
+              <text x="50" y="4" font-weight="800" fill="#dc2626">37°C</text>
+            </g>
+
+            <line x1="-170" y1="28" x2="170" y2="28" stroke="#ddd6fe" stroke-width="2"/>
+
+            <text x="0" y="58" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#5b21b6">Prescription Factors</text>
+            <text x="0" y="80" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Warm dialysate (37°C)</text>
+            <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">causes vasodilation</text>
+            <text x="0" y="120" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">High UF rate → volume depletion</text>
+          </g>
+
+          <!-- Card 3: Answer -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">THE ANSWER</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">Cooler Dialysate</text>
+            <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">+ Longer Time</text>
+            <line x1="-150" y1="-44" x2="150" y2="-44" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-14">• Temp 35.5–36°C</text>
+              <text x="-170" y="10">• Extend to 4–4.5 hours</text>
+              <text x="-170" y="34">• UF rate drops to ~12 mL/kg/h</text>
+              <text x="-170" y="58">• No sodium loading</text>
+              <text x="-170" y="82">• Reduces IDH</text>
+            </g>
+
+            <rect x="-170" y="106" width="340" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="126" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Answer: C</text>
+            <text x="0" y="144" text-anchor="middle" font-family="Arial" font-size="12" fill="#15803d">Cool + longer = safer</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — PATHOPHYSIOLOGY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#5b21b6">PATHOPHYSIOLOGY OF INTRADIALYTIC HYPOTENSION</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#6d28d9">Two major drivers: rapid UF and thermal vasodilation</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#5b21b6">The UF rate exceeds the plasma refill rate, while warm dialysate causes vasodilation</text>
+          </g>
+
+          <!-- Two pathway diagram -->
+          <g transform="translate(700, 460)">
+            
+            <!-- Left: UF Rate -->
+            <g transform="translate(-350, 0)">
+              <rect x="-220" y="-180" width="440" height="360" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text x="0" y="-145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">HIGH UF RATE</text>
+              
+              <text x="0" y="-110" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">UF rate > 13 mL/kg/h</text>
+              <text x="0" y="-84" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Fluid is removed faster than</text>
+              <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">the plasma refill rate</text>
+
+              <line x1="-190" y1="-40" x2="190" y2="-40" stroke="#fecaca" stroke-width="2"/>
+
+              <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">↓ Intravascular volume</text>
+              <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">↓ Preload</text>
+              <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">↓ Stroke volume</text>
+              <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">↓ Cardiac output</text>
+
+              <line x1="-190" y1="80" x2="190" y2="80" stroke="#fecaca" stroke-width="2"/>
+
+              <text x="0" y="110" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#dc2626">HYPOTENSION</text>
+              <text x="0" y="134" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">Presyncope, nausea, cramps</text>
+            </g>
+
+            <!-- Right: Warm Dialysate -->
+            <g transform="translate(350, 0)">
+              <rect x="-220" y="-180" width="440" height="360" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+              <text x="0" y="-145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">WARM DIALYSATE</text>
+              
+              <text x="0" y="-110" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#0f172a">37°C</text>
+              <text x="0" y="-84" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Heat is transferred to</text>
+              <text x="0" y="-64" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">the patient</text>
+
+              <line x1="-190" y1="-40" x2="190" y2="-40" stroke="#fecaca" stroke-width="2"/>
+
+              <text x="0" y="-10" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">Peripheral vasodilation</text>
+              <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">↓ Systemic vascular resistance</text>
+              <text x="0" y="34" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">Blood pools in periphery</text>
+              <text x="0" y="54" text-anchor="middle" font-family="Arial" font-size="13" fill="#334155">↓ Venous return</text>
+
+              <line x1="-190" y1="80" x2="190" y2="80" stroke="#fecaca" stroke-width="2"/>
+
+              <text x="0" y="110" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#dc2626">HYPOTENSION</text>
+              <text x="0" y="134" text-anchor="middle" font-family="Arial" font-size="13" fill="#64748b">Exacerbates UF-induced crash</text>
+            </g>
+
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 780)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">THE GOAL IS TO FIX BOTH</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">1. Lower the UF rate (extend time)</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">2. Promote vasoconstriction (cooler dialysate)</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Both strategies work together without adding sodium</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — WHY OTHERS FAIL
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#155e75">WHY THE OTHER OPTIONS FAIL</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#0e7490">Each option has a fatal flaw</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#155e75">The correct answer is C</text>
+          </g>
+
+          <!-- Card A: Sodium Loading -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#dc2626" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#dc2626"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#dc2626"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">A — INCREASE SODIUM</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fecaca" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Chronically increases sodium</text>
+              <text x="-170" y="-10">• Worsens thirst</text>
+              <text x="-170" y="14">• Increases interdialytic weight gain</text>
+              <text x="-170" y="38">• Worsens hypertension</text>
+              <text x="-170" y="62">• Does not fix the UF rate problem</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#991b1b">Chronic sodium loading</text>
+          </g>
+
+          <!-- Card B: Increase UF -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">B — INCREASE UF RATE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Worsens hypotension</text>
+              <text x="-170" y="-10">• UF rate is already too high</text>
+              <text x="-170" y="14">• More fluid removed faster than</text>
+              <text x="-150" y="34">plasma refill</text>
+              <text x="-170" y="58">• More myocardial stunning</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Makes it worse</text>
+          </g>
+
+          <!-- Card D: Warm Dialysate -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#0891b2" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#0891b2"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#0891b2"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">D — INCREASE TEMP</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#dc2626">INCORRECT</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#cffafe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Warm dialysate causes</text>
+              <text x="-150" y="-14">vasodilation</text>
+              <text x="-170" y="14">• Lowers blood pressure</text>
+              <text x="-170" y="38">• Worsens IDH</text>
+              <text x="-170" y="62">• The opposite of what is needed</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="42" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="116" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#155e75">Causes vasodilation</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — MANAGEMENT
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 145)">
+            <rect x="-620" y="-55" width="1240" height="110" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-14" text-anchor="middle" font-family="Arial" font-size="22" font-weight="800" fill="#713f12">MANAGEMENT OF INTRADIALYTIC HYPOTENSION</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="15" fill="#854d0e">Cool the dialysate and extend the time</text>
+            <text x="0" y="40" text-anchor="middle" font-family="Arial" font-size="14" font-weight="700" fill="#713f12">The correct answer is C</text>
+          </g>
+
+          <!-- Step 1 -->
+          <g transform="translate(250, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#ca8a04" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#ca8a04"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#ca8a04"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">1 — COOL THE DIALYSATE</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#713f12">Temp 35.5–36°C</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#fde68a" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Removes heat from the patient</text>
+              <text x="-170" y="-10">• Causes peripheral vasoconstriction</text>
+              <text x="-170" y="14">• Increases systemic vascular resistance</text>
+              <text x="-170" y="38">• Improves venous return</text>
+              <text x="-170" y="62">• Helps maintain blood pressure</text>
+            </g>
+
+            <rect x="-170" y="90" width="340" height="46" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+            <text x="0" y="110" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#713f12">Cool → vasoconstrict</text>
+            <text x="0" y="128" text-anchor="middle" font-family="Arial" font-size="12" fill="#854d0e">Reduces IDH</text>
+          </g>
+
+          <!-- Step 2 -->
+          <g transform="translate(700, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#fff" stroke="#7c3aed" stroke-width="4"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#7c3aed"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#7c3aed"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">2 — EXTEND DIALYSIS TIME</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#5b21b6">Lower the UF Rate</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#ddd6fe" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Current: 3.8 L / 3.5 h</text>
+              <text x="-150" y="-14">= 15.5 mL/kg/h</text>
+              <text x="-170" y="10">• Extend to 4.5 h:</text>
+              <text x="-150" y="30">= 12 mL/kg/h</text>
+              <text x="-170" y="54">• Slower UF allows better</text>
+              <text x="-150" y="74">plasma refilling</text>
+              <text x="-170" y="98">• Less hemodynamic stress</text>
+            </g>
+
+            <rect x="-170" y="122" width="340" height="42" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+            <text x="0" y="148" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#5b21b6">Slower UF = better stability</text>
+          </g>
+
+          <!-- Step 3 -->
+          <g transform="translate(1150, 430)">
+            <rect x="-200" y="-175" width="400" height="350" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="5"/>
+            <rect x="-200" y="-175" width="400" height="58" rx="20" fill="#16a34a"/>
+            <rect x="-200" y="-137" width="400" height="20" fill="#16a34a"/>
+            <text x="0" y="-140" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#fff">3 — WHAT TO AVOID</text>
+
+            <text x="0" y="-88" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">No Sodium Loading</text>
+            <line x1="-150" y1="-64" x2="150" y2="-64" stroke="#bbf7d0" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="13" fill="#334155">
+              <text x="-170" y="-34">• Increasing dialysate sodium</text>
+              <text x="-150" y="-14">can acutely help BP</text>
+              <text x="-170" y="14">• But it causes chronic</text>
+              <text x="-150" y="34">sodium loading</text>
+              <text x="-170" y="58">• Increases thirst and IDWG</text>
+              <text x="-170" y="82">• Worsens long-term outcomes</text>
+            </g>
+
+            <rect x="-170" y="106" width="340" height="42" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+            <text x="0" y="132" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#166534">Avoid chronic sodium loading</text>
+          </g>
+
+          <!-- Bottom bar -->
+          <g transform="translate(700, 720)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">THE KEY PEARL</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Cool dialysate (35.5–36°C) and extend dialysis time to lower the UF rate</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">This improves hemodynamics <tspan font-weight="800" fill="#166534">without chronic sodium loading</tspan></text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">The answer is C</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Intradialytic Hypotension — Prescription Optimization",
+  subtitle: "Cool dialysate and extend time to lower UF rate without sodium loading",
+  badge: "NEPHROLOGY · HEMODIALYSIS · IDH",
+  caseTitle: "Case: 74-year-old woman with recurrent intradialytic hypotension",
+  caseDescription: "74F on HD with recurrent IDH despite med adjustment. UF 3.8 L over 3.5 h, dialysate 37°C, dialysate Na 138. Nadir BP 76/42, presyncope in final hour. What is the best intervention to reduce IDH without chronic sodium loading?",
+  labChips: [
+    { text: "UF rate 15.5 mL/kg/h", abnormal: true },
+    { text: "Nadir BP 76/42", abnormal: true },
+    { text: "Dialysate 37°C", abnormal: true },
+    { text: "Na 138 mEq/L", abnormal: false },
+    { text: "LVEF 55%", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Case",              className: "opt1" },
+    { id: "opt2", label: "🟣 Pathophysiology",       className: "opt2" },
+    { id: "opt3", label: "🔵 Why Others Fail",       className: "opt3" },
+    { id: "opt4", label: "🟡 Management",            className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Case — IDH",
+      infoRows: [
+        { k: "Problem",    v: "Intradialytic hypotension" },
+        { k: "UF rate",    v: "15.5 mL/kg/h (too high)" },
+        { k: "Dialysate",  v: "37°C (vasodilatory)" },
+        { k: "Nadir BP",   v: "76/42 mmHg" },
+        { k: "LVEF",       v: "55% (normal)" },
+        { k: "Answer",     v: "C" }
+      ],
+      svgTitle: "The Case — Recurrent IDH",
+      svgSubtitle: "High UF rate and warm dialysate cause hemodynamic instability",
+      bannerBg: "#dc2626",
+      bannerText1: "UF rate is 15.5 mL/kg/h — above the 13 mL/kg/h threshold",
+      bannerText2: "Dialysate is 37°C — warm dialysate causes vasodilation",
+      panel1Title: "🧪 Reading the case",
+      panel1Tagline: "Why this patient crashes",
+      panel1List: [
+        "<strong>UF rate 15.5 mL/kg/h</strong> — exceeds the 13 mL/kg/h safety threshold",
+        "<strong>Warm dialysate (37°C)</strong> — causes vasodilation, lowering BP",
+        "<strong>Nadir BP 76/42</strong> — symptomatic hypotension",
+        "<strong>Presyncope, nausea</strong> — classic IDH symptoms in final hour",
+        "<strong>No volume overload</strong> — post-dialysis exam is dry"
+      ],
+      panel2Title: "🧬 The goal",
+      panel2Tagline: "What we want to achieve",
+      panel2List: [
+        "Reduce IDH",
+        "<strong>Do not</strong> cause chronic sodium loading",
+        "Preserve hemodynamic stability",
+        "Avoid volume overload",
+        "<strong>Cool dialysate + longer time</strong> is the answer"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The correct answer is C",
+      alertText: "<strong>Reduce dialysate temperature to 35.5–36°C and extend dialysis time</strong> to lower the UF rate."
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Pathophysiology of IDH",
+      infoRows: [
+        { k: "Driver 1",      v: "High UF rate" },
+        { k: "Consequence",   v: "↓ Intravascular volume" },
+        { k: "Driver 2",      v: "Warm dialysate" },
+        { k: "Consequence",   v: "Vasodilation" },
+        { k: "Result",        v: "↓ Cardiac output" },
+        { k: "Clinical",      v: "Hypotension" }
+      ],
+      svgTitle: "Pathophysiology of Intradialytic Hypotension",
+      svgSubtitle: "Two major drivers: rapid UF and thermal vasodilation",
+      bannerBg: "#7c3aed",
+      bannerText1: "High UF rate removes fluid faster than plasma refill",
+      bannerText2: "Warm dialysate causes vasodilation, worsening venous return",
+      panel1Title: "🔬 The mechanism",
+      panel1Tagline: "Why BP crashes",
+      panel1List: [
+        "<strong>High UF rate</strong> — fluid removed faster than refill → ↓ preload → ↓ stroke volume",
+        "<strong>Warm dialysate (37°C)</strong> — vasodilation → ↓ systemic vascular resistance",
+        "Together → <strong>↓ cardiac output</strong> and <strong>hypotension</strong>",
+        "Symptoms: nausea, cramps, presyncope",
+        "The final hour is most vulnerable"
+      ],
+      panel2Title: "🧬 The solution",
+      panel2Tagline: "Address both drivers",
+      panel2List: [
+        "<strong>Cool dialysate</strong> — causes vasoconstriction → ↑ SVR → ↑ BP",
+        "<strong>Extend time</strong> — lowers UF rate → better plasma refilling",
+        "Both are non-pharmacologic",
+        "Neither involves sodium loading",
+        "<strong>Combining both is most effective</strong>"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Target both drivers",
+      alertText: "Cooling the dialysate (for vasoconstriction) and extending time (to lower UF rate) address both causes of IDH."
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 Why Others Fail",
+      infoRows: [
+        { k: "A — Sodium",    v: "Chronic sodium loading" },
+        { k: "B — UF rate",   v: "Worsens IDH" },
+        { k: "D — Warm temp",  v: "Causes vasodilation" },
+        { k: "E — Saline",     v: "Does not fix prescription" },
+        { k: "C — Cool+longer", v: "Best option" },
+        { k: "Answer",         v: "C" }
+      ],
+      svgTitle: "Why the Other Options Fail",
+      svgSubtitle: "Each option has a critical flaw",
+      bannerBg: "#0891b2",
+      bannerText1: "Increasing sodium causes chronic volume overload",
+      bannerText2: "Warm dialysate worsens vasodilation",
+      panel1Title: "❌ Why each fails",
+      panel1Tagline: "The fatal flaws",
+      panel1List: [
+        "<strong>A — Increase dialysate sodium:</strong> causes <strong>chronic sodium loading</strong>, thirst, and volume overload",
+        "<strong>B — Increase UF rate:</strong> worsens IDH (already too high)",
+        "<strong>D — Increase temperature:</strong> causes <strong>vasodilation</strong>, lowering BP",
+        "<strong>E — Routine saline:</strong> does not fix the prescription; just adds volume that must be removed later"
+      ],
+      panel2Title: "🧬 The correct approach",
+      panel2Tagline: "Why C is best",
+      panel2List: [
+        "<strong>Cool dialysate</strong> — vasoconstriction, improves BP",
+        "<strong>Extend time</strong> — lowers UF rate, improves refill",
+        "<strong>No sodium loading</strong>",
+        "<strong>No extra fluid</strong>",
+        "Sustained, safe improvement"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Avoid the sodium trap",
+      alertText: "Increasing dialysate sodium is a short-term fix that causes long-term harm through volume overload."
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Management",
+      infoRows: [
+        { k: "Step 1",    v: "Cool dialysate to 35.5–36°C" },
+        { k: "Step 2",    v: "Extend time to 4–4.5 h" },
+        { k: "Goal",      v: "Lower UF rate" },
+        { k: "Goal",      v: "Vasoconstriction" },
+        { k: "Avoid",     v: "Sodium loading" },
+        { k: "Answer",    v: "C" }
+      ],
+      svgTitle: "Management of Intradialytic Hypotension",
+      svgSubtitle: "Cool the dialysate and extend the time",
+      bannerBg: "#ca8a04",
+      bannerText1: "Cool dialysate to 35.5–36°C to promote vasoconstriction",
+      bannerText2: "Extend dialysis time to lower the UF rate",
+      panel1Title: "✅ The management steps",
+      panel1Tagline: "How to apply this",
+      panel1List: [
+        "<strong>1. Cool dialysate to 35.5–36°C</strong>",
+        "<strong>2. Extend dialysis time to 4–4.5 hours</strong>",
+        "<strong>3. This lowers the UF rate to ~12 mL/kg/h</strong>",
+        "<strong>4. Avoid dialysate sodium > 138 mEq/L</strong>",
+        "<strong>5. Monitor BP and symptoms closely</strong>"
+      ],
+      panel2Title: "🧬 Why this works",
+      panel2Tagline: "Without sodium loading",
+      panel2List: [
+        "<strong>Cooler dialysate</strong> — removes heat, causes vasoconstriction",
+        "<strong>Longer time</strong> — slower UF rate, better refill",
+        "<strong>No chronic sodium loading</strong>",
+        "<strong>No extra fluid</strong>",
+        "Sustained, safe improvement"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Final answer: C",
+      alertText: "<strong>Reduce dialysate temperature to 35.5–36°C and extend dialysis time</strong> to lower the UF rate and reduce IDH without chronic sodium loading."
+    }
+  },
+  comparison: {
+    title: "📊 Interventions for Intradialytic Hypotension",
+    sub: "Pros and cons of each approach",
+    head: ["Intervention", "Effect on IDH", "Sodium Loading", "Comments"],
+    rows: [
+      { cells: ["Cool dialysate + longer time", "Reduces IDH", "No", "Best option — addresses both drivers"], hero: true },
+      { cells: ["Increase dialysate Na", "Reduces IDH acutely", "Yes", "Chronic loading is harmful"], hero: false },
+      { cells: ["Increase UF rate", "Worsens IDH", "No", "Worsens hypotension"], hero: false },
+      { cells: ["Increase temp", "Worsens IDH", "No", "Causes vasodilation"], hero: false },
+      { cells: ["Routine saline", "Band-aid", "No", "Does not fix prescription"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "A 74F on HD has recurrent IDH. UF is 3.8 L over 3.5 h, dialysate 37°C. What is the best intervention to reduce IDH without sodium loading?",
+      options: [
+        { text: "Reduce dialysate temperature to 35.5–36°C and extend dialysis time.", correct: true,
+          explanation: "Cooling the dialysate causes vasoconstriction and improves BP. Extending time lowers the UF rate, allowing better plasma refilling. Neither involves sodium loading." },
+        { text: "Increase dialysate sodium to 150 mEq/L.", correct: false,
+          explanation: "This causes chronic sodium loading, thirst, and volume overload." },
+        { text: "Increase UF rate to finish earlier.", correct: false,
+          explanation: "This worsens IDH because the UF rate is already too high." }
+      ]
+    },
+    {
+      question: "What is the UF rate for this patient (3.8 L / 3.5 h, 70 kg)?",
+      options: [
+        { text: "15.5 mL/kg/h.", correct: true,
+          explanation: "3800 mL / 3.5 h = 1086 mL/h. 1086 / 70 = 15.5 mL/kg/h. This is above the recommended < 13 mL/kg/h." },
+        { text: "12 mL/kg/h.", correct: false,
+          explanation: "This is the target after extending time." },
+        { text: "20 mL/kg/h.", correct: false,
+          explanation: "This is a miscalculation." }
+      ]
+    },
+    {
+      question: "Why does cool dialysate improve intradialytic hypotension?",
+      options: [
+        { text: "It causes peripheral vasoconstriction, increasing systemic vascular resistance.", correct: true,
+          explanation: "Cooling the patient causes vasoconstriction, which raises BP and improves venous return." },
+        { text: "It causes vasodilation.", correct: false,
+          explanation: "Warm dialysate causes vasodilation." },
+        { text: "It increases sodium retention.", correct: false,
+          explanation: "Cool dialysate has no effect on sodium." }
+      ]
+    },
+    {
+      question: "What is a major risk of chronically increasing dialysate sodium to prevent IDH?",
+      options: [
+        { text: "Sodium loading, thirst, and volume overload.", correct: true,
+          explanation: "Higher dialysate sodium causes sodium loading, increased thirst, and higher interdialytic weight gain." },
+        { text: "Hypokalemia.", correct: false,
+          explanation: "Sodium does not cause hypokalemia." },
+        { text: "Metabolic acidosis.", correct: false,
+          explanation: "Sodium does not cause acidosis." }
+      ]
+    },
+    {
+      question: "What is the recommended UF rate threshold to reduce IDH and myocardial stunning?",
+      options: [
+        { text: "< 13 mL/kg/h.", correct: true,
+          explanation: "UF rates above 13 mL/kg/h are associated with increased IDH and myocardial stunning." },
+        { text: "< 20 mL/kg/h.", correct: false,
+          explanation: "20 is too high." },
+        { text: "< 5 mL/kg/h.", correct: false,
+          explanation: "This is unnecessarily low." }
+      ]
+    },
+    {
+      question: "Which patient is at highest risk for IDH?",
+      options: [
+        { text: "A patient with high interdialytic weight gain, low UF rate, and cool dialysate.", correct: false,
+          explanation: "Low UF rate and cool dialysate are protective." },
+        { text: "A patient with high interdialytic weight gain, high UF rate, and warm dialysate.", correct: true,
+          explanation: "High UF rate and warm dialysate both promote IDH." },
+        { text: "A patient with low interdialytic weight gain and no UF.", correct: false,
+          explanation: "Low UF is protective." }
+      ]
+    },
+    {
+      question: "A patient on HD with IDH has a normal LVEF. What does this suggest?",
+      options: [
+        { text: "The IDH is primarily driven by prescription factors (UF rate, dialysate temperature).", correct: true,
+          explanation: "With normal LVEF, the hypotension is likely due to high UF rate and/or vasodilation." },
+        { text: "The IDH is due to heart failure.", correct: false,
+          explanation: "Normal LVEF rules out systolic dysfunction." },
+        { text: "The IDH is not real.", correct: false,
+          explanation: "IDH is a real clinical problem, even with normal LVEF." }
+      ]
+    },
+    {
+      question: "What is the first step in managing recurrent IDH?",
+      options: [
+        { text: "Review the dialysis prescription (UF rate, dialysate temperature, sodium).", correct: true,
+          explanation: "Prescription adjustments are the first-line intervention for IDH." },
+        { text: "Start midodrine immediately.", correct: false,
+          explanation: "Pharmacologic therapy is considered after prescription optimization." },
+        { text: "Stop dialysis.", correct: false,
+          explanation: "Dialysis is necessary; the prescription should be adjusted." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Hemodialysis / IDH",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>

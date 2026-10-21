@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glomerulitis vs Transplant Glomerulopathy — Active vs Chronic</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9;
+    --accent1:#dc2626; --accent2:#7c3aed; --accent3:#0891b2; --accent4:#ca8a04;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:20px 18px 40px;}
+
+  header.top{display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    justify-content:space-between; margin-bottom:14px;}
+  header.top h1{margin:0; font-size:1.5rem; font-weight:800;}
+  header.top p{margin:2px 0 0; font-size:.9rem; color:var(--muted);}
+  .badge{background:#0f172a; color:#fff; font-size:.75rem; padding:8px 16px;
+    border-radius:999px; letter-spacing:.06em; font-weight:700;}
+
+  .case-strip{background:#fff; border-radius:14px; padding:18px 22px;
+    border:1px solid var(--line); border-left:5px solid var(--accent1);
+    box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
+  .case-strip h2{margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#991b1b;}
+  .case-strip p{margin:0; font-size:.88rem; color:#334155; line-height:1.6; max-width:680px;}
+  .labs{display:flex; gap:8px; flex-wrap:wrap;}
+  .lab-chip{background:#f1f5f9; border-radius:9px; padding:7px 14px;
+    font-size:.8rem; font-weight:700; color:#1e293b; border:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace;}
+  .lab-chip.abn{background:#fef2f2; border-color:#fecaca; color:#991b1b;}
+  .lab-chip.ok{background:#f0fdf4; border-color:#bbf7d0; color:#166534;}
+
+  .tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .tab{background:#fff; border:1.5px solid transparent; padding:12px 22px;
+    border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer;
+    transition:all .15s ease; color:var(--muted); font-family:inherit;}
+  .tab:hover{border-color:#cbd5e1;}
+  .tab.opt1.active{background:#fef2f2; border-color:var(--accent1); color:#991b1b;}
+  .tab.opt2.active{background:#f5f3ff; border-color:var(--accent2); color:#5b21b6;}
+  .tab.opt3.active{background:#cffafe; border-color:var(--accent3); color:#155e75;}
+  .tab.opt4.active{background:#fef9c3; border-color:var(--accent4); color:#713f12;}
+
+  .stage{
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap:16px;
+    align-items:start;
+  }
+  @media(max-width:1100px){ .stage{grid-template-columns: 1fr;} }
+
+  .diagram-col{min-width:0;}
+  svg.diagram{width:100%; height:auto; display:block;}
+
+  .info-col{position:sticky; top:16px;}
+  @media(max-width:1100px){ .info-col{position:static;} }
+
+  .info-float{
+    background:#fff; border-radius:12px; border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.08);
+    overflow:hidden; width:100%;
+    transition:border-color .2s ease;
+  }
+  .info-float.highlight-opt1{border-color:var(--accent1);}
+  .info-float.highlight-opt2{border-color:var(--accent2);}
+  .info-float.highlight-opt3{border-color:var(--accent3);}
+  .info-float.highlight-opt4{border-color:var(--accent4);}
+
+  .info-header{display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; cursor:pointer; user-select:none;
+    background:#fef2f2; transition:background .2s ease; gap:8px;}
+  .info-float.highlight-opt2 .info-header{background:#f5f3ff;}
+  .info-float.highlight-opt3 .info-header{background:#cffafe;}
+  .info-float.highlight-opt4 .info-header{background:#fef9c3;}
+
+  .grip{display:inline-flex; gap:2px; flex-direction:column; flex-shrink:0;
+    margin-right:6px; opacity:.35;}
+  .grip span{width:3px;height:3px;border-radius:50%;background:#475569;display:block;}
+
+  .info-header h4{margin:0; font-size:.9rem; font-weight:800;
+    color:#0f172a; flex:1; display:flex; align-items:center; pointer-events:none;}
+
+  .info-header .toggle-btn{font-size:.75rem; color:var(--muted);
+    background:rgba(0,0,0,.06); padding:4px 10px; border-radius:999px;
+    font-weight:700; flex-shrink:0; cursor:pointer; pointer-events:auto;}
+
+  .info-body{padding:14px 16px 16px; max-height:700px;
+    transition:max-height .3s ease, padding .3s ease; overflow:hidden;}
+  .info-float.collapsed .info-body{max-height:0; padding:0 16px;}
+
+  .info-float .row{display:flex; justify-content:space-between;
+    padding:10px 0; font-size:.85rem; border-bottom:1px solid var(--line); gap:8px;}
+  .info-float .row:last-child{border:none;}
+  .info-float .k{color:var(--muted); font-weight:600; flex-shrink:0;}
+  .info-float .v{font-weight:800; color:#0f172a; text-align:right;
+    word-break:break-word; max-width:180px;}
+
+  .compare-section{background:#fff; border-radius:16px; padding:22px 26px;
+    margin-top:14px; border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);}
+  .compare-section h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .compare-section .sub{font-size:.85rem; color:var(--muted); margin:0 0 16px;}
+  .compare-table{width:100%; border-collapse:collapse; font-size:.85rem;}
+  .compare-table th{text-align:left; padding:12px 14px; font-weight:800;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#fff;}
+  .compare-table th:nth-child(1){background:#475569;}
+  .compare-table th:nth-child(2){background:#dc2626;}
+  .compare-table th:nth-child(3){background:#7c3aed;}
+  .compare-table th:nth-child(4){background:#16a34a;}
+  .compare-table th:nth-child(5){background:#ca8a04;}
+  .compare-table td{padding:12px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:#334155; line-height:1.55;}
+  .compare-table td:first-child{font-weight:700; color:#0f172a;}
+  .compare-table tr.hero{background:#f0fdf4;}
+  .compare-table tr.hero td{border-bottom:2px solid #16a34a;}
+  .compare-table tr.hero td:first-child{color:#166534;}
+
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  @media(max-width:800px){.panels{grid-template-columns:1fr;}}
+  .panel{background:#fff; border-radius:14px; padding:20px 22px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line); border-top:4px solid var(--accent1);}
+  .panel.two{border-top-color:#475569;}
+  .panel h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .panel .tagline{font-size:.82rem; color:var(--muted); margin:0 0 12px;}
+  .panel ul{margin:0; padding-left:20px; font-size:.9rem; color:#334155; line-height:1.7;}
+  .panel ul li{margin-bottom:8px;}
+  .panel ul li strong{color:#0f172a;}
+
+  .alert{background:linear-gradient(135deg,#dc2626,#ef4444); color:#fff;
+    border-radius:14px; padding:22px 26px; margin-top:14px;
+    box-shadow:0 4px 16px rgba(220,38,38,.3); display:flex; gap:16px; align-items:center;}
+  .alert .icon{font-size:2.6rem; flex-shrink:0;}
+  .alert h3{margin:0 0 4px; font-size:1.1rem; font-weight:800;}
+  .alert p{margin:0; font-size:.92rem; line-height:1.6; opacity:.95;}
+  .alert strong{color:#fef3c7;}
+
+  .quiz{background:#fff; border-radius:16px; padding:24px 26px; margin-top:14px;
+    box-shadow:0 1px 3px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.05);
+    border:1px solid var(--line);}
+  .quiz h3{margin:0 0 18px; font-size:1.05rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;}
+  .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:900px){.quiz-grid{grid-template-columns:1fr;}}
+  .q{background:#f8fafc; border-radius:11px; padding:18px 20px; border:1px solid var(--line);}
+  .q p{margin:0 0 14px; font-weight:700; font-size:.92rem; line-height:1.55;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .opt{border:1.5px solid var(--line); background:#fff; padding:11px 16px;
+    border-radius:8px; font-size:.87rem; cursor:pointer; transition:all .15s ease;
+    font-weight:600; color:var(--ink); font-family:inherit; text-align:left;}
+  .opt:hover{border-color:#94a3b8;}
+  .opt.correct{background:#dcfce7; border-color:#16a34a; color:#166534;}
+  .opt.wrong{background:#fee2e2; border-color:#ef4444; color:#991b1b;}
+  .explain{display:none; background:#fff; border-left:4px solid #94a3b8;
+    padding:12px 16px; border-radius:0 8px 8px 0; font-size:.83rem;
+    color:#334155; line-height:1.6; margin-top:8px;}
+  .explain.show{display:block;}
+  .explain.correct-explain{border-left-color:#16a34a; background:#f0fdf4;}
+  .explain.wrong-explain{border-left-color:#ef4444; background:#fef2f2;}
+  .explain strong.correct{color:#166534;}
+  .explain strong.wrong{color:#991b1b;}
+
+  .footer{margin-top:16px; padding:18px 24px; background:#0f172a;
+    border-radius:14px; color:#94a3b8; text-align:center;
+    font-size:.83rem; line-height:1.6;}
+  .footer .footer-gift{
+    font-size:1rem; font-weight:800; color:#fbbf24;
+    letter-spacing:.04em; margin-bottom:10px;
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.12);
+    display:inline-block; padding-left:18px; padding-right:18px;
+  }
+  .footer .footer-gift strong{color:#fff;}
+  .footer .footer-meta{font-size:.83rem; color:#94a3b8;}
+  .footer .footer-meta strong{color:#60a5fa;}
+
+  /* ---------- ANIMATION KEYFRAMES ---------- */
+  @keyframes flowDash{0%{stroke-dashoffset:0;}100%{stroke-dashoffset:-30;}}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.6; transform:scale(1.08);}}
+  @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.8;}}
+  @keyframes cellMove{0%{transform:translateY(0);}50%{transform:translateY(-4px);}100%{transform:translateY(0);}}
+  @keyframes fireFlicker{0%,100%{opacity:1; transform:scale(1);}50%{opacity:0.8; transform:scale(1.1);}}
+  
+  .flow-anim{stroke-dasharray:8 6; animation:flowDash 1.4s linear infinite;}
+  .pulse-node{animation:pulse 1.8s ease-in-out infinite; transform-origin:center;}
+  .pulse-block{animation:pulseBlock 1.6s ease-in-out infinite; transform-origin:center;}
+  .cell-move{animation:cellMove 2s ease-in-out infinite;}
+  .fire-flicker{animation:fireFlicker 1s ease-in-out infinite;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1 id="pageTitle"></h1>
+      <p id="pageSubtitle"></p>
+    </div>
+    <div class="badge" id="pageBadge"></div>
+  </header>
+
+  <div class="case-strip">
+    <div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+    </div>
+    <div class="labs" id="labChips"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <section class="stage">
+    <div class="diagram-col">
+      <svg class="diagram" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cellGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef9c3"/>
+            <stop offset="100%" stop-color="#fde047"/>
+          </radialGradient>
+          <linearGradient id="gbmGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fbcfe8"/>
+            <stop offset="100%" stop-color="#f9a8d4"/>
+          </linearGradient>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#dc2626"/>
+          </marker>
+          <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+          </marker>
+          <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/>
+          </marker>
+          <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/>
+          </marker>
+        </defs>
+
+        <rect width="1400" height="1000" fill="#fdfdfd"/>
+
+        <text id="svg-title" x="700" y="40" text-anchor="middle" font-family="Arial" font-size="24" font-weight="800" fill="#0f172a"></text>
+        <text id="svg-subtitle" x="700" y="70" text-anchor="middle" font-family="Arial" font-size="16" fill="#64748b"></text>
+
+        <!-- ============================================================
+             SCENE 1 — THE CASE & OVERVIEW
+             ============================================================ -->
+        <g id="diagram-opt1" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#991b1b">GLOMERULITIS vs TRANSPLANT GLOMERULOPATHY</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#7f1d1d">Both refer to the glomerulus, but represent entirely different processes</text>
+          </g>
+
+          <!-- Glomerulitis -->
+          <g transform="translate(350, 450)">
+            <rect x="-290" y="-180" width="580" height="360" rx="18" fill="#fff" stroke="#dc2626" stroke-width="5"/>
+            <rect x="-290" y="-180" width="580" height="58" rx="18" fill="#dc2626"/>
+            <rect x="-290" y="-142" width="580" height="20" fill="#dc2626"/>
+            <text x="0" y="-145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">GLOMERULITIS (g)</text>
+
+            <!-- Glomerulus drawing -->
+            <g transform="translate(0, 20)">
+              <circle r="90" fill="url(#cellGrad)" stroke="#854d0e" stroke-width="3"/>
+              <!-- Capillaries -->
+              <path d="M -60,-30 C -90,-60 -30,-90 0,-60 C 30,-30 90,-60 60,-30 C 30,0 60,60 0,60 C -60,60 -30,0 -60,-30" fill="none" stroke="#dc2626" stroke-width="2" opacity="0.5"/>
+              <!-- Inflammatory cells (Fire) -->
+              <circle cx="-40" cy="-20" r="10" fill="#dc2626" class="cell-move"/>
+              <circle cx="30" cy="-40" r="10" fill="#dc2626" class="cell-move" style="animation-delay:0.5s;"/>
+              <circle cx="-50" cy="20" r="10" fill="#dc2626" class="cell-move" style="animation-delay:1s;"/>
+              <circle cx="40" cy="10" r="10" fill="#dc2626" class="cell-move" style="animation-delay:1.5s;"/>
+            </g>
+
+            <rect x="-260" y="120" width="520" height="50" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#991b1b">ACTIVE INFLAMMATION</text>
+            <text x="0" y="158" text-anchor="middle" font-family="Arial" font-size="12" fill="#b91c1c">Cells inside glomerular capillaries</text>
+          </g>
+
+          <!-- Transplant Glomerulopathy -->
+          <g transform="translate(1050, 450)">
+            <rect x="-290" y="-180" width="580" height="360" rx="18" fill="#fff" stroke="#0891b2" stroke-width="5"/>
+            <rect x="-290" y="-180" width="580" height="58" rx="18" fill="#0891b2"/>
+            <rect x="-290" y="-142" width="580" height="20" fill="#0891b2"/>
+            <text x="0" y="-145" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#fff">TRANSPLANT GLOMERULOPATHY (cg)</text>
+
+            <!-- GBM splitting -->
+            <g transform="translate(0, 20)">
+              <rect x="-140" y="-40" width="280" height="30" rx="6" fill="#fbcfe8" stroke="#be185d" stroke-width="2"/>
+              <rect x="-140" y="-10" width="280" height="30" rx="6" fill="#fbcfe8" stroke="#be185d" stroke-width="2"/>
+              <!-- Gap / cells / debris -->
+              <rect x="-120" y="-12" width="40" height="24" fill="#7c3aed" opacity="0.4"/>
+              <rect x="-40" y="-12" width="50" height="24" fill="#7c3aed" opacity="0.4"/>
+              <rect x="50" y="-12" width="40" height="24" fill="#7c3aed" opacity="0.4"/>
+              
+              <text x="0" y="50" text-anchor="middle" font-family="Arial" font-size="13" font-weight="800" fill="#be185d">Double Contour</text>
+              <text x="0" y="70" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748b">"Tram-track" appearance</text>
+            </g>
+
+            <rect x="-260" y="120" width="520" height="50" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+            <text x="0" y="140" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#155e75">CHRONIC STRUCTURAL DAMAGE</text>
+            <text x="0" y="158" text-anchor="middle" font-family="Arial" font-size="12" fill="#0e7490">Duplication of the basement membrane</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 780)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#0f172a">THE SUFFIX TELLS THE STORY</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155"><tspan font-weight="800" fill="#dc2626">-ITIS</tspan> = Inflammation (Active) → Glomerulitis (g)</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155"><tspan font-weight="800" fill="#0891b2">-PATHY</tspan> = Disease/Structural Damage (Chronic) → Transplant Glomerulopathy (cg)</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Both can coexist in the same biopsy (Chronic Active ABMR)</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 2 — ANATOMY
+             ============================================================ -->
+        <g id="diagram-opt2" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#5b21b6">WHERE DOES EACH LESION OCCUR?</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#6d28d9">Location matters for the Banff score</text>
+          </g>
+
+          <!-- Anatomy Diagram -->
+          <g transform="translate(700, 480)">
+            
+            <!-- Glomerulus (Left) -->
+            <g transform="translate(-350, 0)">
+              <circle r="160" fill="url(#cellGrad)" stroke="#854d0e" stroke-width="4"/>
+              <text x="0" y="-180" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#854d0e">GLOMERULUS</text>
+              
+              <!-- Capillaries with g cells -->
+              <path d="M -90,-50 C -130,-90 -40,-130 0,-90 C 40,-50 130,-90 90,-50 C 40,-10 90,90 0,90 C -90,90 -40,-10 -90,-50" fill="none" stroke="#dc2626" stroke-width="3" opacity="0.4"/>
+              <circle cx="-70" cy="-40" r="11" fill="#dc2626" class="cell-move"/>
+              <circle cx="50" cy="-60" r="11" fill="#dc2626" class="cell-move" style="animation-delay:0.5s;"/>
+              <circle cx="-60" cy="40" r="11" fill="#dc2626" class="cell-move" style="animation-delay:1s;"/>
+              <circle cx="70" cy="30" r="11" fill="#dc2626" class="cell-move" style="animation-delay:1.5s;"/>
+              
+              <text x="0" y="200" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#dc2626">g = Glomerulitis</text>
+              <text x="0" y="220" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Cells inside capillaries</text>
+            </g>
+
+            <!-- Tubules (Right) -->
+            <g transform="translate(350, 0)">
+              <rect x="-200" y="-160" width="400" height="320" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+              <text x="0" y="-180" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#475569">TUBULOINTERSTITIUM</text>
+
+              <!-- Tubules -->
+              <circle cx="-100" cy="-80" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <circle cx="50" cy="-50" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <circle cx="-80" cy="70" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+              <circle cx="90" cy="80" r="40" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+
+              <!-- PTC cells (ptc) -->
+              <circle cx="-30" cy="-100" r="11" fill="#7c3aed" class="cell-move"/>
+              <circle cx="-10" cy="-90" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:0.5s;"/>
+              <circle cx="10" cy="-110" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:1s;"/>
+              <circle cx="30" cy="-90" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:1.5s;"/>
+              <circle cx="-40" cy="20" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:2s;"/>
+              <circle cx="-20" cy="30" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:2.5s;"/>
+              <circle cx="0" cy="20" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:3s;"/>
+              <circle cx="20" cy="30" r="11" fill="#7c3aed" class="cell-move" style="animation-delay:3.5s;"/>
+
+              <text x="0" y="200" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#7c3aed">ptc = Peritubular Capillaritis</text>
+              <text x="0" y="220" text-anchor="middle" font-family="Arial" font-size="12" fill="#334155">Cells around tubules</text>
+            </g>
+
+            <!-- Central Label -->
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="15" font-weight="800" fill="#0f172a">MVI = g + ptc</text>
+            <path d="M -180,-10 L 180,-10" stroke="#475569" stroke-width="2" stroke-dasharray="5 5"/>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 800)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#991b1b">WHY g AND ptc ARE GROUPED TOGETHER</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Both are <tspan font-weight="800" fill="#dc2626">active inflammation</tspan> in the microvasculature</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Both respond to treatment if caught early</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Together they form the MVI score (g + ptc ≥ 2)</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 3 — HOUSE FIRE ANALOGY
+             ============================================================ -->
+        <g id="diagram-opt3" style="display:none">
+          
+          <g transform="translate(700, 130)">
+            <rect x="-620" y="-45" width="1240" height="90" rx="18" fill="#cffafe" stroke="#0891b2" stroke-width="4"/>
+            <text x="0" y="-12" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#155e75">THE "HOUSE FIRE" ANALOGY</text>
+            <text x="0" y="14" text-anchor="middle" font-family="Arial" font-size="14" fill="#0e7490">Understanding the difference between active and chronic</text>
+          </g>
+
+          <!-- Active (Fire) -->
+          <g transform="translate(350, 450)">
+            <rect x="-290" y="-180" width="580" height="360" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="4"/>
+            
+            <!-- House with fire -->
+            <g transform="translate(0, -40)">
+              <!-- House outline -->
+              <polygon points="0,-100 100,-50 100,60 -100,60 -100,-50" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+              <rect x="-25" y="0" width="50" height="60" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+              
+              <!-- Fire / Flames -->
+              <polygon points="0,-120 20,-80 -10,-90 10,-50 -20,-60 0,-20" fill="#dc2626" class="fire-flicker"/>
+              <polygon points="-60,-80 -40,-60 -50,-20 -20,-40 -30,0" fill="#ef4444" class="fire-flicker" style="animation-delay:0.3s;"/>
+              <polygon points="60,-70 40,-50 50,-10 20,-30 30,10" fill="#f59e0b" class="fire-flicker" style="animation-delay:0.6s;"/>
+              
+              <!-- Smoke -->
+              <circle cx="0" cy="-130" r="15" fill="#94a3b8" opacity="0.5"/>
+              <circle cx="20" cy="-160" r="20" fill="#94a3b8" opacity="0.4"/>
+              <circle cx="-20" cy="-150" r="18" fill="#94a3b8" opacity="0.4"/>
+            </g>
+
+            <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#dc2626">ACTIVE GLOMERULITIS</text>
+            <text x="0" y="125" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">The fire is burning RIGHT NOW</text>
+            <text x="0" y="148" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#166534">Extinguishable if you act fast</text>
+          </g>
+
+          <!-- Chronic (Charred) -->
+          <g transform="translate(1050, 450)">
+            <rect x="-290" y="-180" width="580" height="360" rx="18" fill="#f8fafc" stroke="#475569" stroke-width="4"/>
+            
+            <!-- Charred house -->
+            <g transform="translate(0, -40)">
+              <!-- House outline (broken) -->
+              <polygon points="0,-100 100,-50 100,60 -100,60 -100,-50" fill="#e2e8f0" stroke="#475569" stroke-width="3"/>
+              <rect x="-25" y="0" width="50" height="60" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+              
+              <!-- Charred walls / holes -->
+              <rect x="-80" y="-20" width="30" height="30" fill="#0f172a" opacity="0.6"/>
+              <rect x="50" y="-30" width="25" height="25" fill="#0f172a" opacity="0.6"/>
+              <rect x="20" y="20" width="20" height="20" fill="#0f172a" opacity="0.6"/>
+              
+              <!-- Collapsed roof -->
+              <polygon points="-20,-80 20,-80 0,-100" fill="#0f172a" opacity="0.7"/>
+              
+              <!-- Ash -->
+              <circle cx="-60" cy="-50" r="8" fill="#94a3b8" opacity="0.5"/>
+              <circle cx="40" cy="-60" r="10" fill="#94a3b8" opacity="0.4"/>
+            </g>
+
+            <text x="0" y="100" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#0891b2">TRANSPLANT GLOMERULOPATHY</text>
+            <text x="0" y="125" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">The fire is out, but the house is destroyed</text>
+            <text x="0" y="148" text-anchor="middle" font-family="Arial" font-size="14" font-weight="800" fill="#dc2626">Irreversible structural damage</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 800)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">TREATMENT IMPLICATIONS</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">Treating the fire (glomerulitis) can save the kidney if caught early</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155">But the charred walls (cg) will remain forever — explaining the poor long-term prognosis</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">You cannot "un-burn" the basement membrane</text>
+          </g>
+        </g>
+
+        <!-- ============================================================
+             SCENE 4 — PUTTING IT TOGETHER (FIXED OVERLAP)
+             ============================================================ -->
+        <g id="diagram-opt4" style="display:none">
+          
+          <g transform="translate(700, 110)">
+            <rect x="-620" y="-40" width="1240" height="80" rx="18" fill="#fef9c3" stroke="#ca8a04" stroke-width="4"/>
+            <text x="0" y="-8" text-anchor="middle" font-family="Arial" font-size="20" font-weight="800" fill="#713f12">PUTTING IT TOGETHER — CHRONIC ACTIVE ABMR</text>
+            <text x="0" y="18" text-anchor="middle" font-family="Arial" font-size="14" fill="#854d0e">When you see g2, ptc2, and cg2 in the same biopsy</text>
+          </g>
+
+          <!-- Synthesis -->
+          <g transform="translate(700, 430)">
+            <rect x="-500" y="-240" width="1000" height="480" rx="20" fill="#fff" stroke="#475569" stroke-width="4"/>
+            
+            <text x="0" y="-200" text-anchor="middle" font-family="Arial" font-size="18" font-weight="800" fill="#0f172a">BANFF DIAGNOSIS</text>
+            <line x1="-400" y1="-170" x2="400" y2="-170" stroke="#cbd5e1" stroke-width="2"/>
+
+            <g font-family="Arial" font-size="15" fill="#334155">
+              <text x="-400" y="-130" font-weight="800" fill="#dc2626">1. ACTIVE FEATURES</text>
+              <text x="-360" y="-105">• g2 (glomerulitis)</text>
+              <text x="-360" y="-85">• ptc2 (peritubular capillaritis)</text>
+              <text x="-360" y="-65">• MVI = g + ptc = 4</text>
+
+              <text x="-400" y="-25" font-weight="800" fill="#0891b2">2. CHRONIC FEATURES</text>
+              <text x="-360" y="0">• cg2 (transplant glomerulopathy)</text>
+              <text x="-360" y="20">• Severe peritubular capillary multilayering</text>
+
+              <text x="-400" y="60" font-weight="800" fill="#5b21b6">3. IMMUNOLOGIC EVIDENCE</text>
+              <text x="-360" y="85">• Donor-specific antibodies (anti-DQ)</text>
+              <text x="-360" y="105">• C4d negative (allowed)</text>
+              <text x="-360" y="125">• Molecular ABMR transcripts positive</text>
+            </g>
+
+            <line x1="-400" y1="150" x2="400" y2="150" stroke="#cbd5e1" stroke-width="2"/>
+
+            <rect x="-400" y="170" width="800" height="50" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="195" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#166534">CHRONIC ACTIVE ABMR</text>
+            <text x="0" y="213" text-anchor="middle" font-family="Arial" font-size="13" fill="#15803d">Both active inflammation AND chronic damage are present</text>
+          </g>
+
+          <!-- Bottom -->
+          <g transform="translate(700, 740)">
+            <rect x="-600" y="-60" width="1200" height="120" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+            <text x="0" y="-30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="800" fill="#166534">THE KEY PEARL</text>
+            <text x="0" y="0" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155"><tspan font-weight="800" fill="#dc2626">g and ptc</tspan> tell you there is active, treatable inflammation</text>
+            <text x="0" y="24" text-anchor="middle" font-family="Arial" font-size="14" fill="#334155"><tspan font-weight="800" fill="#0891b2">cg</tspan> tells you there is chronic, irreversible structural damage</text>
+            <text x="0" y="48" text-anchor="middle" font-family="Arial" font-size="13" font-style="italic" fill="#64748b">Together, they define chronic active ABMR — treat the active component, but expect chronic progression</text>
+          </g>
+        </g>
+
+        <!-- DYNAMIC BANNER -->
+        <g transform="translate(700, 970)">
+          <rect id="banner-bg" x="-620" y="-26" width="1240" height="52" rx="14" fill="#dc2626" opacity="0.95"/>
+          <text id="banner-text-1" x="0" y="-3" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+          <text id="banner-text-2" x="0" y="17" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#fff"></text>
+        </g>
+      </svg>
+    </div>
+
+    <aside class="info-col">
+      <div class="info-float highlight-opt1" id="infoPanel">
+        <div class="info-header" id="infoHeader" onclick="togglePanel(event)">
+          <span class="grip">
+            <span></span><span></span><span></span>
+          </span>
+          <h4 id="infoTitle"></h4>
+          <span class="toggle-btn" id="toggleBtn">▲ Hide</span>
+        </div>
+        <div class="info-body" id="infoBody"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="compare-section" id="compareSection">
+    <h3 id="compareTitle"></h3>
+    <p class="sub" id="compareSub"></p>
+    <table class="compare-table">
+      <thead id="compareHead"></thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </section>
+
+  <div class="panels">
+    <div class="panel one">
+      <h3 id="panel1-title"></h3>
+      <p class="tagline" id="panel1-tagline"></p>
+      <ul id="panel1-list"></ul>
+    </div>
+    <div class="panel two">
+      <h3 id="panel2-title"></h3>
+      <p class="tagline" id="panel2-tagline"></p>
+      <ul id="panel2-list"></ul>
+    </div>
+  </div>
+
+  <div class="alert" id="alertBox">
+    <div class="icon" id="alertIcon"></div>
+    <div>
+      <h3 id="alertTitle"></h3>
+      <p id="alertText"></p>
+    </div>
+  </div>
+
+  <section class="quiz">
+    <h3>✅ Quick Check — <span id="quizCount"></span> Questions</h3>
+    <div class="quiz-grid" id="quizGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-gift">🎁 Gift by <strong>Dr. Malik</strong></div>
+    <div class="footer-meta">
+      <strong id="footerCredit"></strong> · <span id="footerNote"></span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const CONFIG = {
+  title: "Glomerulitis vs Transplant Glomerulopathy — Active vs Chronic",
+  subtitle: "Why both refer to the glomerulus but mean completely different things",
+  badge: "NEPHROLOGY · TRANSPLANT PATHOLOGY · BANFF",
+  caseTitle: "Comprehensive guide: Differentiating g (glomerulitis) from cg (transplant glomerulopathy)",
+  caseDescription: "A patient with a transplant biopsy shows g2, ptc2, and cg2. Why do we use two different terms for the glomerulus? This module breaks down the suffix '-itis' (inflammation) vs '-pathy' (structural damage), the active vs chronic distinction, and uses the 'house fire' analogy to explain why both can coexist in chronic active ABMR.",
+  labChips: [
+    { text: "g = Glomerulitis (Active)", abnormal: true },
+    { text: "ptc = Peritubular Capillaritis (Active)", abnormal: true },
+    { text: "cg = Transplant Glomerulopathy (Chronic)", abnormal: true },
+    { text: "-itis = Inflammation", abnormal: false },
+    { text: "-pathy = Structural Damage", abnormal: false }
+  ],
+  tabs: [
+    { id: "opt1", label: "🔴 The Core Difference",    className: "opt1" },
+    { id: "opt2", label: "🟣 Anatomy & Location",     className: "opt2" },
+    { id: "opt3", label: "🔵 House Fire Analogy",     className: "opt3" },
+    { id: "opt4", label: "🟡 Putting It Together",    className: "opt4" }
+  ],
+  modes: {
+    opt1: {
+      panelClass: "highlight-opt1",
+      title: "🔴 The Core Difference",
+      infoRows: [
+        { k: "Glomerulitis (g)", v: "Active inflammation" },
+        { k: "Transplant Glomerulopathy (cg)", v: "Chronic structural damage" },
+        { k: "-itis",             v: "Inflammation (reversible)" },
+        { k: "-pathy",            v: "Disease/Damage (irreversible)" },
+        { k: "Common",            v: "Both refer to glomerulus" },
+        { k: "Different",         v: "Process, timing, reversibility" }
+      ],
+      svgTitle: "Glomerulitis vs Transplant Glomerulopathy",
+      svgSubtitle: "Both refer to the glomerulus, but represent entirely different processes",
+      bannerBg: "#dc2626",
+      bannerText1: "Glomerulitis (g) = active inflammation inside the capillaries",
+      bannerText2: "Transplant glomerulopathy (cg) = chronic structural damage of the GBM",
+      panel1Title: "🧪 The key difference",
+      panel1Tagline: "Why two different terms",
+      panel1List: [
+        "<strong>Glomerulitis (g)</strong> — suffix '-itis' means inflammation. Active, potentially reversible.",
+        "<strong>Transplant glomerulopathy (cg)</strong> — suffix '-pathy' means disease/damage. Chronic, irreversible.",
+        "<strong>g</strong> is cells inside capillaries.",
+        "<strong>cg</strong> is duplication/splitting of the basement membrane.",
+        "Both can coexist in the same biopsy (chronic active ABMR)."
+      ],
+      panel2Title: "🧬 The clinical implications",
+      panel2Tagline: "What each means",
+      panel2List: [
+        "<strong>g (active)</strong> — tells you there is ongoing, treatable inflammation",
+        "<strong>cg (chronic)</strong> — tells you there is irreversible scarring",
+        "Treating <strong>g</strong> can slow progression but cannot reverse <strong>cg</strong>",
+        "The presence of <strong>cg</strong> predicts worse long-term outcomes",
+        "You need both pieces of information for staging"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Both are in the glomerulus",
+      alertText: "Don't let the shared location confuse you. <strong>g is the fire; cg is the charred walls.</strong>"
+    },
+    opt2: {
+      panelClass: "highlight-opt2",
+      title: "🟣 Anatomy & Location",
+      infoRows: [
+        { k: "g",    v: "Inside glomerular capillaries" },
+        { k: "ptc",  v: "In peritubular capillaries" },
+        { k: "MVI",  v: "g + ptc (active)" },
+        { k: "cg",   v: "Glomerular basement membrane" },
+        { k: "cg",   v: "Outside the capillary lumen" },
+        { k: "Key",  v: "Location determines function" }
+      ],
+      svgTitle: "Anatomy & Location",
+      svgSubtitle: "Where does each lesion occur?",
+      bannerBg: "#7c3aed",
+      bannerText1: "g is inflammation inside the glomerular capillaries",
+      bannerText2: "ptc is inflammation around the tubules; cg is GBM structural damage",
+      panel1Title: "🔬 Where each lesion occurs",
+      panel1Tagline: "The anatomical map",
+      panel1List: [
+        "<strong>g (glomerulitis)</strong> — inside the glomerular capillaries (endocapillary)",
+        "<strong>ptc (peritubular capillaritis)</strong> — in the peritubular capillaries around tubules",
+        "<strong>MVI = g + ptc</strong> — combined score of active microvascular inflammation",
+        "<strong>cg (transplant glomerulopathy)</strong> — the glomerular basement membrane itself",
+        "cg is outside the lumen; g is inside the lumen"
+      ],
+      panel2Title: "🧬 Why location matters",
+      panel2Tagline: "The functional consequence",
+      panel2List: [
+        "Inflammation <strong>inside</strong> capillaries (g) → slows blood flow and damages endothelium",
+        "Inflammation <strong>around</strong> tubules (ptc) → impairs tubular function",
+        "GBM duplication (cg) → <strong>leaky filter</strong> → proteinuria",
+        "The location predicts the clinical manifestation",
+        "g and ptc respond to treatment; cg does not"
+      ],
+      alertIcon: "🔬",
+      alertTitle: "Location is everything",
+      alertText: "<strong>g and ptc are inside/around vessels (active). cg is in the vessel wall itself (chronic).</strong>"
+    },
+    opt3: {
+      panelClass: "highlight-opt3",
+      title: "🔵 The House Fire Analogy",
+      infoRows: [
+        { k: "Glomerulitis",   v: "The fire (active)" },
+        { k: "cg",             v: "The charred walls (chronic)" },
+        { k: "Treatment",      v: "Put out the fire" },
+        { k: "But",            v: "The walls remain damaged" },
+        { k: "Reversibility",  v: "Fire is reversible; damage is not" },
+        { k: "Prognosis",      v: "Depends on the damage" }
+      ],
+      svgTitle: "The House Fire Analogy",
+      svgSubtitle: "Understanding the difference between active and chronic",
+      bannerBg: "#0891b2",
+      bannerText1: "Glomerulitis = the fire burning right now",
+      bannerText2: "Transplant glomerulopathy = the charred walls left behind",
+      panel1Title: "🔬 The analogy",
+      panel1Tagline: "Why it helps",
+      panel1List: [
+        "<strong>Fire (g)</strong> — burning now. Can be extinguished with treatment.",
+        "<strong>Charred walls (cg)</strong> — left behind after the fire. Cannot be 'un-burnt'.",
+        "Treating the fire <strong>does not rebuild the walls</strong>.",
+        "But <strong>not</strong> treating the fire makes the damage worse.",
+        "This is why we treat active ABMR even when chronic damage is present."
+      ],
+      panel2Title: "🧬 The clinical implication",
+      panel2Tagline: "Why treat if it's chronic?",
+      panel2List: [
+        "<strong>g and ptc</strong> tell you there is <strong>ongoing</strong> injury",
+        "Treating <strong>g and ptc</strong> can prevent further <strong>cg</strong> damage",
+        "<strong>cg</strong> is already done — treatment will not reverse it",
+        "But treatment can <strong>slow progression</strong>",
+        "The goal is to prevent more charred walls"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "Treat the fire, not the ashes",
+      alertText: "The active inflammation is the fire; the chronic damage is the ashes. <strong>Treat what is active.</strong>"
+    },
+    opt4: {
+      panelClass: "highlight-opt4",
+      title: "🟡 Putting It Together",
+      infoRows: [
+        { k: "g2",        v: "Active inflammation (2)" },
+        { k: "ptc2",      v: "Active inflammation (2)" },
+        { k: "cg2",       v: "Chronic damage (2)" },
+        { k: "DSA",       v: "Positive" },
+        { k: "C4d",       v: "Negative" },
+        { k: "Diagnosis", v: "Chronic active ABMR" }
+      ],
+      svgTitle: "Putting It Together — Chronic Active ABMR",
+      svgSubtitle: "When you see g2, ptc2, and cg2 in the same biopsy",
+      bannerBg: "#ca8a04",
+      bannerText1: "The active features (g and ptc) tell you there is treatable inflammation",
+      bannerText2: "The chronic feature (cg) tells you there is irreversible damage",
+      panel1Title: "✅ The synthesis",
+      panel1Tagline: "How to interpret the biopsy",
+      panel1List: [
+        "<strong>g2 + ptc2</strong> — active microvascular inflammation (fire)",
+        "<strong>cg2</strong> — chronic transplant glomerulopathy (charred walls)",
+        "<strong>DSA positive</strong> — confirms antibody-mediated etiology",
+        "<strong>C4d negative</strong> — allowed by Banff 2022 criteria",
+        "<strong>Diagnosis</strong> — Chronic active ABMR"
+      ],
+      panel2Title: "🧬 The management",
+      panel2Tagline: "What to do",
+      panel2List: [
+        "<strong>Treat the active component</strong> — PLEX + IVIG + steroids",
+        "<strong>Optimize baseline immunosuppression</strong>",
+        "<strong>Do not expect to reverse cg</strong> — the damage is permanent",
+        "<strong>Monitor for progression</strong> — serial Cr, UPCR, DSA",
+        "<strong>Prepare for possible re-transplant</strong>"
+      ],
+      alertIcon: "🎯",
+      alertTitle: "The bottom line",
+      alertText: "You need <strong>both</strong> pieces of information: the active (treatable) and the chronic (prognostic)."
+    }
+  },
+  comparison: {
+    title: "📊 Glomerulitis vs Transplant Glomerulopathy",
+    sub: "Why they have different names and meanings",
+    head: ["Feature", "Glomerulitis (g)", "Transplant Glomerulopathy (cg)", "Normal"],
+    rows: [
+      { cells: ["Suffix", "-itis (inflammation)", "-pathy (disease/damage)", "—"], hero: true },
+      { cells: ["Nature", "Active", "Chronic", "—"], hero: true },
+      { cells: ["Location", "Inside capillary lumen", "Glomerular basement membrane", "—"], hero: false },
+      { cells: ["Appearance", "Cells in capillaries", "Double contour / tram-track", "Single thin GBM"], hero: true },
+      { cells: ["Reversibility", "Potentially reversible", "Irreversible", "—"], hero: true },
+      { cells: ["Treatment", "Responds to PLEX/IVIG", "Does not respond", "—"], hero: false }
+    ]
+  },
+  quiz: [
+    {
+      question: "What is the key difference between glomerulitis (g) and transplant glomerulopathy (cg)?",
+      options: [
+        { text: "g is active inflammation (reversible); cg is chronic structural damage (irreversible).", correct: true,
+          explanation: "The suffix '-itis' refers to inflammation (active), while '-pathy' refers to structural damage (chronic). Both refer to the glomerulus but represent different processes." },
+        { text: "g is in the tubules; cg is in the glomerulus.", correct: false,
+          explanation: "Both refer to the glomerulus. ptc is in the tubules." },
+        { text: "g is chronic; cg is active.", correct: false,
+          explanation: "This is backwards." }
+      ]
+    },
+    {
+      question: "Using the house fire analogy, what does glomerulitis (g) represent?",
+      options: [
+        { text: "The fire burning right now.", correct: true,
+          explanation: "Glomerulitis is active inflammation that can be treated (extinguished) if caught early." },
+        { text: "The charred walls left behind.", correct: false,
+          explanation: "This is transplant glomerulopathy (cg)." },
+        { text: "The smoke alarm.", correct: false,
+          explanation: "This is not part of the analogy." }
+      ]
+    },
+    {
+      question: "What does transplant glomerulopathy (cg) represent in the house fire analogy?",
+      options: [
+        { text: "The charred walls left behind after the fire.", correct: true,
+          explanation: "cg is the chronic, irreversible structural damage. You cannot 'un-burn' the walls." },
+        { text: "The fire itself.", correct: false,
+          explanation: "This is glomerulitis (g)." },
+        { text: "The firefighters.", correct: false,
+          explanation: "This is not part of the analogy." }
+      ]
+    },
+    {
+      question: "If a biopsy shows g2, ptc2, and cg2, what is the diagnosis?",
+      options: [
+        { text: "Chronic active ABMR.", correct: true,
+          explanation: "Active features (g + ptc) combined with chronic features (cg) = chronic active ABMR." },
+        { text: "Active ABMR.", correct: false,
+          explanation: "This would require the absence of chronic features (cg0)." },
+        { text: "Chronic inactive ABMR.", correct: false,
+          explanation: "This would require the absence of active features (g0/ptc0)." }
+      ]
+    },
+    {
+      question: "Why is it important to distinguish g from cg?",
+      options: [
+        { text: "g indicates treatable active inflammation; cg indicates irreversible damage and worse prognosis.", correct: true,
+          explanation: "The distinction affects treatment decisions and prognosis. Active inflammation can be treated; chronic damage cannot be reversed." },
+        { text: "They are the same thing.", correct: false,
+          explanation: "They are distinct processes." },
+        { text: "Only cg requires treatment.", correct: false,
+          explanation: "g (active inflammation) is the target of treatment." }
+      ]
+    },
+    {
+      question: "Which suffix refers to structural damage?",
+      options: [
+        { text: "-pathy.", correct: true,
+          explanation: "The suffix '-pathy' means disease or structural damage (e.g., glomerulopathy)." },
+        { text: "-itis.", correct: false,
+          explanation: "The suffix '-itis' means inflammation (e.g., glomerulitis)." },
+        { text: "-oma.", correct: false,
+          explanation: "This suffix is used for tumors." }
+      ]
+    },
+    {
+      question: "What is the clinical implication of treating a patient with chronic active ABMR?",
+      options: [
+        { text: "Treatment can slow progression but cannot reverse the chronic damage (cg).", correct: true,
+          explanation: "The active component (g and ptc) responds to treatment, but the chronic component (cg) is irreversible." },
+        { text: "Treatment will fully reverse the damage.", correct: false,
+          explanation: "cg is irreversible." },
+        { text: "Treatment should not be given because the damage is chronic.", correct: false,
+          explanation: "Treating the active component can prevent further damage and slow progression." }
+      ]
+    },
+    {
+      question: "Which lesion is potentially reversible?",
+      options: [
+        { text: "Glomerulitis (g).", correct: true,
+          explanation: "g is active inflammation that can respond to treatment if caught early." },
+        { text: "Transplant glomerulopathy (cg).", correct: false,
+          explanation: "cg is chronic structural damage and is irreversible." },
+        { text: "Peritubular capillary multilayering.", correct: false,
+          explanation: "This is a chronic lesion and is irreversible." }
+      ]
+    }
+  ],
+  footerCredit: "Teaching Animation Template · Nephrology / Transplant Pathology / Banff",
+  footerNote: "Educational use only — not a substitute for clinical judgment"
+};
+
+function shuffleOptions(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var RUNTIME_QUIZ = CONFIG.quiz.map(function (q) {
+  return { question: q.question, options: shuffleOptions(q.options) };
+});
+
+var panelCollapsed = false;
+
+function render() {
+  document.title = CONFIG.title;
+  document.getElementById('pageTitle').textContent = CONFIG.title;
+  document.getElementById('pageSubtitle').textContent = CONFIG.subtitle;
+  document.getElementById('pageBadge').textContent = CONFIG.badge;
+  document.getElementById('caseTitle').textContent = CONFIG.caseTitle;
+  document.getElementById('caseDescription').textContent = CONFIG.caseDescription;
+  document.getElementById('footerCredit').textContent = CONFIG.footerCredit;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+
+  document.getElementById('labChips').innerHTML = CONFIG.labChips.map(function (c) {
+    return '<span class="lab-chip' + (c.abnormal ? ' abn' : ' ok') + '">' + c.text + '</span>';
+  }).join('');
+
+  document.getElementById('tabs').innerHTML = CONFIG.tabs.map(function (t) {
+    return '<button class="tab ' + t.className + '" id="tab' + t.id +
+           '" onclick="setMode(\'' + t.id + '\')">' + t.label + '</button>';
+  }).join('');
+
+  var cs = document.getElementById('compareSection');
+  if (!CONFIG.comparison) {
+    cs.style.display = 'none';
+  } else {
+    cs.style.display = '';
+    document.getElementById('compareTitle').textContent = CONFIG.comparison.title;
+    document.getElementById('compareSub').textContent = CONFIG.comparison.sub;
+    document.getElementById('compareHead').innerHTML =
+      '<tr>' + CONFIG.comparison.head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>';
+    document.getElementById('compareBody').innerHTML = CONFIG.comparison.rows.map(function (r) {
+      return '<tr' + (r.hero ? ' class="hero"' : '') + '>' +
+        r.cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('quizCount').textContent = RUNTIME_QUIZ.length;
+  document.getElementById('quizGrid').innerHTML = RUNTIME_QUIZ.map(function (q, qi) {
+    return '<div class="q" data-qi="' + qi + '">' +
+      '<p>' + (qi + 1) + '. ' + q.question + '</p>' +
+      '<div class="opts">' +
+        q.options.map(function (o, oi) {
+          return '<button class="opt" data-qi="' + qi + '" data-oi="' + oi + '">' + o.text + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="explain"></div>' +
+    '</div>';
+  }).join('');
+}
+
+function setMode(mode) {
+  var d = CONFIG.modes[mode];
+  if (!d) return;
+
+  CONFIG.tabs.forEach(function (t) {
+    var el = document.getElementById('tab' + t.id);
+    if (el) el.classList.remove('active');
+  });
+  var activeTab = document.getElementById('tab' + mode);
+  if (activeTab) activeTab.classList.add('active');
+
+  CONFIG.tabs.forEach(function (t) {
+    var g = document.getElementById('diagram-' + t.id);
+    if (g) g.style.display = (t.id === mode) ? 'block' : 'none';
+  });
+
+  document.getElementById('svg-title').textContent = d.svgTitle;
+  document.getElementById('svg-subtitle').textContent = d.svgSubtitle;
+
+  document.getElementById('banner-bg').setAttribute('fill', d.bannerBg);
+  document.getElementById('banner-text-1').textContent = d.bannerText1;
+  document.getElementById('banner-text-2').textContent = d.bannerText2;
+
+  var panel = document.getElementById('infoPanel');
+  panel.className = 'info-float ' + d.panelClass + (panelCollapsed ? ' collapsed' : '');
+  document.getElementById('infoTitle').textContent = d.title;
+
+  document.getElementById('infoBody').innerHTML = d.infoRows.map(function (r) {
+    return '<div class="row"><span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  }).join('');
+
+  document.getElementById('panel1-title').textContent = d.panel1Title;
+  document.getElementById('panel1-tagline').textContent = d.panel1Tagline;
+  document.getElementById('panel1-list').innerHTML = d.panel1List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('panel2-title').textContent = d.panel2Title;
+  document.getElementById('panel2-tagline').textContent = d.panel2Tagline;
+  document.getElementById('panel2-list').innerHTML = d.panel2List.map(function (li) {
+    return '<li>' + li + '</li>';
+  }).join('');
+
+  document.getElementById('alertIcon').textContent = d.alertIcon;
+  document.getElementById('alertTitle').textContent = d.alertTitle;
+  document.getElementById('alertText').innerHTML = d.alertText;
+}
+
+function togglePanel(e) {
+  if (e) e.stopPropagation();
+  panelCollapsed = !panelCollapsed;
+  var panel = document.getElementById('infoPanel');
+  var btn = document.getElementById('toggleBtn');
+  panel.classList.toggle('collapsed', panelCollapsed);
+  btn.textContent = panelCollapsed ? '▼ Show' : '▲ Hide';
+}
+
+document.getElementById('quizGrid').addEventListener('click', function (e) {
+  var btn = e.target.closest('.opt');
+  if (!btn) return;
+  var qi = parseInt(btn.dataset.qi, 10);
+  var oi = parseInt(btn.dataset.oi, 10);
+  var o = RUNTIME_QUIZ[qi].options[oi];
+  var box = btn.closest('.q');
+
+  box.querySelectorAll('.opt').forEach(function (b) {
+    b.classList.remove('correct', 'wrong');
+  });
+  btn.classList.add(o.correct ? 'correct' : 'wrong');
+
+  var explain = box.querySelector('.explain');
+  explain.className = 'explain show ' + (o.correct ? 'correct-explain' : 'wrong-explain');
+  explain.innerHTML = '<strong class="' + (o.correct ? 'correct' : 'wrong') + '">' +
+    (o.correct ? '✔ Correct.' : '✘ Not quite.') + '</strong> ' + o.explanation;
+});
+
+render();
+setMode(CONFIG.tabs[0].id);
+</script>
+</body>
+</html>
