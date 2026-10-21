@@ -6,44 +6,71 @@
   <title>Nephro Challenge AI — Lesson animation</title>
   <link rel="icon" href="https://zub165.github.io/nephro-challenge-ai/favicon.png" />
   <style>
-    :root { --navy:#0f2a4a; --teal:#0d9488; --bg:#f4f7fb; --card:#fff; --line:#d7e0ea; }
+    :root { --navy:#0f2a4a; --teal:#0d9488; --bg:#07111f; --card:#0f2740; --line:#1e4668; --ink:#e8f6f4; }
     * { box-sizing: border-box; }
-    body { margin:0; font-family: Inter, system-ui, sans-serif; background:var(--bg); color:#142033; }
-    header { background: linear-gradient(135deg,#0f2a4a,#134e4a); color:#fff; padding:28px 20px 22px; }
-    .wrap { max-width: 720px; margin: 0 auto; }
+    body { margin:0; font-family: Inter, system-ui, sans-serif; background: radial-gradient(1200px 600px at 10% -10%, #134e4a, #07111f 55%); color:var(--ink); min-height:100vh; }
+    header { padding:24px 20px 8px; }
+    .wrap, main, footer { max-width: 980px; margin: 0 auto; }
     a { color:#99f6e4; }
-    h1 { margin:8px 0 6px; font-size: clamp(1.4rem, 3vw, 1.9rem); }
-    .sub { opacity:.9; }
-    main { max-width: 720px; margin: 0 auto; padding: 20px 16px 64px; }
-    .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
-    .step { font-size:13px; color:#0f766e; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
-    .title { font-size:1.25rem; font-weight:700; margin:8px 0; }
-    .body { line-height:1.6; }
-    .tip { margin-top:14px; background:#fffbeb; border:1px solid #fcd34d; border-radius:12px; padding:12px 14px; }
-    .metrics { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-    .metric { background:#ecfeff; border:1px solid #99f6e4; border-radius:999px; padding:6px 10px; font-size:13px; }
-    .nav { display:flex; gap:8px; margin-top:18px; flex-wrap:wrap; }
-    button { background:var(--navy); color:#fff; border:0; border-radius:10px; padding:10px 14px; cursor:pointer; font-size:15px; }
-    button.ghost { background:#fff; color:var(--navy); border:1px solid var(--line); }
-    .err { color:#b91c1c; padding:24px; }
-    footer { max-width:720px; margin:0 auto; padding:0 16px 40px; color:#64748b; font-size:13px; }
-    footer a { color:#0f766e; }
+    .kicker { margin:0; letter-spacing:.12em; font-size:12px; text-transform:uppercase; opacity:.75; }
+    h1 { margin:8px 0 4px; font-size: clamp(1.4rem, 3vw, 2rem); }
+    .sub { opacity:.85; margin:0 0 12px; }
+    main { display:grid; grid-template-columns: 210px 1fr; gap:16px; padding: 12px 16px 32px; }
+    @media (max-width: 800px) { main { grid-template-columns: 1fr; } .rail { display:flex; overflow:auto; gap:8px; padding-bottom:6px; } .rail button { white-space:nowrap; } }
+    .rail { display:flex; flex-direction:column; gap:8px; }
+    .rail button { text-align:left; background:#0b1f33; color:#cde8e4; border:1px solid var(--line); border-radius:12px; padding:10px 12px; cursor:pointer; font-size:13px; }
+    .rail button.active { background:#134e4a; border-color:#2dd4bf; color:#fff; }
+    .card { background:rgba(15,39,64,.92); border:1px solid var(--line); border-radius:18px; padding:22px; min-height: 280px; }
+    .step { font-size:12px; color:#5eead4; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .title { font-size:1.35rem; font-weight:700; margin:8px 0 10px; }
+    .body { line-height:1.65; color:#d7eeea; }
+    .visual { margin-top:16px; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; }
+    .tip { margin-top:14px; background:#3b2a08; border:1px solid #fbbf24; border-radius:12px; padding:12px 14px; color:#fffbeb; }
+    .gauges, .dose { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .gauge { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px; }
+    .gauge.warn { background:rgba(239,68,68,.18); border-color:#f87171; }
+    .gauge small, .lab dt, .chip small { display:block; font-size:10px; letter-spacing:.06em; color:#5eead4; text-transform:uppercase; }
+    .gauge b, .lab dd, .chip b { font-size:17px; }
+    .bar { height:5px; background:rgba(255,255,255,.12); border-radius:99px; margin-top:6px; overflow:hidden; }
+    .bar span { display:block; height:100%; background:#2dd4bf; }
+    .lab { display:flex; justify-content:space-between; gap:12px; padding:9px 4px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .lab dd { margin:0; font-weight:700; }
+    .flow { display:flex; gap:8px; overflow:auto; align-items:center; }
+    .chip { min-width:92px; background:rgba(45,212,191,.12); border:1px solid rgba(45,212,191,.35); border-radius:12px; padding:10px 12px; }
+    .arrow { color:#2dd4bf; }
+    .prognosis { display:flex; flex-wrap:wrap; gap:8px; }
+    .prognosis .chip { width:148px; background:linear-gradient(135deg, rgba(45,212,191,.25), rgba(251,191,36,.12)); }
+    .monitor { margin:0; padding-left:18px; }
+    .monitor li { margin:6px 0; }
+    .legend { display:flex; gap:12px; justify-content:center; font-size:12px; color:#99f6e4; margin-top:6px; }
+    .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; }
+    .nav { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; align-items:center; }
+    button { background:#0d9488; color:#fff; border:0; border-radius:10px; padding:10px 14px; cursor:pointer; font-size:15px; }
+    button.ghost { background:#0b1f33; color:#d7eeea; border:1px solid var(--line); }
+    .progress { flex:1; min-width:120px; height:6px; background:rgba(255,255,255,.12); border-radius:99px; overflow:hidden; }
+    .progress span { display:block; height:100%; background:#2dd4bf; width:0; }
+    .err { color:#fecaca; }
+    footer { padding: 0 16px 40px; color:#8fb4b0; font-size:13px; }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <p style="margin:0; letter-spacing:.12em; font-size:12px; text-transform:uppercase; opacity:.8">Nephro Challenge AI · © Innovators Generation</p>
+      <p class="kicker">Nephro Challenge AI · © Innovators Generation</p>
       <h1 id="title">Loading lesson…</h1>
       <p class="sub" id="subtitle"></p>
     </div>
   </header>
   <main>
-    <div class="card" id="card">Loading…</div>
-    <div class="nav">
-      <button type="button" class="ghost" id="prev">Previous</button>
-      <button type="button" id="play">Play</button>
-      <button type="button" class="ghost" id="next">Next</button>
+    <nav class="rail" id="rail" aria-label="Lesson steps"></nav>
+    <div>
+      <div class="card" id="card">Loading…</div>
+      <div class="nav">
+        <button type="button" class="ghost" id="prev">Previous</button>
+        <button type="button" id="play">Play</button>
+        <button type="button" class="ghost" id="next">Next</button>
+        <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+      </div>
     </div>
   </main>
   <footer>
@@ -59,40 +86,113 @@
         return;
       }
       var i = 0, timer = null, data = null;
+
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function label(k) { return String(k).replace(/_/g, ' ').toUpperCase(); }
+      function num(v) { return parseInt(String(v || '').replace(/[^0-9\-]/g, ''), 10); }
+
+      function visualHtml(step) {
+        var m = step.metrics || {};
+        var keys = Object.keys(m);
+        var type = step.visual || '';
+        if (!type && !keys.length) return '';
+        if (type === 'pressures') {
+          var cells = [['Access','access', num(m.access) < -150], ['Pre-filter','prefilter', false], ['Return','return', num(m.return) > 250], ['TMP','tmp', num(m.tmp) > 200]];
+          return '<div class="visual gauges">' + cells.map(function (c) {
+            var val = m[c[1]] || '—';
+            var pct = Math.min(100, Math.abs(num(val) || 8) / 3);
+            return '<div class="gauge' + (c[2] ? ' warn' : '') + '"><small>' + c[0] + '</small><b>' + esc(val) + '</b> mmHg<div class="bar"><span style="width:' + pct + '%"></span></div></div>';
+          }).join('') + '</div>';
+        }
+        if (type.indexOf('circuit-') === 0) {
+          var d = type === 'circuit-cvvhd';
+          var r = type !== 'circuit-scuf';
+          return '<div class="visual"><svg viewBox="0 0 420 110" width="100%" height="110">' +
+            '<line x1="10" y1="55" x2="150" y2="55" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>' +
+            '<rect x="150" y="28" width="120" height="54" rx="8" fill="#1e3a5f" stroke="#2dd4bf" stroke-width="2"/>' +
+            '<text x="210" y="60" text-anchor="middle" fill="#99f6e4" font-size="13">Filter</text>' +
+            '<line x1="270" y1="55" x2="410" y2="55" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>' +
+            (r ? '<path d="M160 18 H20" stroke="#60a5fa" stroke-width="4" fill="none"/><text x="24" y="14" fill="#93c5fd" font-size="11">Replacement</text>' : '') +
+            (d ? '<path d="M160 92 H20" stroke="#2dd4bf" stroke-width="4" fill="none"/><text x="24" y="108" fill="#5eead4" font-size="11">Dialysate</text>' : '') +
+            '</svg><div class="legend"><span><i class="dot" style="background:#ef4444"></i>Blood</span><span><i class="dot" style="background:#2dd4bf"></i>Dialysate</span><span><i class="dot" style="background:#60a5fa"></i>Replacement</span></div></div>';
+        }
+        if (type === 'monitoring') {
+          return '<div class="visual"><ul class="monitor"><li>q4h: Ionized Ca2+ (if citrate)</li><li>q6h: K+, Na+, HCO3-, BUN, Cr</li><li>q2h: Filter pressures</li><li>Daily: Mg2+, PO4 3-, weight</li></ul></div>';
+        }
+        if (type === 'dose-summary' && (m.effluent || m.dose || m.input || m.balance)) {
+          var items = [['Effluent', (m.effluent || '—') + ' mL/hr'], ['Dose', (m.dose || '—') + ' mL/kg/hr'], ['Total input', (m.input || '—') + ' mL/hr'], ['Net balance', (m.balance || '—') + ' mL/hr']];
+          return '<div class="visual dose">' + items.map(function (it) {
+            return '<div class="gauge"><small>' + it[0] + '</small><b>' + esc(it[1]) + '</b></div>';
+          }).join('') + '</div>';
+        }
+        if (type === 'lab-table' && keys.length) {
+          return '<div class="visual">' + keys.map(function (k) {
+            return '<div class="lab"><dt>' + esc(label(k)) + '</dt><dd>' + esc(m[k]) + '</dd></div>';
+          }).join('') + '</div>';
+        }
+        if (type === 'workup-flow' && keys.length) {
+          return '<div class="visual flow">' + keys.map(function (k, idx) {
+            return (idx ? '<span class="arrow">→</span>' : '') + '<div class="chip"><small>' + esc(label(k)) + '</small><b>' + esc(m[k]) + '</b></div>';
+          }).join('') + '</div>';
+        }
+        if (type === 'prognosis' && keys.length) {
+          return '<div class="visual prognosis">' + keys.map(function (k) {
+            return '<div class="chip"><small>' + esc(label(k)) + '</small><b>' + esc(m[k]) + '</b></div>';
+          }).join('') + '</div>';
+        }
+        if (keys.length) {
+          return '<div class="visual flow">' + keys.map(function (k) {
+            return '<div class="chip"><small>' + esc(label(k)) + '</small><b>' + esc(m[k]) + '</b></div>';
+          }).join('') + '</div>';
+        }
+        return '';
+      }
+
+      function renderRail() {
+        document.getElementById('rail').innerHTML = data.steps.map(function (s, idx) {
+          return '<button type="button" class="' + (idx === i ? 'active' : '') + '" data-i="' + idx + '">' + (idx + 1) + '. ' + esc(s.title || ('Step ' + (idx + 1))) + '</button>';
+        }).join('');
+        document.querySelectorAll('#rail button').forEach(function (btn) {
+          btn.onclick = function () { stop(); i = Number(btn.getAttribute('data-i')); render(); };
+        });
+      }
+
       function render() {
         if (!data || !data.steps || !data.steps.length) return;
         var step = data.steps[i];
-        var metrics = '';
-        if (step.metrics) {
-          metrics = '<div class="metrics">' + Object.keys(step.metrics).map(function (k) {
-            return '<span class="metric"><strong>' + k + '</strong> ' + String(step.metrics[k]) + '</span>';
-          }).join('') + '</div>';
-        }
         document.getElementById('title').textContent = data.title || src;
         document.getElementById('subtitle').textContent = data.subtitle || '';
         document.title = (data.title || 'Lesson') + ' — Nephro Challenge AI';
         document.getElementById('card').innerHTML =
           '<div class="step">Step ' + (i + 1) + ' of ' + data.steps.length + '</div>' +
-          '<div class="title">' + (step.title || '') + '</div>' +
-          '<p class="body">' + (step.body || '') + '</p>' +
-          (step.tip ? '<div class="tip"><strong>Pearl:</strong> ' + step.tip + '</div>' : '') +
-          metrics;
+          '<div class="title">' + esc(step.title || '') + '</div>' +
+          '<p class="body">' + esc(step.body || '') + '</p>' +
+          visualHtml(step) +
+          (step.tip ? '<div class="tip"><strong>Pearl:</strong> ' + esc(step.tip) + '</div>' : '');
+        document.getElementById('bar').style.width = (((i + 1) / data.steps.length) * 100) + '%';
+        renderRail();
       }
       function stop() {
         if (timer) { clearInterval(timer); timer = null; }
         document.getElementById('play').textContent = 'Play';
       }
       document.getElementById('prev').onclick = function () {
+        if (!data) return;
         stop();
         i = (i + data.steps.length - 1) % data.steps.length;
         render();
       };
       document.getElementById('next').onclick = function () {
+        if (!data) return;
         stop();
         i = (i + 1) % data.steps.length;
         render();
       };
       document.getElementById('play').onclick = function () {
+        if (!data) return;
         if (timer) { stop(); return; }
         document.getElementById('play').textContent = 'Pause';
         timer = setInterval(function () {
@@ -100,6 +200,11 @@
           render();
         }, 4500);
       };
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') document.getElementById('next').click();
+        if (e.key === 'ArrowLeft') document.getElementById('prev').click();
+        if (e.key === ' ') { e.preventDefault(); document.getElementById('play').click(); }
+      });
       fetch(src, { cache: 'no-store' }).then(function (r) {
         if (!r.ok) throw new Error(r.status);
         return r.json();
